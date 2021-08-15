@@ -1,10 +1,10 @@
-import { Response } from 'express'
+import { Request, Response } from 'express'
 import StatusCodes from 'http-status-codes'
 
 import { IArtistController } from 'api/artist/controller'
-import { CreateArtistDto } from 'api/artist/dto'
+import { CreateArtistDto, CreateArtistResultDto } from 'api/artist/dto'
 import { ArtistService, IArtistService } from 'api/artist/service'
-import { Request } from 'shared/interface/request'
+import { ResponseBody } from 'shared/interface/response'
 
 class ArtistController implements IArtistController {
   private readonly artistService: IArtistService
@@ -26,13 +26,13 @@ class ArtistController implements IArtistController {
   }
 
   createOne = async (
-    req: Request<CreateArtistDto>,
-    res: Response,
+    req: Request<any, any, CreateArtistDto>,
+    res: Response<ResponseBody<CreateArtistResultDto>>,
   ): Promise<void> => {
     try {
-      const createdArtist = await this.artistService.createOne(req.body)
+      const artist = await this.artistService.createOne(req.body)
 
-      res.send({ data: { id: createdArtist.id } })
+      res.send({ data: { id: artist.id } })
     } catch (error) {
       res.status(error.statusCode).send(error)
     }

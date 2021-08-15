@@ -1,9 +1,13 @@
 import { Model, Schema, model } from 'mongoose'
 
-import { IImageModel } from 'api/uploads/image/model'
+import { IImageModel } from 'api/image/model'
 
 const ImageSchema: Schema = new Schema({
-  name: {
+  fileName: {
+    type: String,
+    required: true,
+  },
+  originalName: {
     type: String,
     required: true,
   },

@@ -2,7 +2,7 @@ import express from 'express'
 
 import { ArtistController } from 'api/artist/controller'
 import { CreateArtistDto } from 'api/artist/dto'
-import { validateDto } from 'app/middlewares'
+import validateDto from 'app/middlewares/validateDto.middleware'
 import { makeRouterPath } from 'app/routers/utils'
 import { APIRouter } from 'shared/interface/router'
 

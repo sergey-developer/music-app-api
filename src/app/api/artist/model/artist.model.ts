@@ -1,7 +1,7 @@
 import { Model, Schema, model } from 'mongoose'
 
 import { IArtistModel } from 'api/artist/model'
-import { ImageModel } from 'api/uploads/image/model'
+import { ImageModel } from 'api/image/model'
 import uniqueValidation from 'database/plugins/uniqueValidation'
 
 const ArtistSchema: Schema = new Schema({

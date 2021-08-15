@@ -2,7 +2,7 @@ import { Model, Schema, model } from 'mongoose'
 
 import { IAlbumModel } from 'api/album/model'
 import { ArtistModel } from 'api/artist/model'
-import { ImageModel } from 'api/uploads/image/model'
+import { ImageModel } from 'api/image/model'
 
 const AlbumSchema = new Schema({
   name: {

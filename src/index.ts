@@ -8,13 +8,21 @@ const init = async () => {
 
 init()
 
+// TODO: доделать удаление
+// TODO: Добавить валидацию для /:id и т.п.
+
+// TODO: Оборачивать успешный ответ в {data: ...} в мидлеваре
 // TODO: исп-ть sanitize для dto
 // TODO: Исп-ть mongoose autopopulate plugin
+// TODO: Обработать случай когда не отправляется файл для загрузки image
+// TODO: Добавить валидацию для mongo (если валидация случайно прошла мимо validateDto). Не сохранить нужное поле и выйдет нужная ошибка.
+// TODO: Добавить валидацию для файлов и проверить её
+// TODO: Добавить валидацию для query params
 
 // TODO: добавить роут для загрузки фото /uploads/images как подроут (почитать про это)
 // TODO: remove props with undefined value from dto
 // TODO: add validation content-type for route level
-// TODO: set original file name when saving file, add validation for files and do refactoring
+// TODO: обрабатывать запрос на неизвестный роут
 
 // TODO: исп-ть DI
 // TODO: установить логин пароль для базы данных

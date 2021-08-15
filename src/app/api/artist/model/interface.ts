@@ -1,12 +1,13 @@
 import { Document } from 'mongoose'
 
-import { Nullable } from 'shared/interface/common'
+import { IImageModel } from 'api/image/model'
+import { MaybeNull } from 'shared/interface/common'
 
 export interface IArtistModel extends Document {
   name: string
-  photo: Nullable<string>
-  info: Nullable<string>
+  info: MaybeNull<string>
   published: boolean
+  photo: MaybeNull<IImageModel['_id']>
 }
 
 export type ArtistModelArray = IArtistModel[]

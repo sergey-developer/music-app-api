@@ -1,4 +1,4 @@
-import { IEnvConfig } from 'configs/env/interface'
+import { IEnvConfig } from 'configs/env'
 
 const env: string = process.env.NODE_ENV || 'dev'
 const appName: string = 'music-app'

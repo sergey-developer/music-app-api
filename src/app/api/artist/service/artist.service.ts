@@ -1,4 +1,4 @@
-import { CreateArtistDto } from 'api/artist/dto'
+import { CreateArtistDto, CreateArtistResultDto } from 'api/artist/dto'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
@@ -20,7 +20,9 @@ class ArtistService implements IArtistService {
     }
   }
 
-  createOne = async (payload: CreateArtistDto) => {
+  createOne = async (
+    payload: CreateArtistDto,
+  ): Promise<CreateArtistResultDto> => {
     try {
       const createdArtist = await this.artistRepository.createOne(payload)
 

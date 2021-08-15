@@ -1,9 +1,12 @@
 import path from 'path'
 
+import { Express } from 'express'
 import multer from 'multer'
 import { nanoid } from 'nanoid'
 
 import { appConfig } from 'configs/app'
+
+export interface IMulterFile extends Express.Multer.File {}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -14,6 +17,20 @@ const storage = multer.diskStorage({
   },
 })
 
-const upload = multer({ storage })
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == 'image/png' ||
+      file.mimetype == 'image/jpg' ||
+      file.mimetype == 'image/jpeg'
+    ) {
+      cb(null, true)
+    } else {
+      cb(null, false)
+      return cb(new Error('Only .png, .jpg and .jpeg format allowed!'))
+    }
+  },
+})
 
 export default upload
