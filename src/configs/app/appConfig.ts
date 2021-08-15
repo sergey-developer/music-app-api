@@ -1,8 +1,17 @@
-const basePath: string = '/api'
+import path from 'path'
 
-const makeRoutePath = (subPath: string): string => {
-  // TODO: check and remove "/" from subPath
-  return `${basePath}/${subPath}`
+interface IAppConfig {
+  rootPath: string
+  uploadPath: string
+  basePath: string
 }
 
-export { makeRoutePath }
+const rootPath = process.cwd()
+
+const config: IAppConfig = {
+  rootPath,
+  uploadPath: path.join(rootPath, '/public/uploads'),
+  basePath: '/api',
+}
+
+export default config

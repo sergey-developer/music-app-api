@@ -11,19 +11,28 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "class-sanitizer": "^1.0.1",
+    "class-transformer": "^0.4.0",
+    "class-transformer-validator": "^0.9.1",
+    "class-validator": "^0.13.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "lodash.upperfirst": "^4.3.1",
+    "http-errors": "^1.8.0",
+    "http-status-codes": "^2.1.4",
+    "lodash": "^4.17.21",
     "mongoose": "^5.12.7",
     "multer": "^1.4.2",
-    "nanoid": "^3.1.22"
+    "nanoid": "^3.1.22",
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.11",
-    "@types/lodash.upperfirst": "^4.3.6",
+    "@types/http-errors": "^1.8.1",
+    "@types/lodash": "^4.14.172",
     "@types/mongoose": "^5.10.5",
+    "@types/multer": "^1.4.7",
     "nodemon": "^2.0.7",
     "prettier": "2.3.0",
     "prettier-plugin-sorted": "^2.0.0",
@@ -35,9 +44,11 @@
     ".ts": {
       "options": {
         "extraAliases": [
+          "app",
           "api",
+          "shared",
           "configs",
-          "shared"
+          "database"
         ]
       }
     }

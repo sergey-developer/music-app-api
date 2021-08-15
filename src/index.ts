@@ -1,23 +1,23 @@
-import cors from 'cors'
-import express, { Application } from 'express'
+import { runApp } from 'configs/app'
+import { connectDb } from 'database/connection'
 
-import artistRoute, { artistRoutePath } from 'api/artist/route/artist.route'
-import { connectDb } from 'configs/db'
-import { envConfig } from 'configs/env'
-
-const run = async () => {
+const init = async () => {
   await connectDb()
-
-  const app: Application = express()
-
-  app.use(express.json())
-  app.use(cors())
-
-  app.listen(envConfig.app.port, () => {
-    console.log(`Server started on ${envConfig.app.port} port`)
-
-    app.use(artistRoutePath, artistRoute)
-  })
+  runApp()
 }
 
-run()
+init()
+
+// TODO: исп-ть sanitize для dto
+// TODO: Исп-ть mongoose autopopulate plugin
+
+// TODO: добавить роут для загрузки фото /uploads/images как подроут (почитать про это)
+// TODO: remove props with undefined value from dto
+// TODO: add validation content-type for route level
+// TODO: set original file name when saving file, add validation for files and do refactoring
+
+// TODO: исп-ть DI
+// TODO: установить логин пароль для базы данных
+// TODO: Написать тесты
+// TODO: Настроить production режим
+// TODO: Настроить логирование ошибок

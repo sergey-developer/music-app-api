@@ -1,4 +1,4 @@
-import { EnvConfigType } from './types'
+import { IEnvConfig } from 'configs/env/interface'
 
 const env: string = process.env.NODE_ENV || 'dev'
 const appName: string = 'music-app'
@@ -12,7 +12,7 @@ const makeDefaultDbName = (): string => {
   return `${appName}-${env}`
 }
 
-const dev: EnvConfigType = {
+const dev: IEnvConfig = {
   env,
   app: {
     name: appName,
@@ -29,7 +29,7 @@ const dev: EnvConfigType = {
   },
 }
 
-const test: EnvConfigType = {
+const test: IEnvConfig = {
   env,
   app: {
     name: appName,
@@ -46,7 +46,7 @@ const test: EnvConfigType = {
   },
 }
 
-const config: Record<string, EnvConfigType> = {
+const config: Record<string, IEnvConfig> = {
   dev,
   test,
 }
