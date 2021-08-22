@@ -12,9 +12,17 @@ class AlbumRepository implements IAlbumRepository {
     return this.album.find()
   }
 
+  findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
+    return this.album.find(filter)
+  }
+
   createOne: IAlbumRepository['createOne'] = async (payload) => {
     const album = new this.album(payload)
     return album.save()
+  }
+
+  findOneById: IAlbumRepository['findOneById'] = async (id) => {
+    return this.album.findById(id).exec()
   }
 }
 

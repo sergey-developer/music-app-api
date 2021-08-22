@@ -8,8 +8,11 @@ const init = async () => {
 
 init()
 
-// TODO: доделать удаление
+// TODO: сделать типизацию как в документации
 // TODO: Добавить валидацию для /:id и т.п.
+// TODO: Добавить валидацию query string.
+// TODO: Найти тип для mongoId и исп-ть его в ModelId
+// TODO: Обработать везде ошибки
 
 // TODO: Оборачивать успешный ответ в {data: ...} в мидлеваре
 // TODO: Исп-ть mongoose autopopulate plugin
@@ -23,6 +26,7 @@ init()
 // TODO: add validation content-type for route level
 // TODO: обрабатывать запрос на неизвестный роут
 
+// TODO: Документировать код (интерфейсы)
 // TODO: исп-ть DI
 // TODO: установить логин пароль для базы данных
 // TODO: Написать тесты

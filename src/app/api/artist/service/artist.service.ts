@@ -14,7 +14,6 @@ class ArtistService implements IArtistService {
     try {
       return this.artistRepository.findAll()
     } catch (error) {
-      console.error(error)
       throw error
     }
   }
@@ -24,7 +23,7 @@ class ArtistService implements IArtistService {
       const artist = await this.artistRepository.createOne(payload)
       return artist
     } catch (error) {
-      console.error(error, ': ArtistService createOne')
+      // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {
         throw new BadRequestResponse(error.name, error.message, {
           errors: error.errors,

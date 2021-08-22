@@ -14,7 +14,14 @@ class AlbumService implements IAlbumService {
     try {
       return this.albumRepository.findAll()
     } catch (error) {
-      console.error(error)
+      throw error
+    }
+  }
+
+  getAllWhere: IAlbumService['getAllWhere'] = async (filter) => {
+    try {
+      return this.albumRepository.findAllWhere(filter)
+    } catch (error) {
       throw error
     }
   }
@@ -24,7 +31,7 @@ class AlbumService implements IAlbumService {
       const album = await this.albumRepository.createOne(payload)
       return album
     } catch (error) {
-      console.error(error, ': AlbumService createOne')
+      // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {
         throw new BadRequestResponse(error.name, error.message, {
           errors: error.errors,
@@ -35,6 +42,14 @@ class AlbumService implements IAlbumService {
         ErrorKindsEnum.UnknownServerError,
         'Error was occurred while creating Album',
       )
+    }
+  }
+
+  getOneById: IAlbumService['getOneById'] = async (id) => {
+    try {
+      return this.albumRepository.findOneById(id)
+    } catch (error) {
+      throw error
     }
   }
 }

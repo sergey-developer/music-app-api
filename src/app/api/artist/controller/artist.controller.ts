@@ -12,9 +12,9 @@ class ArtistController implements IArtistController {
 
   findAll: IArtistController['findAll'] = async (req, res) => {
     try {
-      const allArtists = await this.artistService.getAll()
+      const artists = await this.artistService.getAll()
 
-      res.send({ data: allArtists })
+      res.send({ data: artists })
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
