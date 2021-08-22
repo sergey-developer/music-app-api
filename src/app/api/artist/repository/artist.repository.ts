@@ -13,8 +13,8 @@ class ArtistRepository implements IArtistRepository {
   }
 
   createOne: IArtistRepository['createOne'] = async (payload) => {
-    const newArtist = new this.artist(payload)
-    return newArtist.save()
+    const artist = new this.artist(payload)
+    return artist.save()
   }
 }
 

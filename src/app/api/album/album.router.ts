@@ -1,18 +1,18 @@
 import express from 'express'
 
-import { ArtistController } from 'api/artist/controller'
-import { CreateArtistDto } from 'api/artist/dto'
+import { AlbumController } from 'api/album/controller'
+import { CreateAlbumDto } from 'api/album/dto'
 import validateDto from 'app/middlewares/validateDto.middleware'
 import { makeRouterPath } from 'app/routers/utils'
 import { APIRouter } from 'shared/interface/router'
 
 const router: APIRouter = (app) => {
   const router = express.Router()
-  const routerPath = makeRouterPath('artists')
+  const routerPath = makeRouterPath('albums')
 
-  router.get('/', ArtistController.getAll)
+  router.get('/', AlbumController.getAll)
 
-  router.post('/', validateDto(CreateArtistDto), ArtistController.createOne)
+  router.post('/', validateDto(CreateAlbumDto), AlbumController.createOne)
 
   app.use(routerPath, router)
 }

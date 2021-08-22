@@ -8,4 +8,5 @@ export interface ITrackModel extends Document {
   duration: string
   published: boolean
   album: ModelId<IAlbumModel>
+  youtube?: string
 }

@@ -1,15 +1,9 @@
 import { Expose } from 'class-transformer'
-import {
-  IsDateString,
-  IsMongoId,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator'
+import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 
 import { stringMessages } from 'shared/constants/validation'
 
-class CreateAlbumDto {
+class CreateTrackDto {
   @Expose()
   @IsString({
     message: stringMessages.isString,
@@ -19,18 +13,21 @@ class CreateAlbumDto {
   })
   name!: string
 
+  // TODO: валидировать по регулярке
   @Expose()
-  @IsDateString()
-  releaseDate!: string
+  @IsString({
+    message: stringMessages.isString,
+  })
+  duration!: string
 
   @Expose()
   @IsOptional()
-  @IsMongoId()
-  image?: string
+  @IsUrl()
+  youtube?: string
 
   @Expose()
   @IsMongoId()
-  artist!: string
+  album!: string
 }
 
-export default CreateAlbumDto
+export default CreateTrackDto

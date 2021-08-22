@@ -10,5 +10,3 @@ export interface IArtistModel extends Document {
   published: boolean
   photo: MaybeNull<ModelId<IImageModel>>
 }
-
-export type ArtistModelArray = IArtistModel[]

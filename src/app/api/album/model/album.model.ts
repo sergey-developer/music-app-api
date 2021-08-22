@@ -12,7 +12,7 @@ const AlbumSchema = new Schema({
     trim: true,
   },
   releaseDate: {
-    type: Date,
+    type: String,
     required: true,
   },
   published: {

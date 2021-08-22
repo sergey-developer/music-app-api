@@ -5,7 +5,7 @@ import _omitBy from 'lodash/omitBy'
 import _pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
-import { GetAllAlbumsFilter } from 'api/album/interface'
+import { GetAllAlbumsQueryString } from 'api/album/interface'
 import { AlbumService, IAlbumService } from 'api/album/service'
 
 class AlbumController implements IAlbumController {
@@ -18,7 +18,10 @@ class AlbumController implements IAlbumController {
   getAll: IAlbumController['getAll'] = async (req, res) => {
     // TODO: сделать валидацию фильтра
     const whiteListFilter = _pick(req.query, ['artist'])
-    const filter: GetAllAlbumsFilter = _omitBy(whiteListFilter, _isUndefined)
+    const filter: GetAllAlbumsQueryString = _omitBy(
+      whiteListFilter,
+      _isUndefined,
+    )
 
     let albums
 

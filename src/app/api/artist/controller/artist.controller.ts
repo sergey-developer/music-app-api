@@ -10,7 +10,7 @@ class ArtistController implements IArtistController {
     this.artistService = ArtistService
   }
 
-  findAll: IArtistController['findAll'] = async (req, res) => {
+  getAll: IArtistController['getAll'] = async (req, res) => {
     try {
       const artists = await this.artistService.getAll()
 
