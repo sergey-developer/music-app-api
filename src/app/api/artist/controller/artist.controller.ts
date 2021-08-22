@@ -1,10 +1,7 @@
-import { Request, Response } from 'express'
 import StatusCodes from 'http-status-codes'
 
 import { IArtistController } from 'api/artist/controller'
-import { CreateArtistDto, CreateArtistResultDto } from 'api/artist/dto'
 import { ArtistService, IArtistService } from 'api/artist/service'
-import { ResponseBody } from 'shared/interface/response'
 
 class ArtistController implements IArtistController {
   private readonly artistService: IArtistService
@@ -13,7 +10,7 @@ class ArtistController implements IArtistController {
     this.artistService = ArtistService
   }
 
-  findAll = async (req: Request, res: Response): Promise<void> => {
+  findAll: IArtistController['findAll'] = async (req, res) => {
     try {
       const allArtists = await this.artistService.getAll()
 
@@ -25,10 +22,7 @@ class ArtistController implements IArtistController {
     }
   }
 
-  createOne = async (
-    req: Request<any, any, CreateArtistDto>,
-    res: Response<ResponseBody<CreateArtistResultDto>>,
-  ): Promise<void> => {
+  createOne: IArtistController['createOne'] = async (req, res) => {
     try {
       const artist = await this.artistService.createOne(req.body)
 

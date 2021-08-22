@@ -1,4 +1,3 @@
-import { CreateArtistDto, CreateArtistResultDto } from 'api/artist/dto'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
@@ -11,7 +10,7 @@ class ArtistService implements IArtistService {
     this.artistRepository = ArtistRepository
   }
 
-  getAll = async () => {
+  getAll: IArtistService['getAll'] = async () => {
     try {
       return this.artistRepository.findAll()
     } catch (error) {
@@ -20,13 +19,10 @@ class ArtistService implements IArtistService {
     }
   }
 
-  createOne = async (
-    payload: CreateArtistDto,
-  ): Promise<CreateArtistResultDto> => {
+  createOne: IArtistService['createOne'] = async (payload) => {
     try {
-      const createdArtist = await this.artistRepository.createOne(payload)
-
-      return createdArtist
+      const artist = await this.artistRepository.createOne(payload)
+      return artist
     } catch (error) {
       console.error(error, ': ArtistService createOne')
       if (error.name === ErrorKindsEnum.ValidationError) {
