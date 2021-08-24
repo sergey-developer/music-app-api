@@ -1,11 +1,14 @@
-import { Document } from 'mongoose'
+import { Document, Model, Types } from 'mongoose'
 
-import { ITrackModel } from 'api/track/model'
-import { IUserModel } from 'api/user/model'
-import { ModelId } from 'shared/interface/utils/model'
+import { ITrackDocument } from 'api/track/model'
+import { IUserDocument } from 'api/user/model'
+import { PopulatedDoc } from 'database/interface/document'
 
-export interface ITrackHistoryModel extends Document {
-  track: ModelId<ITrackModel>
-  user: ModelId<IUserModel>
-  listenDate: Date
+export interface ITrackHistoryDocument extends Document<Types.ObjectId> {
+  id: string
+  track: PopulatedDoc<ITrackDocument>
+  user: PopulatedDoc<IUserDocument>
+  listenDate: number
 }
+
+export interface ITrackHistoryModel extends Model<ITrackHistoryDocument> {}

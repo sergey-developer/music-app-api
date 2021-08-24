@@ -1,12 +1,12 @@
-import { Model, Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-import { IArtistModel } from 'api/artist/model'
+import { IArtistDocument, IArtistModel } from 'api/artist/model'
 import { ImageModel } from 'api/image/model'
 import uniqueValidation from 'database/plugins/uniqueValidation'
 
 const toJson = require('@meanie/mongoose-to-json')
 
-const ArtistSchema: Schema = new Schema({
+const ArtistSchema = new Schema<IArtistDocument, IArtistModel>({
   name: {
     // TODO: make capitalize, validation
     type: String,
@@ -15,10 +15,10 @@ const ArtistSchema: Schema = new Schema({
     unique: 'Artist with name {value} is already exists',
   },
   info: {
-    // TODO: make capitalize, validation
     type: String,
     default: null,
     trim: true,
+    // TODO: make capitalize, validation
   },
   published: {
     type: Boolean,
@@ -34,6 +34,6 @@ const ArtistSchema: Schema = new Schema({
 ArtistSchema.plugin(toJson)
 ArtistSchema.plugin(uniqueValidation)
 
-const ArtistModel: Model<IArtistModel> = model('Artist', ArtistSchema)
+const ArtistModel = model<IArtistDocument, IArtistModel>('Artist', ArtistSchema)
 
 export default ArtistModel

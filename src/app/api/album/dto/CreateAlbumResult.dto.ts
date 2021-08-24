@@ -1,6 +1,6 @@
-import { IAlbumModel } from 'api/album/model'
-import { PickModelId } from 'shared/interface/utils/model'
+import { IAlbumDocument } from 'api/album/model'
+import { PickDocumentId } from 'database/interface/document'
 
-interface CreateAlbumResultDto extends PickModelId<IAlbumModel> {}
+interface CreateAlbumResultDto extends PickDocumentId<IAlbumDocument> {}
 
 export default CreateAlbumResultDto

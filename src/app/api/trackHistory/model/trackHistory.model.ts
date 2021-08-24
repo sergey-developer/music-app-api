@@ -1,14 +1,21 @@
-import { Model, Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
 import { TrackModel } from 'api/track/model'
-import { ITrackHistoryModel } from 'api/trackHistory/model'
+import {
+  ITrackHistoryDocument,
+  ITrackHistoryModel,
+} from 'api/trackHistory/model'
 import { UserModel } from 'api/user/model'
 
 const toJson = require('@meanie/mongoose-to-json')
 
-const TrackHistorySchema = new Schema({
+const TrackHistorySchema = new Schema<
+  ITrackHistoryDocument,
+  ITrackHistoryModel,
+  ITrackHistoryDocument
+>({
   listenDate: {
-    type: Date,
+    type: Number,
     required: true,
     default: Date.now,
   },
@@ -26,7 +33,7 @@ const TrackHistorySchema = new Schema({
 
 TrackHistorySchema.plugin(toJson)
 
-const TrackHistoryModel: Model<ITrackHistoryModel> = model(
+const TrackHistoryModel = model<ITrackHistoryDocument, ITrackHistoryModel>(
   'TrackHistory',
   TrackHistorySchema,
 )

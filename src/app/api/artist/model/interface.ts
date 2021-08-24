@@ -1,12 +1,15 @@
-import { Document } from 'mongoose'
+import { Document, Model, Types } from 'mongoose'
 
-import { IImageModel } from 'api/image/model'
+import { IImageDocument } from 'api/image/model'
+import { PopulatedDoc } from 'database/interface/document'
 import { MaybeNull } from 'shared/interface/utils/common'
-import { ModelId } from 'shared/interface/utils/model'
 
-export interface IArtistModel extends Document {
+export interface IArtistDocument extends Document<Types.ObjectId> {
+  id: string
   name: string
   info: MaybeNull<string>
   published: boolean
-  photo: MaybeNull<ModelId<IImageModel>>
+  photo: MaybeNull<PopulatedDoc<IImageDocument>>
 }
+
+export interface IArtistModel extends Model<IArtistDocument> {}

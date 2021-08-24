@@ -1,8 +1,10 @@
-import { Model, Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-import { IImageModel } from 'api/image/model'
+import { IImageDocument, IImageModel } from 'api/image/model'
 
-const ImageSchema: Schema = new Schema({
+const toJson = require('@meanie/mongoose-to-json')
+
+const ImageSchema = new Schema<IImageDocument, IImageModel, IImageDocument>({
   fileName: {
     type: String,
     required: true,
@@ -12,17 +14,15 @@ const ImageSchema: Schema = new Schema({
     required: true,
   },
   src: {
+    // TODO: validate as url
     type: String,
     required: true,
+    unique: true,
   },
 })
 
-ImageSchema.method('toJSON', function () {
-  const { __v, _id, ...object } = this.toObject()
-  object.id = _id
-  return object
-})
+ImageSchema.plugin(toJson)
 
-const ImageModel: Model<IImageModel> = model('Image', ImageSchema)
+const ImageModel = model<IImageDocument, IImageModel>('Image', ImageSchema)
 
 export default ImageModel

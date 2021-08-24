@@ -3,11 +3,13 @@ import _isEmpty from 'lodash/isEmpty'
 import _keys from 'lodash/keys'
 import _reduce from 'lodash/reduce'
 import _set from 'lodash/set'
-import { Schema } from 'mongoose'
+import { Document, Schema } from 'mongoose'
 
 import { IValidationErrors, ValidationError } from 'shared/utils/errors'
 
-export default function uniqueValidation(schema: Schema) {
+export default function uniqueValidation<T extends Document>(
+  schema: Schema<T>,
+) {
   schema.post('save', function (error: any, doc: any, next: any) {
     const modelSchema = schema.obj
 

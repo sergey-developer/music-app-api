@@ -1,6 +1,6 @@
-import { ITrackModel } from 'api/track/model'
-import { PickModelId } from 'shared/interface/utils/model'
+import { ITrackDocument } from 'api/track/model'
+import { PickDocumentId } from 'database/interface/document'
 
-interface CreateTrackResultDto extends PickModelId<ITrackModel> {}
+interface CreateTrackResultDto extends PickDocumentId<ITrackDocument> {}
 
 export default CreateTrackResultDto

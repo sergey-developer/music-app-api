@@ -1,10 +1,10 @@
-import { IAlbumModel } from 'api/album/model'
-import { IArtistModel } from 'api/artist/model'
-import { ModelId } from 'shared/interface/utils/model'
+import { IAlbumDocument } from 'api/album/model'
+import { IArtistDocument } from 'api/artist/model'
+import { DocumentId } from 'database/interface/document'
 
 export type GetAllTracksFilterDto = Partial<{
-  artist: ModelId<IArtistModel>
-  album: ModelId<IAlbumModel>
+  artist: DocumentId<IArtistDocument>
+  album: DocumentId<IAlbumDocument>
 }>
 
 export type GetAllTracksFilter = Partial<Pick<GetAllTracksFilterDto, 'album'>>

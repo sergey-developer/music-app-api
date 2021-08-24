@@ -1,6 +1,6 @@
-import { IArtistModel } from 'api/artist/model'
-import { PickModelId } from 'shared/interface/utils/model'
+import { IArtistDocument } from 'api/artist/model'
+import { PickDocumentId } from 'database/interface/document'
 
-interface CreateArtistResultDto extends PickModelId<IArtistModel> {}
+interface CreateArtistResultDto extends PickDocumentId<IArtistDocument> {}
 
 export default CreateArtistResultDto

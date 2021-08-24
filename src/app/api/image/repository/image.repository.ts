@@ -20,7 +20,7 @@ class ImageRepository implements IImageRepository {
 
   public deleteOneById: IImageRepository['deleteOneById'] = async (id) => {
     await this.image.deleteOne({ _id: id })
-    // TODO: если не нашёл, то нет ошибки, исправить это
+    // TODO: если не нашёл, то нет ошибки, исправить это (исп-ть orFail)
   }
 }
 

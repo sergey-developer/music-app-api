@@ -21,11 +21,7 @@ class TrackRepository implements ITrackRepository {
     if (_has(filter, 'album')) filterToApply.album = filter.album
 
     if (filter.artist) {
-      const tracks = await this.track
-        .find(filterToApply, null)
-        .populate({ path: 'album', populate: { path: 'artist' } })
-
-      return tracks.filter((track) => track.album.artist.id === filter.artist)
+      return this.track.findByArtistId(filter.artist, filterToApply)
     }
 
     return this.track.find(filterToApply, null)

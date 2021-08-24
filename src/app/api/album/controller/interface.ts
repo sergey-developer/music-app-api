@@ -2,10 +2,10 @@ import { Request, Response } from 'express'
 
 import { CreateAlbumDto, CreateAlbumResultDto } from 'api/album/dto'
 import { AlbumModelArray, GetAllAlbumsFilterDto } from 'api/album/interface'
-import { IAlbumModel } from 'api/album/model'
+import { IAlbumDocument, IAlbumModel } from 'api/album/model'
+import { PickDocumentId } from 'database/interface/document'
 import { ReqParams, ReqQuery } from 'shared/interface/request'
 import { ResBody } from 'shared/interface/response'
-import { PickModelId } from 'shared/interface/utils/model'
 
 export interface IAlbumController {
   getAll: (
@@ -19,7 +19,7 @@ export interface IAlbumController {
   ) => Promise<void>
 
   getOneById: (
-    req: Request<ReqParams<PickModelId<IAlbumModel>>>,
+    req: Request<ReqParams<PickDocumentId<IAlbumDocument>>>,
     res: Response<ResBody<IAlbumModel>>,
   ) => Promise<void>
 }

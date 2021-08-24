@@ -1,12 +1,12 @@
-import { Model, Schema, model } from 'mongoose'
+import { Schema, model } from 'mongoose'
 
-import { IAlbumModel } from 'api/album/model'
+import { IAlbumDocument, IAlbumModel } from 'api/album/model'
 import { ArtistModel } from 'api/artist/model'
 import { ImageModel } from 'api/image/model'
 
 const toJson = require('@meanie/mongoose-to-json')
 
-const AlbumSchema = new Schema({
+const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
   name: {
     type: String,
     required: true,
@@ -35,6 +35,6 @@ const AlbumSchema = new Schema({
 
 AlbumSchema.plugin(toJson)
 
-const AlbumModel: Model<IAlbumModel> = model('Album', AlbumSchema)
+const AlbumModel = model<IAlbumDocument, IAlbumModel>('Album', AlbumSchema)
 
 export default AlbumModel

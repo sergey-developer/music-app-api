@@ -1,9 +1,9 @@
 import { CreateTrackDto } from 'api/track/dto'
-import { GetAllTracksFilterDto, TrackModelArray } from 'api/track/interface'
-import { ITrackModel } from 'api/track/model'
+import { GetAllTracksFilterDto, TrackDocumentArray } from 'api/track/interface'
+import { ITrackDocument } from 'api/track/model'
 
 export interface ITrackRepository {
-  findAll: () => Promise<TrackModelArray>
-  findAllWhere: (filter: GetAllTracksFilterDto) => Promise<TrackModelArray>
-  createOne: (payload: CreateTrackDto) => Promise<ITrackModel>
+  findAll: () => Promise<TrackDocumentArray>
+  findAllWhere: (filter: GetAllTracksFilterDto) => Promise<TrackDocumentArray>
+  createOne: (payload: CreateTrackDto) => Promise<ITrackDocument>
 }
