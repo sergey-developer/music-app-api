@@ -1,7 +1,8 @@
-import { Document, Model, Types } from 'mongoose'
+import { Model } from 'mongoose'
 
-export interface IImageDocument extends Document<Types.ObjectId> {
-  id: string
+import { CustomDocument } from 'database/interface/document'
+
+export interface IImageDocument extends CustomDocument {
   src: string
   fileName: string
   originalName: string

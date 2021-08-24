@@ -3,11 +3,12 @@ import _isEmpty from 'lodash/isEmpty'
 import _keys from 'lodash/keys'
 import _reduce from 'lodash/reduce'
 import _set from 'lodash/set'
-import { Document, Schema } from 'mongoose'
+import { Schema } from 'mongoose'
 
+import { CustomDocument } from 'database/interface/document'
 import { IValidationErrors, ValidationError } from 'shared/utils/errors'
 
-export default function uniqueValidation<T extends Document>(
+export default function uniqueValidation<T extends CustomDocument>(
   schema: Schema<T>,
 ) {
   schema.post('save', function (error: any, doc: any, next: any) {
