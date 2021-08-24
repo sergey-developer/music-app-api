@@ -4,6 +4,8 @@ import { IArtistModel } from 'api/artist/model'
 import { ImageModel } from 'api/image/model'
 import uniqueValidation from 'database/plugins/uniqueValidation'
 
+const toJson = require('@meanie/mongoose-to-json')
+
 const ArtistSchema: Schema = new Schema({
   name: {
     // TODO: make capitalize, validation
@@ -29,14 +31,9 @@ const ArtistSchema: Schema = new Schema({
   },
 })
 
-ArtistSchema.method('toJSON', function () {
-  const { __v, _id, ...object } = this.toObject()
-  object.id = _id
-  return object
-})
-
+ArtistSchema.plugin(toJson)
 ArtistSchema.plugin(uniqueValidation)
 
-const ArtistModel: Model<IArtistModel> = model('artist', ArtistSchema)
+const ArtistModel: Model<IArtistModel> = model('Artist', ArtistSchema)
 
 export default ArtistModel

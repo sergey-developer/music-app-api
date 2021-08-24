@@ -1,9 +1,10 @@
 import { Model, Schema, model } from 'mongoose'
-import autoPopulate from 'mongoose-autopopulate'
 
 import { IAlbumModel } from 'api/album/model'
 import { ArtistModel } from 'api/artist/model'
 import { ImageModel } from 'api/image/model'
+
+const toJson = require('@meanie/mongoose-to-json')
 
 const AlbumSchema = new Schema({
   name: {
@@ -24,24 +25,16 @@ const AlbumSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: ImageModel.modelName,
     default: null,
-    autopopulate: true,
   },
   artist: {
     type: Schema.Types.ObjectId,
     ref: ArtistModel.modelName,
     required: true,
-    autopopulate: true,
   },
 })
 
-AlbumSchema.method('toJSON', function () {
-  const { __v, _id, ...object } = this.toObject()
-  object.id = _id
-  return object
-})
+AlbumSchema.plugin(toJson)
 
-AlbumSchema.plugin(autoPopulate)
-
-const AlbumModel: Model<IAlbumModel> = model('album', AlbumSchema)
+const AlbumModel: Model<IAlbumModel> = model('Album', AlbumSchema)
 
 export default AlbumModel

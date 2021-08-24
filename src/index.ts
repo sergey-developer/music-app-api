@@ -1,4 +1,4 @@
-import { runApp } from 'configs/app'
+import runApp from 'app/runApp'
 import { connectDb } from 'database/connection'
 
 const init = async () => {
@@ -10,12 +10,12 @@ init()
 
 // TODO: сделать типизацию как в документации
 // TODO: Добавить валидацию для /:id и т.п.
-// TODO: Добавить валидацию query string.
+// TODO: Добавить валидацию query string. (как для dto)
 // TODO: Найти тип для mongoId и исп-ть его в ModelId
 // TODO: Обработать везде ошибки
+// TODO: Исп-ть либу для валидации unique
 
 // TODO: Оборачивать успешный ответ в {data: ...} в мидлеваре
-// TODO: Исп-ть mongoose autopopulate plugin
 // TODO: Обработать случай когда не отправляется файл для загрузки image
 // TODO: Добавить валидацию для mongo (если валидация случайно прошла мимо validateDto). Не сохранить нужное поле и выйдет нужная ошибка.
 // TODO: Добавить валидацию для файлов и проверить её

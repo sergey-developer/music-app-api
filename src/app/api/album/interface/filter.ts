@@ -1,4 +1,4 @@
 import { IArtistModel } from 'api/artist/model'
 import { ModelId } from 'shared/interface/utils/model'
 
-export type GetAllAlbumsQueryString = Partial<{ artist: ModelId<IArtistModel> }>
+export type GetAllAlbumsFilterDto = Partial<{ artist: ModelId<IArtistModel> }>

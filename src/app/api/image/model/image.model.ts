@@ -23,6 +23,6 @@ ImageSchema.method('toJSON', function () {
   return object
 })
 
-const ImageModel: Model<IImageModel> = model('image', ImageSchema)
+const ImageModel: Model<IImageModel> = model('Image', ImageSchema)
 
 export default ImageModel
