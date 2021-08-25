@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer'
 import {
-  IsDateString,
+  IsDate,
   IsMongoId,
   IsOptional,
   IsString,
@@ -20,8 +20,8 @@ class CreateAlbumDto {
   name!: string
 
   @Expose()
-  @IsDateString()
-  releaseDate!: string
+  @IsDate()
+  releaseDate!: Date
 
   @Expose()
   @IsOptional()

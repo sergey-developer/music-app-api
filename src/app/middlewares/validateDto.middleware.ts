@@ -35,7 +35,6 @@ const validateDto =
         _merge(defaultOptions, options),
       )
 
-      // TODO: sanitize validatedDto
       _set(req, 'body', validatedDto)
       next()
     } catch (errors) {

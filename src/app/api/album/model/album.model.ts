@@ -13,7 +13,7 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
     trim: true,
   },
   releaseDate: {
-    type: String,
+    type: Date,
     required: true,
   },
   published: {

@@ -3,11 +3,12 @@ import { Model } from 'mongoose'
 import { ITrackDocument } from 'api/track/model'
 import { IUserDocument } from 'api/user/model'
 import { CustomDocument, PopulatedDoc } from 'database/interface/document'
+import { DateType } from 'shared/interface/common'
 
 export interface ITrackHistoryDocument extends CustomDocument {
   track: PopulatedDoc<ITrackDocument>
   user: PopulatedDoc<IUserDocument>
-  listenDate: string
+  listenDate: DateType<Date>
 }
 
 export interface ITrackHistoryModel extends Model<ITrackHistoryDocument> {}
