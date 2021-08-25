@@ -1,6 +1,8 @@
 import { Schema, model } from 'mongoose'
 
+import { JwtPayload } from 'api/session/interface'
 import { ISessionDocument, ISessionModel } from 'api/session/model'
+import { generateToken } from 'api/session/utils'
 import { UserModel } from 'api/user/model'
 
 const toJson = require('@meanie/mongoose-to-json')
@@ -21,6 +23,10 @@ const SessionSchema = new Schema<
     required: true,
     unique: true,
   },
+})
+
+SessionSchema.method('generateToken', function (payload: JwtPayload): void {
+  this.token = generateToken(payload)
 })
 
 SessionSchema.plugin(toJson)

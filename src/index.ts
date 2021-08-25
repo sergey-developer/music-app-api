@@ -21,13 +21,15 @@ init()
 // TODO: Добавить валидацию для mongo (если валидация случайно прошла мимо validateDto). Не сохранить нужное поле и выйдет нужная ошибка.
 // TODO: Добавить валидацию для файлов и проверить её
 // TODO: Добавить валидацию для query params
-// TODO: Сделать пагинацию
 
+// TODO: Сделать пагинацию
+// TODO: Отрефакторить configs
 // TODO: добавить роут для загрузки фото /uploads/images как подроут (почитать про это)
 // TODO: remove props with undefined value from dto
 // TODO: add validation content-type for route level
 // TODO: обрабатывать запрос на неизвестный роут
 
+// TODO: Настроить cors
 // TODO: Документировать код (интерфейсы)
 // TODO: исп-ть DI
 // TODO: установить логин пароль для базы данных

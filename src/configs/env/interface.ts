@@ -3,6 +3,7 @@ export interface IEnvConfig {
   app: {
     name: string
     port: number
+    tokenSecret: string
   }
   db: {
     host: string

@@ -4,7 +4,9 @@ import { UserRoleEnum } from 'api/user/interface'
 import { CustomDocument } from 'database/interface/document'
 
 export interface IUserDocument extends CustomDocument {
-  username: string
+  firstname: string
+  lastname: string
+  email: string
   password: string
   role: UserRoleEnum
 }

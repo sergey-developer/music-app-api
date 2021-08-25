@@ -19,6 +19,7 @@ const dev: IEnvConfig = {
     port: process.env.DEV_APP_PORT
       ? parseInt(process.env.DEV_APP_PORT)
       : defaultAppPort,
+    tokenSecret: process.env.TOKEN_SECRET!,
   },
   db: {
     host: process.env.DEV_DB_HOST || defaultDbHost,
@@ -36,6 +37,7 @@ const test: IEnvConfig = {
     port: process.env.TEST_APP_PORT
       ? parseInt(process.env.TEST_APP_PORT)
       : defaultAppPort,
+    tokenSecret: process.env.TOKEN_SECRET!,
   },
   db: {
     host: process.env.TEST_DB_HOST || defaultDbHost,
