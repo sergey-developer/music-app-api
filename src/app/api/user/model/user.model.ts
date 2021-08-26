@@ -7,14 +7,10 @@ import { checkPassword, generatePassword } from 'api/user/utils'
 const toJson = require('@meanie/mongoose-to-json')
 
 const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
-  firstname: {
+  username: {
     type: String,
     required: true,
-    // TODO: add validation
-  },
-  lastname: {
-    type: String,
-    required: true,
+    unique: true,
     // TODO: add validation
   },
   email: {
@@ -39,6 +35,8 @@ const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
 })
 
 UserSchema.pre('save', async function (next): Promise<void> {
+  if (!this.isModified('password')) return next()
+
   this.password = await generatePassword(this.password)
   next()
 })

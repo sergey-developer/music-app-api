@@ -8,6 +8,7 @@ const init = async () => {
 
 init()
 
+// TODO: убрать из CustomDocument { id: string } и добавить её в каждую модель, т.к. id выводится как any
 // TODO: Добавить валидацию для /:id и т.п.
 // TODO: Добавить валидацию query string. (как для dto)
 // TODO: Обработать везде ошибки
@@ -15,6 +16,8 @@ init()
 // TODO: Создать модель PublishRequest
 // TODO: Создать модель Social (для ссылок на youtube и т.д.)
 // TODO: Разделить модели где есть published, создать Base"ModelName" и "ModelName" с полем published
+// TODO: сделать все названия файлов в camelCase стиле
+// TODO: сделать для всех моделей классы?
 
 // TODO: Оборачивать успешный ответ в {data: ...} в мидлеваре
 // TODO: Обработать случай когда не отправляется файл для загрузки image

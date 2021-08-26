@@ -4,6 +4,7 @@ import { JwtPayload } from 'api/session/interface'
 import { ISessionDocument, ISessionModel } from 'api/session/model'
 import { generateToken } from 'api/session/utils'
 import { UserModel } from 'api/user/model'
+import { envConfig } from 'configs/env'
 
 const toJson = require('@meanie/mongoose-to-json')
 
@@ -25,8 +26,9 @@ const SessionSchema = new Schema<
   },
 })
 
-SessionSchema.method('generateToken', function (payload: JwtPayload): void {
-  this.token = generateToken(payload)
+SessionSchema.static('generateToken', function (payload: JwtPayload) {
+  const secret = envConfig.app.tokenSecret
+  return generateToken(payload, secret)
 })
 
 SessionSchema.plugin(toJson)

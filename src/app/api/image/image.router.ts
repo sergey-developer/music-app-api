@@ -1,8 +1,8 @@
 import express from 'express'
 
 import { ImageController } from 'api/image/controller'
-import upload from 'app/middlewares/upload.middleware'
 import { makeRouterPath } from 'app/routers/utils'
+import upload from 'middlewares/upload.middleware'
 import { APIRouter } from 'shared/interface/router'
 
 const router: APIRouter = (app) => {

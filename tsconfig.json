@@ -49,6 +49,7 @@
      "paths": {
        "app/*": ["src/app/*"],
        "api/*": ["src/app/api/*"],
+       "middlewares/*": ["src/app/middlewares/*"],
        "shared/*": ["src/shared/*"],
        "configs/*": ["src/configs/*"],
        "database/*": ["src/database/*"]

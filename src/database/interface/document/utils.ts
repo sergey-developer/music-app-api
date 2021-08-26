@@ -1,5 +1,7 @@
-export type DocumentId<T extends { id: string }> = T['id']
+type BaseDocumentShape = { id: string }
 
-export type PickDocumentId<T extends { id: string }> = {
+export type DocumentId<T extends BaseDocumentShape> = T['id']
+
+export type PickDocumentId<T extends BaseDocumentShape> = {
   id: DocumentId<T>
 }

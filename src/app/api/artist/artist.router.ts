@@ -2,8 +2,8 @@ import express from 'express'
 
 import { ArtistController } from 'api/artist/controller'
 import { CreateArtistDto } from 'api/artist/dto'
-import validateDto from 'app/middlewares/validateDto.middleware'
 import { makeRouterPath } from 'app/routers/utils'
+import validateDto from 'middlewares/validateDto.middleware'
 import { APIRouter } from 'shared/interface/router'
 
 const router: APIRouter = (app) => {
