@@ -11,7 +11,6 @@ class ImageService implements IImageService {
   public createOne: IImageService['createOne'] = async (payload) => {
     try {
       const image = await this.imageRepository.createOne(payload)
-
       return image
     } catch (error) {
       throw error

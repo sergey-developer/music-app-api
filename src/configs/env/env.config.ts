@@ -20,6 +20,7 @@ const dev: IEnvConfig = {
       ? parseInt(process.env.DEV_APP_PORT)
       : defaultAppPort,
     tokenSecret: process.env.TOKEN_SECRET!,
+    cookieSecret: process.env.COOKIE_SECRET!,
   },
   db: {
     host: process.env.DEV_DB_HOST || defaultDbHost,
@@ -38,6 +39,7 @@ const test: IEnvConfig = {
       ? parseInt(process.env.TEST_APP_PORT)
       : defaultAppPort,
     tokenSecret: process.env.TOKEN_SECRET!,
+    cookieSecret: process.env.COOKIE_SECRET!,
   },
   db: {
     host: process.env.TEST_DB_HOST || defaultDbHost,

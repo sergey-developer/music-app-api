@@ -1,12 +1,9 @@
 import path from 'path'
 
-import { Express } from 'express'
 import multer from 'multer'
 import { nanoid } from 'nanoid'
 
 import { appConfig } from 'configs/app'
-
-export interface IMulterFile extends Express.Multer.File {}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

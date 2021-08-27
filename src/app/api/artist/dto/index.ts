@@ -1,2 +1,2 @@
-export { default as CreateArtistDto } from './CreateArtist.dto'
-export { default as CreateArtistResultDto } from './CreateArtistResult.dto'
+export { default as CreateArtistDto } from './createArtist.dto'
+export { default as CreateArtistResultDto } from './createArtistResult.dto'

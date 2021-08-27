@@ -1,5 +1,9 @@
+import { ISessionDocument } from 'api/session/model'
 import { ISessionRepository } from 'api/session/repository'
+import { IUserDocument } from 'api/user/model'
 
 export interface ISessionService {
-  create: ISessionRepository['create']
+  create: (payload: IUserDocument) => Promise<ISessionDocument>
+  getOneByToken: ISessionRepository['findOneByToken']
+  deleteOneByToken: ISessionRepository['deleteOneByToken']
 }

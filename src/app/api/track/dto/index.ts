@@ -1,2 +1,2 @@
-export { default as CreateTrackDto } from './CreateTrack.dto'
-export { default as CreateTrackResultDto } from './CreateTrackResult.dto'
+export { default as CreateTrackDto } from './createTrack.dto'
+export { default as CreateTrackResultDto } from './createTrackResult.dto'

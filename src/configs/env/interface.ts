@@ -4,6 +4,7 @@ export interface IEnvConfig {
     name: string
     port: number
     tokenSecret: string
+    cookieSecret: string
   }
   db: {
     host: string

@@ -1,2 +1,2 @@
-export { default as CreateAlbumDto } from './CreateAlbum.dto'
-export { default as CreateAlbumResultDto } from './CreateAlbumResult.dto'
+export { default as CreateAlbumDto } from './createAlbum.dto'
+export { default as CreateAlbumResultDto } from './createAlbumResult.dto'

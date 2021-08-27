@@ -21,7 +21,7 @@ class ImageController implements IImageController {
         return
       }
 
-      throw new Error('handle error') // TODO: refactor
+      throw new Error('handle error') // TODO: handle error
     } catch (error) {
       res.status(500).send(error)
     }
@@ -36,7 +36,6 @@ class ImageController implements IImageController {
 
       res.status(StatusCodes.OK)
     } catch (error) {
-      console.log({ error })
       res.status(500).send(error)
     }
   }

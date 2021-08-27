@@ -28,6 +28,15 @@ class UserService implements IUserService {
       )
     }
   }
+
+  public getOneByEmail: IUserService['getOneByEmail'] = async (email) => {
+    try {
+      const user = await this.userRepository.findOneByEmail(email)
+      return user
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 export default new UserService()

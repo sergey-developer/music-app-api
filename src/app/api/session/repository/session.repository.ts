@@ -14,7 +14,20 @@ class SessionRepository implements ISessionRepository {
       token,
       user: payload.userId,
     })
+
     return session.save()
+  }
+
+  public findOneByToken: ISessionRepository['findOneByToken'] = async (
+    token,
+  ) => {
+    return this.session.findOne({ token }).exec()
+  }
+
+  public deleteOneByToken: ISessionRepository['deleteOneByToken'] = async (
+    token,
+  ) => {
+    await this.session.findOneAndDelete({ token }).orFail()
   }
 }
 

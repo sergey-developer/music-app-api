@@ -2,17 +2,17 @@ import { Application } from 'express'
 
 import albumRouter from 'api/album/album.router'
 import artistRouter from 'api/artist/artist.router'
-import imageRouter from 'api/image/image.router'
+import authRouter from 'api/auth/auth.router'
 import trackRouter from 'api/track/track.router'
-import userRouter from 'api/user/user.router'
-import { APIRouter } from 'shared/interface/router'
+import uploadsRouter from 'api/uploads/uploads.router'
+import { APIRouter } from 'app/routers/interface'
 
 const routers: APIRouter[] = [
-  userRouter,
+  authRouter,
   artistRouter,
   albumRouter,
   trackRouter,
-  imageRouter,
+  uploadsRouter,
 ]
 
 const createRouters = (app: Application) => {

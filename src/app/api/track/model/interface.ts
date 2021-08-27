@@ -10,6 +10,7 @@ import {
 } from 'database/interface/document'
 
 export interface ITrackDocument extends CustomDocument {
+  id: string
   name: string
   duration: string
   published: boolean

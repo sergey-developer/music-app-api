@@ -12,6 +12,10 @@ class UserRepository implements IUserRepository {
     const user = new this.user(payload)
     return user.save()
   }
+
+  public findOneByEmail: IUserRepository['findOneByEmail'] = async (email) => {
+    return this.user.findOne({ email }).exec()
+  }
 }
 
 export default new UserRepository()
