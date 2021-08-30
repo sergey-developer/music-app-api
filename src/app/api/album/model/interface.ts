@@ -7,7 +7,6 @@ import { DateType } from 'shared/interface/common'
 import { MaybeNull } from 'shared/interface/utils/common'
 
 export interface IAlbumDocument extends CustomDocument {
-  id: string
   name: string
   published: boolean
   releaseDate: DateType<Date>

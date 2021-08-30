@@ -1,7 +1,7 @@
-type BaseDocumentShape = { id: string }
+import { Document } from 'mongoose'
 
-export type DocumentId<T extends BaseDocumentShape> = T['id']
+export type DocumentId<T extends Document> = T['id']
 
-export type PickDocumentId<T extends BaseDocumentShape> = {
+export type PickDocumentId<T extends Document> = {
   id: DocumentId<T>
 }

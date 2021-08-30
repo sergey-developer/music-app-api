@@ -17,7 +17,7 @@ class ImageController implements IImageController {
       if (file) {
         const image = await this.imageService.createOne(file)
 
-        res.send({ data: image })
+        res.send({ data: { id: image.id, src: image.src } })
         return
       }
 
@@ -34,7 +34,7 @@ class ImageController implements IImageController {
     try {
       await this.imageService.deleteOneById(req.params.id)
 
-      res.status(StatusCodes.OK)
+      res.sendStatus(StatusCodes.OK)
     } catch (error) {
       res.status(500).send(error)
     }

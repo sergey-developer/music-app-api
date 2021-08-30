@@ -1,5 +1,5 @@
-import { CreateTrackDto } from 'api/track/dto'
-import { GetAllTracksFilterDto, TrackDocumentArray } from 'api/track/interface'
+import { CreateTrackDto, GetAllTracksFilterDto } from 'api/track/dto'
+import { TrackDocumentArray } from 'api/track/interface'
 import { ITrackDocument } from 'api/track/model'
 
 export interface ITrackRepository {

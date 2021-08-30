@@ -2,6 +2,7 @@ import StatusCodes from 'http-status-codes'
 
 import { IArtistController } from 'api/artist/controller'
 import { ArtistService, IArtistService } from 'api/artist/service'
+import { RequestStatusEnum } from 'api/request/interface'
 
 class ArtistController implements IArtistController {
   private readonly artistService: IArtistService
@@ -10,9 +11,21 @@ class ArtistController implements IArtistController {
     this.artistService = ArtistService
   }
 
-  getAll: IArtistController['getAll'] = async (req, res) => {
+  public getAll: IArtistController['getAll'] = async (req, res) => {
+    const user = req.user
+    // TODO: валидировать фильтр
+    const filter = req.query
+
     try {
-      const artists = await this.artistService.getAll()
+      let artists
+
+      if (user) {
+        artists = await this.artistService.getAll(filter)
+      } else {
+        artists = await this.artistService.getAll({
+          status: RequestStatusEnum.Approved,
+        })
+      }
 
       res.send({ data: artists })
     } catch (error) {
@@ -22,9 +35,16 @@ class ArtistController implements IArtistController {
     }
   }
 
-  createOne: IArtistController['createOne'] = async (req, res) => {
+  public createOne: IArtistController['createOne'] = async (req, res) => {
+    const user = req.user!
+
     try {
-      const artist = await this.artistService.createOne(req.body)
+      const artist = await this.artistService.createOne({
+        name: req.body.name,
+        info: req.body.info,
+        photo: req.body.photo,
+        userId: user.userId,
+      })
 
       res.send({ data: { id: artist.id } })
     } catch (error) {

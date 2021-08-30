@@ -1,5 +1,5 @@
 import { ITrackRepository, TrackRepository } from 'api/track/repository'
-import { ITrackService } from 'api/track/service/interface'
+import { ITrackService } from 'api/track/service'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
@@ -10,15 +10,7 @@ class TrackService implements ITrackService {
     this.trackRepository = TrackRepository
   }
 
-  getAll: ITrackService['getAll'] = async () => {
-    try {
-      return this.trackRepository.findAll()
-    } catch (error) {
-      throw error
-    }
-  }
-
-  getAllWhere: ITrackService['getAllWhere'] = async (filter) => {
+  getAll: ITrackService['getAll'] = async (filter) => {
     try {
       return this.trackRepository.findAllWhere(filter)
     } catch (error) {

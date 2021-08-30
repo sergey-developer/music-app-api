@@ -12,6 +12,11 @@ class ArtistRepository implements IArtistRepository {
     return this.artist.find()
   }
 
+  findAllWhere: IArtistRepository['findAllWhere'] = async (filter) => {
+    // TODO: validate filter
+    return this.artist.find({ _id: { $in: filter.ids } })
+  }
+
   createOne: IArtistRepository['createOne'] = async (payload) => {
     const artist = new this.artist(payload)
     return artist.save()

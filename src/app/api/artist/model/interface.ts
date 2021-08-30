@@ -5,7 +5,6 @@ import { CustomDocument, PopulatedDoc } from 'database/interface/document'
 import { MaybeNull } from 'shared/interface/utils/common'
 
 export interface IArtistDocument extends CustomDocument {
-  id: string
   name: string
   info: MaybeNull<string>
   published: boolean

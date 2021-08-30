@@ -1,2 +1,2 @@
 export * from './token'
-export * from './createSessionPayload'
+export * from './payload'

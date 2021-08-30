@@ -10,15 +10,7 @@ class AlbumService implements IAlbumService {
     this.albumRepository = AlbumRepository
   }
 
-  getAll: IAlbumService['getAll'] = async () => {
-    try {
-      return this.albumRepository.findAll()
-    } catch (error) {
-      throw error
-    }
-  }
-
-  getAllWhere: IAlbumService['getAllWhere'] = async (filter) => {
+  getAll: IAlbumService['getAll'] = async (filter) => {
     try {
       return this.albumRepository.findAllWhere(filter)
     } catch (error) {

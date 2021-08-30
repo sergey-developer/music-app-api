@@ -8,7 +8,6 @@ export interface IUserDocumentMethods {
 }
 
 export interface IUserDocument extends CustomDocument, IUserDocumentMethods {
-  id: string
   username: string
   email: string
   password: string

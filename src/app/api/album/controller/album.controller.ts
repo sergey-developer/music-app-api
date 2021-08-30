@@ -1,11 +1,10 @@
 import StatusCodes from 'http-status-codes'
-import _isEmpty from 'lodash/isEmpty'
 import _isUndefined from 'lodash/isUndefined'
 import _omitBy from 'lodash/omitBy'
 import _pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
-import { GetAllAlbumsFilterDto } from 'api/album/interface'
+import { GetAllAlbumsFilterDto } from 'api/album/dto'
 import { AlbumService, IAlbumService } from 'api/album/service'
 
 class AlbumController implements IAlbumController {
@@ -20,14 +19,8 @@ class AlbumController implements IAlbumController {
     const whiteListFilter = _pick(req.query, ['artist'])
     const filter: GetAllAlbumsFilterDto = _omitBy(whiteListFilter, _isUndefined)
 
-    let albums
-
     try {
-      if (_isEmpty(filter)) {
-        albums = await this.albumService.getAll()
-      } else {
-        albums = await this.albumService.getAllWhere(filter)
-      }
+      const albums = await this.albumService.getAll(filter)
 
       res.send({ data: albums })
     } catch (error) {
