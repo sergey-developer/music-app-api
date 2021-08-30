@@ -6,15 +6,15 @@ import {
   SignupUserDto,
   SignupUserResultDto,
 } from 'api/auth/dto'
-import { ResBody } from 'shared/interface/response'
+import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface IAuthController {
   signup: (
     req: Request<any, any, SignupUserDto>,
     res: Response<ResBody<SignupUserResultDto>>,
-  ) => Promise<void>
+  ) => ControllerResult
   signin: (
     req: Request<any, any, SigninUserDto>,
     res: Response<ResBody<SigninUserResultDto>>,
-  ) => Promise<void>
+  ) => ControllerResult
 }

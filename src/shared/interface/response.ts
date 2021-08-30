@@ -9,3 +9,5 @@ export type ErrorResBody<T> = T
 export type ResBody<SuccessBody, ErrorBody = any> =
   | SuccessResBody<SuccessBody>
   | ErrorResBody<ErrorBody>
+
+export type ControllerResult<R = void> = Promise<R>

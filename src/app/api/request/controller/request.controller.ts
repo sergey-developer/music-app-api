@@ -24,6 +24,18 @@ class RequestController implements IRequestController {
         .send({ message: error.message })
     }
   }
+
+  deleteOneById: IRequestController['deleteOneById'] = async (req, res) => {
+    const requestId = req.params.id
+
+    try {
+      await this.requestService.deleteOneById(requestId)
+    } catch (error) {
+      res
+        .status(StatusCodes.INTERNAL_SERVER_ERROR)
+        .send({ message: error.message })
+    }
+  }
 }
 
 export default new RequestController()

@@ -4,25 +4,34 @@ import { IAlbumRepository } from 'api/album/repository'
 class AlbumRepository implements IAlbumRepository {
   private readonly album: typeof AlbumModel
 
-  constructor() {
+  public constructor() {
     this.album = AlbumModel
   }
 
-  findAll: IAlbumRepository['findAll'] = async () => {
+  public findAll: IAlbumRepository['findAll'] = async () => {
     return this.album.find()
   }
 
-  findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
+  public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
     return this.album.find(filter)
   }
 
-  createOne: IAlbumRepository['createOne'] = async (payload) => {
+  public createOne: IAlbumRepository['createOne'] = async (payload) => {
     const album = new this.album(payload)
     return album.save()
   }
 
-  findOneById: IAlbumRepository['findOneById'] = async (id) => {
+  public findOneById: IAlbumRepository['findOneById'] = async (id) => {
     return this.album.findById(id).exec()
+  }
+
+  public deleteOneById: IAlbumRepository['deleteOneById'] = async (id) => {
+    try {
+      await this.album.findByIdAndDelete(id).orFail()
+    } catch (error) {
+      // TODO: throw custom not found if not found
+      throw error
+    }
   }
 }
 

@@ -11,4 +11,5 @@ export interface IAlbumRepository {
   findOneById: (
     id: DocumentId<IAlbumDocument>,
   ) => Promise<MaybeNull<IAlbumDocument>>
+  deleteOneById: (id: DocumentId<IAlbumDocument>) => Promise<void>
 }

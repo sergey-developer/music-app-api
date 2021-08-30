@@ -2,12 +2,18 @@ import { Request, Response } from 'express'
 
 import { GetAllRequestsFilterDto } from 'api/request/dto'
 import { RequestDocumentArray } from 'api/request/interface'
-import { ReqQuery } from 'shared/interface/request'
-import { ResBody } from 'shared/interface/response'
+import { IRequestDocument } from 'api/request/model'
+import { PickDocumentId } from 'database/interface/document'
+import { ReqParams, ReqQuery } from 'shared/interface/request'
+import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface IRequestController {
   getAll: (
     req: Request<{}, any, any, ReqQuery<GetAllRequestsFilterDto>>,
     res: Response<ResBody<RequestDocumentArray>>,
-  ) => Promise<void>
+  ) => ControllerResult
+  deleteOneById: (
+    req: Request<ReqParams<PickDocumentId<IRequestDocument>>>,
+    res: Response,
+  ) => ControllerResult
 }

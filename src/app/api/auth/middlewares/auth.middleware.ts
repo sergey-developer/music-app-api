@@ -1,11 +1,15 @@
-import { RequestHandler } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import StatusCodes from 'http-status-codes'
 
 import { SessionService } from 'api/session/service'
 import { verifyToken } from 'api/session/utils'
 import { envConfig } from 'configs/env'
 
-const auth: RequestHandler = async (req, res, next) => {
+const auth = async <Req extends Request, Res extends Response>(
+  req: Req,
+  res: Res,
+  next: NextFunction,
+) => {
   const token = req.signedCookies.token
 
   if (!token) {

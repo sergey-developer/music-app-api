@@ -62,6 +62,14 @@ class ArtistService implements IArtistService {
       )
     }
   }
+
+  public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
+    try {
+      await this.artistRepository.deleteOneById(id)
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 export default new ArtistService()

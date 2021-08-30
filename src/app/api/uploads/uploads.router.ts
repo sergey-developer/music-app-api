@@ -1,5 +1,6 @@
 import express from 'express'
 
+import auth from 'api/auth/middlewares/auth.middleware'
 import { ImageController } from 'api/image/controller'
 import { upload } from 'api/uploads/middlewares/upload'
 import { APIRouter } from 'app/routers/interface'
@@ -9,9 +10,13 @@ const router: APIRouter = (app) => {
   const router = express.Router()
   const routerPath = makeRouterPath('uploads')
 
-  router.post('/images', upload.single('image'), ImageController.createOne)
+  router.post(
+    '/images',
+    [auth, upload.single('image')],
+    ImageController.createOne,
+  )
 
-  router.delete('/images/:id', ImageController.deleteOneById)
+  router.delete('/images/:id', auth, ImageController.deleteOneById)
 
   app.use(routerPath, router)
 }

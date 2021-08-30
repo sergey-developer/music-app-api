@@ -10,7 +10,10 @@ import { MaybeNull } from 'shared/interface/utils/common'
 
 export interface IRequestDocument extends CustomDocument {
   entityName: RequestEntityNameEnum
-  entity: PopulatedDoc<IArtistDocument | IAlbumDocument | ITrackDocument>
+  entity:
+    | PopulatedDoc<IArtistDocument>
+    | PopulatedDoc<IAlbumDocument>
+    | PopulatedDoc<ITrackDocument>
   creator: PopulatedDoc<IUserDocument>
   reason?: MaybeNull<string>
   status?: RequestStatusEnum

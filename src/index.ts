@@ -8,8 +8,12 @@ const init = async () => {
 
 init()
 
-// TODO: Вынести все сущности в папку modules а в папке api оставить модули у которых есть роутер
-// TODO: Добавить валидацию для /:id и т.п.
+// TODO: доделать trackHistory
+// TODO: сделать удаление request, вместе с ним и artist, album, track
+// TODO: добавить добавление request для album, track
+
+// TODO: сделать обновление request
+// TODO: Добавить валидацию для query params (/:id)
 // TODO: Добавить валидацию query string. (как для dto)
 // TODO: Обработать везде ошибки
 // TODO: Исп-ть либу для валидации unique
@@ -17,11 +21,11 @@ init()
 // TODO: Создать модель Social (для ссылок на youtube и т.д.)
 // TODO: Разделить модели где есть published, создать Base"ModelName" и "ModelName" с полем published
 
+// TODO: Удалять request при удалении artist, album, track
 // TODO: Оборачивать успешный ответ в {data: ...} в мидлеваре
 // TODO: Обработать случай когда не отправляется файл для загрузки image
 // TODO: Добавить валидацию для mongo (если валидация случайно прошла мимо validateDto). Не сохранить нужное поле и выйдет нужная ошибка.
 // TODO: Добавить валидацию для файлов и проверить её
-// TODO: Добавить валидацию для query params
 
 // TODO: Сделать пагинацию
 // TODO: Отрефакторить configs

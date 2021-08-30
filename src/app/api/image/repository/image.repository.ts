@@ -19,7 +19,12 @@ class ImageRepository implements IImageRepository {
   }
 
   public deleteOneById: IImageRepository['deleteOneById'] = async (id) => {
-    await this.image.findByIdAndDelete({ id }).orFail()
+    try {
+      await this.image.findByIdAndDelete(id).orFail()
+    } catch (error) {
+      throw error
+      // TODO: throw custom not found if not found
+    }
   }
 }
 

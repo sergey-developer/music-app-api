@@ -1,5 +1,6 @@
 import express from 'express'
 
+import auth from 'api/auth/middlewares/auth.middleware'
 import { TrackController } from 'api/track/controller'
 import { CreateTrackDto } from 'api/track/dto'
 import { APIRouter } from 'app/routers/interface'
@@ -12,7 +13,11 @@ const router: APIRouter = (app) => {
 
   router.get('/', TrackController.getAll)
 
-  router.post('/', validateDto(CreateTrackDto), TrackController.createOne)
+  router.post(
+    '/',
+    [auth, validateDto(CreateTrackDto)],
+    TrackController.createOne,
+  )
 
   app.use(routerPath, router)
 }

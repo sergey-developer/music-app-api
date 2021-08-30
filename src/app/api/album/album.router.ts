@@ -2,6 +2,7 @@ import express from 'express'
 
 import { AlbumController } from 'api/album/controller'
 import { CreateAlbumDto } from 'api/album/dto'
+import auth from 'api/auth/middlewares/auth.middleware'
 import { APIRouter } from 'app/routers/interface'
 import { makeRouterPath } from 'app/routers/utils'
 import validateDto from 'shared/middlewares/validateDto.middleware'
@@ -12,7 +13,11 @@ const router: APIRouter = (app) => {
 
   router.get('/', AlbumController.getAll)
 
-  router.post('/', validateDto(CreateAlbumDto), AlbumController.createOne)
+  router.post(
+    '/',
+    [auth, validateDto(CreateAlbumDto)],
+    AlbumController.createOne,
+  )
 
   app.use(routerPath, router)
 }

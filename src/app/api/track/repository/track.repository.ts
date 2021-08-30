@@ -7,15 +7,15 @@ import { ITrackRepository } from 'api/track/repository'
 class TrackRepository implements ITrackRepository {
   private readonly track: typeof TrackModel
 
-  constructor() {
+  public constructor() {
     this.track = TrackModel
   }
 
-  findAll: ITrackRepository['findAll'] = async () => {
+  public findAll: ITrackRepository['findAll'] = async () => {
     return this.track.find()
   }
 
-  findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
+  public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
     const filterToApply: GetAllTracksFilter = {}
 
     if (_has(filter, 'album')) filterToApply.album = filter.album
@@ -27,9 +27,18 @@ class TrackRepository implements ITrackRepository {
     return this.track.find(filterToApply, null)
   }
 
-  createOne: ITrackRepository['createOne'] = async (payload) => {
+  public createOne: ITrackRepository['createOne'] = async (payload) => {
     const track = new this.track(payload)
     return track.save()
+  }
+
+  public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {
+    try {
+      await this.track.findByIdAndDelete(id).orFail()
+    } catch (error) {
+      // TODO: throw custom not found if not found
+      throw error
+    }
   }
 }
 
