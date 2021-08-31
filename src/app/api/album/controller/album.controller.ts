@@ -29,8 +29,16 @@ class AlbumController implements IAlbumController {
   }
 
   createOne: IAlbumController['createOne'] = async (req, res) => {
+    const user = req.user!
+
     try {
-      const album = await this.albumService.createOne(req.body)
+      const album = await this.albumService.createOne({
+        name: req.body.name,
+        image: req.body.image,
+        releaseDate: req.body.releaseDate,
+        artist: req.body.artist,
+        userId: user.userId,
+      })
 
       res.send({ data: { id: album.id } })
     } catch (error) {

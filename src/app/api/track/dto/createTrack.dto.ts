@@ -23,6 +23,7 @@ class CreateTrackDto {
   @Expose()
   @IsOptional()
   @IsUrl()
+  // TODO: validate url
   youtube?: string
 
   @Expose()

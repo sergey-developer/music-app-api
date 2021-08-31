@@ -9,11 +9,11 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public findAll: IAlbumRepository['findAll'] = async () => {
-    return this.album.find()
+    return this.album.find().exec()
   }
 
   public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
-    return this.album.find(filter)
+    return this.album.find(filter).exec()
   }
 
   public createOne: IAlbumRepository['createOne'] = async (payload) => {

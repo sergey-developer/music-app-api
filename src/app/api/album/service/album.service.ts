@@ -1,13 +1,17 @@
 import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
 import { IAlbumService } from 'api/album/service'
+import { RequestEntityNameEnum } from 'api/request/interface'
+import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
+  private readonly requestRepository: IRequestRepository
 
   constructor() {
     this.albumRepository = AlbumRepository
+    this.requestRepository = RequestRepository
   }
 
   getAll: IAlbumService['getAll'] = async (filter) => {
@@ -20,9 +24,22 @@ class AlbumService implements IAlbumService {
 
   createOne: IAlbumService['createOne'] = async (payload) => {
     try {
-      const album = await this.albumRepository.createOne(payload)
+      const album = await this.albumRepository.createOne({
+        name: payload.name,
+        image: payload.image,
+        releaseDate: payload.releaseDate,
+        artist: payload.artist,
+      })
+
+      await this.requestRepository.createOne({
+        entityName: RequestEntityNameEnum.Album,
+        entity: album.id,
+        creator: payload.userId,
+      })
+
       return album
     } catch (error) {
+      // TODO: при ошибки создания request удалять созданный альбом
       // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {
         throw new BadRequestResponse(error.name, error.message, {

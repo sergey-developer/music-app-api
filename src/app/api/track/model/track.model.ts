@@ -2,8 +2,9 @@ import { Schema, model } from 'mongoose'
 
 import { AlbumModel, IAlbumDocument } from 'api/album/model'
 import { IArtistDocument } from 'api/artist/model'
-import { GetAllTracksFilter, TrackDocumentArray } from 'api/track/interface'
+import { TrackDocumentArray } from 'api/track/interface'
 import { ITrackDocument, ITrackModel } from 'api/track/model'
+import { IGetAllTracksRepositoryFilter } from 'api/track/repository'
 import { DocumentId } from 'database/interface/document'
 
 const toJson = require('@meanie/mongoose-to-json')
@@ -34,11 +35,16 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
 
 TrackSchema.static(
   'findByArtistId',
-  async function (id: DocumentId<IArtistDocument>, filter: GetAllTracksFilter) {
-    const tracks: TrackDocumentArray = await this.find(filter, null).populate({
-      path: 'album',
-      populate: { path: 'artist' },
-    })
+  async function (
+    id: DocumentId<IArtistDocument>,
+    filter: IGetAllTracksRepositoryFilter,
+  ) {
+    const tracks: TrackDocumentArray = await this.find(filter)
+      .populate({
+        path: 'album',
+        populate: { path: 'artist' },
+      })
+      .exec()
 
     return tracks.filter((track) => {
       const album = track.album as IAlbumDocument

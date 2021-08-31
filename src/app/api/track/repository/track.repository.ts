@@ -1,8 +1,10 @@
 import _has from 'lodash/has'
 
-import { GetAllTracksFilter } from 'api/track/interface'
 import { TrackModel } from 'api/track/model'
-import { ITrackRepository } from 'api/track/repository'
+import {
+  IGetAllTracksRepositoryFilter,
+  ITrackRepository,
+} from 'api/track/repository'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: typeof TrackModel
@@ -12,11 +14,11 @@ class TrackRepository implements ITrackRepository {
   }
 
   public findAll: ITrackRepository['findAll'] = async () => {
-    return this.track.find()
+    return this.track.find().exec()
   }
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
-    const filterToApply: GetAllTracksFilter = {}
+    const filterToApply: IGetAllTracksRepositoryFilter = {}
 
     if (_has(filter, 'album')) filterToApply.album = filter.album
 
@@ -24,7 +26,7 @@ class TrackRepository implements ITrackRepository {
       return this.track.findByArtistId(filter.artist, filterToApply)
     }
 
-    return this.track.find(filterToApply, null)
+    return this.track.find(filterToApply).exec()
   }
 
   public createOne: ITrackRepository['createOne'] = async (payload) => {
