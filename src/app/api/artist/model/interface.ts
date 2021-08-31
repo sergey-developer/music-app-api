@@ -7,7 +7,6 @@ import { MaybeNull } from 'shared/interface/utils/common'
 export interface IArtistDocument extends CustomDocument {
   name: string
   info: MaybeNull<string>
-  published: boolean
   photo: MaybeNull<PopulatedDoc<IImageDocument>>
 }
 

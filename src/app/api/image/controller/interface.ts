@@ -3,7 +3,6 @@ import { Request, Response } from 'express'
 import { CreateImageResultDto } from 'api/image/dto'
 import { IImageDocument } from 'api/image/model'
 import { PickDocumentId } from 'database/interface/document'
-import { ReqParams } from 'shared/interface/request'
 import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface IImageController {
@@ -13,7 +12,7 @@ export interface IImageController {
   ) => ControllerResult
 
   deleteOneById: (
-    req: Request<ReqParams<PickDocumentId<IImageDocument>>>,
+    req: Request<PickDocumentId<IImageDocument>>,
     res: Response,
   ) => ControllerResult
 }

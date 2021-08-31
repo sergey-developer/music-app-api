@@ -13,7 +13,6 @@ import {
 export interface ITrackDocument extends CustomDocument {
   name: string
   duration: string
-  published: boolean
   album: PopulatedDoc<IAlbumDocument>
   youtube?: string
 }

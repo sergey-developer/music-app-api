@@ -8,20 +8,19 @@ const init = async () => {
 
 init()
 
-// TODO: доделать trackHistory
-// TODO: переименовать везде поле ...Repository в ...Repo чтобы было короче
+// TODO: Добавить валидацию для query params (/:id)
+// TODO: Добавить валидацию query string. (как для dto)
+//  : для album сделал
+
 // TODO: получать все альбомы и трэки так же как артистов
 // TODO: доделать удаление request, вместе с ним и artist, album, track. Вместо удаления помечать как удалённый.
 //  При удалении артиста помечаются его альбомы, трэки, история прослушивания, как удаленные.
 
 // TODO: сделать обновление request
-// TODO: Добавить валидацию для query params (/:id)
-// TODO: Добавить валидацию query string. (как для dto)
 // TODO: Обработать везде ошибки
 // TODO: Исп-ть либу для валидации unique
-// TODO: Создать модель PublishRequest
 // TODO: Создать модель Social (для ссылок на youtube и т.д.)
-// TODO: Разделить модели где есть published, создать Base"ModelName" и "ModelName" с полем published
+// TODO: переименовать везде поле ...Repository в ...Repo чтобы было короче
 
 // TODO: Удалять request при удалении artist, album, track
 // TODO: Оборачивать успешный ответ в {data: ...} в мидлеваре

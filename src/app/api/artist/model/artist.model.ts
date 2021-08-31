@@ -20,10 +20,6 @@ const ArtistSchema = new Schema<IArtistDocument, IArtistModel>({
     trim: true,
     // TODO: make capitalize, validation
   },
-  published: {
-    type: Boolean,
-    default: false,
-  },
   photo: {
     type: Schema.Types.ObjectId,
     ref: ImageModel.modelName,

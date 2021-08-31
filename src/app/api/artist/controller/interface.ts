@@ -5,12 +5,11 @@ import {
   CreateArtistResultDto,
   GetAllArtistsFilterDto,
 } from 'api/artist/dto'
-import { ReqQuery } from 'shared/interface/request'
 import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface IArtistController {
   getAll: (
-    req: Request<{}, any, any, ReqQuery<GetAllArtistsFilterDto>>,
+    req: Request<{}, any, any, GetAllArtistsFilterDto>,
     res: Response,
   ) => ControllerResult
 

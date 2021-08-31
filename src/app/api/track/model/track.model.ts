@@ -22,10 +22,6 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
     type: String,
     unique: true,
   },
-  published: {
-    type: Boolean,
-    default: false,
-  },
   album: {
     type: Schema.Types.ObjectId,
     ref: AlbumModel.modelName,

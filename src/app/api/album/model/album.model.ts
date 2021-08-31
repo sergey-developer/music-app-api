@@ -16,10 +16,6 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
     type: Date,
     required: true,
   },
-  published: {
-    type: Boolean,
-    default: false,
-  },
   image: {
     // TODO: add unique
     type: Schema.Types.ObjectId,

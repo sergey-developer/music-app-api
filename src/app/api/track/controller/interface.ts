@@ -6,12 +6,11 @@ import {
   GetAllTracksFilterDto,
 } from 'api/track/dto'
 import { TrackDocumentArray } from 'api/track/interface'
-import { ReqQuery } from 'shared/interface/request'
 import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface ITrackController {
   getAll: (
-    req: Request<{}, any, any, ReqQuery<GetAllTracksFilterDto>>,
+    req: Request<{}, any, any, GetAllTracksFilterDto>,
     res: Response<ResBody<TrackDocumentArray>>,
   ) => ControllerResult
 

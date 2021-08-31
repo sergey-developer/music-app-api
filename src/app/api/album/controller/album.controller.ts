@@ -1,23 +1,17 @@
 import StatusCodes from 'http-status-codes'
-import _isUndefined from 'lodash/isUndefined'
-import _omitBy from 'lodash/omitBy'
-import _pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
-import { GetAllAlbumsFilterDto } from 'api/album/dto'
 import { AlbumService, IAlbumService } from 'api/album/service'
 
 class AlbumController implements IAlbumController {
   private readonly albumService: IAlbumService
 
-  constructor() {
+  public constructor() {
     this.albumService = AlbumService
   }
 
-  getAll: IAlbumController['getAll'] = async (req, res) => {
-    // TODO: сделать валидацию фильтра
-    const whiteListFilter = _pick(req.query, ['artist'])
-    const filter: GetAllAlbumsFilterDto = _omitBy(whiteListFilter, _isUndefined)
+  public getAll: IAlbumController['getAll'] = async (req, res) => {
+    const filter = req.query
 
     try {
       const albums = await this.albumService.getAll(filter)
@@ -28,7 +22,7 @@ class AlbumController implements IAlbumController {
     }
   }
 
-  createOne: IAlbumController['createOne'] = async (req, res) => {
+  public createOne: IAlbumController['createOne'] = async (req, res) => {
     const user = req.user!
 
     try {
@@ -46,8 +40,8 @@ class AlbumController implements IAlbumController {
     }
   }
 
-  getOneById: IAlbumController['getOneById'] = async (req, res) => {
-    const albumId = req.params.id
+  public getOneById: IAlbumController['getOneById'] = async (req, res) => {
+    const albumId = req.params.id!
 
     try {
       const album = await this.albumService.getOneById(albumId)

@@ -8,7 +8,6 @@ import { MaybeNull } from 'shared/interface/utils/common'
 
 export interface IAlbumDocument extends CustomDocument {
   name: string
-  published: boolean
   releaseDate: DateType<Date>
   image: MaybeNull<PopulatedDoc<IImageDocument>>
   artist: PopulatedDoc<IArtistDocument>

@@ -22,20 +22,21 @@ const defaultOptions: TransformValidationOptions = {
   },
 }
 
-const validateDto =
+const dto =
   <D extends object>(
     dto: ClassType<D>,
+    target: 'body' | 'query' | 'params',
     options?: TransformValidationOptions,
   ): RequestHandler =>
   async (req, res, next) => {
     try {
       const validatedDto = await transformAndValidate<D>(
         dto,
-        req.body,
+        req[target],
         _merge(defaultOptions, options),
       )
 
-      _set(req, 'body', validatedDto)
+      _set(req, target, validatedDto)
       next()
     } catch (errors) {
       const errorResponse = new BadRequestResponse(
@@ -56,4 +57,4 @@ const validateDto =
     }
   }
 
-export default validateDto
+export default dto
