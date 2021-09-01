@@ -1,14 +1,17 @@
-import { CreateTrackDto } from 'api/track/dto'
+import { CreateTrackDto, GetAllTracksQuery } from 'api/track/dto'
+import { TrackDocumentArray } from 'api/track/interface'
 import { ITrackDocument } from 'api/track/model'
-import { ITrackRepository } from 'api/track/repository'
 import { IUserDocument } from 'api/user/model'
 import { DocumentId } from 'database/interface/document'
+
+export interface IGetAllTracksServiceFilter extends GetAllTracksQuery {}
 
 export interface ICreateTrackServicePayload extends CreateTrackDto {
   userId: DocumentId<IUserDocument>
 }
 
 export interface ITrackService {
-  getAll: ITrackRepository['findAllWhere']
+  getAll: (filter: IGetAllTracksServiceFilter) => Promise<TrackDocumentArray>
+
   createOne: (payload: ICreateTrackServicePayload) => Promise<ITrackDocument>
 }

@@ -13,7 +13,6 @@ class ArtistController implements IArtistController {
 
   public getAll: IArtistController['getAll'] = async (req, res) => {
     const user = req.user
-    // TODO: валидировать фильтр
     const filter = req.query
 
     try {

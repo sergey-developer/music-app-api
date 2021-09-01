@@ -11,7 +11,6 @@ class RequestController implements IRequestController {
   }
 
   getAll: IRequestController['getAll'] = async (req, res) => {
-    // TODO: валидировать фильтр
     const filter = req.query
 
     try {

@@ -5,7 +5,7 @@ import { TrackHistoryController } from 'api/trackHistory/controller'
 import { CreateTrackHistoryDto } from 'api/trackHistory/dto'
 import { APIRouter } from 'app/routers/interface'
 import { makeRouterPath } from 'app/routers/utils'
-import validateDto from 'shared/middlewares/validateDto.middleware'
+import { body } from 'shared/middlewares/validation'
 
 const router: APIRouter = (app) => {
   const router = express.Router()
@@ -15,7 +15,7 @@ const router: APIRouter = (app) => {
 
   router.post(
     '/',
-    [auth, validateDto(CreateTrackHistoryDto)],
+    [auth, body(CreateTrackHistoryDto)],
     TrackHistoryController.createOne,
   )
 

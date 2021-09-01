@@ -8,9 +8,10 @@ const init = async () => {
 
 init()
 
-// TODO: Добавить валидацию для query params (/:id)
-// TODO: Добавить валидацию query string. (как для dto)
-//  : для album сделал
+// TODO: Типы для фильтров, payload отрефакторить
+// TODO: переделать такие типы "ArtistDocumentArray" на интерфейсы
+// TODO: Добавить валидацию для query params (/:id) также в service, repository
+// TODO: Добавить валидацию query string. (как для dto) также в service, repository
 
 // TODO: получать все альбомы и трэки так же как артистов
 // TODO: доделать удаление request, вместе с ним и artist, album, track. Вместо удаления помечать как удалённый.

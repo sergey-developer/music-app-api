@@ -1,10 +1,6 @@
 import StatusCodes from 'http-status-codes'
-import _isNil from 'lodash/isNil'
-import _omitBy from 'lodash/omitBy'
-import _pick from 'lodash/pick'
 
-import { ITrackController } from 'api/track/controller/interface'
-import { GetAllTracksFilterDto } from 'api/track/dto'
+import { ITrackController } from 'api/track/controller'
 import { ITrackService, TrackService } from 'api/track/service'
 
 class TrackController implements ITrackController {
@@ -15,9 +11,7 @@ class TrackController implements ITrackController {
   }
 
   getAll: ITrackController['getAll'] = async (req, res) => {
-    // TODO: сделать валидацию фильтра
-    const whiteListFilter = _pick(req.query, ['artist', 'album'])
-    const filter: GetAllTracksFilterDto = _omitBy(whiteListFilter, _isNil)
+    const filter = req.query
 
     try {
       const tracks = await this.trackService.getAll(filter)

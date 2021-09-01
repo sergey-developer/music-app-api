@@ -1,6 +1,6 @@
-import { GetAllRequestsFilterDto } from 'api/request/dto'
 import { RequestDocumentArray } from 'api/request/interface'
 import { IRequestDocument } from 'api/request/model'
+import { IGetAllRequestsServiceFilter } from 'api/request/service'
 import { DocumentId } from 'database/interface/document'
 import { MaybeNull } from 'shared/interface/utils/common'
 
@@ -10,9 +10,12 @@ export interface ICreateRequestRepositoryPayload
     'status' | 'reason' | 'entityName' | 'entity' | 'creator'
   > {}
 
+export interface IFindAllRequestsRepositoryFilter
+  extends IGetAllRequestsServiceFilter {}
+
 export interface IRequestRepository {
   findAllWhere: (
-    filter: GetAllRequestsFilterDto,
+    filter: IFindAllRequestsRepositoryFilter,
   ) => Promise<RequestDocumentArray>
 
   createOne: (

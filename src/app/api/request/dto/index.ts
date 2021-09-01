@@ -1,1 +1,1 @@
-export * from './filter.dto'
+export * from './query.dto'

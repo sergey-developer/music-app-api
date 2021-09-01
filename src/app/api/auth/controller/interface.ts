@@ -13,6 +13,7 @@ export interface IAuthController {
     req: Request<any, any, SignupUserDto>,
     res: Response<ResBody<SignupUserResultDto>>,
   ) => ControllerResult
+
   signin: (
     req: Request<any, any, SigninUserDto>,
     res: Response<ResBody<SigninUserResultDto>>,

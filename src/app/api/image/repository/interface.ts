@@ -4,5 +4,6 @@ import { DocumentId } from 'database/interface/document'
 
 export interface IImageRepository {
   createOne: (payload: IMulterFile) => Promise<IImageDocument>
+
   deleteOneById: (id: DocumentId<IImageDocument>) => Promise<void>
 }

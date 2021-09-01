@@ -34,7 +34,7 @@ class TrackHistoryController implements ITrackHistoryController {
       await this.trackHistoryService.createOne({
         user: user.userId,
         track: req.body.track,
-        listenDate: req.body.listenDate,
+        listenDate: new Date(),
       })
 
       res.sendStatus(StatusCodes.OK)
