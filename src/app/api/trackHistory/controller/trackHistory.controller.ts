@@ -18,7 +18,7 @@ class TrackHistoryController implements ITrackHistoryController {
 
     try {
       const trackHistory = await this.trackHistoryService.getAll({
-        userId: user.userId,
+        user: user.userId,
       })
 
       res.status(StatusCodes.OK).send({ data: trackHistory })

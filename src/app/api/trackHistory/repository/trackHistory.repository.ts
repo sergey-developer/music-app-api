@@ -11,7 +11,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
   public findAllWhere: ITrackHistoryRepository['findAllWhere'] = async (
     filter,
   ) => {
-    return this.trackHistory.find({ user: filter.userId }).exec()
+    return this.trackHistory.find(filter).exec()
   }
 
   public createOne: ITrackHistoryRepository['createOne'] = async (payload) => {

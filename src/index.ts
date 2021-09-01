@@ -8,6 +8,8 @@ const init = async () => {
 
 init()
 
+// остановился на
+
 // TODO: Типы для фильтров, payload отрефакторить
 // TODO: переделать такие типы "ArtistDocumentArray" на интерфейсы
 // TODO: Добавить валидацию для query params (/:id) также в service, repository
