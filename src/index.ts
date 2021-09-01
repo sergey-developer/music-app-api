@@ -8,9 +8,8 @@ const init = async () => {
 
 init()
 
-// остановился на
-
-// TODO: Типы для фильтров, payload отрефакторить
+// TODO: описать тип для ValidationError ответа {message, kind, errors}
+// TODO: не исп-ть IdParam
 // TODO: переделать такие типы "ArtistDocumentArray" на интерфейсы
 // TODO: Добавить валидацию для query params (/:id) также в service, repository
 // TODO: Добавить валидацию query string. (как для dto) также в service, repository
@@ -45,4 +44,4 @@ init()
 // TODO: Написать тесты
 // TODO: Настроить production режим
 // TODO: Настроить логирование ошибок и т.п. (в файл?)
-// TODO: Swagger подключить
+// TODO: Swagger подключить и генерирование типов для него

@@ -4,11 +4,11 @@ import {
   CreateAlbumDto,
   CreateAlbumResultDto,
   GetAllAlbumsQuery,
+  GetOneAlbumByIdParams,
 } from 'api/album/dto'
 import { AlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
 import { ControllerResult, ResBody } from 'shared/interface/response'
-import { IdParam } from 'shared/utils/validation'
 
 export interface IAlbumController {
   getAll: (
@@ -22,7 +22,7 @@ export interface IAlbumController {
   ) => ControllerResult
 
   getOneById: (
-    req: Request<Pick<IdParam, 'id'>>,
+    req: Request<Pick<GetOneAlbumByIdParams, 'id'>>,
     res: Response<ResBody<IAlbumDocument>>,
   ) => ControllerResult
 }

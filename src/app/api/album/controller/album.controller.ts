@@ -1,3 +1,4 @@
+import createError from 'http-errors'
 import StatusCodes from 'http-status-codes'
 
 import { IAlbumController } from 'api/album/controller'
@@ -41,18 +42,26 @@ class AlbumController implements IAlbumController {
   }
 
   public getOneById: IAlbumController['getOneById'] = async (req, res) => {
-    const albumId = req.params.id!
+    const albumId = req.params.id
 
     try {
       const album = await this.albumService.getOneById(albumId)
 
       if (!album) {
-        throw new Error(`Album with id ${albumId} was not found`)
+        throw new createError.NotFound(
+          `Album with id "${albumId}" was not found`,
+        )
       }
 
       res.status(StatusCodes.OK).send({ data: album })
     } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
+      if (error instanceof createError.NotFound) {
+        res.status(error.status).send(error)
+        return
+      }
+
+      const serverError = createError()
+      res.status(serverError.status).send(serverError)
     }
   }
 }

@@ -1,9 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
-import StatusCodes from 'http-status-codes'
+import createError from 'http-errors'
 
 import { SessionService } from 'api/session/service'
 import { verifyToken } from 'api/session/utils'
 import { envConfig } from 'configs/env'
+
+const unauthorizedError = new createError.Unauthorized()
 
 const auth = async <Req extends Request, Res extends Response>(
   req: Req,
@@ -12,31 +14,29 @@ const auth = async <Req extends Request, Res extends Response>(
 ) => {
   const token = req.signedCookies.token
 
-  if (!token) {
-    // TODO: handle error
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .send({ message: StatusCodes.getStatusText(StatusCodes.UNAUTHORIZED) })
-  }
-
   try {
+    if (!token) {
+      throw unauthorizedError
+    }
+
     const payload = verifyToken(token, envConfig.app.tokenSecret)
     const session = await SessionService.getOneByToken(token)
 
     if (!session) {
-      // TODO: handle error
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .send({ message: StatusCodes.getStatusText(StatusCodes.UNAUTHORIZED) })
+      throw unauthorizedError
     }
 
     req.user = payload
     next()
   } catch (error) {
-    // TODO: handle error: invalid token, no session
-    return res
-      .status(StatusCodes.UNAUTHORIZED)
-      .send({ message: StatusCodes.getStatusText(StatusCodes.UNAUTHORIZED) })
+    if (error instanceof createError.Unauthorized) {
+      res.status(error.status).send(error)
+    }
+
+    // TODO: handle error: invalid token
+
+    const serverError = createError()
+    res.status(serverError.status).send(serverError)
   }
 }
 

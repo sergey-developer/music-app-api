@@ -13,7 +13,6 @@ class ArtistRepository implements IArtistRepository {
   }
 
   public findAllWhere: IArtistRepository['findAllWhere'] = async (filter) => {
-    // TODO: validate filter
     return this.artist.find({ _id: { $in: filter.ids } }).exec()
   }
 

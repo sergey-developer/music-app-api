@@ -4,11 +4,12 @@ import {
   transformAndValidate,
 } from 'class-transformer-validator'
 import { RequestHandler } from 'express'
+import createError from 'http-errors'
+import StatusCodes from 'http-status-codes'
 import _merge from 'lodash/merge'
 import _set from 'lodash/set'
 
 import ErrorKindsEnum from 'shared/constants/errorKinds'
-import { BadRequestResponse } from 'shared/utils/response'
 import { getDtoValidationErrors } from 'shared/utils/validation'
 
 const defaultOptions: TransformValidationOptions = {
@@ -39,21 +40,12 @@ const dto =
       _set(req, target, validatedDto)
       next()
     } catch (errors) {
-      const errorResponse = new BadRequestResponse(
-        ErrorKindsEnum.ValidationError,
-        'Payload validation failed',
-        {
-          errors: getDtoValidationErrors(errors),
-        },
-      )
+      const error = createError(StatusCodes.BAD_REQUEST, 'Validation failed', {
+        kind: ErrorKindsEnum.ValidationError,
+        errors: getDtoValidationErrors(errors),
+      })
 
-      res.status(errorResponse.statusCode).send(errorResponse)
-
-      // TODO: отправлять ответ с ошибками в другом мидлваре,
-      //  в этом только передавать объект ошибки в следующий мидлвар
-      // next(
-      //   new ValidationError('Payload validation failed', getDtoValidationErrors(errors))
-      // )
+      res.status(error.status).send(error)
     }
   }
 
