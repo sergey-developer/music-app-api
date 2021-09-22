@@ -1,3 +1,3 @@
 import { ITrackDocument } from 'api/track/model'
 
-export type TrackDocumentArray = ITrackDocument[]
+export interface ITrackDocumentArray extends Array<ITrackDocument> {}

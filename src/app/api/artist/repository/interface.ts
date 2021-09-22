@@ -1,5 +1,5 @@
 import { CreateArtistDto } from 'api/artist/dto'
-import { ArtistDocumentArray } from 'api/artist/interface'
+import { IArtistDocumentArray } from 'api/artist/interface'
 import { IArtistDocument } from 'api/artist/model'
 import { DocumentId } from 'database/interface/document'
 
@@ -11,11 +11,11 @@ export interface IFindAllArtistsRepositoryFilter
 export interface ICreateArtistRepositoryPayload extends CreateArtistDto {}
 
 export interface IArtistRepository {
-  findAll: () => Promise<ArtistDocumentArray>
+  findAll: () => Promise<IArtistDocumentArray>
 
   findAllWhere: (
     filter: IFindAllArtistsRepositoryFilter,
-  ) => Promise<ArtistDocumentArray>
+  ) => Promise<IArtistDocumentArray>
 
   createOne: (
     payload: ICreateArtistRepositoryPayload,

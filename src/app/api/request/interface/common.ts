@@ -1,6 +1,6 @@
 import { IRequestDocument } from 'api/request/model'
 
-export type RequestDocumentArray = IRequestDocument[]
+export interface IRequestDocumentArray extends Array<IRequestDocument> {}
 
 export enum RequestStatusEnum {
   Pending = 'Pending',

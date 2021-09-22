@@ -1,8 +1,8 @@
 import { appConfig } from 'configs/app'
 
 // TODO: валидировать subPath
-const makeRouterPath = (subPath: string): string => {
+const makeRoutePath = (subPath: string): string => {
   return `${appConfig.basePath}/${subPath}`
 }
 
-export default makeRouterPath
+export default makeRoutePath

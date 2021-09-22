@@ -6,14 +6,14 @@ import {
   GetAllAlbumsQuery,
   GetOneAlbumByIdParams,
 } from 'api/album/dto'
-import { AlbumDocumentArray } from 'api/album/interface'
+import { IAlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
 import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface IAlbumController {
   getAll: (
     req: Request<{}, any, any, GetAllAlbumsQuery>,
-    res: Response<ResBody<AlbumDocumentArray>>,
+    res: Response<ResBody<IAlbumDocumentArray>>,
   ) => ControllerResult
 
   createOne: (

@@ -5,13 +5,13 @@ import {
   CreateTrackResultDto,
   GetAllTracksQuery,
 } from 'api/track/dto'
-import { TrackDocumentArray } from 'api/track/interface'
+import { ITrackDocumentArray } from 'api/track/interface'
 import { ControllerResult, ResBody } from 'shared/interface/response'
 
 export interface ITrackController {
   getAll: (
     req: Request<{}, any, any, GetAllTracksQuery>,
-    res: Response<ResBody<TrackDocumentArray>>,
+    res: Response<ResBody<ITrackDocumentArray>>,
   ) => ControllerResult
 
   createOne: (

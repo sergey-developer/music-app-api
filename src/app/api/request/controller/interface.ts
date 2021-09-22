@@ -1,18 +1,20 @@
 import { Request, Response } from 'express'
 
-import { GetAllRequestsQuery } from 'api/request/dto'
-import { RequestDocumentArray } from 'api/request/interface'
+import {
+  DeleteOneRequestByIdParams,
+  GetAllRequestsQuery,
+} from 'api/request/dto'
+import { IRequestDocumentArray } from 'api/request/interface'
 import { ControllerResult, ResBody } from 'shared/interface/response'
-import { IdParam } from 'shared/utils/validation'
 
 export interface IRequestController {
   getAll: (
     req: Request<{}, any, any, GetAllRequestsQuery>,
-    res: Response<ResBody<RequestDocumentArray>>,
+    res: Response<ResBody<IRequestDocumentArray>>,
   ) => ControllerResult
 
   deleteOneById: (
-    req: Request<Pick<IdParam, 'id'>>,
+    req: Request<Pick<DeleteOneRequestByIdParams, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

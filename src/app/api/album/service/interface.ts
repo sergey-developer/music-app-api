@@ -1,5 +1,5 @@
 import { CreateAlbumDto, GetAllAlbumsQuery } from 'api/album/dto'
-import { AlbumDocumentArray } from 'api/album/interface'
+import { IAlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
 import { IUserDocument } from 'api/user/model'
@@ -12,7 +12,7 @@ export interface ICreateAlbumServicePayload extends CreateAlbumDto {
 }
 
 export interface IAlbumService {
-  getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<AlbumDocumentArray>
+  getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<IAlbumDocumentArray>
 
   createOne: (payload: ICreateAlbumServicePayload) => Promise<IAlbumDocument>
 

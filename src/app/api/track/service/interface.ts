@@ -1,5 +1,5 @@
 import { CreateTrackDto, GetAllTracksQuery } from 'api/track/dto'
-import { TrackDocumentArray } from 'api/track/interface'
+import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackDocument } from 'api/track/model'
 import { IUserDocument } from 'api/user/model'
 import { DocumentId } from 'database/interface/document'
@@ -11,7 +11,7 @@ export interface ICreateTrackServicePayload extends CreateTrackDto {
 }
 
 export interface ITrackService {
-  getAll: (filter: IGetAllTracksServiceFilter) => Promise<TrackDocumentArray>
+  getAll: (filter: IGetAllTracksServiceFilter) => Promise<ITrackDocumentArray>
 
   createOne: (payload: ICreateTrackServicePayload) => Promise<ITrackDocument>
 }

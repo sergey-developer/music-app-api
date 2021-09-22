@@ -1,5 +1,5 @@
 import { CreateAlbumDto } from 'api/album/dto'
-import { AlbumDocumentArray } from 'api/album/interface'
+import { IAlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
 import { IGetAllAlbumsServiceFilter } from 'api/album/service'
 import { DocumentId } from 'database/interface/document'
@@ -11,11 +11,11 @@ export interface IFindAllAlbumsRepositoryFilter
 export interface ICreateAlbumRepositoryPayload extends CreateAlbumDto {}
 
 export interface IAlbumRepository {
-  findAll: () => Promise<AlbumDocumentArray>
+  findAll: () => Promise<IAlbumDocumentArray>
 
   findAllWhere: (
     filter: IFindAllAlbumsRepositoryFilter,
-  ) => Promise<AlbumDocumentArray>
+  ) => Promise<IAlbumDocumentArray>
 
   createOne: (payload: ICreateAlbumRepositoryPayload) => Promise<IAlbumDocument>
 

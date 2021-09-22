@@ -1,5 +1,5 @@
 import { CreateArtistDto, GetAllArtistsQuery } from 'api/artist/dto'
-import { ArtistDocumentArray } from 'api/artist/interface'
+import { IArtistDocumentArray } from 'api/artist/interface'
 import { IArtistDocument } from 'api/artist/model'
 import { IArtistRepository } from 'api/artist/repository'
 import { IUserDocument } from 'api/user/model'
@@ -12,7 +12,7 @@ export interface ICreateArtistServicePayload extends CreateArtistDto {
 }
 
 export interface IArtistService {
-  getAll: (filter: IGetAllArtistsServiceFilter) => Promise<ArtistDocumentArray>
+  getAll: (filter: IGetAllArtistsServiceFilter) => Promise<IArtistDocumentArray>
 
   createOne: (payload: ICreateArtistServicePayload) => Promise<IArtistDocument>
 

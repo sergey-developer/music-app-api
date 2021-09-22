@@ -1,4 +1,4 @@
-import { RequestDocumentArray } from 'api/request/interface'
+import { IRequestDocumentArray } from 'api/request/interface'
 import { IRequestDocument } from 'api/request/model'
 import { IGetAllRequestsServiceFilter } from 'api/request/service'
 import { DocumentId } from 'database/interface/document'
@@ -16,7 +16,7 @@ export interface IFindAllRequestsRepositoryFilter
 export interface IRequestRepository {
   findAllWhere: (
     filter: IFindAllRequestsRepositoryFilter,
-  ) => Promise<RequestDocumentArray>
+  ) => Promise<IRequestDocumentArray>
 
   createOne: (
     payload: ICreateRequestRepositoryPayload,

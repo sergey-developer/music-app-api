@@ -9,8 +9,6 @@ const init = async () => {
 init()
 
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
-// TODO: не исп-ть IdParam
-// TODO: переделать такие типы "ArtistDocumentArray" на интерфейсы
 // TODO: Добавить валидацию для query params (/:id) также в service, repository
 // TODO: Добавить валидацию query string. (как для dto) также в service, repository
 

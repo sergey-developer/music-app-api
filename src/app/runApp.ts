@@ -1,6 +1,6 @@
 import express, { Application } from 'express'
 
-import { createRouters } from 'app/routers'
+import { createRoutes } from 'app/routes'
 import { envConfig } from 'configs/env'
 
 import setupApp from './setupApp'
@@ -12,7 +12,7 @@ const runApp = () => {
   app.listen(envConfig.app.port, () => {
     console.log(`Server started on ${envConfig.app.port} port`)
 
-    createRouters(app)
+    createRoutes(app)
   })
 }
 

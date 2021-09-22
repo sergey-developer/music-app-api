@@ -2,7 +2,7 @@ import { Schema, model } from 'mongoose'
 
 import { AlbumModel, IAlbumDocument } from 'api/album/model'
 import { IArtistDocument } from 'api/artist/model'
-import { TrackDocumentArray } from 'api/track/interface'
+import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackDocument, ITrackModel } from 'api/track/model'
 import { IGetAllTracksRepositoryFilter } from 'api/track/repository'
 import { DocumentId } from 'database/interface/document'
@@ -35,7 +35,7 @@ TrackSchema.static(
     id: DocumentId<IArtistDocument>,
     filter: IGetAllTracksRepositoryFilter,
   ) {
-    const tracks: TrackDocumentArray = await this.find(filter)
+    const tracks: ITrackDocumentArray = await this.find(filter)
       .populate({
         path: 'album',
         populate: { path: 'artist' },

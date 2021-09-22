@@ -1,8 +1,7 @@
 import { Request, Response } from 'express'
 
-import { CreateImageResultDto } from 'api/image/dto'
+import { CreateImageResultDto, DeleteOneImageByIdParams } from 'api/image/dto'
 import { ControllerResult, ResBody } from 'shared/interface/response'
-import { IdParam } from 'shared/utils/validation'
 
 export interface IImageController {
   createOne: (
@@ -11,7 +10,7 @@ export interface IImageController {
   ) => ControllerResult
 
   deleteOneById: (
-    req: Request<Pick<IdParam, 'id'>>,
+    req: Request<Pick<DeleteOneImageByIdParams, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

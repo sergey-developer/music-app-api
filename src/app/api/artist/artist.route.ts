@@ -3,19 +3,19 @@ import express from 'express'
 import { ArtistController } from 'api/artist/controller'
 import { CreateArtistDto, GetAllArtistsQuery } from 'api/artist/dto'
 import auth from 'api/auth/middlewares/auth.middleware'
-import { APIRouter } from 'app/routers/interface'
-import { makeRouterPath } from 'app/routers/utils'
+import { APIRoute } from 'app/routes/interface'
+import { makeRoutePath } from 'app/routes/utils'
 import { body, query } from 'shared/middlewares/validation'
 
-const router: APIRouter = (app) => {
+const route: APIRoute = (app) => {
   const router = express.Router()
-  const routerPath = makeRouterPath('artists')
+  const routePath = makeRoutePath('artists')
 
   router.get('/', query(GetAllArtistsQuery), ArtistController.getAll)
 
   router.post('/', [auth, body(CreateArtistDto)], ArtistController.createOne)
 
-  app.use(routerPath, router)
+  app.use(routePath, router)
 }
 
-export default router
+export default route

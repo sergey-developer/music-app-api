@@ -29,6 +29,8 @@ class RequestController implements IRequestController {
 
     try {
       await this.requestService.deleteOneById(requestId)
+
+      res.sendStatus(StatusCodes.OK)
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

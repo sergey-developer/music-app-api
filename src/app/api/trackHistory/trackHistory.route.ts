@@ -3,13 +3,13 @@ import express from 'express'
 import auth from 'api/auth/middlewares/auth.middleware'
 import { TrackHistoryController } from 'api/trackHistory/controller'
 import { CreateTrackHistoryDto } from 'api/trackHistory/dto'
-import { APIRouter } from 'app/routers/interface'
-import { makeRouterPath } from 'app/routers/utils'
+import { APIRoute } from 'app/routes/interface'
+import { makeRoutePath } from 'app/routes/utils'
 import { body } from 'shared/middlewares/validation'
 
-const router: APIRouter = (app) => {
+const route: APIRoute = (app) => {
   const router = express.Router()
-  const routerPath = makeRouterPath('trackHistory')
+  const routePath = makeRoutePath('trackHistory')
 
   router.get('/', auth, TrackHistoryController.getAll)
 
@@ -19,7 +19,7 @@ const router: APIRouter = (app) => {
     TrackHistoryController.createOne,
   )
 
-  app.use(routerPath, router)
+  app.use(routePath, router)
 }
 
-export default router
+export default route

@@ -4,13 +4,13 @@ import { AlbumController } from 'api/album/controller'
 import { CreateAlbumDto, GetAllAlbumsQuery } from 'api/album/dto'
 import { GetOneAlbumByIdParams } from 'api/album/dto/params.dto'
 import auth from 'api/auth/middlewares/auth.middleware'
-import { APIRouter } from 'app/routers/interface'
-import { makeRouterPath } from 'app/routers/utils'
+import { APIRoute } from 'app/routes/interface'
+import { makeRoutePath } from 'app/routes/utils'
 import { body, params, query } from 'shared/middlewares/validation'
 
-const router: APIRouter = (app) => {
+const route: APIRoute = (app) => {
   const router = express.Router()
-  const routerPath = makeRouterPath('albums')
+  const routePath = makeRoutePath('albums')
 
   router.get('/', query(GetAllAlbumsQuery), AlbumController.getAll)
 
@@ -22,7 +22,7 @@ const router: APIRouter = (app) => {
 
   router.post('/', [auth, body(CreateAlbumDto)], AlbumController.createOne)
 
-  app.use(routerPath, router)
+  app.use(routePath, router)
 }
 
-export default router
+export default route
