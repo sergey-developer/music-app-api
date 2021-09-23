@@ -13,9 +13,6 @@ import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { getDtoValidationErrors } from 'shared/utils/validation'
 
 const defaultOptions: TransformValidationOptions = {
-  transformer: {
-    excludeExtraneousValues: true,
-  },
   validator: {
     forbidUnknownValues: true,
     whitelist: true,

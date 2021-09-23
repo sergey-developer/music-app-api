@@ -1,4 +1,5 @@
 import StatusCodes from 'http-status-codes'
+import _pick from 'lodash/pick'
 
 import { ITrackController } from 'api/track/controller'
 import { ITrackService, TrackService } from 'api/track/service'
@@ -16,7 +17,7 @@ class TrackController implements ITrackController {
     try {
       const tracks = await this.trackService.getAll(filter)
 
-      res.send({ data: tracks })
+      res.status(StatusCodes.OK).send(tracks)
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
@@ -34,7 +35,9 @@ class TrackController implements ITrackController {
         userId: user.userId,
       })
 
-      res.send({ data: { id: track.id } })
+      const response = _pick(track, 'id')
+
+      res.status(StatusCodes.OK).send(response)
     } catch (error) {
       res.status(error.statusCode).send(error)
     }

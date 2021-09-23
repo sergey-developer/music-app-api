@@ -16,7 +16,7 @@ class RequestController implements IRequestController {
     try {
       const requests = await this.requestService.getAll(filter)
 
-      res.send({ data: requests })
+      res.status(StatusCodes.OK).send(requests)
     } catch (error) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)

@@ -1,16 +1,15 @@
-import { Expose } from 'class-transformer'
 import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 
 import { RequestStatusEnum } from 'api/request/interface'
 
 export class GetAllArtistsQuery {
-  @Expose()
   @IsOptional()
   @IsEnum(RequestStatusEnum)
   status?: RequestStatusEnum
 
-  @Expose()
   @IsOptional()
-  @IsMongoId()
+  @IsMongoId({
+    message: 'Not correct query value of "$property" was provided: "$value"',
+  })
   userId?: string
 }

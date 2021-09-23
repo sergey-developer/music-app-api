@@ -1,4 +1,5 @@
 import StatusCodes from 'http-status-codes'
+import _pick from 'lodash/pick'
 
 import { IImageController } from 'api/image/controller'
 import { IImageService, ImageService } from 'api/image/service'
@@ -16,14 +17,15 @@ class ImageController implements IImageController {
     try {
       if (file) {
         const image = await this.imageService.createOne(file)
+        const response = _pick(image, 'id', 'src')
 
-        res.send({ data: { id: image.id, src: image.src } })
+        res.status(StatusCodes.OK).send(response)
         return
       }
 
       throw new Error('handle error') // TODO: handle error
     } catch (error) {
-      res.status(500).send(error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
   }
 
@@ -31,12 +33,14 @@ class ImageController implements IImageController {
     req,
     res,
   ) => {
+    const imageId = req.params.id
+
     try {
-      await this.imageService.deleteOneById(req.params.id)
+      await this.imageService.deleteOneById(imageId)
 
       res.sendStatus(StatusCodes.OK)
     } catch (error) {
-      res.status(500).send(error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
   }
 }

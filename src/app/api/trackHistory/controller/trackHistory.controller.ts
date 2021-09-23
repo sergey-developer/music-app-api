@@ -21,7 +21,7 @@ class TrackHistoryController implements ITrackHistoryController {
         user: user.userId,
       })
 
-      res.status(StatusCodes.OK).send({ data: trackHistory })
+      res.status(StatusCodes.OK).send(trackHistory)
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }

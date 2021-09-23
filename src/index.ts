@@ -8,9 +8,9 @@ const init = async () => {
 
 init()
 
+// TODO: в dto вынести сообщения в константы и переиспользовать
+// TODO: удалить неиспользуемые методы в классах (findAll)
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
-// TODO: Добавить валидацию для query params (/:id) также в service, repository
-// TODO: Добавить валидацию query string. (как для dto) также в service, repository
 
 // TODO: получать все альбомы и трэки так же как артистов
 // TODO: доделать удаление request, вместе с ним и artist, album, track. Вместо удаления помечать как удалённый.

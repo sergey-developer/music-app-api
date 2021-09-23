@@ -1,5 +1,6 @@
 import createError from 'http-errors'
 import StatusCodes from 'http-status-codes'
+import _pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
 import { AlbumService, IAlbumService } from 'api/album/service'
@@ -17,7 +18,7 @@ class AlbumController implements IAlbumController {
     try {
       const albums = await this.albumService.getAll(filter)
 
-      res.send({ data: albums })
+      res.status(StatusCodes.OK).send(albums)
     } catch (error) {
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
@@ -35,7 +36,9 @@ class AlbumController implements IAlbumController {
         userId: user.userId,
       })
 
-      res.send({ data: { id: album.id } })
+      const response = _pick(album, 'id')
+
+      res.status(StatusCodes.OK).send(response)
     } catch (error) {
       res.status(error.statusCode).send(error)
     }
@@ -53,7 +56,7 @@ class AlbumController implements IAlbumController {
         )
       }
 
-      res.status(StatusCodes.OK).send({ data: album })
+      res.status(StatusCodes.OK).send(album)
     } catch (error) {
       if (error instanceof createError.NotFound) {
         res.status(error.status).send(error)

@@ -1,3 +1,7 @@
+import StatusCodes from 'http-status-codes'
+import _merge from 'lodash/merge'
+import _pick from 'lodash/pick'
+
 import { IAuthController } from 'api/auth/controller'
 import { ISessionService, SessionService } from 'api/session/service'
 import { IUserService, UserService } from 'api/user/service'
@@ -16,10 +20,15 @@ class AuthController implements IAuthController {
       const user = await this.userService.create(req.body)
       const session = await this.sessionService.create(user)
 
-      res.send({ data: { id: user.id, role: user.role, token: session.token } })
+      const response = _merge(
+        _pick(user, 'id', 'role'),
+        _pick(session, 'token'),
+      )
+
+      res.status(StatusCodes.OK).send(response)
     } catch (error) {
       // TODO: если ошибки при создании сессии то удалять созданного пользователя
-      res.status(500).send(error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
   }
 
@@ -39,9 +48,14 @@ class AuthController implements IAuthController {
 
       const session = await this.sessionService.create(user)
 
-      res.send({ data: { id: user.id, role: user.role, token: session.token } })
+      const response = _merge(
+        _pick(user, 'id', 'role'),
+        _pick(session, 'token'),
+      )
+
+      res.status(StatusCodes.OK).send(response)
     } catch (error) {
-      res.status(500).send(error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
     }
   }
 }

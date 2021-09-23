@@ -9,12 +9,12 @@ class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
   private readonly requestRepository: IRequestRepository
 
-  constructor() {
+  public constructor() {
     this.albumRepository = AlbumRepository
     this.requestRepository = RequestRepository
   }
 
-  getAll: IAlbumService['getAll'] = async (filter) => {
+  public getAll: IAlbumService['getAll'] = async (filter) => {
     try {
       return this.albumRepository.findAllWhere(filter)
     } catch (error) {
@@ -22,7 +22,7 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  createOne: IAlbumService['createOne'] = async (payload) => {
+  public createOne: IAlbumService['createOne'] = async (payload) => {
     try {
       const album = await this.albumRepository.createOne({
         name: payload.name,
@@ -54,7 +54,7 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  getOneById: IAlbumService['getOneById'] = async (id) => {
+  public getOneById: IAlbumService['getOneById'] = async (id) => {
     try {
       return this.albumRepository.findOneById(id)
     } catch (error) {
