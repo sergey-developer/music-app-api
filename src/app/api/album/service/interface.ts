@@ -7,14 +7,16 @@ import { DocumentId } from 'database/interface/document'
 
 export interface IGetAllAlbumsServiceFilter extends GetAllAlbumsQuery {}
 
-export interface ICreateAlbumServicePayload extends CreateAlbumDto {
+export interface ICreateOneAlbumServicePayload extends CreateAlbumDto {
   userId: DocumentId<IUserDocument>
 }
 
 export interface IAlbumService {
   getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<IAlbumDocumentArray>
 
-  createOne: (payload: ICreateAlbumServicePayload) => Promise<IAlbumDocument>
+  createOne: (payload: ICreateOneAlbumServicePayload) => Promise<IAlbumDocument>
 
   getOneById: IAlbumRepository['findOneById']
+
+  deleteOneById: IAlbumRepository['deleteOneById']
 }

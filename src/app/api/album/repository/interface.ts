@@ -1,14 +1,16 @@
-import { CreateAlbumDto } from 'api/album/dto'
 import { IAlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
-import { IGetAllAlbumsServiceFilter } from 'api/album/service'
+import {
+  ICreateOneAlbumServicePayload,
+  IGetAllAlbumsServiceFilter,
+} from 'api/album/service'
 import { DocumentId } from 'database/interface/document'
-import { MaybeNull } from 'shared/interface/utils/common'
 
 export interface IFindAllAlbumsRepositoryFilter
   extends IGetAllAlbumsServiceFilter {}
 
-export interface ICreateAlbumRepositoryPayload extends CreateAlbumDto {}
+export interface ICreateOneAlbumRepositoryPayload
+  extends Omit<ICreateOneAlbumServicePayload, 'userId'> {}
 
 export interface IAlbumRepository {
   findAll: () => Promise<IAlbumDocumentArray>
@@ -17,11 +19,11 @@ export interface IAlbumRepository {
     filter: IFindAllAlbumsRepositoryFilter,
   ) => Promise<IAlbumDocumentArray>
 
-  createOne: (payload: ICreateAlbumRepositoryPayload) => Promise<IAlbumDocument>
+  createOne: (
+    payload: ICreateOneAlbumRepositoryPayload,
+  ) => Promise<IAlbumDocument>
 
-  findOneById: (
-    id: DocumentId<IAlbumDocument>,
-  ) => Promise<MaybeNull<IAlbumDocument>>
+  findOneById: (id: DocumentId<IAlbumDocument>) => Promise<IAlbumDocument>
 
-  deleteOneById: (id: DocumentId<IAlbumDocument>) => Promise<void>
+  deleteOneById: (id: DocumentId<IAlbumDocument>) => Promise<IAlbumDocument>
 }

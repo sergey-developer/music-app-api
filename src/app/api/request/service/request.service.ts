@@ -29,6 +29,14 @@ class RequestService implements IRequestService {
     }
   }
 
+  public createOne: IRequestService['createOne'] = async (payload) => {
+    return this.requestRepository.createOne({
+      entityName: payload.entityName,
+      entity: payload.entity,
+      creator: payload.creator,
+    })
+  }
+
   public deleteOneById: IRequestService['deleteOneById'] = async (id) => {
     try {
       const request = await this.requestRepository.findOneByIdAndDelete(id)

@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import {
   CreateAlbumDto,
   CreateAlbumResultDto,
+  DeleteOneAlbumByIdParams,
   GetAllAlbumsQuery,
   GetOneAlbumByIdParams,
 } from 'api/album/dto'
@@ -24,5 +25,10 @@ export interface IAlbumController {
   getOneById: (
     req: Request<Pick<GetOneAlbumByIdParams, 'id'>>,
     res: Response<ResBody<IAlbumDocument>>,
+  ) => ControllerResult
+
+  deleteOneById: (
+    req: Request<Pick<DeleteOneAlbumByIdParams, 'id'>>,
+    res: Response,
   ) => ControllerResult
 }

@@ -1,14 +1,14 @@
 import { IRequestDocumentArray } from 'api/request/interface'
 import { IRequestDocument } from 'api/request/model'
-import { IGetAllRequestsServiceFilter } from 'api/request/service'
+import {
+  ICreateOneRequestServicePayload,
+  IGetAllRequestsServiceFilter,
+} from 'api/request/service'
 import { DocumentId } from 'database/interface/document'
 import { MaybeNull } from 'shared/interface/utils/common'
 
-export interface ICreateRequestRepositoryPayload
-  extends Pick<
-    IRequestDocument,
-    'status' | 'reason' | 'entityName' | 'entity' | 'creator'
-  > {}
+export interface ICreateOneRequestRepositoryPayload
+  extends ICreateOneRequestServicePayload {}
 
 export interface IFindAllRequestsRepositoryFilter
   extends IGetAllRequestsServiceFilter {}
@@ -19,7 +19,7 @@ export interface IRequestRepository {
   ) => Promise<IRequestDocumentArray>
 
   createOne: (
-    payload: ICreateRequestRepositoryPayload,
+    payload: ICreateOneRequestRepositoryPayload,
   ) => Promise<IRequestDocument>
 
   findOneById: (

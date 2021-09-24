@@ -1,9 +1,13 @@
+import createError from 'http-errors'
+import StatusCodes from 'http-status-codes'
+import _isEmpty from 'lodash/isEmpty'
+
+import { IAlbumDocument } from 'api/album/model'
 import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
 import { IAlbumService } from 'api/album/service'
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
-import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
@@ -16,49 +20,94 @@ class AlbumService implements IAlbumService {
 
   public getAll: IAlbumService['getAll'] = async (filter) => {
     try {
-      return this.albumRepository.findAllWhere(filter)
+      return _isEmpty(filter)
+        ? this.albumRepository.findAll()
+        : this.albumRepository.findAllWhere(filter)
     } catch (error) {
-      throw error
+      throw new createError.InternalServerError('Error white getting albums')
     }
   }
 
   public createOne: IAlbumService['createOne'] = async (payload) => {
+    let album: IAlbumDocument
+
+    const serverError = new createError.InternalServerError(
+      'Error while creating Album',
+    )
+
     try {
-      const album = await this.albumRepository.createOne({
+      album = await this.albumRepository.createOne({
         name: payload.name,
         image: payload.image,
         releaseDate: payload.releaseDate,
         artist: payload.artist,
       })
-
-      await this.requestRepository.createOne({
-        entityName: RequestEntityNameEnum.Album,
-        entity: album.id,
-        creator: payload.userId,
-      })
-
-      return album
     } catch (error) {
-      // TODO: при ошибки создания request удалять созданный альбом
-      // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {
-        throw new BadRequestResponse(error.name, error.message, {
+        throw createError(StatusCodes.BAD_REQUEST, error.message, {
+          kind: ErrorKindsEnum.ValidationError,
           errors: error.errors,
         })
       }
 
-      throw new ServerErrorResponse(
-        ErrorKindsEnum.UnknownServerError,
-        'Error was occurred while creating Album',
-      )
+      throw serverError
+    }
+
+    try {
+      await this.requestRepository.createOne({
+        creator: payload.userId,
+        entity: album.id,
+        entityName: RequestEntityNameEnum.Album,
+      })
+
+      return album
+    } catch (error) {
+      // log to file (Create request error)
+
+      try {
+        // log to file (начало удаления)
+        await this.albumRepository.deleteOneById(album.id)
+        // log to file (конец удаления)
+        throw serverError
+      } catch (error) {
+        if (createError.isHttpError(error)) {
+          throw serverError
+        }
+
+        console.error(`Album by id "${album.id}" was not deleted`)
+        // log not deleted album to file (Album by id "${album.id}" was not deleted)
+        throw serverError
+      }
     }
   }
 
   public getOneById: IAlbumService['getOneById'] = async (id) => {
     try {
-      return this.albumRepository.findOneById(id)
+      const album = await this.albumRepository.findOneById(id)
+      return album
     } catch (error) {
-      throw error
+      if (error instanceof createError.NotFound) {
+        throw new createError.NotFound(`Album with id "${id}" was not found`)
+      }
+
+      throw new createError.InternalServerError(
+        `Error while getting album by id "${id}"`,
+      )
+    }
+  }
+
+  public deleteOneById: IAlbumService['deleteOneById'] = async (id) => {
+    try {
+      const album = await this.albumRepository.deleteOneById(id)
+      return album
+    } catch (error) {
+      if (error instanceof createError.NotFound) {
+        throw new createError.NotFound(`Album with id "${id}" was not found`)
+      }
+
+      throw new createError.InternalServerError(
+        `Error while deleting album by id "${id}"`,
+      )
     }
   }
 }

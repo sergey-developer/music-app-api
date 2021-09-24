@@ -1,5 +1,8 @@
+import createError from 'http-errors'
+
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
+import { isNotFoundError } from 'database/utils/errors'
 
 class AlbumRepository implements IAlbumRepository {
   private readonly album: typeof AlbumModel
@@ -22,15 +25,20 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public findOneById: IAlbumRepository['findOneById'] = async (id) => {
-    return this.album.findById(id).exec()
+    try {
+      const album = await this.album.findById(id).orFail().exec()
+      return album
+    } catch (error) {
+      throw isNotFoundError(error) ? new createError.NotFound() : error
+    }
   }
 
   public deleteOneById: IAlbumRepository['deleteOneById'] = async (id) => {
     try {
-      await this.album.findByIdAndDelete(id).orFail()
+      const album = await this.album.findByIdAndDelete(id).orFail().exec()
+      return album
     } catch (error) {
-      // TODO: throw custom not found if not found
-      throw error
+      throw isNotFoundError(error) ? new createError.NotFound() : error
     }
   }
 }

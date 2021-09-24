@@ -1,4 +1,3 @@
-import createError from 'http-errors'
 import StatusCodes from 'http-status-codes'
 import _pick from 'lodash/pick'
 
@@ -17,10 +16,9 @@ class AlbumController implements IAlbumController {
 
     try {
       const albums = await this.albumService.getAll(filter)
-
       res.status(StatusCodes.OK).send(albums)
     } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
+      res.status(error.status).send(error)
     }
   }
 
@@ -36,11 +34,9 @@ class AlbumController implements IAlbumController {
         userId: user.userId,
       })
 
-      const response = _pick(album, 'id')
-
-      res.status(StatusCodes.OK).send(response)
+      res.status(StatusCodes.OK).send(_pick(album, 'id'))
     } catch (error) {
-      res.status(error.statusCode).send(error)
+      res.status(error.status).send(error)
     }
   }
 
@@ -49,22 +45,26 @@ class AlbumController implements IAlbumController {
 
     try {
       const album = await this.albumService.getOneById(albumId)
-
-      if (!album) {
-        throw new createError.NotFound(
-          `Album with id "${albumId}" was not found`,
-        )
-      }
-
       res.status(StatusCodes.OK).send(album)
     } catch (error) {
-      if (error instanceof createError.NotFound) {
-        res.status(error.status).send(error)
-        return
-      }
+      res.status(error.status).send(error)
+    }
+  }
 
-      const serverError = createError()
-      res.status(serverError.status).send(serverError)
+  public deleteOneById: IAlbumController['deleteOneById'] = async (
+    req,
+    res,
+  ) => {
+    const albumId = req.params.id
+
+    try {
+      await this.albumService.deleteOneById(albumId)
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Album was successfully deleted' })
+    } catch (error) {
+      res.status(error.status).send(error)
     }
   }
 }

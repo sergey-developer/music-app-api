@@ -1,7 +1,11 @@
 import express from 'express'
 
 import { AlbumController } from 'api/album/controller'
-import { CreateAlbumDto, GetAllAlbumsQuery } from 'api/album/dto'
+import {
+  CreateAlbumDto,
+  DeleteOneAlbumByIdParams,
+  GetAllAlbumsQuery,
+} from 'api/album/dto'
 import { GetOneAlbumByIdParams } from 'api/album/dto/params.dto'
 import auth from 'api/auth/middlewares/auth.middleware'
 import { APIRoute } from 'app/routes/interface'
@@ -21,6 +25,12 @@ const route: APIRoute = (app) => {
   )
 
   router.post('/', [auth, body(CreateAlbumDto)], AlbumController.createOne)
+
+  router.delete(
+    '/:id',
+    [auth, params(DeleteOneAlbumByIdParams)],
+    AlbumController.deleteOneById,
+  )
 
   app.use(routePath, router)
 }

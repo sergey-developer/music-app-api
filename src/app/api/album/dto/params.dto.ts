@@ -8,3 +8,11 @@ export class GetOneAlbumByIdParams {
   })
   id!: string
 }
+
+export class DeleteOneAlbumByIdParams {
+  @Expose()
+  @IsMongoId({
+    message: 'Not correct value of "$property" was provided: "$value"',
+  })
+  id!: string
+}
