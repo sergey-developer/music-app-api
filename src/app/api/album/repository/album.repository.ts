@@ -1,6 +1,6 @@
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
-import dbErrorUtils from 'database/utils/errors'
+import { isNotFoundDbError } from 'database/utils/errors'
 import { NotFoundError } from 'shared/utils/errors/httpErrors'
 
 class AlbumRepository implements IAlbumRepository {
@@ -28,7 +28,7 @@ class AlbumRepository implements IAlbumRepository {
       const album = await this.album.findById(id).orFail().exec()
       return album
     } catch (error) {
-      throw dbErrorUtils.isNotFound(error) ? NotFoundError.create() : error
+      throw isNotFoundDbError(error) ? NotFoundError.create() : error
     }
   }
 
@@ -37,7 +37,7 @@ class AlbumRepository implements IAlbumRepository {
       const album = await this.album.findByIdAndDelete(id).orFail().exec()
       return album
     } catch (error) {
-      throw dbErrorUtils.isNotFound(error) ? NotFoundError.create() : error
+      throw isNotFoundDbError(error) ? NotFoundError.create() : error
     }
   }
 }

@@ -6,5 +6,5 @@ export interface IHttpError {
     props?: Record<string, any>,
   ) => ReturnType<typeof createError>
 
-  verify: (error: any) => boolean
+  verify: (error: unknown) => boolean
 }
