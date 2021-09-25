@@ -1,6 +1,6 @@
 enum ErrorKindsEnum {
   ValidationError = 'ValidationError',
-  UnknownServerError = 'UnknownServerError',
+  UnknownServerError = 'UnknownServerError', // TODO: delete
 }
 
 export default ErrorKindsEnum

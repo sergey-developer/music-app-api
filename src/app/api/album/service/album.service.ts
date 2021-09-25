@@ -1,5 +1,3 @@
-import createError from 'http-errors'
-import StatusCodes from 'http-status-codes'
 import _isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocument } from 'api/album/model'
@@ -8,6 +6,13 @@ import { IAlbumService } from 'api/album/service'
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
+import {
+  BadRequestError,
+  NotFoundError,
+  ServerError,
+  isHttpError,
+} from 'shared/utils/errors/httpErrors'
+import isValidationError from 'shared/utils/errors/isValidationError'
 
 class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
@@ -24,16 +29,14 @@ class AlbumService implements IAlbumService {
         ? this.albumRepository.findAll()
         : this.albumRepository.findAllWhere(filter)
     } catch (error) {
-      throw new createError.InternalServerError('Error white getting albums')
+      throw ServerError.create('Error white getting albums')
     }
   }
 
   public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
 
-    const serverError = new createError.InternalServerError(
-      'Error while creating Album',
-    )
+    const serverError = ServerError.create('Error while creating Album')
 
     try {
       album = await this.albumRepository.createOne({
@@ -43,8 +46,8 @@ class AlbumService implements IAlbumService {
         artist: payload.artist,
       })
     } catch (error) {
-      if (error.name === ErrorKindsEnum.ValidationError) {
-        throw createError(StatusCodes.BAD_REQUEST, error.message, {
+      if (isValidationError(error)) {
+        throw BadRequestError.create(error.message, {
           kind: ErrorKindsEnum.ValidationError,
           errors: error.errors,
         })
@@ -70,7 +73,7 @@ class AlbumService implements IAlbumService {
         // log to file (конец удаления)
         throw serverError
       } catch (error) {
-        if (createError.isHttpError(error)) {
+        if (isHttpError(error)) {
           throw serverError
         }
 
@@ -86,13 +89,11 @@ class AlbumService implements IAlbumService {
       const album = await this.albumRepository.findOneById(id)
       return album
     } catch (error) {
-      if (error instanceof createError.NotFound) {
-        throw new createError.NotFound(`Album with id "${id}" was not found`)
+      if (NotFoundError.verify(error)) {
+        throw NotFoundError.create(`Album with id "${id}" was not found`)
       }
 
-      throw new createError.InternalServerError(
-        `Error while getting album by id "${id}"`,
-      )
+      throw ServerError.create(`Error while getting album by id "${id}"`)
     }
   }
 
@@ -101,13 +102,11 @@ class AlbumService implements IAlbumService {
       const album = await this.albumRepository.deleteOneById(id)
       return album
     } catch (error) {
-      if (error instanceof createError.NotFound) {
-        throw new createError.NotFound(`Album with id "${id}" was not found`)
+      if (NotFoundError.verify(error)) {
+        throw NotFoundError.create(`Album with id "${id}" was not found`)
       }
 
-      throw new createError.InternalServerError(
-        `Error while deleting album by id "${id}"`,
-      )
+      throw ServerError.create(`Error while deleting album by id "${id}"`)
     }
   }
 }

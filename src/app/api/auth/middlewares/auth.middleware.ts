@@ -1,11 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import createError from 'http-errors'
 
 import { SessionService } from 'api/session/service'
 import { verifyToken } from 'api/session/utils'
 import { envConfig } from 'configs/env'
-
-const unauthorizedError = new createError.Unauthorized()
+import { ServerError, UnauthorizedError } from 'shared/utils/errors/httpErrors'
 
 const auth = async <Req extends Request, Res extends Response>(
   req: Req,
@@ -16,26 +14,27 @@ const auth = async <Req extends Request, Res extends Response>(
 
   try {
     if (!token) {
-      throw unauthorizedError
+      throw UnauthorizedError.create('Token was not provided')
     }
 
     const payload = verifyToken(token, envConfig.app.tokenSecret)
     const session = await SessionService.getOneByToken(token)
 
     if (!session) {
-      throw unauthorizedError
+      throw UnauthorizedError.create()
     }
 
     req.user = payload
     next()
   } catch (error) {
-    if (error instanceof createError.Unauthorized) {
+    if (UnauthorizedError.verify(error)) {
       res.status(error.status).send(error)
+      return
     }
 
     // TODO: handle error: invalid token
 
-    const serverError = createError()
+    const serverError = ServerError.create()
     res.status(serverError.status).send(serverError)
   }
 }

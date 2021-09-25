@@ -6,7 +6,9 @@ import _set from 'lodash/set'
 import { Schema } from 'mongoose'
 
 import { CustomDocument } from 'database/interface/document'
-import { IValidationErrors, ValidationError } from 'shared/utils/errors'
+import ValidationError, {
+  IValidationErrors,
+} from 'shared/utils/errors/ValidationError'
 
 export default function uniqueValidation<T extends CustomDocument>(
   schema: Schema<T>,

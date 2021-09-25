@@ -2,7 +2,7 @@ import { ValidationError } from 'class-validator'
 import _reduce from 'lodash/reduce'
 import _values from 'lodash/values'
 
-import { IValidationErrors } from 'shared/utils/errors'
+import { IValidationErrors } from 'shared/utils/errors/ValidationError'
 
 const getDtoValidationErrors = (
   errors: ValidationError[],
