@@ -9,6 +9,7 @@ const init = async () => {
 init()
 
 // TODO: в dto вынести сообщения в константы и переиспользовать
+// TODO: для IsMongoId установить сообщение
 // TODO: удалить неиспользуемые методы в классах (findAll)
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
 // TODO: настроить выдачу статических файлов (express.static)

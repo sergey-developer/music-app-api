@@ -66,7 +66,6 @@ class AlbumService implements IAlbumService {
       return album
     } catch (error) {
       // log to file (Create request error)
-
       try {
         // log to file (начало удаления)
         await this.albumRepository.deleteOneById(album.id)
@@ -99,8 +98,8 @@ class AlbumService implements IAlbumService {
 
   public deleteOneById: IAlbumService['deleteOneById'] = async (id) => {
     try {
-      const album = await this.albumRepository.deleteOneById(id)
-      return album
+      const deletedAlbum = await this.albumRepository.deleteOneById(id)
+      return deletedAlbum
     } catch (error) {
       if (NotFoundError.verify(error)) {
         throw NotFoundError.create(`Album with id "${id}" was not found`)

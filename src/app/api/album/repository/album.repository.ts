@@ -35,10 +35,13 @@ class AlbumRepository implements IAlbumRepository {
 
   public deleteOneById: IAlbumRepository['deleteOneById'] = async (id) => {
     try {
-      const album = await this.album.findByIdAndDelete(id).orFail().exec()
-      // album.image
-      return album
-    } catch (error: any) {
+      const deletedAlbum = await this.album
+        .findByIdAndDelete(id)
+        .orFail()
+        .exec()
+
+      return deletedAlbum
+    } catch (error) {
       throw isNotFoundDbError(error) ? NotFoundError.create() : error
     }
   }

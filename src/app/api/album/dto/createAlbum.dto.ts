@@ -1,6 +1,5 @@
-import { Expose } from 'class-transformer'
 import {
-  IsDate,
+  IsDateString,
   IsMongoId,
   IsOptional,
   IsString,
@@ -10,7 +9,6 @@ import {
 import { stringMessages } from 'shared/constants/validation'
 
 class CreateAlbumDto {
-  @Expose()
   @IsString({
     message: stringMessages.isString,
   })
@@ -19,16 +17,13 @@ class CreateAlbumDto {
   })
   name!: string
 
-  @Expose()
-  @IsDate()
-  releaseDate!: Date
+  @IsDateString()
+  releaseDate!: string
 
-  @Expose()
   @IsOptional()
   @IsMongoId()
   image?: string
 
-  @Expose()
   @IsMongoId()
   artist!: string
 }
