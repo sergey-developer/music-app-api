@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import autopopulate from 'mongoose-autopopulate'
 
 import { TrackModel } from 'api/track/model'
 import {
@@ -23,6 +24,7 @@ const TrackHistorySchema = new Schema<
     type: Schema.Types.ObjectId,
     ref: TrackModel.modelName,
     required: true,
+    autopopulate: true,
   },
   user: {
     type: Schema.Types.ObjectId,
@@ -32,6 +34,7 @@ const TrackHistorySchema = new Schema<
 })
 
 TrackHistorySchema.plugin(toJson)
+TrackHistorySchema.plugin(autopopulate)
 
 const TrackHistoryModel = model<ITrackHistoryDocument, ITrackHistoryModel>(
   'TrackHistory',

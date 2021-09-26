@@ -1,5 +1,3 @@
-import { QueryFindBaseOptions, QueryOptions } from 'mongoose'
-
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
 import { isNotFoundDbError } from 'database/utils/errors'

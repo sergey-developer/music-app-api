@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import autopopulate from 'mongoose-autopopulate'
 
 import { AlbumModel, IAlbumDocument } from 'api/album/model'
 import { IArtistDocument } from 'api/artist/model'
@@ -26,6 +27,7 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
     type: Schema.Types.ObjectId,
     ref: AlbumModel.modelName,
     required: true,
+    autopopulate: true,
   },
 })
 
@@ -51,6 +53,7 @@ TrackSchema.static(
 )
 
 TrackSchema.plugin(toJson)
+TrackSchema.plugin(autopopulate)
 
 const TrackModel = model<ITrackDocument, ITrackModel>('Track', TrackSchema)
 

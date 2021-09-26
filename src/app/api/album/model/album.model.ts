@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import autopopulate from 'mongoose-autopopulate'
 
 import { IAlbumDocument, IAlbumModel } from 'api/album/model'
 import { ArtistModel } from 'api/artist/model'
@@ -21,15 +22,18 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
     type: Schema.Types.ObjectId,
     ref: ImageModel.modelName,
     default: null,
+    autopopulate: true,
   },
   artist: {
     type: Schema.Types.ObjectId,
     ref: ArtistModel.modelName,
     required: true,
+    autopopulate: true,
   },
 })
 
 AlbumSchema.plugin(toJson)
+AlbumSchema.plugin(autopopulate)
 
 const AlbumModel = model<IAlbumDocument, IAlbumModel>('Album', AlbumSchema)
 

@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import autopopulate from 'mongoose-autopopulate'
 
 import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/interface'
 import { IRequestDocument, IRequestModel } from 'api/request/model'
@@ -41,17 +42,20 @@ const RequestSchema = new Schema<
       type: Schema.Types.ObjectId,
       ref: UserModel.modelName,
       required: true,
+      autopopulate: true,
     },
     entity: {
       type: Schema.Types.ObjectId,
       refPath: 'entityName',
       required: true,
+      autopopulate: true,
     },
   },
   { timestamps: true },
 )
 
 RequestSchema.plugin(toJson)
+RequestSchema.plugin(autopopulate)
 
 const RequestModel = model<IRequestDocument, IRequestModel>(
   'Request',
