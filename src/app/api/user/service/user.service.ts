@@ -14,7 +14,7 @@ class UserService implements IUserService {
     try {
       const user = await this.userRepository.create(payload)
       return user
-    } catch (error) {
+    } catch (error: any) {
       // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {
         throw new BadRequestResponse(error.name, error.message, {

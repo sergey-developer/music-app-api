@@ -6,26 +6,29 @@ import uniqueValidation from 'database/plugins/uniqueValidation'
 
 const toJson = require('@meanie/mongoose-to-json')
 
-const ArtistSchema = new Schema<IArtistDocument, IArtistModel>({
-  name: {
-    // TODO: make capitalize, validation
-    type: String,
-    required: true,
-    trim: true,
-    unique: 'Artist with name {value} is already exists',
+const ArtistSchema = new Schema<IArtistDocument, IArtistModel, IArtistDocument>(
+  {
+    // @ts-ignore
+    name: {
+      // TODO: make capitalize, validation
+      type: String,
+      required: true,
+      trim: true,
+      unique: 'Artist with name {value} is already exists',
+    },
+    info: {
+      type: String,
+      default: null,
+      trim: true,
+      // TODO: make capitalize, validation
+    },
+    photo: {
+      type: Schema.Types.ObjectId,
+      ref: ImageModel.modelName,
+      default: null,
+    },
   },
-  info: {
-    type: String,
-    default: null,
-    trim: true,
-    // TODO: make capitalize, validation
-  },
-  photo: {
-    type: Schema.Types.ObjectId,
-    ref: ImageModel.modelName,
-    default: null,
-  },
-})
+)
 
 ArtistSchema.plugin(toJson)
 ArtistSchema.plugin(uniqueValidation)

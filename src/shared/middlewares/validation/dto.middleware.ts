@@ -36,7 +36,7 @@ const dto =
 
       _set(req, target, validatedDto)
       next()
-    } catch (errors) {
+    } catch (errors: any) {
       const error = createError(StatusCodes.BAD_REQUEST, 'Validation failed', {
         kind: ErrorKindsEnum.ValidationError,
         errors: getDtoValidationErrors(errors),

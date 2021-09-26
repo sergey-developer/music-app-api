@@ -28,7 +28,7 @@ class ArtistController implements IArtistController {
       }
 
       res.status(StatusCodes.OK).send(artists)
-    } catch (error) {
+    } catch (error: any) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .send({ message: error.message })
@@ -49,7 +49,7 @@ class ArtistController implements IArtistController {
       const response = _pick(artist, 'id')
 
       res.status(StatusCodes.OK).send(response)
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send(error)
     }
   }

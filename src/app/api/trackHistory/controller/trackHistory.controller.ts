@@ -38,7 +38,7 @@ class TrackHistoryController implements ITrackHistoryController {
       })
 
       res.sendStatus(StatusCodes.OK)
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send(error)
     }
   }

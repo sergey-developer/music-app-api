@@ -20,7 +20,7 @@ const route: APIRoute = (app) => {
 
   router.get(
     '/:id',
-    [auth, params(GetOneAlbumByIdParams)],
+    [params(GetOneAlbumByIdParams)],
     AlbumController.getOneById,
   )
 

@@ -17,7 +17,7 @@ class AlbumController implements IAlbumController {
     try {
       const albums = await this.albumService.getAll(filter)
       res.status(StatusCodes.OK).send(albums)
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.status).send(error)
     }
   }
@@ -35,7 +35,7 @@ class AlbumController implements IAlbumController {
       })
 
       res.status(StatusCodes.OK).send(_pick(album, 'id'))
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.status).send(error)
     }
   }
@@ -46,7 +46,7 @@ class AlbumController implements IAlbumController {
     try {
       const album = await this.albumService.getOneById(albumId)
       res.status(StatusCodes.OK).send(album)
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.status).send(error)
     }
   }
@@ -63,7 +63,7 @@ class AlbumController implements IAlbumController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Album was successfully deleted' })
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.status).send(error)
     }
   }

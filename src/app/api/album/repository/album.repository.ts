@@ -1,3 +1,5 @@
+import { QueryFindBaseOptions, QueryOptions } from 'mongoose'
+
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
 import { isNotFoundDbError } from 'database/utils/errors'
@@ -23,11 +25,12 @@ class AlbumRepository implements IAlbumRepository {
     return album.save()
   }
 
-  public findOneById: IAlbumRepository['findOneById'] = async (id) => {
+  public findOneById: IAlbumRepository['findOneById'] = async (id, options) => {
     try {
-      const album = await this.album.findById(id).orFail().exec()
+      const album = await this.album.findById(id, null, options).orFail().exec()
+
       return album
-    } catch (error) {
+    } catch (error: any) {
       throw isNotFoundDbError(error) ? NotFoundError.create() : error
     }
   }
@@ -35,8 +38,9 @@ class AlbumRepository implements IAlbumRepository {
   public deleteOneById: IAlbumRepository['deleteOneById'] = async (id) => {
     try {
       const album = await this.album.findByIdAndDelete(id).orFail().exec()
+      // album.image
       return album
-    } catch (error) {
+    } catch (error: any) {
       throw isNotFoundDbError(error) ? NotFoundError.create() : error
     }
   }

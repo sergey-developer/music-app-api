@@ -17,7 +17,7 @@ class RequestController implements IRequestController {
       const requests = await this.requestService.getAll(filter)
 
       res.status(StatusCodes.OK).send(requests)
-    } catch (error) {
+    } catch (error: any) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .send({ message: error.message })
@@ -31,7 +31,7 @@ class RequestController implements IRequestController {
       await this.requestService.deleteOneById(requestId)
 
       res.sendStatus(StatusCodes.OK)
-    } catch (error) {
+    } catch (error: any) {
       res
         .status(StatusCodes.INTERNAL_SERVER_ERROR)
         .send({ message: error.message })

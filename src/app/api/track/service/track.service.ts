@@ -38,7 +38,7 @@ class TrackService implements ITrackService {
       })
 
       return track
-    } catch (error) {
+    } catch (error: any) {
       // TODO: при ошибки создания request удалять созданный track
       // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {

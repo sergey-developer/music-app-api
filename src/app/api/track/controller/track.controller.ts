@@ -38,7 +38,7 @@ class TrackController implements ITrackController {
       const response = _pick(track, 'id')
 
       res.status(StatusCodes.OK).send(response)
-    } catch (error) {
+    } catch (error: any) {
       res.status(error.statusCode).send(error)
     }
   }

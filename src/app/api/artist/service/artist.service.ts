@@ -47,7 +47,7 @@ class ArtistService implements IArtistService {
       })
 
       return artist
-    } catch (error) {
+    } catch (error: any) {
       // TODO: при ошибки создания request удалять созданного артиста
       // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
       if (error.name === ErrorKindsEnum.ValidationError) {

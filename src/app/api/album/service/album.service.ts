@@ -28,7 +28,7 @@ class AlbumService implements IAlbumService {
       return _isEmpty(filter)
         ? this.albumRepository.findAll()
         : this.albumRepository.findAllWhere(filter)
-    } catch (error) {
+    } catch (error: any) {
       throw ServerError.create('Error white getting albums')
     }
   }
@@ -45,7 +45,7 @@ class AlbumService implements IAlbumService {
         releaseDate: payload.releaseDate,
         artist: payload.artist,
       })
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error)) {
         throw BadRequestError.create(error.message, {
           kind: ErrorKindsEnum.ValidationError,

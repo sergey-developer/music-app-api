@@ -26,7 +26,7 @@ const auth = async <Req extends Request, Res extends Response>(
 
     req.user = payload
     next()
-  } catch (error) {
+  } catch (error: any) {
     if (UnauthorizedError.verify(error)) {
       res.status(error.status).send(error)
       return
