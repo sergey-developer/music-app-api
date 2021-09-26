@@ -1,10 +1,8 @@
-import createError from 'http-errors'
+import { HttpError } from 'http-errors'
 
-export interface IHttpError {
-  create: (
-    message?: string,
-    props?: Record<string, any>,
-  ) => ReturnType<typeof createError>
+export type CreateHttpError = (
+  message?: string,
+  props?: Record<string, any>,
+) => HttpError
 
-  verify: (error: unknown) => boolean
-}
+export type CheckHttpError = (error: unknown) => boolean

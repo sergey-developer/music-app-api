@@ -1,1 +1,1 @@
-export { default as isNotFoundDbError } from './isNotFound'
+export { default as isNotFoundDatabaseError } from './isNotFound'

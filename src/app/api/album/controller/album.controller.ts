@@ -3,7 +3,7 @@ import _pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
 import { AlbumService, IAlbumService } from 'api/album/service'
-import { ServerError, isHttpError } from 'shared/utils/errors/httpErrors'
+import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
 class AlbumController implements IAlbumController {
   private readonly albumService: IAlbumService
@@ -18,14 +18,9 @@ class AlbumController implements IAlbumController {
     try {
       const albums = await this.albumService.getAll(filter)
       res.status(StatusCodes.OK).send(albums)
-    } catch (error: any) {
-      if (isHttpError(error)) {
-        res.status(error.status).send(error)
-        return
-      }
-
-      const serverError = ServerError.create()
-      res.status(serverError.status).send(serverError)
+    } catch (exception: any) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -42,14 +37,9 @@ class AlbumController implements IAlbumController {
       })
 
       res.status(StatusCodes.OK).send(_pick(album, 'id'))
-    } catch (error: any) {
-      if (isHttpError(error)) {
-        res.status(error.status).send(error)
-        return
-      }
-
-      const serverError = ServerError.create()
-      res.status(serverError.status).send(serverError)
+    } catch (exception: any) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -59,14 +49,9 @@ class AlbumController implements IAlbumController {
     try {
       const album = await this.albumService.getOneById(albumId)
       res.status(StatusCodes.OK).send(album)
-    } catch (error: any) {
-      if (isHttpError(error)) {
-        res.status(error.status).send(error)
-        return
-      }
-
-      const serverError = ServerError.create()
-      res.status(serverError.status).send(serverError)
+    } catch (exception: any) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -82,14 +67,9 @@ class AlbumController implements IAlbumController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Album was successfully deleted' })
-    } catch (error: any) {
-      if (isHttpError(error)) {
-        res.status(error.status).send(error)
-        return
-      }
-
-      const serverError = ServerError.create()
-      res.status(serverError.status).send(serverError)
+    } catch (exception: any) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 }

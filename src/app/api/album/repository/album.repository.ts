@@ -1,7 +1,7 @@
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
-import { isNotFoundDbError } from 'database/utils/errors'
-import { NotFoundError } from 'shared/utils/errors/httpErrors'
+import { isNotFoundDatabaseError } from 'database/utils/errors'
+import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class AlbumRepository implements IAlbumRepository {
   private readonly album: typeof AlbumModel
@@ -29,7 +29,7 @@ class AlbumRepository implements IAlbumRepository {
 
       return album
     } catch (error: any) {
-      throw isNotFoundDbError(error) ? NotFoundError.create() : error
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
   }
 
@@ -42,7 +42,7 @@ class AlbumRepository implements IAlbumRepository {
 
       return deletedAlbum
     } catch (error) {
-      throw isNotFoundDbError(error) ? NotFoundError.create() : error
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
   }
 }
