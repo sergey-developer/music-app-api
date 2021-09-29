@@ -14,7 +14,7 @@ const auth = async <Req extends Request, Res extends Response>(
   res: Res,
   next: NextFunction,
 ) => {
-  const token = req.signedCookies.token
+  const token = req.cookies.token
 
   try {
     if (!token) {

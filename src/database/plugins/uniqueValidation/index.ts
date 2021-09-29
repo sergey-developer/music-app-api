@@ -10,6 +10,8 @@ import ValidationError, {
   IValidationErrors,
 } from 'shared/utils/errors/ValidationError'
 
+const duplicateErrorNames = ['MongoError', 'MongoServerError']
+
 export default function uniqueValidation<T extends CustomDocument>(
   schema: Schema<T>,
 ) {
@@ -31,7 +33,7 @@ export default function uniqueValidation<T extends CustomDocument>(
       {},
     )
 
-    if (error.name === 'MongoError' && error.code === 11000) {
+    if (duplicateErrorNames.includes(error.name) && error.code === 11000) {
       const objWithDuplicates = error.keyValue
 
       const errors = _reduce(

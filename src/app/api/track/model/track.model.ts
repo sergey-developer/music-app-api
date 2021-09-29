@@ -37,12 +37,7 @@ TrackSchema.static(
     id: DocumentId<IArtistDocument>,
     filter: IGetAllTracksRepositoryFilter,
   ) {
-    const tracks: ITrackDocumentArray = await this.find(filter)
-      .populate({
-        path: 'album',
-        populate: { path: 'artist' },
-      })
-      .exec()
+    const tracks: ITrackDocumentArray = await this.find(filter).exec()
 
     return tracks.filter((track) => {
       const album = track.album as IAlbumDocument

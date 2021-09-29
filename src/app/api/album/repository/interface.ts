@@ -14,6 +14,11 @@ export interface IFindAllAlbumsRepositoryFilter
 export interface ICreateOneAlbumRepositoryPayload
   extends Omit<ICreateOneAlbumServicePayload, 'userId'> {}
 
+export interface IDeleteManyAlbumsRepositoryFilter
+  extends Partial<{
+    ids: Array<DocumentId<IAlbumDocument>>
+  }> {}
+
 export interface IAlbumRepository {
   findAll: () => Promise<IAlbumDocumentArray>
 
@@ -31,4 +36,6 @@ export interface IAlbumRepository {
   ) => Promise<IAlbumDocument>
 
   deleteOneById: (id: DocumentId<IAlbumDocument>) => Promise<IAlbumDocument>
+
+  deleteMany: (filter: IDeleteManyAlbumsRepositoryFilter) => Promise<void>
 }

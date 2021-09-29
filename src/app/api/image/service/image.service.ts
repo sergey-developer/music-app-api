@@ -19,7 +19,7 @@ class ImageService implements IImageService {
 
   public deleteOneById: IImageService['deleteOneById'] = async (id) => {
     try {
-      await this.imageRepository.deleteOneById(id)
+      return this.imageRepository.deleteOneById(id)
     } catch (error) {
       throw error
     }

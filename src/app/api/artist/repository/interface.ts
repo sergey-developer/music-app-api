@@ -21,5 +21,5 @@ export interface IArtistRepository {
     payload: ICreateArtistRepositoryPayload,
   ) => Promise<IArtistDocument>
 
-  deleteOneById: (id: DocumentId<IArtistDocument>) => Promise<void>
+  deleteOneById: (id: DocumentId<IArtistDocument>) => Promise<IArtistDocument>
 }

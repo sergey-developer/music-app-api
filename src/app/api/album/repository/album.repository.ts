@@ -45,6 +45,15 @@ class AlbumRepository implements IAlbumRepository {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
   }
+
+  public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
+    try {
+      const filterById = filter.ids?.length ? { _id: { $in: filter.ids } } : {}
+      await this.album.deleteMany({ ...filterById })
+    } catch (error) {
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+    }
+  }
 }
 
 export default new AlbumRepository()

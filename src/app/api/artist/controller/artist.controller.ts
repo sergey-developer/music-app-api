@@ -13,13 +13,15 @@ class ArtistController implements IArtistController {
   }
 
   public getAll: IArtistController['getAll'] = async (req, res) => {
-    const user = req.user
+    // TODO: написать мидлвар optionalAuth и если есть токен то проверять сессию как в auth и
+    //  записывать в req.userIsAuthorized. Проверку сессии вынести в функцию и исп-ть в обоих мидлварах
+    const userIsAuthorized = req.cookies.token
     const filter = req.query
 
     try {
       let artists
 
-      if (user) {
+      if (userIsAuthorized) {
         artists = await this.artistService.getAll(filter)
       } else {
         artists = await this.artistService.getAll({
@@ -51,6 +53,23 @@ class ArtistController implements IArtistController {
       res.status(StatusCodes.OK).send(response)
     } catch (error: any) {
       res.status(error.statusCode).send(error)
+    }
+  }
+
+  public deleteOneById: IArtistController['deleteOneById'] = async (
+    req,
+    res,
+  ) => {
+    const artistId = req.params.id
+
+    try {
+      await this.artistService.deleteOneById(artistId)
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Artist was successfully deleted' })
+    } catch (error) {
+      res.status(error.status).send(error)
     }
   }
 }

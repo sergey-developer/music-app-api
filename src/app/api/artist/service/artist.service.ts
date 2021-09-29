@@ -1,17 +1,36 @@
+import { IAlbumDocumentArray } from 'api/album/interface'
+import { IAlbumDocument } from 'api/album/model'
+import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
+import { IArtistDocument } from 'api/artist/model'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
+import { IImageDocument } from 'api/image/model'
+import { IImageRepository, ImageRepository } from 'api/image/repository'
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
+import { DocumentId } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class ArtistService implements IArtistService {
   private readonly artistRepository: IArtistRepository
+  private readonly albumRepository: IAlbumRepository
   private readonly requestRepository: IRequestRepository
+  private readonly imageRepository: IImageRepository
+
+  private getArtistAlbums = async (
+    artistId: DocumentId<IArtistDocument>,
+  ): Promise<IAlbumDocumentArray> => {
+    return this.albumRepository.findAllWhere({
+      artist: artistId,
+    })
+  }
 
   constructor() {
     this.artistRepository = ArtistRepository
+    this.albumRepository = AlbumRepository
     this.requestRepository = RequestRepository
+    this.imageRepository = ImageRepository
   }
 
   public getAll: IArtistService['getAll'] = async (filter) => {
@@ -65,7 +84,24 @@ class ArtistService implements IArtistService {
 
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     try {
-      await this.artistRepository.deleteOneById(id)
+      const imagesIds: Array<DocumentId<IImageDocument>> = []
+      const albumsIds: Array<DocumentId<IAlbumDocument>> = []
+
+      const deletedArtist = await this.artistRepository.deleteOneById(id)
+      if (deletedArtist.photo) imagesIds.push(deletedArtist.photo)
+
+      const artistAlbums = await this.getArtistAlbums(deletedArtist.id)
+
+      artistAlbums.forEach((album) => {
+        if (album.image) imagesIds.push(album.image)
+        albumsIds.push(album.id)
+      })
+
+      // делать удаление через сервисы
+      await this.albumRepository.deleteMany({ ids: albumsIds })
+      await this.imageRepository.deleteMany({ ids: imagesIds })
+
+      return deletedArtist
     } catch (error) {
       throw error
     }

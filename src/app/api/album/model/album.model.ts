@@ -1,12 +1,12 @@
-import { Schema, model } from 'mongoose'
+import mongoose, { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
 import { IAlbumDocument, IAlbumModel } from 'api/album/model'
 import { ArtistModel } from 'api/artist/model'
 import { ImageModel } from 'api/image/model'
+import uniqueValidation from 'database/plugins/uniqueValidation'
 
 const toJson = require('@meanie/mongoose-to-json')
-const uniqueValidation = require('mongoose-beautiful-unique-validation')
 
 const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
   name: {
@@ -18,13 +18,11 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
     type: String,
     required: true,
   },
-  // @ts-ignore
   image: {
     type: Schema.Types.ObjectId,
     ref: ImageModel.modelName,
     default: null,
     autopopulate: true,
-    unique: 'Image source must be unique',
   },
   artist: {
     type: Schema.Types.ObjectId,
@@ -34,8 +32,21 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
   },
 })
 
-AlbumSchema.post('findOneAndDelete', function (doc) {
-  console.log({ findOneAndDelete: doc })
+AlbumSchema.post('findOneAndDelete', async function (album: IAlbumDocument) {
+  try {
+    const albumId = album._id!.toString()
+
+    if (album.image) {
+      const imageId = album.image.toString()
+      await ImageModel.findByIdAndDelete(imageId)
+    }
+
+    // /* solving error with circular dependency */
+    const TrackModel = mongoose.model('Track')
+    await TrackModel.deleteMany({ album: albumId })
+  } catch (error) {
+    console.log({ error })
+  }
 })
 
 AlbumSchema.plugin(toJson)

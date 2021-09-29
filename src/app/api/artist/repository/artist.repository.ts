@@ -1,5 +1,7 @@
 import { ArtistModel } from 'api/artist/model'
 import { IArtistRepository } from 'api/artist/repository'
+import { isNotFoundDatabaseError } from 'database/utils/errors'
+import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class ArtistRepository implements IArtistRepository {
   private readonly artist: typeof ArtistModel
@@ -23,10 +25,13 @@ class ArtistRepository implements IArtistRepository {
 
   public deleteOneById: IArtistRepository['deleteOneById'] = async (id) => {
     try {
-      await this.artist.findByIdAndDelete(id).orFail()
+      const deletedArtist = await this.artist
+        .findByIdAndDelete(id)
+        .orFail()
+        .exec()
+      return deletedArtist
     } catch (error) {
-      // TODO: throw custom not found if not found
-      throw error
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
   }
 }
