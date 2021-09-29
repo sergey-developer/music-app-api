@@ -4,4 +4,6 @@ export interface IImageService {
   createOne: IImageRepository['createOne']
 
   deleteOneById: IImageRepository['deleteOneById']
+
+  deleteMany: IImageRepository['deleteMany']
 }

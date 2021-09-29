@@ -1,41 +1,42 @@
 import { IAlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
-import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
+import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
 import { IImageDocument } from 'api/image/model'
-import { IImageRepository, ImageRepository } from 'api/image/repository'
+import { IImageService, ImageService } from 'api/image/service'
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import { DocumentId } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { createServerError } from 'shared/utils/errors/httpErrors'
 import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class ArtistService implements IArtistService {
   private readonly artistRepository: IArtistRepository
-  private readonly albumRepository: IAlbumRepository
+  private readonly albumService: IAlbumService
   private readonly requestRepository: IRequestRepository
-  private readonly imageRepository: IImageRepository
+  private readonly imageService: IImageService
 
   private getArtistAlbums = async (
     artistId: DocumentId<IArtistDocument>,
   ): Promise<IAlbumDocumentArray> => {
-    return this.albumRepository.findAllWhere({
+    return this.albumService.getAll({
       artist: artistId,
     })
   }
 
   constructor() {
     this.artistRepository = ArtistRepository
-    this.albumRepository = AlbumRepository
+    this.albumService = AlbumService
     this.requestRepository = RequestRepository
-    this.imageRepository = ImageRepository
+    this.imageService = ImageService
   }
 
   public getAll: IArtistService['getAll'] = async (filter) => {
     try {
-      // TODO: создать запрос в схеме и исп-ть его здесь
+      // TODO: получать через сервис
       const requests = await this.requestRepository.findAllWhere({
         status: filter.status,
         creator: filter.userId,
@@ -97,13 +98,12 @@ class ArtistService implements IArtistService {
         albumsIds.push(album.id)
       })
 
-      // делать удаление через сервисы
-      await this.albumRepository.deleteMany({ ids: albumsIds })
-      await this.imageRepository.deleteMany({ ids: imagesIds })
+      await this.albumService.deleteMany({ ids: albumsIds })
+      await this.imageService.deleteMany({ ids: imagesIds })
 
       return deletedArtist
     } catch (error) {
-      throw error
+      throw createServerError()
     }
   }
 }

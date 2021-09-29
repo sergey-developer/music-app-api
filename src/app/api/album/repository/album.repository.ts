@@ -51,7 +51,7 @@ class AlbumRepository implements IAlbumRepository {
       const filterById = filter.ids?.length ? { _id: { $in: filter.ids } } : {}
       await this.album.deleteMany({ ...filterById })
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw error
     }
   }
 }

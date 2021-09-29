@@ -19,4 +19,6 @@ export interface IAlbumService {
   getOneById: IAlbumRepository['findOneById']
 
   deleteOneById: IAlbumRepository['deleteOneById']
+
+  deleteMany: IAlbumRepository['deleteMany']
 }

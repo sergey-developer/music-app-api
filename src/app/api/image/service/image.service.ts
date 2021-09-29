@@ -24,6 +24,14 @@ class ImageService implements IImageService {
       throw error
     }
   }
+
+  public deleteMany: IImageRepository['deleteMany'] = async (filter) => {
+    try {
+      await this.imageRepository.deleteMany(filter)
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 export default new ImageService()

@@ -109,6 +109,14 @@ class AlbumService implements IAlbumService {
       throw createServerError(`Error while deleting album by id "${id}"`)
     }
   }
+
+  public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
+    try {
+      await this.albumRepository.deleteMany(filter)
+    } catch (error) {
+      throw createServerError()
+    }
+  }
 }
 
 export default new AlbumService()
