@@ -1,10 +1,7 @@
-import _has from 'lodash/has'
+import _isEmpty from 'lodash/isEmpty'
 
 import { TrackModel } from 'api/track/model'
-import {
-  IGetAllTracksRepositoryFilter,
-  ITrackRepository,
-} from 'api/track/repository'
+import { ITrackRepository } from 'api/track/repository'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: typeof TrackModel
@@ -18,15 +15,23 @@ class TrackRepository implements ITrackRepository {
   }
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
-    const filterToApply: IGetAllTracksRepositoryFilter = {}
-
-    if (_has(filter, 'album')) filterToApply.album = filter.album
-
     if (filter.artist) {
-      return this.track.findByArtistId(filter.artist, filterToApply)
+      return this.track.findByArtistId(filter.artist)
     }
 
-    return this.track.find(filterToApply).exec()
+    const filterByAlbum = filter.album ? { album: filter.album } : {}
+
+    const filterByAlbumsIds = filter.albumsIds?.length
+      ? { album: { $in: filter.albumsIds } }
+      : {}
+
+    const albumFilter = _isEmpty(filterByAlbumsIds)
+      ? filterByAlbum
+      : filterByAlbumsIds
+
+    const findFilter = { ...albumFilter }
+
+    return this.track.find(findFilter).exec()
   }
 
   public createOne: ITrackRepository['createOne'] = async (payload) => {
@@ -39,6 +44,21 @@ class TrackRepository implements ITrackRepository {
       await this.track.findByIdAndDelete(id).orFail()
     } catch (error) {
       // TODO: throw custom not found if not found
+      throw error
+    }
+  }
+
+  public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
+    if (_isEmpty(filter)) return
+
+    const idFilter = _isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
+    const deleteManyFilter = { ...idFilter }
+
+    if (_isEmpty(deleteManyFilter)) return
+
+    try {
+      await this.track.deleteMany(deleteManyFilter)
+    } catch (error) {
       throw error
     }
   }

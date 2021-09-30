@@ -1,3 +1,5 @@
+import _isEmpty from 'lodash/isEmpty'
+
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
@@ -47,9 +49,16 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
+    if (_isEmpty(filter)) return
+
     try {
-      const filterById = filter.ids?.length ? { _id: { $in: filter.ids } } : {}
-      await this.album.deleteMany({ ...filterById })
+      const idFilter = _isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
+
+      const deleteManyFilter = { ...idFilter }
+
+      if (_isEmpty(deleteManyFilter)) return
+
+      await this.album.deleteMany(deleteManyFilter)
     } catch (error) {
       throw error
     }

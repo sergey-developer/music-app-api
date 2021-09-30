@@ -11,6 +11,11 @@ export interface ICreateOneAlbumServicePayload extends CreateAlbumDto {
   userId: DocumentId<IUserDocument>
 }
 
+export interface IDeleteManyAlbumsServiceFilter
+  extends Partial<{
+    albums: IAlbumDocumentArray
+  }> {}
+
 export interface IAlbumService {
   getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<IAlbumDocumentArray>
 
@@ -20,5 +25,5 @@ export interface IAlbumService {
 
   deleteOneById: IAlbumRepository['deleteOneById']
 
-  deleteMany: IAlbumRepository['deleteMany']
+  deleteMany: (filter: IDeleteManyAlbumsServiceFilter) => Promise<void>
 }

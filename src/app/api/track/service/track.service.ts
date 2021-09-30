@@ -1,28 +1,38 @@
+import _isEmpty from 'lodash/isEmpty'
+
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import { ITrackRepository, TrackRepository } from 'api/track/repository'
 import { ITrackService } from 'api/track/service'
+import {
+  ITrackHistoryService,
+  TrackHistoryService,
+} from 'api/trackHistory/service'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class TrackService implements ITrackService {
   private readonly trackRepository: ITrackRepository
   private readonly requestRepository: IRequestRepository
+  private readonly trackHistoryService: ITrackHistoryService
 
-  constructor() {
+  public constructor() {
     this.trackRepository = TrackRepository
     this.requestRepository = RequestRepository
+    this.trackHistoryService = TrackHistoryService
   }
 
-  getAll: ITrackService['getAll'] = async (filter) => {
+  public getAll: ITrackService['getAll'] = async (filter) => {
     try {
-      return this.trackRepository.findAllWhere(filter)
+      return _isEmpty(filter)
+        ? this.trackRepository.findAll()
+        : this.trackRepository.findAllWhere(filter)
     } catch (error) {
       throw error
     }
   }
 
-  createOne: ITrackService['createOne'] = async (payload) => {
+  public createOne: ITrackService['createOne'] = async (payload) => {
     try {
       const track = await this.trackRepository.createOne({
         name: payload.name,
@@ -52,6 +62,21 @@ class TrackService implements ITrackService {
         ErrorKindsEnum.UnknownServerError,
         'Error was occurred while creating Track',
       )
+    }
+  }
+
+  public deleteMany: ITrackService['deleteMany'] = async (filter) => {
+    try {
+      const tracksIds = _isEmpty(filter.tracks)
+        ? []
+        : filter.tracks!.map((track) => track.id)
+
+      if (_isEmpty(tracksIds)) return
+
+      await this.trackRepository.deleteMany({ ids: tracksIds })
+      await this.trackHistoryService.deleteMany({ tracksIds })
+    } catch (error) {
+      throw error
     }
   }
 }

@@ -3,8 +3,13 @@ import _isEmpty from 'lodash/isEmpty'
 import { IAlbumDocument } from 'api/album/model'
 import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
 import { IAlbumService } from 'api/album/service'
+import { IImageDocument } from 'api/image/model'
+import { IImageService, ImageService } from 'api/image/service'
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
+import { ITrackDocumentArray } from 'api/track/interface'
+import { ITrackService, TrackService } from 'api/track/service'
+import { DocumentId } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
   createBadRequestError,
@@ -18,10 +23,20 @@ import isValidationError from 'shared/utils/errors/isValidationError'
 class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
   private readonly requestRepository: IRequestRepository
+  private readonly imageService: IImageService
+  private readonly trackService: ITrackService
+
+  private getTracksByAlbumsIds = async (
+    albumsIds: Array<DocumentId<IAlbumDocument>>,
+  ): Promise<ITrackDocumentArray> => {
+    return this.trackService.getAll({ albumsIds })
+  }
 
   public constructor() {
     this.albumRepository = AlbumRepository
     this.requestRepository = RequestRepository
+    this.imageService = ImageService
+    this.trackService = TrackService
   }
 
   public getAll: IAlbumService['getAll'] = async (filter) => {
@@ -111,8 +126,33 @@ class AlbumService implements IAlbumService {
   }
 
   public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
+    if (_isEmpty(filter)) return
+
+    const albumsForDeleting = filter.albums || []
+
+    if (_isEmpty(albumsForDeleting)) return
+
+    const albumsIds: Array<DocumentId<IAlbumDocument>> = []
+    const imagesIds: Array<DocumentId<IImageDocument>> = []
+
     try {
-      await this.albumRepository.deleteMany(filter)
+      albumsForDeleting.forEach((album) => {
+        albumsIds.push(album.id)
+        if (album.image) imagesIds.push(album.image)
+      })
+
+      await this.albumRepository.deleteMany({ ids: albumsIds })
+
+      if (!_isEmpty(imagesIds)) {
+        await this.imageService.deleteMany({ ids: imagesIds })
+      }
+
+      const tracksByAlbumsIds = await this.getTracksByAlbumsIds(albumsIds)
+      const albumsHaveTracks = !_isEmpty(tracksByAlbumsIds)
+
+      if (albumsHaveTracks) {
+        await this.trackService.deleteMany({ tracks: tracksByAlbumsIds })
+      }
     } catch (error) {
       throw createServerError()
     }

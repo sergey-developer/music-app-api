@@ -44,6 +44,14 @@ class TrackHistoryService implements ITrackHistoryService {
       )
     }
   }
+
+  public deleteMany: ITrackHistoryService['deleteMany'] = async (filter) => {
+    try {
+      await this.trackHistoryRepository.deleteMany(filter)
+    } catch (error) {
+      throw error
+    }
+  }
 }
 
 export default new TrackHistoryService()

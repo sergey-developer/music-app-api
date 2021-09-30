@@ -7,6 +7,11 @@ import { DocumentId } from 'database/interface/document'
 export interface IGetAllTracksRepositoryFilter
   extends IGetAllTracksServiceFilter {}
 
+export interface IDeleteManyTracksRepositoryFilter
+  extends Partial<{
+    ids: Array<DocumentId<ITrackDocument>>
+  }> {}
+
 export interface ICreateTrackRepositoryPayload extends CreateTrackDto {}
 
 export interface ITrackRepository {
@@ -19,4 +24,6 @@ export interface ITrackRepository {
   createOne: (payload: ICreateTrackRepositoryPayload) => Promise<ITrackDocument>
 
   deleteOneById: (id: DocumentId<ITrackDocument>) => Promise<void>
+
+  deleteMany: (filter: IDeleteManyTracksRepositoryFilter) => Promise<void>
 }

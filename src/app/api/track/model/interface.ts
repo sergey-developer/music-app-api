@@ -18,8 +18,5 @@ export interface ITrackDocument extends CustomDocument {
 }
 
 export interface ITrackModel extends Model<ITrackDocument> {
-  findByArtistId(
-    id: DocumentId<IArtistDocument>,
-    filter: IGetAllTracksRepositoryFilter,
-  ): Promise<ITrackDocumentArray>
+  findByArtistId(id: DocumentId<IArtistDocument>): Promise<ITrackDocumentArray>
 }

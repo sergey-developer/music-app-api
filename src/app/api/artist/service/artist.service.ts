@@ -1,10 +1,10 @@
+import _isEmpty from 'lodash/isEmpty'
+
 import { IAlbumDocumentArray } from 'api/album/interface'
-import { IAlbumDocument } from 'api/album/model'
 import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
-import { IImageDocument } from 'api/image/model'
 import { IImageService, ImageService } from 'api/image/service'
 import { RequestEntityNameEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
@@ -85,21 +85,18 @@ class ArtistService implements IArtistService {
 
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     try {
-      const imagesIds: Array<DocumentId<IImageDocument>> = []
-      const albumsIds: Array<DocumentId<IAlbumDocument>> = []
-
       const deletedArtist = await this.artistRepository.deleteOneById(id)
-      if (deletedArtist.photo) imagesIds.push(deletedArtist.photo)
 
-      const artistAlbums = await this.getArtistAlbums(deletedArtist.id)
+      if (deletedArtist.photo) {
+        await this.imageService.deleteOneById(deletedArtist.photo)
+      }
 
-      artistAlbums.forEach((album) => {
-        if (album.image) imagesIds.push(album.image)
-        albumsIds.push(album.id)
-      })
+      const albumsByArtistId = await this.getArtistAlbums(deletedArtist.id)
+      const artistHasAlbums = !_isEmpty(albumsByArtistId)
 
-      await this.albumService.deleteMany({ ids: albumsIds })
-      await this.imageService.deleteMany({ ids: imagesIds })
+      if (artistHasAlbums) {
+        await this.albumService.deleteMany({ albums: albumsByArtistId })
+      }
 
       return deletedArtist
     } catch (error) {

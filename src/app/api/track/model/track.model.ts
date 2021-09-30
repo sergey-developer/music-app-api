@@ -33,16 +33,13 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
 
 TrackSchema.static(
   'findByArtistId',
-  async function (
-    id: DocumentId<IArtistDocument>,
-    filter: IGetAllTracksRepositoryFilter,
-  ) {
-    const tracks: ITrackDocumentArray = await this.find(filter).exec()
+  async function (artistId: DocumentId<IArtistDocument>) {
+    const tracks: ITrackDocumentArray = await this.find().exec()
 
     return tracks.filter((track) => {
       const album = track.album as IAlbumDocument
       const artist = album.artist as IArtistDocument
-      return artist.id === id
+      return artist.id === artistId
     })
   },
 )
