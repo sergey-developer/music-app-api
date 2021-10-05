@@ -32,6 +32,12 @@ class AlbumService implements IAlbumService {
     return this.trackService.getAll({ albumsIds })
   }
 
+  private getTracksByAlbumId = async (
+    albumsId: DocumentId<IAlbumDocument>,
+  ): Promise<ITrackDocumentArray> => {
+    return this.trackService.getAll({ album: albumsId })
+  }
+
   public constructor() {
     this.albumRepository = AlbumRepository
     this.requestRepository = RequestRepository
@@ -114,8 +120,22 @@ class AlbumService implements IAlbumService {
 
   public deleteOneById: IAlbumService['deleteOneById'] = async (id) => {
     try {
-      const deletedAlbum = await this.albumRepository.deleteOneById(id)
-      return deletedAlbum
+      const album = await this.albumRepository.deleteOneById(id)
+      const albumHasImage = !!album.image
+
+      if (albumHasImage) {
+        const imageId = album.image
+        await this.imageService.deleteOneById(imageId)
+      }
+
+      const tracksByAlbumId = await this.getTracksByAlbumId(album.id)
+      const albumHaveTracks = !_isEmpty(tracksByAlbumId)
+
+      if (albumHaveTracks) {
+        await this.trackService.deleteMany({ tracks: tracksByAlbumId })
+      }
+
+      return album
     } catch (error) {
       if (isNotFoundError(error)) {
         throw createNotFoundError(`Album with id "${id}" was not found`)
