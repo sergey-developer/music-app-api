@@ -27,5 +27,9 @@ export interface ITrackHistoryRepository {
     payload: ICreateTrackHistoryRepositoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
+  deleteOneById: (
+    id: DocumentId<ITrackHistoryDocument>,
+  ) => Promise<ITrackHistoryDocument>
+
   deleteMany: (filter: IDeleteManyTrackHistoryRepositoryFilter) => Promise<void>
 }

@@ -87,8 +87,10 @@ class ArtistService implements IArtistService {
     try {
       const deletedArtist = await this.artistRepository.deleteOneById(id)
 
-      if (deletedArtist.photo) {
-        await this.imageService.deleteOneById(deletedArtist.photo)
+      const artistHasPhoto = !!deletedArtist.photo
+      if (artistHasPhoto) {
+        const photoId = deletedArtist.photo
+        await this.imageService.deleteOneById(photoId)
       }
 
       const albumsByArtistId = await this.getArtistAlbums(deletedArtist.id)

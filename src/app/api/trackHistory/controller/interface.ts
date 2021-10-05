@@ -1,6 +1,9 @@
 import { Request, Response } from 'express'
 
-import { CreateTrackHistoryDto } from 'api/trackHistory/dto'
+import {
+  CreateTrackHistoryDto,
+  DeleteOneTrackHistoryByIdParams,
+} from 'api/trackHistory/dto'
 import { ITrackHistoryDocumentArray } from 'api/trackHistory/interface'
 import { ControllerResult, ResBody } from 'shared/interface/response'
 
@@ -12,6 +15,11 @@ export interface ITrackHistoryController {
 
   createOne: (
     req: Request<any, any, CreateTrackHistoryDto>,
+    res: Response,
+  ) => ControllerResult
+
+  deleteOneById: (
+    req: Request<Pick<DeleteOneTrackHistoryByIdParams, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

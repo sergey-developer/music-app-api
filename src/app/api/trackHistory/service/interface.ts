@@ -1,10 +1,7 @@
 import { CreateTrackHistoryDto } from 'api/trackHistory/dto'
 import { ITrackHistoryDocumentArray } from 'api/trackHistory/interface'
 import { ITrackHistoryDocument } from 'api/trackHistory/model'
-import {
-  IDeleteManyTrackHistoryRepositoryFilter,
-  ITrackHistoryRepository,
-} from 'api/trackHistory/repository'
+import { ITrackHistoryRepository } from 'api/trackHistory/repository'
 import { IUserDocument } from 'api/user/model'
 import { DocumentId } from 'database/interface/document'
 
@@ -26,6 +23,8 @@ export interface ITrackHistoryService {
   createOne: (
     payload: ICreateTrackHistoryServicePayload,
   ) => Promise<ITrackHistoryDocument>
+
+  deleteOneById: ITrackHistoryRepository['deleteOneById']
 
   deleteMany: ITrackHistoryRepository['deleteMany']
 }

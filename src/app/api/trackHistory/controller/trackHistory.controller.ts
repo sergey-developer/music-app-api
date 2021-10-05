@@ -42,6 +42,23 @@ class TrackHistoryController implements ITrackHistoryController {
       res.status(error.statusCode).send(error)
     }
   }
+
+  public deleteOneById: ITrackHistoryController['deleteOneById'] = async (
+    req,
+    res,
+  ) => {
+    const trackHistoryId = req.params.id
+
+    try {
+      await this.trackHistoryService.deleteOneById(trackHistoryId)
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Track history was successfully deleted' })
+    } catch (error) {
+      res.status(error.status).send(error)
+    }
+  }
 }
 
 export default new TrackHistoryController()

@@ -2,6 +2,8 @@ import _isEmpty from 'lodash/isEmpty'
 
 import { TrackModel } from 'api/track/model'
 import { ITrackRepository } from 'api/track/repository'
+import { isNotFoundDatabaseError } from 'database/utils/errors'
+import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: typeof TrackModel
@@ -41,24 +43,25 @@ class TrackRepository implements ITrackRepository {
 
   public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {
     try {
-      await this.track.findByIdAndDelete(id).orFail()
+      const deletedTrack = await this.track
+        .findByIdAndDelete(id)
+        .orFail()
+        .exec()
+
+      return deletedTrack
     } catch (error) {
-      // TODO: throw custom not found if not found
-      throw error
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
   }
 
   public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
-    if (_isEmpty(filter)) return
-
     const idFilter = _isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
     const deleteManyFilter = { ...idFilter }
 
-    if (_isEmpty(deleteManyFilter)) return
-
     try {
-      await this.track.deleteMany(deleteManyFilter)
+      await this.track.deleteMany(deleteManyFilter).orFail()
     } catch (error) {
+      // TODO: handle error
       throw error
     }
   }

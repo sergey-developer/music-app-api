@@ -4,6 +4,11 @@ import {
 } from 'api/trackHistory/repository'
 import { ITrackHistoryService } from 'api/trackHistory/service'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
+import {
+  createNotFoundError,
+  createServerError,
+  isNotFoundError,
+} from 'shared/utils/errors/httpErrors'
 import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class TrackHistoryService implements ITrackHistoryService {
@@ -45,11 +50,28 @@ class TrackHistoryService implements ITrackHistoryService {
     }
   }
 
+  public deleteOneById: ITrackHistoryService['deleteOneById'] = async (id) => {
+    try {
+      const trackHistory = await this.trackHistoryRepository.deleteOneById(id)
+
+      return trackHistory
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        throw createNotFoundError(`Track history with id "${id}" was not found`)
+      }
+
+      throw createServerError(
+        `Error while deleting track history by id "${id}"`,
+      )
+    }
+  }
+
   public deleteMany: ITrackHistoryService['deleteMany'] = async (filter) => {
     try {
       await this.trackHistoryRepository.deleteMany(filter)
     } catch (error) {
       throw error
+      // TODO: handle error
     }
   }
 }

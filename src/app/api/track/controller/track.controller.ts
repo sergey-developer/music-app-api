@@ -7,11 +7,11 @@ import { ITrackService, TrackService } from 'api/track/service'
 class TrackController implements ITrackController {
   private readonly trackService: ITrackService
 
-  constructor() {
+  public constructor() {
     this.trackService = TrackService
   }
 
-  getAll: ITrackController['getAll'] = async (req, res) => {
+  public getAll: ITrackController['getAll'] = async (req, res) => {
     const filter = req.query
 
     try {
@@ -23,7 +23,7 @@ class TrackController implements ITrackController {
     }
   }
 
-  createOne: ITrackController['createOne'] = async (req, res) => {
+  public createOne: ITrackController['createOne'] = async (req, res) => {
     const user = req.user!
 
     try {
@@ -40,6 +40,23 @@ class TrackController implements ITrackController {
       res.status(StatusCodes.OK).send(response)
     } catch (error: any) {
       res.status(error.statusCode).send(error)
+    }
+  }
+
+  public deleteOneById: ITrackController['deleteOneById'] = async (
+    req,
+    res,
+  ) => {
+    const trackId = req.params.id
+
+    try {
+      await this.trackService.deleteOneById(trackId)
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Track was successfully deleted' })
+    } catch (error) {
+      res.status(error.status).send(error)
     }
   }
 }

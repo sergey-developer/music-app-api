@@ -3,6 +3,7 @@ import { Request, Response } from 'express'
 import {
   CreateTrackDto,
   CreateTrackResultDto,
+  DeleteOneTrackByIdParams,
   GetAllTracksQuery,
 } from 'api/track/dto'
 import { ITrackDocumentArray } from 'api/track/interface'
@@ -17,5 +18,10 @@ export interface ITrackController {
   createOne: (
     req: Request<any, any, CreateTrackDto>,
     res: Response<ResBody<CreateTrackResultDto>>,
+  ) => ControllerResult
+
+  deleteOneById: (
+    req: Request<Pick<DeleteOneTrackByIdParams, 'id'>>,
+    res: Response,
   ) => ControllerResult
 }

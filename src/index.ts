@@ -12,6 +12,7 @@ init()
 // TODO: для IsMongoId установить сообщение
 // TODO: сделать обработку ошибок в контроллерах как у album
 // TODO: сделать функцию для генерации таких ошибок { message: 'Album was successfully deleted' }
+//  при удалении, not found и т.д.
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
 // TODO: настроить выдачу статических файлов (express.static)
 
