@@ -6,11 +6,11 @@ import { IRequestService, RequestService } from 'api/request/service'
 class RequestController implements IRequestController {
   private readonly requestService: IRequestService
 
-  constructor() {
+  public constructor() {
     this.requestService = RequestService
   }
 
-  getAll: IRequestController['getAll'] = async (req, res) => {
+  public getAll: IRequestController['getAll'] = async (req, res) => {
     const filter = req.query
 
     try {
@@ -24,17 +24,20 @@ class RequestController implements IRequestController {
     }
   }
 
-  deleteOneById: IRequestController['deleteOneById'] = async (req, res) => {
+  public deleteOneById: IRequestController['deleteOneById'] = async (
+    req,
+    res,
+  ) => {
     const requestId = req.params.id
 
     try {
       await this.requestService.deleteOneById(requestId)
 
-      res.sendStatus(StatusCodes.OK)
-    } catch (error: any) {
       res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .send({ message: error.message })
+        .status(StatusCodes.OK)
+        .send({ message: 'Request was successfully deleted' })
+    } catch (error) {
+      res.status(error.status).send(error)
     }
   }
 }

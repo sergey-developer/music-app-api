@@ -6,7 +6,7 @@ import { IAlbumService } from 'api/album/service'
 import { IImageDocument } from 'api/image/model'
 import { IImageService, ImageService } from 'api/image/service'
 import { RequestEntityNameEnum } from 'api/request/interface'
-import { IRequestRepository, RequestRepository } from 'api/request/repository'
+import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
 import { DocumentId } from 'database/interface/document'
@@ -22,7 +22,7 @@ import isValidationError from 'shared/utils/errors/isValidationError'
 
 class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
-  private readonly requestRepository: IRequestRepository
+  private readonly requestService: IRequestService
   private readonly imageService: IImageService
   private readonly trackService: ITrackService
 
@@ -40,7 +40,7 @@ class AlbumService implements IAlbumService {
 
   public constructor() {
     this.albumRepository = AlbumRepository
-    this.requestRepository = RequestRepository
+    this.requestService = RequestService
     this.imageService = ImageService
     this.trackService = TrackService
   }
@@ -79,7 +79,7 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      await this.requestRepository.createOne({
+      await this.requestService.createOne({
         creator: payload.userId,
         entity: album.id,
         entityName: RequestEntityNameEnum.Album,

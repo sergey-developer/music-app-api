@@ -26,7 +26,5 @@ export interface IRequestRepository {
     id: DocumentId<IRequestDocument>,
   ) => Promise<MaybeNull<IRequestDocument>>
 
-  findOneByIdAndDelete: (
-    id: DocumentId<IRequestDocument>,
-  ) => Promise<IRequestDocument>
+  deleteOneById: (id: DocumentId<IRequestDocument>) => Promise<IRequestDocument>
 }

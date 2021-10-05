@@ -1,5 +1,7 @@
 import { RequestModel } from 'api/request/model'
 import { IRequestRepository } from 'api/request/repository'
+import { isNotFoundDatabaseError } from 'database/utils/errors'
+import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class RequestRepository implements IRequestRepository {
   private readonly request: typeof RequestModel
@@ -32,19 +34,19 @@ class RequestRepository implements IRequestRepository {
     return this.request.findById(id)
   }
 
-  public findOneByIdAndDelete: IRequestRepository['findOneByIdAndDelete'] =
-    async (id) => {
-      try {
-        return this.request
-          .findByIdAndDelete(id)
-          .orFail()
-          .populate('entity')
-          .exec()
-      } catch (error) {
-        // TODO: throw custom not found if not found
-        throw error
-      }
+  public deleteOneById: IRequestRepository['deleteOneById'] = async (id) => {
+    try {
+      const request = await this.request
+        .findByIdAndDelete(id)
+        .orFail()
+        .populate('entity')
+        .exec()
+
+      return request
+    } catch (error) {
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
+  }
 }
 
 export default new RequestRepository()

@@ -1,24 +1,29 @@
 import { IAlbumDocument } from 'api/album/model'
-import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
+import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
-import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
+import { ArtistService, IArtistService } from 'api/artist/service'
 import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/interface'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import { IRequestService } from 'api/request/service'
 import { ITrackDocument } from 'api/track/model'
-import { ITrackRepository, TrackRepository } from 'api/track/repository'
+import { ITrackService, TrackService } from 'api/track/service'
+import {
+  createNotFoundError,
+  createServerError,
+  isNotFoundError,
+} from 'shared/utils/errors/httpErrors'
 
 class RequestService implements IRequestService {
   private readonly requestRepository: IRequestRepository
-  private readonly artistRepository: IArtistRepository
-  private readonly albumRepository: IAlbumRepository
-  private readonly trackRepository: ITrackRepository
+  private readonly artistService: IArtistService
+  private readonly albumService: IAlbumService
+  private readonly trackService: ITrackService
 
   public constructor() {
     this.requestRepository = RequestRepository
-    this.artistRepository = ArtistRepository
-    this.albumRepository = AlbumRepository
-    this.trackRepository = TrackRepository
+    this.artistService = ArtistService
+    this.albumService = AlbumService
+    this.trackService = TrackService
   }
 
   public getAll: IRequestService['getAll'] = async (filter) => {
@@ -39,7 +44,7 @@ class RequestService implements IRequestService {
 
   public deleteOneById: IRequestService['deleteOneById'] = async (id) => {
     try {
-      const request = await this.requestRepository.findOneByIdAndDelete(id)
+      const request = await this.requestRepository.deleteOneById(id)
 
       if (request.status !== RequestStatusEnum.Approved) {
         const entityName = request.entityName
@@ -49,17 +54,23 @@ class RequestService implements IRequestService {
           | ITrackDocument
 
         if (entityName === RequestEntityNameEnum.Artist) {
-          await this.artistRepository.deleteOneById(entity.id)
+          await this.artistService.deleteOneById(entity.id)
         }
         if (entityName === RequestEntityNameEnum.Album) {
-          await this.albumRepository.deleteOneById(entity.id)
+          await this.albumService.deleteOneById(entity.id)
         }
         if (entityName === RequestEntityNameEnum.Track) {
-          await this.trackRepository.deleteOneById(entity.id)
+          await this.trackService.deleteOneById(entity.id)
         }
       }
+
+      return request
     } catch (error) {
-      throw error
+      if (isNotFoundError(error)) {
+        throw createNotFoundError(`Request with id "${id}" was not found`)
+      }
+
+      throw createServerError(`Error while deleting request by id "${id}"`)
     }
   }
 }
