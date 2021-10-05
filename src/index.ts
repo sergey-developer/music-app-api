@@ -13,6 +13,7 @@ init()
 // TODO: доделать удаление request.
 // TODO: Удалять request при удалении artist, album, track
 // TODO: remove props with undefined value from dto
+// TODO: сделать DocumentId = string
 
 // TODO: в dto вынести сообщения в константы и переиспользовать
 // TODO: для IsMongoId установить сообщение

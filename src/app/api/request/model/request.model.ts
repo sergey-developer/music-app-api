@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/interface'
+import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/constants'
 import { IRequestDocument, IRequestModel } from 'api/request/model'
 import { UserModel } from 'api/user/model'
 

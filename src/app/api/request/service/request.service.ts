@@ -2,7 +2,7 @@ import { IAlbumDocument } from 'api/album/model'
 import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
 import { ArtistService, IArtistService } from 'api/artist/service'
-import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/interface'
+import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/constants'
 import { IRequestRepository, RequestRepository } from 'api/request/repository'
 import { IRequestService } from 'api/request/service'
 import { ITrackDocument } from 'api/track/model'
@@ -35,11 +35,16 @@ class RequestService implements IRequestService {
   }
 
   public createOne: IRequestService['createOne'] = async (payload) => {
-    return this.requestRepository.createOne({
-      entityName: payload.entityName,
-      entity: payload.entity,
-      creator: payload.creator,
-    })
+    try {
+      return this.requestRepository.createOne({
+        entityName: payload.entityName,
+        entity: payload.entity,
+        creator: payload.creator,
+      })
+    } catch (error) {
+      throw error
+      // TODO: handle error
+    }
   }
 
   public deleteOneById: IRequestService['deleteOneById'] = async (id) => {

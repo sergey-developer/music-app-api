@@ -2,7 +2,7 @@ import { Model } from 'mongoose'
 
 import { IAlbumDocument } from 'api/album/model'
 import { IArtistDocument } from 'api/artist/model'
-import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/interface'
+import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/constants'
 import { ITrackDocument } from 'api/track/model'
 import { IUserDocument } from 'api/user/model'
 import { CustomDocument, PopulatedDoc } from 'database/interface/document'

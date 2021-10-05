@@ -1,6 +1,6 @@
 import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 
-import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/interface'
+import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/constants'
 
 export class GetAllRequestsQuery {
   @IsOptional()

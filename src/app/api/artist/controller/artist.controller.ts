@@ -3,7 +3,7 @@ import _pick from 'lodash/pick'
 
 import { IArtistController } from 'api/artist/controller'
 import { ArtistService, IArtistService } from 'api/artist/service'
-import { RequestStatusEnum } from 'api/request/interface'
+import { RequestStatusEnum } from 'api/request/constants'
 
 class ArtistController implements IArtistController {
   private readonly artistService: IArtistService

@@ -1,6 +1,6 @@
 import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 
-import { RequestStatusEnum } from 'api/request/interface'
+import { RequestStatusEnum } from 'api/request/constants'
 
 export class GetAllArtistsQuery {
   @IsOptional()
