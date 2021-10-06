@@ -1,13 +1,13 @@
 import _isEmpty from 'lodash/isEmpty'
 
-import { RequestEntityNameEnum } from 'api/request/interface'
-import { IRequestRepository, RequestRepository } from 'api/request/repository'
+import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackRepository, TrackRepository } from 'api/track/repository'
 import { ITrackService } from 'api/track/service'
 import {
   ITrackHistoryService,
   TrackHistoryService,
 } from 'api/trackHistory/service'
+import { ModelNamesEnum } from 'database/constants'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
   createNotFoundError,
@@ -18,12 +18,12 @@ import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class TrackService implements ITrackService {
   private readonly trackRepository: ITrackRepository
-  private readonly requestRepository: IRequestRepository
+  private readonly requestService: IRequestService
   private readonly trackHistoryService: ITrackHistoryService
 
   public constructor() {
     this.trackRepository = TrackRepository
-    this.requestRepository = RequestRepository
+    this.requestService = RequestService
     this.trackHistoryService = TrackHistoryService
   }
 
@@ -46,8 +46,8 @@ class TrackService implements ITrackService {
         album: payload.album,
       })
 
-      await this.requestRepository.createOne({
-        entityName: RequestEntityNameEnum.Track,
+      await this.requestService.createOne({
+        entityName: ModelNamesEnum.Track,
         entity: track.id,
         creator: payload.userId,
       })
@@ -74,7 +74,8 @@ class TrackService implements ITrackService {
     try {
       const track = await this.trackRepository.deleteOneById(id)
 
-      await this.trackHistoryService.deleteMany({ tracksIds: [track.id] })
+      await this.trackHistoryService.deleteMany({ trackIds: [track.id] })
+      await this.requestService.deleteOne({ entityId: track.id })
 
       return track
     } catch (error) {
@@ -88,12 +89,13 @@ class TrackService implements ITrackService {
 
   public deleteMany: ITrackService['deleteMany'] = async (filter) => {
     try {
-      const tracksIds = _isEmpty(filter.tracks)
+      const trackIds = _isEmpty(filter.tracks)
         ? []
         : filter.tracks!.map((track) => track.id)
 
-      await this.trackRepository.deleteMany({ ids: tracksIds })
-      await this.trackHistoryService.deleteMany({ tracksIds })
+      await this.trackRepository.deleteMany({ ids: trackIds })
+      await this.trackHistoryService.deleteMany({ trackIds })
+      await this.requestService.deleteMany({ entityIds: trackIds })
     } catch (error) {
       throw error
       // TODO: handle error

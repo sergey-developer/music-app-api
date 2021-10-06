@@ -12,7 +12,7 @@ export interface IFindAllTrackHistoryRepositoryFilter
 
 export interface IDeleteManyTrackHistoryRepositoryFilter
   extends Partial<{
-    tracksIds: Array<DocumentId<ITrackDocument>>
+    trackIds: Array<DocumentId<ITrackDocument>>
   }> {}
 
 export interface ICreateTrackHistoryRepositoryPayload

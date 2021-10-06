@@ -27,12 +27,12 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     id,
   ) => {
     try {
-      const trackHistory = await this.trackHistory
+      const deletedTrackHistory = await this.trackHistory
         .findByIdAndDelete(id)
         .orFail()
         .exec()
 
-      return trackHistory
+      return deletedTrackHistory
     } catch (error) {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
@@ -41,9 +41,9 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
   public deleteMany: ITrackHistoryRepository['deleteMany'] = async (filter) => {
     if (_isEmpty(filter)) return
 
-    const filterByTrack = _isEmpty(filter.tracksIds)
+    const filterByTrack = _isEmpty(filter.trackIds)
       ? {}
-      : { track: { $in: filter.tracksIds! } }
+      : { track: { $in: filter.trackIds! } }
 
     const deleteManyFilter = { ...filterByTrack }
 

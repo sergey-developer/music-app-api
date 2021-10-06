@@ -1,6 +1,7 @@
 import { Schema, model } from 'mongoose'
 
 import { IImageDocument, IImageModel } from 'api/image/model'
+import { ModelNamesEnum } from 'database/constants'
 
 const toJson = require('@meanie/mongoose-to-json')
 
@@ -23,6 +24,9 @@ const ImageSchema = new Schema<IImageDocument, IImageModel, IImageDocument>({
 
 ImageSchema.plugin(toJson)
 
-const ImageModel = model<IImageDocument, IImageModel>('Image', ImageSchema)
+const ImageModel = model<IImageDocument, IImageModel>(
+  ModelNamesEnum.Image,
+  ImageSchema,
+)
 
 export default ImageModel

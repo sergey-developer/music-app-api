@@ -6,8 +6,8 @@ import { IArtistDocument } from 'api/artist/model'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
 import { IImageService, ImageService } from 'api/image/service'
-import { RequestEntityNameEnum } from 'api/request/interface'
-import { IRequestRepository, RequestRepository } from 'api/request/repository'
+import { IRequestService, RequestService } from 'api/request/service'
+import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { createServerError } from 'shared/utils/errors/httpErrors'
@@ -16,7 +16,7 @@ import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 class ArtistService implements IArtistService {
   private readonly artistRepository: IArtistRepository
   private readonly albumService: IAlbumService
-  private readonly requestRepository: IRequestRepository
+  private readonly requestService: IRequestService
   private readonly imageService: IImageService
 
   private getArtistAlbums = async (
@@ -30,22 +30,21 @@ class ArtistService implements IArtistService {
   constructor() {
     this.artistRepository = ArtistRepository
     this.albumService = AlbumService
-    this.requestRepository = RequestRepository
+    this.requestService = RequestService
     this.imageService = ImageService
   }
 
   public getAll: IArtistService['getAll'] = async (filter) => {
     try {
-      // TODO: получать через сервис
-      const requests = await this.requestRepository.findAllWhere({
+      const requests = await this.requestService.getAll({
         status: filter.status,
         creator: filter.userId,
-        kind: RequestEntityNameEnum.Artist,
+        kind: ModelNamesEnum.Artist,
       })
-      const artistsIds = requests.map((req) => req.entity)
+      const artistIds = requests.map((req) => req.entity)
 
       return this.artistRepository.findAllWhere({
-        ids: artistsIds,
+        ids: artistIds,
       })
     } catch (error) {
       throw error
@@ -60,8 +59,8 @@ class ArtistService implements IArtistService {
         photo: payload.photo,
       })
 
-      await this.requestRepository.createOne({
-        entityName: RequestEntityNameEnum.Artist,
+      await this.requestService.createOne({
+        entityName: ModelNamesEnum.Artist,
         entity: artist.id,
         creator: payload.userId,
       })
@@ -85,22 +84,24 @@ class ArtistService implements IArtistService {
 
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     try {
-      const deletedArtist = await this.artistRepository.deleteOneById(id)
+      const artist = await this.artistRepository.deleteOneById(id)
 
-      const artistHasPhoto = !!deletedArtist.photo
+      const artistHasPhoto = !!artist.photo
       if (artistHasPhoto) {
-        const photoId = deletedArtist.photo
+        const photoId = artist.photo
         await this.imageService.deleteOneById(photoId)
       }
 
-      const albumsByArtistId = await this.getArtistAlbums(deletedArtist.id)
+      const albumsByArtistId = await this.getArtistAlbums(artist.id)
       const artistHasAlbums = !_isEmpty(albumsByArtistId)
 
       if (artistHasAlbums) {
         await this.albumService.deleteMany({ albums: albumsByArtistId })
       }
 
-      return deletedArtist
+      await this.requestService.deleteOne({ entityId: artist.id })
+
+      return artist
     } catch (error) {
       throw createServerError()
     }

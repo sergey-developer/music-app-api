@@ -22,7 +22,12 @@ class ImageRepository implements IImageRepository {
 
   public deleteOneById: IImageRepository['deleteOneById'] = async (id) => {
     try {
-      return this.image.findByIdAndDelete(id).orFail().exec()
+      const deletedImage = await this.image
+        .findByIdAndDelete(id)
+        .orFail()
+        .exec()
+
+      return deletedImage
     } catch (error) {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }

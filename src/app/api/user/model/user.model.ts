@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose'
 import { UserRoleEnum } from 'api/user/interface'
 import { IUserDocument, IUserModel } from 'api/user/model'
 import { checkPassword, generatePassword } from 'api/user/utils'
+import { ModelNamesEnum } from 'database/constants'
 
 const toJson = require('@meanie/mongoose-to-json')
 
@@ -30,7 +31,7 @@ const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
   role: {
     type: String,
     default: UserRoleEnum.User,
-    enum: [UserRoleEnum.User, UserRoleEnum.Admin],
+    enum: [UserRoleEnum.User, UserRoleEnum.Moderator],
   },
 })
 
@@ -50,6 +51,9 @@ UserSchema.method(
 
 UserSchema.plugin(toJson)
 
-const UserModel = model<IUserDocument, IUserModel>('User', UserSchema)
+const UserModel = model<IUserDocument, IUserModel>(
+  ModelNamesEnum.User,
+  UserSchema,
+)
 
 export default UserModel

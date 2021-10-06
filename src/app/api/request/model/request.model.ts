@@ -1,9 +1,9 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { RequestEntityNameEnum, RequestStatusEnum } from 'api/request/constants'
+import { RequestStatusEnum } from 'api/request/constants'
 import { IRequestDocument, IRequestModel } from 'api/request/model'
-import { UserModel } from 'api/user/model'
+import { ModelNamesEnum } from 'database/constants'
 
 const toJson = require('@meanie/mongoose-to-json')
 
@@ -32,15 +32,11 @@ const RequestSchema = new Schema<
     entityName: {
       type: String,
       required: true,
-      enum: [
-        RequestEntityNameEnum.Artist,
-        RequestEntityNameEnum.Album,
-        RequestEntityNameEnum.Track,
-      ],
+      enum: [ModelNamesEnum.Artist, ModelNamesEnum.Album, ModelNamesEnum.Track],
     },
     creator: {
       type: Schema.Types.ObjectId,
-      ref: UserModel.modelName,
+      ref: ModelNamesEnum.User,
       required: true,
       autopopulate: true,
     },
@@ -58,7 +54,7 @@ RequestSchema.plugin(toJson)
 RequestSchema.plugin(autopopulate)
 
 const RequestModel = model<IRequestDocument, IRequestModel>(
-  'Request',
+  ModelNamesEnum.Request,
   RequestSchema,
 )
 

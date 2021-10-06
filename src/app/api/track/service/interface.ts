@@ -9,7 +9,7 @@ import { DocumentId } from 'database/interface/document'
 export interface IGetAllTracksServiceFilter
   extends GetAllTracksQuery,
     Partial<{
-      albumsIds: Array<DocumentId<IAlbumDocument>>
+      albumIds: Array<DocumentId<IAlbumDocument>>
     }> {}
 
 export interface IDeleteManyTracksServiceFilter

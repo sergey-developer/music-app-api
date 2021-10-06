@@ -23,8 +23,8 @@ class TrackRepository implements ITrackRepository {
 
     const filterByAlbum = filter.album ? { album: filter.album } : {}
 
-    const filterByAlbumsIds = filter.albumsIds?.length
-      ? { album: { $in: filter.albumsIds } }
+    const filterByAlbumsIds = filter.albumIds?.length
+      ? { album: { $in: filter.albumIds } }
       : {}
 
     const albumFilter = _isEmpty(filterByAlbumsIds)

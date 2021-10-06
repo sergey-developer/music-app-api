@@ -1,3 +1,5 @@
+import _isEmpty from 'lodash/isEmpty'
+
 import { RequestModel } from 'api/request/model'
 import { IRequestRepository } from 'api/request/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
@@ -29,15 +31,27 @@ class RequestRepository implements IRequestRepository {
     return request.save()
   }
 
-  // unused
   public findOneById: IRequestRepository['findOneById'] = async (id) => {
-    return this.request.findById(id)
+    try {
+      const request = await this.request.findById(id).orFail().exec()
+      return request
+    } catch (error) {
+      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+    }
   }
 
-  public deleteOneById: IRequestRepository['deleteOneById'] = async (id) => {
+  public deleteOne: IRequestRepository['deleteOne'] = async ({
+    id,
+    entityId,
+  }) => {
     try {
+      const filterById = id ? { _id: id } : {}
+      const filterByEntity = entityId ? { entity: entityId } : {}
+      const filter = { ...filterById, ...filterByEntity }
+
+      // TODO: handle case when filter is empty
       const request = await this.request
-        .findByIdAndDelete(id)
+        .findOneAndDelete(filter)
         .orFail()
         .populate('entity')
         .exec()
@@ -45,6 +59,22 @@ class RequestRepository implements IRequestRepository {
       return request
     } catch (error) {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+    }
+  }
+
+  public deleteMany: IRequestRepository['deleteMany'] = async ({
+    entityIds,
+  }) => {
+    try {
+      const filterByEntityIds = _isEmpty(entityIds)
+        ? {}
+        : { entity: { $in: entityIds } }
+
+      const filter = { ...filterByEntityIds }
+
+      await this.request.deleteMany(filter)
+    } catch (error) {
+      throw error
     }
   }
 }

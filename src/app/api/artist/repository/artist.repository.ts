@@ -29,6 +29,7 @@ class ArtistRepository implements IArtistRepository {
         .findByIdAndDelete(id)
         .orFail()
         .exec()
+
       return deletedArtist
     } catch (error) {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error

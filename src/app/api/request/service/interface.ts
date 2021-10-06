@@ -2,6 +2,7 @@ import { GetAllRequestsQuery } from 'api/request/dto'
 import { IRequestDocumentArray } from 'api/request/interface'
 import { IRequestDocument } from 'api/request/model'
 import { IRequestRepository } from 'api/request/repository'
+import { DocumentId } from 'database/interface/document'
 
 export interface IGetAllRequestsServiceFilter extends GetAllRequestsQuery {}
 
@@ -17,5 +18,11 @@ export interface IRequestService {
     payload: ICreateOneRequestServicePayload,
   ) => Promise<IRequestDocument>
 
-  deleteOneById: IRequestRepository['deleteOneById']
+  deleteOne: IRequestRepository['deleteOne']
+
+  deleteOneWithEntity: (
+    requestId: DocumentId<IRequestDocument>,
+  ) => Promise<IRequestDocument>
+
+  deleteMany: IRequestRepository['deleteMany']
 }

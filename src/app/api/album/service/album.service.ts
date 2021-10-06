@@ -5,10 +5,10 @@ import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
 import { IAlbumService } from 'api/album/service'
 import { IImageDocument } from 'api/image/model'
 import { IImageService, ImageService } from 'api/image/service'
-import { RequestEntityNameEnum } from 'api/request/constants'
 import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
+import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
@@ -27,9 +27,9 @@ class AlbumService implements IAlbumService {
   private readonly trackService: ITrackService
 
   private getTracksByAlbumsIds = async (
-    albumsIds: Array<DocumentId<IAlbumDocument>>,
+    albumIds: Array<DocumentId<IAlbumDocument>>,
   ): Promise<ITrackDocumentArray> => {
-    return this.trackService.getAll({ albumsIds })
+    return this.trackService.getAll({ albumIds })
   }
 
   private getTracksByAlbumId = async (
@@ -82,7 +82,7 @@ class AlbumService implements IAlbumService {
       await this.requestService.createOne({
         creator: payload.userId,
         entity: album.id,
-        entityName: RequestEntityNameEnum.Album,
+        entityName: ModelNamesEnum.Album,
       })
 
       return album
@@ -135,6 +135,8 @@ class AlbumService implements IAlbumService {
         await this.trackService.deleteMany({ tracks: tracksByAlbumId })
       }
 
+      await this.requestService.deleteOne({ entityId: album.id })
+
       return album
     } catch (error) {
       if (isNotFoundError(error)) {
@@ -152,27 +154,29 @@ class AlbumService implements IAlbumService {
 
     if (_isEmpty(albumsForDeleting)) return
 
-    const albumsIds: Array<DocumentId<IAlbumDocument>> = []
-    const imagesIds: Array<DocumentId<IImageDocument>> = []
+    const albumIds: Array<DocumentId<IAlbumDocument>> = []
+    const imageIds: Array<DocumentId<IImageDocument>> = []
 
     try {
       albumsForDeleting.forEach((album) => {
-        albumsIds.push(album.id)
-        if (album.image) imagesIds.push(album.image)
+        albumIds.push(album.id)
+        if (album.image) imageIds.push(album.image)
       })
 
-      await this.albumRepository.deleteMany({ ids: albumsIds })
+      await this.albumRepository.deleteMany({ ids: albumIds })
 
-      if (!_isEmpty(imagesIds)) {
-        await this.imageService.deleteMany({ ids: imagesIds })
+      if (!_isEmpty(imageIds)) {
+        await this.imageService.deleteMany({ ids: imageIds })
       }
 
-      const tracksByAlbumsIds = await this.getTracksByAlbumsIds(albumsIds)
+      const tracksByAlbumsIds = await this.getTracksByAlbumsIds(albumIds)
       const albumsHaveTracks = !_isEmpty(tracksByAlbumsIds)
 
       if (albumsHaveTracks) {
         await this.trackService.deleteMany({ tracks: tracksByAlbumsIds })
       }
+
+      await this.requestService.deleteMany({ entityIds: albumIds })
     } catch (error) {
       throw createServerError()
     }

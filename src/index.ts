@@ -10,8 +10,6 @@ init()
 
 // TODO: Обработать везде ошибки и поставить тип ошибки в catch
 // TODO: сделать обновление request
-// TODO: доделать удаление request.
-// TODO: Удалять request при удалении artist, album, track
 // TODO: remove props with undefined value from dto
 // TODO: сделать DocumentId = string
 

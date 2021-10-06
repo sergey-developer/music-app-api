@@ -28,9 +28,8 @@ class AlbumRepository implements IAlbumRepository {
   public findOneById: IAlbumRepository['findOneById'] = async (id, options) => {
     try {
       const album = await this.album.findById(id, null, options).orFail().exec()
-
       return album
-    } catch (error: any) {
+    } catch (error) {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
     }
   }
@@ -51,8 +50,10 @@ class AlbumRepository implements IAlbumRepository {
   public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
     if (_isEmpty(filter)) return
 
+    const { ids } = filter
+
     try {
-      const idFilter = _isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
+      const idFilter = _isEmpty(ids) ? {} : { _id: { $in: ids } }
 
       const deleteManyFilter = { ...idFilter }
 
