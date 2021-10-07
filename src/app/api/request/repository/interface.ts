@@ -1,13 +1,10 @@
-import { IAlbumDocument } from 'api/album/model'
-import { IArtistDocument } from 'api/artist/model'
 import { IRequestDocumentArray } from 'api/request/interface'
 import { IRequestDocument } from 'api/request/model'
 import {
   ICreateOneRequestServicePayload,
   IGetAllRequestsServiceFilter,
 } from 'api/request/service'
-import { ITrackDocument } from 'api/track/model'
-import { DocumentId } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface ICreateOneRequestRepositoryPayload
   extends ICreateOneRequestServicePayload {}
@@ -17,20 +14,13 @@ export interface IFindAllRequestsRepositoryFilter
 
 export interface IDeleteOneRequestRepositoryFilter
   extends Partial<{
-    id: DocumentId<IRequestDocument>
-    entityId:
-      | DocumentId<IArtistDocument>
-      | DocumentId<IAlbumDocument>
-      | DocumentId<ITrackDocument>
+    id: DocumentId
+    entityId: DocumentId
   }> {}
 
 export interface IDeleteManyRequestRepositoryFilter
   extends Partial<{
-    entityIds: Array<
-      | DocumentId<IArtistDocument>
-      | DocumentId<IAlbumDocument>
-      | DocumentId<ITrackDocument>
-    >
+    entityIds: DocumentIdArray
   }> {}
 
 export interface IRequestRepository {
@@ -42,7 +32,7 @@ export interface IRequestRepository {
     payload: ICreateOneRequestRepositoryPayload,
   ) => Promise<IRequestDocument>
 
-  findOneById: (id: DocumentId<IRequestDocument>) => Promise<IRequestDocument>
+  findOneById: (id: DocumentId) => Promise<IRequestDocument>
 
   deleteOne: (
     filter: IDeleteOneRequestRepositoryFilter,

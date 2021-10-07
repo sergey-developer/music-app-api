@@ -6,10 +6,11 @@ import { RequestStatusEnum } from 'api/request/constants'
 import { ITrackDocument } from 'api/track/model'
 import { IUserDocument } from 'api/user/model'
 import { ModelNamesEnum } from 'database/constants'
-import { CustomDocument, PopulatedDoc } from 'database/interface/document'
+import { PopulatedDoc } from 'database/interface/document'
 import { MaybeNull } from 'shared/interface/utils/common'
 
-export interface IRequestDocument extends CustomDocument {
+export interface IRequestDocument {
+  id: string
   entityName: ModelNamesEnum
   entity:
     | PopulatedDoc<IArtistDocument>

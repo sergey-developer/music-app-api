@@ -28,11 +28,7 @@ class TrackHistoryService implements ITrackHistoryService {
 
   public createOne: ITrackHistoryService['createOne'] = async (payload) => {
     try {
-      const trackHistory = await this.trackHistoryRepository.createOne({
-        user: payload.user,
-        track: payload.track,
-        listenDate: payload.listenDate,
-      })
+      const trackHistory = await this.trackHistoryRepository.createOne(payload)
 
       return trackHistory
     } catch (error: any) {

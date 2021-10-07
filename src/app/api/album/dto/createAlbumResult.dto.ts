@@ -1,6 +1,5 @@
-import { IAlbumDocument } from 'api/album/model'
-import { PickDocumentId } from 'database/interface/document'
+import { OnlyDocumentId } from 'database/interface/document'
 
-interface CreateAlbumResultDto extends PickDocumentId<IAlbumDocument> {}
+interface CreateAlbumResultDto extends OnlyDocumentId {}
 
 export default CreateAlbumResultDto

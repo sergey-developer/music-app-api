@@ -22,7 +22,6 @@ class RequestRepository implements IRequestRepository {
       .find({
         $and: [entityNameCond, statusCond, creatorCond],
       })
-      .populate('entity')
       .exec()
   }
 

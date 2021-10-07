@@ -18,7 +18,7 @@ class TrackHistoryController implements ITrackHistoryController {
 
     try {
       const trackHistory = await this.trackHistoryService.getAll({
-        user: user.userId,
+        userId: user.userId,
       })
 
       res.status(StatusCodes.OK).send(trackHistory)
@@ -32,12 +32,12 @@ class TrackHistoryController implements ITrackHistoryController {
 
     try {
       await this.trackHistoryService.createOne({
-        user: user.userId,
+        userId: user.userId,
         track: req.body.track,
         listenDate: new Date(),
       })
 
-      res.sendStatus(StatusCodes.OK)
+      res.sendStatus(StatusCodes.CREATED)
     } catch (error: any) {
       res.status(error.statusCode).send(error)
     }

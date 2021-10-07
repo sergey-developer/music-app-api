@@ -6,7 +6,7 @@ import {
   ICreateOneAlbumServicePayload,
   IGetAllAlbumsServiceFilter,
 } from 'api/album/service'
-import { DocumentId } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface IFindAllAlbumsRepositoryFilter
   extends IGetAllAlbumsServiceFilter {}
@@ -16,7 +16,7 @@ export interface ICreateOneAlbumRepositoryPayload
 
 export interface IDeleteManyAlbumsRepositoryFilter
   extends Partial<{
-    ids: Array<DocumentId<IAlbumDocument>>
+    ids: DocumentIdArray
   }> {}
 
 export interface IAlbumRepository {
@@ -31,11 +31,11 @@ export interface IAlbumRepository {
   ) => Promise<IAlbumDocument>
 
   findOneById: (
-    id: DocumentId<IAlbumDocument>,
+    id: DocumentId,
     options?: QueryOptions,
   ) => Promise<IAlbumDocument>
 
-  deleteOneById: (id: DocumentId<IAlbumDocument>) => Promise<IAlbumDocument>
+  deleteOneById: (id: DocumentId) => Promise<IAlbumDocument>
 
   deleteMany: (filter: IDeleteManyAlbumsRepositoryFilter) => Promise<void>
 }

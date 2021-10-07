@@ -1,16 +1,11 @@
 import { Model } from 'mongoose'
 
 import { IAlbumDocument } from 'api/album/model'
-import { IArtistDocument } from 'api/artist/model'
 import { ITrackDocumentArray } from 'api/track/interface'
-import { IGetAllTracksRepositoryFilter } from 'api/track/repository'
-import {
-  CustomDocument,
-  DocumentId,
-  PopulatedDoc,
-} from 'database/interface/document'
+import { DocumentId, PopulatedDoc } from 'database/interface/document'
 
-export interface ITrackDocument extends CustomDocument {
+export interface ITrackDocument {
+  id: string
   name: string
   duration: string
   album: PopulatedDoc<IAlbumDocument>
@@ -18,5 +13,5 @@ export interface ITrackDocument extends CustomDocument {
 }
 
 export interface ITrackModel extends Model<ITrackDocument> {
-  findByArtistId(id: DocumentId<IArtistDocument>): Promise<ITrackDocumentArray>
+  findByArtistId(id: DocumentId): Promise<ITrackDocumentArray>
 }

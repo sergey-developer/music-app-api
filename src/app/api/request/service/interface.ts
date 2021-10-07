@@ -20,9 +20,7 @@ export interface IRequestService {
 
   deleteOne: IRequestRepository['deleteOne']
 
-  deleteOneWithEntity: (
-    requestId: DocumentId<IRequestDocument>,
-  ) => Promise<IRequestDocument>
+  deleteOneWithEntity: (requestId: DocumentId) => Promise<IRequestDocument>
 
   deleteMany: IRequestRepository['deleteMany']
 }

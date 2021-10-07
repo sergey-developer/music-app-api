@@ -1,11 +1,11 @@
 import { CreateArtistDto } from 'api/artist/dto'
 import { IArtistDocumentArray } from 'api/artist/interface'
 import { IArtistDocument } from 'api/artist/model'
-import { DocumentId } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface IFindAllArtistsRepositoryFilter
   extends Partial<{
-    ids: Array<DocumentId<IArtistDocument>>
+    ids: DocumentIdArray
   }> {}
 
 export interface ICreateArtistRepositoryPayload extends CreateArtistDto {}
@@ -21,5 +21,5 @@ export interface IArtistRepository {
     payload: ICreateArtistRepositoryPayload,
   ) => Promise<IArtistDocument>
 
-  deleteOneById: (id: DocumentId<IArtistDocument>) => Promise<IArtistDocument>
+  deleteOneById: (id: DocumentId) => Promise<IArtistDocument>
 }

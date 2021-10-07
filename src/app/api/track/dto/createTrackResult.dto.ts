@@ -1,6 +1,5 @@
-import { ITrackDocument } from 'api/track/model'
-import { PickDocumentId } from 'database/interface/document'
+import { OnlyDocumentId } from 'database/interface/document'
 
-interface CreateTrackResultDto extends PickDocumentId<ITrackDocument> {}
+interface CreateTrackResultDto extends OnlyDocumentId {}
 
 export default CreateTrackResultDto

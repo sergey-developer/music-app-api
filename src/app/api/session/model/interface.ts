@@ -2,9 +2,10 @@ import { Model } from 'mongoose'
 
 import { JwtPayload, JwtToken } from 'api/session/interface'
 import { IUserDocument } from 'api/user/model'
-import { CustomDocument, PopulatedDoc } from 'database/interface/document'
+import { PopulatedDoc } from 'database/interface/document'
 
-export interface ISessionDocument extends CustomDocument {
+export interface ISessionDocument {
+  id: string
   user: PopulatedDoc<IUserDocument>
   token: JwtToken
 }

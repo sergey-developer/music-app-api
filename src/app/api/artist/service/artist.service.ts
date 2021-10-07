@@ -1,12 +1,14 @@
 import isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocumentArray } from 'api/album/interface'
+import { IAlbumDocument } from 'api/album/model'
 import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
 import { IImageService, ImageService } from 'api/image/service'
 import { IRequestService, RequestService } from 'api/request/service'
+import { ITrackDocument } from 'api/track/model'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
@@ -20,7 +22,7 @@ class ArtistService implements IArtistService {
   private readonly imageService: IImageService
 
   private getArtistAlbums = async (
-    artistId: DocumentId<IArtistDocument>,
+    artistId: DocumentId,
   ): Promise<IAlbumDocumentArray> => {
     return this.albumService.getAll({
       artist: artistId,
@@ -41,7 +43,15 @@ class ArtistService implements IArtistService {
         creator: filter.userId,
         kind: ModelNamesEnum.Artist,
       })
-      const artistIds = requests.map((req) => req.entity)
+
+      const artistIds = requests.map((request) => {
+        const entity = request.entity as
+          | IArtistDocument
+          | IAlbumDocument
+          | ITrackDocument
+
+        return entity.id
+      })
 
       return this.artistRepository.findAllWhere({
         ids: artistIds,
@@ -85,11 +95,11 @@ class ArtistService implements IArtistService {
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     try {
       const artist = await this.artistRepository.deleteOneById(id)
-
       const artistHasPhoto = !!artist.photo
+
       if (artistHasPhoto) {
         const photoId = artist.photo
-        await this.imageService.deleteOneById(photoId)
+        await this.imageService.deleteOneById(photoId as string)
       }
 
       const albumsByArtistId = await this.getArtistAlbums(artist.id)

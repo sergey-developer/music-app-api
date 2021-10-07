@@ -1,18 +1,17 @@
-import { ITrackDocument } from 'api/track/model'
 import { ITrackHistoryDocumentArray } from 'api/trackHistory/interface'
 import { ITrackHistoryDocument } from 'api/trackHistory/model'
 import {
   ICreateTrackHistoryServicePayload,
   IGetAllTrackHistoryServiceFilter,
 } from 'api/trackHistory/service'
-import { DocumentId } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface IFindAllTrackHistoryRepositoryFilter
   extends IGetAllTrackHistoryServiceFilter {}
 
 export interface IDeleteManyTrackHistoryRepositoryFilter
   extends Partial<{
-    trackIds: Array<DocumentId<ITrackDocument>>
+    trackIds: DocumentIdArray
   }> {}
 
 export interface ICreateTrackHistoryRepositoryPayload
@@ -27,9 +26,7 @@ export interface ITrackHistoryRepository {
     payload: ICreateTrackHistoryRepositoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
-  deleteOneById: (
-    id: DocumentId<ITrackHistoryDocument>,
-  ) => Promise<ITrackHistoryDocument>
+  deleteOneById: (id: DocumentId) => Promise<ITrackHistoryDocument>
 
   deleteMany: (filter: IDeleteManyTrackHistoryRepositoryFilter) => Promise<void>
 }

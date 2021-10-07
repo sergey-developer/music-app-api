@@ -3,13 +3,12 @@ import isEmpty from 'lodash/isEmpty'
 import { IAlbumDocument } from 'api/album/model'
 import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
 import { IAlbumService } from 'api/album/service'
-import { IImageDocument } from 'api/image/model'
 import { IImageService, ImageService } from 'api/image/service'
 import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
 import { ModelNamesEnum } from 'database/constants'
-import { DocumentId } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
   createBadRequestError,
@@ -27,15 +26,15 @@ class AlbumService implements IAlbumService {
   private readonly trackService: ITrackService
 
   private getTracksByAlbumsIds = async (
-    albumIds: Array<DocumentId<IAlbumDocument>>,
+    albumIds: DocumentIdArray,
   ): Promise<ITrackDocumentArray> => {
     return this.trackService.getAll({ albumIds })
   }
 
   private getTracksByAlbumId = async (
-    albumsId: DocumentId<IAlbumDocument>,
+    albumId: DocumentId,
   ): Promise<ITrackDocumentArray> => {
-    return this.trackService.getAll({ album: albumsId })
+    return this.trackService.getAll({ album: albumId })
   }
 
   public constructor() {
@@ -124,7 +123,7 @@ class AlbumService implements IAlbumService {
       const albumHasImage = !!album.image
 
       if (albumHasImage) {
-        const imageId = album.image
+        const imageId = album.image as string
         await this.imageService.deleteOneById(imageId)
       }
 
@@ -154,13 +153,13 @@ class AlbumService implements IAlbumService {
 
     if (isEmpty(albumsForDeleting)) return
 
-    const albumIds: Array<DocumentId<IAlbumDocument>> = []
-    const imageIds: Array<DocumentId<IImageDocument>> = []
+    const albumIds: DocumentIdArray = []
+    const imageIds: DocumentIdArray = []
 
     try {
       albumsForDeleting.forEach((album) => {
         albumIds.push(album.id)
-        if (album.image) imageIds.push(album.image)
+        if (album.image) imageIds.push(album.image as string)
       })
 
       await this.albumRepository.deleteMany({ ids: albumIds })

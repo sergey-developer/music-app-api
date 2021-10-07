@@ -5,16 +5,13 @@ import reduce from 'lodash/reduce'
 import set from 'lodash/set'
 import { Schema } from 'mongoose'
 
-import { CustomDocument } from 'database/interface/document'
 import ValidationError, {
   IValidationErrors,
 } from 'shared/utils/errors/ValidationError'
 
 const duplicateErrorNames = ['MongoError', 'MongoServerError']
 
-export default function uniqueValidation<T extends CustomDocument>(
-  schema: Schema<T>,
-) {
+export default function uniqueValidation<T>(schema: Schema<T>) {
   schema.post('save', function (error: any, doc: any, next: any) {
     const modelSchema = schema.obj
 

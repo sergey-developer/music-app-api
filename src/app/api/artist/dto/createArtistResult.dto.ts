@@ -1,6 +1,5 @@
-import { IArtistDocument } from 'api/artist/model'
-import { PickDocumentId } from 'database/interface/document'
+import { OnlyDocumentId } from 'database/interface/document'
 
-interface CreateArtistResultDto extends PickDocumentId<IArtistDocument> {}
+interface CreateArtistResultDto extends OnlyDocumentId {}
 
 export default CreateArtistResultDto

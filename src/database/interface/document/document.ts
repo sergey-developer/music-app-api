@@ -1,8 +1,9 @@
-import { Document, Types } from 'mongoose'
+export type DocumentId = string
 
-// TODO: поправить на Omit<Document<Types.ObjectId>, 'id'> и проверить
-export type CustomDocument = Document<Types.ObjectId> & {}
+export type OnlyDocumentId = {
+  id: DocumentId
+}
 
-export type PopulatedDoc<PopulatedType, RawId = Types.ObjectId> =
-  | PopulatedType
-  | RawId
+export type DocumentIdArray = Array<DocumentId>
+
+export type PopulatedDoc<PopulatedType, RawId = string> = PopulatedType | RawId

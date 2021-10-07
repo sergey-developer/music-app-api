@@ -1,15 +1,13 @@
-import { IAlbumDocument } from 'api/album/model'
 import { CreateTrackDto, GetAllTracksQuery } from 'api/track/dto'
 import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackDocument } from 'api/track/model'
 import { ITrackRepository } from 'api/track/repository'
-import { IUserDocument } from 'api/user/model'
-import { DocumentId } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface IGetAllTracksServiceFilter
   extends GetAllTracksQuery,
     Partial<{
-      albumIds: Array<DocumentId<IAlbumDocument>>
+      albumIds: DocumentIdArray
     }> {}
 
 export interface IDeleteManyTracksServiceFilter
@@ -18,7 +16,7 @@ export interface IDeleteManyTracksServiceFilter
   }> {}
 
 export interface ICreateTrackServicePayload extends CreateTrackDto {
-  userId: DocumentId<IUserDocument>
+  userId: DocumentId
 }
 
 export interface ITrackService {
