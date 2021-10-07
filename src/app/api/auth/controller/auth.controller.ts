@@ -1,6 +1,6 @@
 import StatusCodes from 'http-status-codes'
-import _merge from 'lodash/merge'
-import _pick from 'lodash/pick'
+import merge from 'lodash/merge'
+import pick from 'lodash/pick'
 
 import { IAuthController } from 'api/auth/controller'
 import { ISessionService, SessionService } from 'api/session/service'
@@ -20,10 +20,7 @@ class AuthController implements IAuthController {
       const user = await this.userService.create(req.body)
       const session = await this.sessionService.create(user)
 
-      const response = _merge(
-        _pick(user, 'id', 'role'),
-        _pick(session, 'token'),
-      )
+      const response = merge(pick(user, 'id', 'role'), pick(session, 'token'))
 
       res.status(StatusCodes.OK).send(response)
     } catch (error) {
@@ -48,10 +45,7 @@ class AuthController implements IAuthController {
 
       const session = await this.sessionService.create(user)
 
-      const response = _merge(
-        _pick(user, 'id', 'role'),
-        _pick(session, 'token'),
-      )
+      const response = merge(pick(user, 'id', 'role'), pick(session, 'token'))
 
       res.status(StatusCodes.OK).send(response)
     } catch (error) {

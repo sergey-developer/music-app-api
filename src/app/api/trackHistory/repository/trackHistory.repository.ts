@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { TrackHistoryModel } from 'api/trackHistory/model'
 import { ITrackHistoryRepository } from 'api/trackHistory/repository'
@@ -39,15 +39,15 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
   }
 
   public deleteMany: ITrackHistoryRepository['deleteMany'] = async (filter) => {
-    if (_isEmpty(filter)) return
+    if (isEmpty(filter)) return
 
-    const filterByTrack = _isEmpty(filter.trackIds)
+    const filterByTrack = isEmpty(filter.trackIds)
       ? {}
       : { track: { $in: filter.trackIds! } }
 
     const deleteManyFilter = { ...filterByTrack }
 
-    if (_isEmpty(deleteManyFilter)) return
+    if (isEmpty(deleteManyFilter)) return
 
     try {
       await this.trackHistory.deleteMany(deleteManyFilter)

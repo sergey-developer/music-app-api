@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { AlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
@@ -48,16 +48,16 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
-    if (_isEmpty(filter)) return
+    if (isEmpty(filter)) return
 
     const { ids } = filter
 
     try {
-      const idFilter = _isEmpty(ids) ? {} : { _id: { $in: ids } }
+      const idFilter = isEmpty(ids) ? {} : { _id: { $in: ids } }
 
       const deleteManyFilter = { ...idFilter }
 
-      if (_isEmpty(deleteManyFilter)) return
+      if (isEmpty(deleteManyFilter)) return
 
       await this.album.deleteMany(deleteManyFilter)
     } catch (error) {

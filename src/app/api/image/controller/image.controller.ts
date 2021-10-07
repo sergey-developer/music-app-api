@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes'
-import _pick from 'lodash/pick'
+import pick from 'lodash/pick'
 
 import { IImageController } from 'api/image/controller'
 import { IImageService, ImageService } from 'api/image/service'
@@ -17,7 +17,7 @@ class ImageController implements IImageController {
     try {
       if (file) {
         const image = await this.imageService.createOne(file)
-        const response = _pick(image, 'id', 'src')
+        const response = pick(image, 'id', 'src')
 
         res.status(StatusCodes.OK).send(response)
         return

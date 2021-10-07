@@ -6,8 +6,8 @@ import {
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
 import StatusCodes from 'http-status-codes'
-import _merge from 'lodash/merge'
-import _set from 'lodash/set'
+import merge from 'lodash/merge'
+import set from 'lodash/set'
 
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { getDtoValidationErrors } from 'shared/utils/validation'
@@ -31,10 +31,10 @@ const dto =
       const validatedDto = await transformAndValidate<D>(
         dto,
         req[target],
-        _merge(defaultOptions, options),
+        merge(defaultOptions, options),
       )
 
-      _set(req, target, validatedDto)
+      set(req, target, validatedDto)
       next()
     } catch (errors: any) {
       const error = createError(StatusCodes.BAD_REQUEST, 'Validation failed', {

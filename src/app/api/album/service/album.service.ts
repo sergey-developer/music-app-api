@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocument } from 'api/album/model'
 import { AlbumRepository, IAlbumRepository } from 'api/album/repository'
@@ -47,7 +47,7 @@ class AlbumService implements IAlbumService {
 
   public getAll: IAlbumService['getAll'] = async (filter) => {
     try {
-      return _isEmpty(filter)
+      return isEmpty(filter)
         ? this.albumRepository.findAll()
         : this.albumRepository.findAllWhere(filter)
     } catch (error: any) {
@@ -129,7 +129,7 @@ class AlbumService implements IAlbumService {
       }
 
       const tracksByAlbumId = await this.getTracksByAlbumId(album.id)
-      const albumHaveTracks = !_isEmpty(tracksByAlbumId)
+      const albumHaveTracks = !isEmpty(tracksByAlbumId)
 
       if (albumHaveTracks) {
         await this.trackService.deleteMany({ tracks: tracksByAlbumId })
@@ -148,11 +148,11 @@ class AlbumService implements IAlbumService {
   }
 
   public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
-    if (_isEmpty(filter)) return
+    if (isEmpty(filter)) return
 
     const albumsForDeleting = filter.albums || []
 
-    if (_isEmpty(albumsForDeleting)) return
+    if (isEmpty(albumsForDeleting)) return
 
     const albumIds: Array<DocumentId<IAlbumDocument>> = []
     const imageIds: Array<DocumentId<IImageDocument>> = []
@@ -165,12 +165,12 @@ class AlbumService implements IAlbumService {
 
       await this.albumRepository.deleteMany({ ids: albumIds })
 
-      if (!_isEmpty(imageIds)) {
+      if (!isEmpty(imageIds)) {
         await this.imageService.deleteMany({ ids: imageIds })
       }
 
       const tracksByAlbumsIds = await this.getTracksByAlbumsIds(albumIds)
-      const albumsHaveTracks = !_isEmpty(tracksByAlbumsIds)
+      const albumsHaveTracks = !isEmpty(tracksByAlbumsIds)
 
       if (albumsHaveTracks) {
         await this.trackService.deleteMany({ tracks: tracksByAlbumsIds })

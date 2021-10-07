@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocumentArray } from 'api/album/interface'
 import { AlbumService, IAlbumService } from 'api/album/service'
@@ -93,7 +93,7 @@ class ArtistService implements IArtistService {
       }
 
       const albumsByArtistId = await this.getArtistAlbums(artist.id)
-      const artistHasAlbums = !_isEmpty(albumsByArtistId)
+      const artistHasAlbums = !isEmpty(albumsByArtistId)
 
       if (artistHasAlbums) {
         await this.albumService.deleteMany({ albums: albumsByArtistId })

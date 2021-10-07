@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes'
-import _pick from 'lodash/pick'
+import pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
 import { AlbumService, IAlbumService } from 'api/album/service'
@@ -36,7 +36,7 @@ class AlbumController implements IAlbumController {
         userId: user.userId,
       })
 
-      res.status(StatusCodes.OK).send(_pick(album, 'id'))
+      res.status(StatusCodes.OK).send(pick(album, 'id'))
     } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes'
-import _pick from 'lodash/pick'
+import pick from 'lodash/pick'
 
 import { IArtistController } from 'api/artist/controller'
 import { ArtistService, IArtistService } from 'api/artist/service'
@@ -48,7 +48,7 @@ class ArtistController implements IArtistController {
         userId: user.userId,
       })
 
-      const response = _pick(artist, 'id')
+      const response = pick(artist, 'id')
 
       res.status(StatusCodes.OK).send(response)
     } catch (error: any) {

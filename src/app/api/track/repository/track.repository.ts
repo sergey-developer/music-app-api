@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { TrackModel } from 'api/track/model'
 import { ITrackRepository } from 'api/track/repository'
@@ -27,7 +27,7 @@ class TrackRepository implements ITrackRepository {
       ? { album: { $in: filter.albumIds } }
       : {}
 
-    const albumFilter = _isEmpty(filterByAlbumsIds)
+    const albumFilter = isEmpty(filterByAlbumsIds)
       ? filterByAlbum
       : filterByAlbumsIds
 
@@ -55,7 +55,7 @@ class TrackRepository implements ITrackRepository {
   }
 
   public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
-    const idFilter = _isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
+    const idFilter = isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
     const deleteManyFilter = { ...idFilter }
 
     try {

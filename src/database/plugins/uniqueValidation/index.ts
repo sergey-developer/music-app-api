@@ -1,8 +1,8 @@
-import _get from 'lodash/get'
-import _isEmpty from 'lodash/isEmpty'
-import _keys from 'lodash/keys'
-import _reduce from 'lodash/reduce'
-import _set from 'lodash/set'
+import get from 'lodash/get'
+import isEmpty from 'lodash/isEmpty'
+import keys from 'lodash/keys'
+import reduce from 'lodash/reduce'
+import set from 'lodash/set'
 import { Schema } from 'mongoose'
 
 import { CustomDocument } from 'database/interface/document'
@@ -18,8 +18,8 @@ export default function uniqueValidation<T extends CustomDocument>(
   schema.post('save', function (error: any, doc: any, next: any) {
     const modelSchema = schema.obj
 
-    const objWithUniqueFields = _reduce(
-      _keys(modelSchema),
+    const objWithUniqueFields = reduce(
+      keys(modelSchema),
       (acc: Record<string, string>, fieldName) => {
         const fieldValue = modelSchema[fieldName]
         const uniqueValue = fieldValue.unique
@@ -36,19 +36,19 @@ export default function uniqueValidation<T extends CustomDocument>(
     if (duplicateErrorNames.includes(error.name) && error.code === 11000) {
       const objWithDuplicates = error.keyValue
 
-      const errors = _reduce(
-        _keys(objWithDuplicates),
+      const errors = reduce(
+        keys(objWithDuplicates),
         (acc: IValidationErrors, duplicateField) => {
-          const uniqueMsg = _get(objWithUniqueFields, duplicateField)
+          const uniqueMsg = get(objWithUniqueFields, duplicateField)
 
           if (uniqueMsg) {
-            const duplicateValue = _get(objWithDuplicates, duplicateField)
+            const duplicateValue = get(objWithDuplicates, duplicateField)
             const formattedUniqueMsg = uniqueMsg.replace(
               '{value}',
               `"${duplicateValue}"`,
             )
 
-            _set(acc, duplicateField, {
+            set(acc, duplicateField, {
               name: duplicateField,
               value: duplicateValue,
               message: formattedUniqueMsg,
@@ -60,7 +60,7 @@ export default function uniqueValidation<T extends CustomDocument>(
         {},
       )
 
-      if (!_isEmpty(errors)) {
+      if (!isEmpty(errors)) {
         next(new ValidationError('Model validation failed', errors))
       }
 

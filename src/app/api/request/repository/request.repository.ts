@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { RequestModel } from 'api/request/model'
 import { IRequestRepository } from 'api/request/repository'
@@ -66,7 +66,7 @@ class RequestRepository implements IRequestRepository {
     entityIds,
   }) => {
     try {
-      const filterByEntityIds = _isEmpty(entityIds)
+      const filterByEntityIds = isEmpty(entityIds)
         ? {}
         : { entity: { $in: entityIds } }
 

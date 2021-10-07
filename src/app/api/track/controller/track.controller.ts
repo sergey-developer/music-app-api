@@ -1,5 +1,5 @@
 import StatusCodes from 'http-status-codes'
-import _pick from 'lodash/pick'
+import pick from 'lodash/pick'
 
 import { ITrackController } from 'api/track/controller'
 import { ITrackService, TrackService } from 'api/track/service'
@@ -35,7 +35,7 @@ class TrackController implements ITrackController {
         userId: user.userId,
       })
 
-      const response = _pick(track, 'id')
+      const response = pick(track, 'id')
 
       res.status(StatusCodes.OK).send(response)
     } catch (error: any) {

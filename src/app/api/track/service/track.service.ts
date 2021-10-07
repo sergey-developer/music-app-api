@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import isEmpty from 'lodash/isEmpty'
 
 import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackRepository, TrackRepository } from 'api/track/repository'
@@ -29,7 +29,7 @@ class TrackService implements ITrackService {
 
   public getAll: ITrackService['getAll'] = async (filter) => {
     try {
-      return _isEmpty(filter)
+      return isEmpty(filter)
         ? this.trackRepository.findAll()
         : this.trackRepository.findAllWhere(filter)
     } catch (error) {
@@ -89,7 +89,7 @@ class TrackService implements ITrackService {
 
   public deleteMany: ITrackService['deleteMany'] = async (filter) => {
     try {
-      const trackIds = _isEmpty(filter.tracks)
+      const trackIds = isEmpty(filter.tracks)
         ? []
         : filter.tracks!.map((track) => track.id)
 
