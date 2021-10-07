@@ -1,8 +1,8 @@
-import { SessionModel } from 'api/session/model'
+import { ISessionModel, SessionModel } from 'api/session/model'
 import { ISessionRepository } from 'api/session/repository'
 
 class SessionRepository implements ISessionRepository {
-  private readonly session: typeof SessionModel
+  private readonly session: ISessionModel
 
   public constructor() {
     this.session = SessionModel

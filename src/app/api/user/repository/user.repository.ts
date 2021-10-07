@@ -1,8 +1,8 @@
-import { UserModel } from 'api/user/model'
+import { IUserModel, UserModel } from 'api/user/model'
 import { IUserRepository } from 'api/user/repository'
 
 class UserRepository implements IUserRepository {
-  private readonly user: typeof UserModel
+  private readonly user: IUserModel
 
   public constructor() {
     this.user = UserModel

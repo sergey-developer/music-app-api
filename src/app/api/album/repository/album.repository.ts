@@ -1,12 +1,18 @@
 import isEmpty from 'lodash/isEmpty'
 
-import { AlbumModel } from 'api/album/model'
+import { AlbumModel, IAlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
-import { createNotFoundError } from 'shared/utils/errors/httpErrors'
+import ErrorKindsEnum from 'shared/constants/errorKinds'
+import {
+  createBadRequestError,
+  createNotFoundError,
+  createServerError,
+  isBadRequestError,
+} from 'shared/utils/errors/httpErrors'
 
 class AlbumRepository implements IAlbumRepository {
-  private readonly album: typeof AlbumModel
+  private readonly album: IAlbumModel
 
   public constructor() {
     this.album = AlbumModel
@@ -16,7 +22,12 @@ class AlbumRepository implements IAlbumRepository {
     return this.album.find().exec()
   }
 
-  public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
+  public findAllWhere: IAlbumRepository['findAllWhere'] = async ({
+    artist,
+  }) => {
+    const filterByArtist = artist ? { artist } : {}
+    const filter = { ...filterByArtist }
+
     return this.album.find(filter).exec()
   }
 
@@ -25,9 +36,9 @@ class AlbumRepository implements IAlbumRepository {
     return album.save()
   }
 
-  public findOneById: IAlbumRepository['findOneById'] = async (id, options) => {
+  public findOneById: IAlbumRepository['findOneById'] = async (id) => {
     try {
-      const album = await this.album.findById(id, null, options).orFail().exec()
+      const album = await this.album.findById(id).orFail().exec()
       return album
     } catch (error) {
       throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
@@ -47,21 +58,21 @@ class AlbumRepository implements IAlbumRepository {
     }
   }
 
-  public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
-    if (isEmpty(filter)) return
-
-    const { ids } = filter
-
+  public deleteMany: IAlbumRepository['deleteMany'] = async ({ ids }) => {
     try {
       const idFilter = isEmpty(ids) ? {} : { _id: { $in: ids } }
 
-      const deleteManyFilter = { ...idFilter }
+      const filter = { ...idFilter }
 
-      if (isEmpty(deleteManyFilter)) return
+      if (isEmpty(filter)) {
+        throw createBadRequestError(null, {
+          kind: ErrorKindsEnum.EmptyFilter,
+        })
+      }
 
-      await this.album.deleteMany(deleteManyFilter)
+      await this.album.deleteMany(filter)
     } catch (error) {
-      throw error
+      throw isBadRequestError(error) ? error : createServerError()
     }
   }
 }

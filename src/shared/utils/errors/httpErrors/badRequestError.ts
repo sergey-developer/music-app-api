@@ -3,13 +3,14 @@ import StatusCodes from 'http-status-codes'
 
 import { CheckHttpError, CreateHttpError } from 'shared/utils/errors/httpErrors'
 
-const createBadRequestError: CreateHttpError = (
-  message = StatusCodes.getStatusText(StatusCodes.BAD_REQUEST),
-  props,
-) => {
+const defaultMessage = StatusCodes.getStatusText(StatusCodes.BAD_REQUEST)
+
+const createBadRequestError: CreateHttpError = (message, props) => {
+  const msg = message || defaultMessage
+
   return props
-    ? createError(StatusCodes.BAD_REQUEST, message, props)
-    : new createError.BadRequest(message)
+    ? createError(StatusCodes.BAD_REQUEST, msg, props)
+    : new createError.BadRequest(msg)
 }
 
 const isBadRequestError: CheckHttpError = (error) =>

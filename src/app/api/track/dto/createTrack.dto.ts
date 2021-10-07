@@ -19,7 +19,6 @@ class CreateTrackDto {
 
   @IsOptional()
   @IsUrl()
-  // TODO: validate url
   youtube?: string
 
   @IsMongoId()

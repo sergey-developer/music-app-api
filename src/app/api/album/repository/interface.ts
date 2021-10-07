@@ -1,5 +1,3 @@
-import { QueryOptions } from 'mongoose'
-
 import { IAlbumDocumentArray } from 'api/album/interface'
 import { IAlbumDocument } from 'api/album/model'
 import {
@@ -30,10 +28,7 @@ export interface IAlbumRepository {
     payload: ICreateOneAlbumRepositoryPayload,
   ) => Promise<IAlbumDocument>
 
-  findOneById: (
-    id: DocumentId,
-    options?: QueryOptions,
-  ) => Promise<IAlbumDocument>
+  findOneById: (id: DocumentId) => Promise<IAlbumDocument>
 
   deleteOneById: (id: DocumentId) => Promise<IAlbumDocument>
 

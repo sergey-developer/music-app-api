@@ -11,7 +11,6 @@ init()
 // TODO: Обработать везде ошибки и поставить тип ошибки в catch
 // TODO: сделать обновление request
 // TODO: remove props with undefined value from dto
-// TODO: сделать DocumentId = string
 
 // TODO: в dto вынести сообщения в константы и переиспользовать
 // TODO: для IsMongoId установить сообщение

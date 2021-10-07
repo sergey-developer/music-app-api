@@ -3,13 +3,14 @@ import StatusCodes from 'http-status-codes'
 
 import { CheckHttpError, CreateHttpError } from 'shared/utils/errors/httpErrors'
 
-const createUnauthorizedError: CreateHttpError = (
-  message = StatusCodes.getStatusText(StatusCodes.UNAUTHORIZED),
-  props,
-) => {
+const defaultMessage = StatusCodes.getStatusText(StatusCodes.UNAUTHORIZED)
+
+const createUnauthorizedError: CreateHttpError = (message, props) => {
+  const msg = message || defaultMessage
+
   return props
-    ? createError(StatusCodes.UNAUTHORIZED, message, props)
-    : new createError.Unauthorized(message)
+    ? createError(StatusCodes.UNAUTHORIZED, msg, props)
+    : new createError.Unauthorized(msg)
 }
 
 const isUnauthorizedError: CheckHttpError = (error) =>

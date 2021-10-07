@@ -1,11 +1,11 @@
 import { RequestStatusEnum } from 'api/request/constants'
 
 type CheckRequestStatusFn = (
-  checkingStatus: RequestStatusEnum,
+  status: RequestStatusEnum,
 ) => (status: RequestStatusEnum) => boolean
 
-const checkRequestStatus: CheckRequestStatusFn = (checkingStatus) => {
-  return (status) => status === checkingStatus
+const checkRequestStatus: CheckRequestStatusFn = (status) => {
+  return (anotherStatus) => status === anotherStatus
 }
 
 const isApprovedRequest = checkRequestStatus(RequestStatusEnum.Approved)

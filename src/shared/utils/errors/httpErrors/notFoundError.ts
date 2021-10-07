@@ -3,13 +3,14 @@ import StatusCodes from 'http-status-codes'
 
 import { CheckHttpError, CreateHttpError } from 'shared/utils/errors/httpErrors'
 
-const createNotFoundError: CreateHttpError = (
-  message = StatusCodes.getStatusText(StatusCodes.NOT_FOUND),
-  props,
-) => {
+const defaultMessage = StatusCodes.getStatusText(StatusCodes.NOT_FOUND)
+
+const createNotFoundError: CreateHttpError = (message, props) => {
+  const msg = message || defaultMessage
+
   return props
-    ? createError(StatusCodes.NOT_FOUND, message, props)
-    : new createError.NotFound(message)
+    ? createError(StatusCodes.NOT_FOUND, msg, props)
+    : new createError.NotFound(msg)
 }
 
 const isNotFoundError: CheckHttpError = (error) =>

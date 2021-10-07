@@ -1,5 +1,7 @@
 enum ErrorKindsEnum {
+  EmptyFilter = 'EmptyFilter',
   ValidationError = 'ValidationError',
+
   UnknownServerError = 'UnknownServerError', // TODO: delete
 }
 

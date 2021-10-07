@@ -1,10 +1,10 @@
-import { ArtistModel } from 'api/artist/model'
+import { ArtistModel, IArtistModel } from 'api/artist/model'
 import { IArtistRepository } from 'api/artist/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
 import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class ArtistRepository implements IArtistRepository {
-  private readonly artist: typeof ArtistModel
+  private readonly artist: IArtistModel
 
   public constructor() {
     this.artist = ArtistModel

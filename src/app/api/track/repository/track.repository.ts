@@ -1,12 +1,12 @@
 import isEmpty from 'lodash/isEmpty'
 
-import { TrackModel } from 'api/track/model'
+import { ITrackModel, TrackModel } from 'api/track/model'
 import { ITrackRepository } from 'api/track/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
 import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class TrackRepository implements ITrackRepository {
-  private readonly track: typeof TrackModel
+  private readonly track: ITrackModel
 
   public constructor() {
     this.track = TrackModel

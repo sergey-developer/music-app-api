@@ -1,12 +1,12 @@
 import isEmpty from 'lodash/isEmpty'
 
-import { RequestModel } from 'api/request/model'
+import { IRequestModel, RequestModel } from 'api/request/model'
 import { IRequestRepository } from 'api/request/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
 import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class RequestRepository implements IRequestRepository {
-  private readonly request: typeof RequestModel
+  private readonly request: IRequestModel
 
   public constructor() {
     this.request = RequestModel

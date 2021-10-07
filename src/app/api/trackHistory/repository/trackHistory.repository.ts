@@ -1,12 +1,12 @@
 import isEmpty from 'lodash/isEmpty'
 
-import { TrackHistoryModel } from 'api/trackHistory/model'
+import { ITrackHistoryModel, TrackHistoryModel } from 'api/trackHistory/model'
 import { ITrackHistoryRepository } from 'api/trackHistory/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
 import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryRepository implements ITrackHistoryRepository {
-  private readonly trackHistory: typeof TrackHistoryModel
+  private readonly trackHistory: ITrackHistoryModel
 
   public constructor() {
     this.trackHistory = TrackHistoryModel

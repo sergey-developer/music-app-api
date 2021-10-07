@@ -24,16 +24,17 @@ class TrackController implements ITrackController {
   }
 
   public createOne: ITrackController['createOne'] = async (req, res) => {
-    const user = req.user!
-
     try {
-      const track = await this.trackService.createOne({
+      const user = req.user!
+      const payload = {
         name: req.body.name,
         duration: req.body.duration,
         youtube: req.body.youtube,
         album: req.body.album,
         userId: user.userId,
-      })
+      }
+
+      const track = await this.trackService.createOne(payload)
 
       const response = pick(track, 'id')
 

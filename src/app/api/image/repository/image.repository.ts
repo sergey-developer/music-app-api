@@ -1,10 +1,10 @@
-import { ImageModel } from 'api/image/model'
+import { IImageModel, ImageModel } from 'api/image/model'
 import { IImageRepository } from 'api/image/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
 import { createNotFoundError } from 'shared/utils/errors/httpErrors'
 
 class ImageRepository implements IImageRepository {
-  private readonly image: typeof ImageModel
+  private readonly image: IImageModel
 
   public constructor() {
     this.image = ImageModel

@@ -1,11 +1,11 @@
 import { ModelNamesEnum } from 'database/constants'
 
 type CheckModelNameFn = (
-  checkingName: ModelNamesEnum,
+  name: ModelNamesEnum,
 ) => (name: ModelNamesEnum) => boolean
 
-const checkModelName: CheckModelNameFn = (checkingName) => {
-  return (name) => name === checkingName
+const checkModelName: CheckModelNameFn = (name) => {
+  return (anotherName) => name === anotherName
 }
 
 const isArtistModelName = checkModelName(ModelNamesEnum.Artist)

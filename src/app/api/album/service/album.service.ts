@@ -1,3 +1,4 @@
+import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocument } from 'api/album/model'
@@ -11,13 +12,17 @@ import { ModelNamesEnum } from 'database/constants'
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
+  isEmptyFilterError,
+  isValidationError,
+} from 'shared/utils/errors/checkErrorKind'
+import {
   createBadRequestError,
   createNotFoundError,
   createServerError,
+  isBadRequestError,
   isHttpError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
-import isValidationError from 'shared/utils/errors/isValidationError'
 
 class AlbumService implements IAlbumService {
   private readonly albumRepository: IAlbumRepository
@@ -66,8 +71,8 @@ class AlbumService implements IAlbumService {
         releaseDate: payload.releaseDate,
         artist: payload.artist,
       })
-    } catch (error: any) {
-      if (isValidationError(error)) {
+    } catch (error) {
+      if (isValidationError(error.name)) {
         throw createBadRequestError(error.message, {
           kind: ErrorKindsEnum.ValidationError,
           errors: error.errors,
@@ -147,23 +152,29 @@ class AlbumService implements IAlbumService {
   }
 
   public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
-    if (isEmpty(filter)) return
-
-    const albumsForDeleting = filter.albums || []
-
-    if (isEmpty(albumsForDeleting)) return
+    const albumsToDelete = get(filter, 'albums', [])
 
     const albumIds: DocumentIdArray = []
     const imageIds: DocumentIdArray = []
 
+    albumsToDelete.forEach((album) => {
+      albumIds.push(album.id)
+      if (album.image) imageIds.push(album.image as string)
+    })
+
     try {
-      albumsForDeleting.forEach((album) => {
-        albumIds.push(album.id)
-        if (album.image) imageIds.push(album.image as string)
-      })
-
       await this.albumRepository.deleteMany({ ids: albumIds })
+    } catch (error) {
+      if (isBadRequestError(error)) {
+        if (isEmptyFilterError(error.kind)) {
+          throw createBadRequestError('Can`t delete with empty filter')
+        }
+      }
 
+      throw createServerError('Error while deleting albums')
+    }
+
+    try {
       if (!isEmpty(imageIds)) {
         await this.imageService.deleteMany({ ids: imageIds })
       }
@@ -177,7 +188,7 @@ class AlbumService implements IAlbumService {
 
       await this.requestService.deleteMany({ entityIds: albumIds })
     } catch (error) {
-      throw createServerError()
+      throw createServerError('Error while deleting related objects of albums')
     }
   }
 }
