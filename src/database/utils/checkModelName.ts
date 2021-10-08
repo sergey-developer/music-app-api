@@ -1,15 +1,8 @@
 import { ModelNamesEnum } from 'database/constants'
+import { isSameString } from 'shared/utils/common'
 
-type CheckModelNameFn = (
-  name: ModelNamesEnum,
-) => (name: ModelNamesEnum) => boolean
-
-const checkModelName: CheckModelNameFn = (name) => {
-  return (anotherName) => name === anotherName
-}
-
-const isArtistModelName = checkModelName(ModelNamesEnum.Artist)
-const isAlbumModelName = checkModelName(ModelNamesEnum.Album)
-const isTrackModelName = checkModelName(ModelNamesEnum.Track)
+const isArtistModelName = isSameString(ModelNamesEnum.Artist)
+const isAlbumModelName = isSameString(ModelNamesEnum.Album)
+const isTrackModelName = isSameString(ModelNamesEnum.Track)
 
 export { isArtistModelName, isAlbumModelName, isTrackModelName }

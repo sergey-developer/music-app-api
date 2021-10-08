@@ -1,13 +1,6 @@
 import { RequestStatusEnum } from 'api/request/constants'
+import { isSameString } from 'shared/utils/common'
 
-type CheckRequestStatusFn = (
-  status: RequestStatusEnum,
-) => (status: RequestStatusEnum) => boolean
-
-const checkRequestStatus: CheckRequestStatusFn = (status) => {
-  return (anotherStatus) => status === anotherStatus
-}
-
-const isApprovedRequest = checkRequestStatus(RequestStatusEnum.Approved)
+const isApprovedRequest = isSameString(RequestStatusEnum.Approved)
 
 export { isApprovedRequest }
