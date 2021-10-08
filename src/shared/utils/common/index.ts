@@ -1,1 +1,1 @@
-export { default as isSameString } from './isSameString'
+export { default as checkString } from './checkString'

@@ -1,8 +1,8 @@
 import { ModelNamesEnum } from 'database/constants'
-import { isSameString } from 'shared/utils/common'
+import { checkString } from 'shared/utils/common'
 
-const isArtistModelName = isSameString(ModelNamesEnum.Artist)
-const isAlbumModelName = isSameString(ModelNamesEnum.Album)
-const isTrackModelName = isSameString(ModelNamesEnum.Track)
+const isArtistModelName = checkString(ModelNamesEnum.Artist)
+const isAlbumModelName = checkString(ModelNamesEnum.Album)
+const isTrackModelName = checkString(ModelNamesEnum.Track)
 
 export { isArtistModelName, isAlbumModelName, isTrackModelName }

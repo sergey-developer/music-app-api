@@ -1,5 +1,5 @@
-const isSameString = (value: string) => {
+const checkString = (value: string) => {
   return (anotherValue: string): boolean => value === anotherValue
 }
 
-export default isSameString
+export default checkString

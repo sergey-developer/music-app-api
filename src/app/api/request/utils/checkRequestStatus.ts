@@ -1,6 +1,6 @@
 import { RequestStatusEnum } from 'api/request/constants'
-import { isSameString } from 'shared/utils/common'
+import { checkString } from 'shared/utils/common'
 
-const isApprovedRequest = isSameString(RequestStatusEnum.Approved)
+const isApprovedRequest = checkString(RequestStatusEnum.Approved)
 
 export { isApprovedRequest }

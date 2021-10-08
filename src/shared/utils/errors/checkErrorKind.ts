@@ -1,7 +1,7 @@
 import ErrorKindsEnum from 'shared/constants/errorKinds'
-import { isSameString } from 'shared/utils/common'
+import { checkString } from 'shared/utils/common'
 
-const isEmptyFilterError = isSameString(ErrorKindsEnum.EmptyFilter)
-const isValidationError = isSameString(ErrorKindsEnum.ValidationError)
+const isEmptyFilterError = checkString(ErrorKindsEnum.EmptyFilter)
+const isValidationError = checkString(ErrorKindsEnum.ValidationError)
 
 export { isEmptyFilterError, isValidationError }
