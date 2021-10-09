@@ -3,13 +3,17 @@ import {
   TrackHistoryRepository,
 } from 'api/trackHistory/repository'
 import { ITrackHistoryService } from 'api/trackHistory/service'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
-  createNotFoundError,
-  createServerError,
+  isEmptyFilterError,
+  isValidationError,
+} from 'shared/utils/errors/checkErrorKind'
+import {
+  badRequestError,
+  isBadRequestError,
   isNotFoundError,
+  notFoundError,
+  serverError,
 } from 'shared/utils/errors/httpErrors'
-import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
 
 class TrackHistoryService implements ITrackHistoryService {
   private readonly trackHistoryRepository: ITrackHistoryRepository
@@ -22,43 +26,41 @@ class TrackHistoryService implements ITrackHistoryService {
     try {
       return this.trackHistoryRepository.findAllWhere(filter)
     } catch (error) {
-      throw error
+      throw serverError('Error while getting tracks`s histories')
     }
   }
 
   public createOne: ITrackHistoryService['createOne'] = async (payload) => {
     try {
-      const trackHistory = await this.trackHistoryRepository.createOne(payload)
+      const trackHistory = await this.trackHistoryRepository.createOne({
+        ...payload,
+        listenDate: new Date().toISOString(),
+      })
 
       return trackHistory
-    } catch (error: any) {
-      // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
-      if (error.name === ErrorKindsEnum.ValidationError) {
-        throw new BadRequestResponse(error.name, error.message, {
+    } catch (error) {
+      // TODO: протестировать ошибку валидации
+      if (isValidationError(error.name)) {
+        throw badRequestError(error.message, {
+          kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw new ServerErrorResponse(
-        ErrorKindsEnum.UnknownServerError,
-        'Error was occurred while creating Track history',
-      )
+      throw serverError('Error while creating new track history')
     }
   }
 
   public deleteOneById: ITrackHistoryService['deleteOneById'] = async (id) => {
     try {
       const trackHistory = await this.trackHistoryRepository.deleteOneById(id)
-
       return trackHistory
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw createNotFoundError(`Track history with id "${id}" was not found`)
+        throw notFoundError(`Track history with id "${id}" was not found`)
       }
 
-      throw createServerError(
-        `Error while deleting track history by id "${id}"`,
-      )
+      throw serverError(`Error while deleting track history by id "${id}"`)
     }
   }
 
@@ -66,8 +68,15 @@ class TrackHistoryService implements ITrackHistoryService {
     try {
       await this.trackHistoryRepository.deleteMany(filter)
     } catch (error) {
-      throw error
-      // TODO: handle error
+      if (isBadRequestError(error)) {
+        if (isEmptyFilterError(error.kind)) {
+          throw badRequestError(
+            'Deleting many tracks`s histories with empty filter forbidden',
+          )
+        }
+      }
+
+      throw serverError('Error while deleting many tracks`s histories')
     }
   }
 }

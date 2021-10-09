@@ -15,8 +15,7 @@ const TrackHistorySchema = new Schema<
   ITrackHistoryDocument
 >({
   listenDate: {
-    // TODO: валидировать это в dto или ставить по умолчанию как ISOString
-    type: Date,
+    type: String,
     required: true,
   },
   track: {

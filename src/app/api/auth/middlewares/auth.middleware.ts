@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
+import set from 'lodash/set'
 
+import { isJwtError } from 'api/auth/utils'
 import { SessionService } from 'api/session/service'
 import { verifyToken } from 'api/session/utils'
 import { envConfig } from 'configs/env'
 import {
-  createServerError,
-  createUnauthorizedError,
-  isUnauthorizedError,
+  ensureHttpError,
+  unauthorizedError,
 } from 'shared/utils/errors/httpErrors'
 
 const auth = async <Req extends Request, Res extends Response>(
@@ -14,32 +15,29 @@ const auth = async <Req extends Request, Res extends Response>(
   res: Res,
   next: NextFunction,
 ) => {
-  const token = req.cookies.token
-
   try {
-    if (!token) {
-      throw createUnauthorizedError('Token was not provided')
-    }
+    // TODO: set type for cookies
+    const token = req.cookies.token
 
-    const payload = verifyToken(token, envConfig.app.tokenSecret)
-    const session = await SessionService.getOneByToken(token)
+    if (!token) throw unauthorizedError('Token was not provided')
 
-    if (!session) {
-      throw createUnauthorizedError()
-    }
+    const jwtPayload = verifyToken(token, envConfig.app.tokenSecret)
 
-    req.user = payload
+    await SessionService.getOneByToken(token)
+
+    set(req, 'user', jwtPayload)
     next()
-  } catch (error: any) {
-    if (isUnauthorizedError(error)) {
+  } catch (exception) {
+    let error
+
+    if (isJwtError(exception)) {
+      error = unauthorizedError('Invalid token')
       res.status(error.status).send(error)
       return
     }
 
-    // TODO: handle error: invalid token
-
-    const serverError = createServerError()
-    res.status(serverError.status).send(serverError)
+    error = ensureHttpError(exception)
+    res.status(error.status).send(error)
   }
 }
 

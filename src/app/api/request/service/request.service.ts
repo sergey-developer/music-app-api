@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty'
+
 import { IAlbumDocument } from 'api/album/model'
 import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
@@ -13,10 +15,13 @@ import {
   isArtistModelName,
   isTrackModelName,
 } from 'database/utils/checkModelName'
+import { isEmptyFilterError } from 'shared/utils/errors/checkErrorKind'
 import {
-  createNotFoundError,
-  createServerError,
+  badRequestError,
+  isBadRequestError,
   isNotFoundError,
+  notFoundError,
+  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class RequestService implements IRequestService {
@@ -25,7 +30,7 @@ class RequestService implements IRequestService {
   private readonly albumService: IAlbumService
   private readonly trackService: ITrackService
 
-  private deleteWithEntity = async (
+  private deleteViaEntity = async (
     request: IRequestDocument,
   ): Promise<void> => {
     try {
@@ -49,7 +54,7 @@ class RequestService implements IRequestService {
         await this.trackService.deleteOneById(entityId)
       }
     } catch (error) {
-      throw createServerError()
+      throw serverError()
     }
   }
 
@@ -62,9 +67,11 @@ class RequestService implements IRequestService {
 
   public getAll: IRequestService['getAll'] = async (filter) => {
     try {
-      return this.requestRepository.findAllWhere(filter)
+      return isEmpty(filter)
+        ? this.requestRepository.findAll()
+        : this.requestRepository.findAllWhere(filter)
     } catch (error) {
-      throw error
+      throw serverError('Error while getting requests')
     }
   }
 
@@ -76,34 +83,39 @@ class RequestService implements IRequestService {
         creator: payload.creator,
       })
     } catch (error) {
-      throw error
-      // TODO: handle error
+      throw serverError('Error while creating new request')
     }
   }
 
   public deleteOneWithEntity: IRequestService['deleteOneWithEntity'] = async (
     requestId,
   ) => {
-    try {
-      const request = await this.requestRepository.findOneById(requestId)
+    let request: IRequestDocument
 
+    try {
+      request = await this.requestRepository.findOneById(requestId)
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        throw notFoundError(`Request with id "${requestId}" was not found`)
+      }
+
+      throw serverError(`Error while deleting request by id "${requestId}"`)
+    }
+
+    try {
       if (isApprovedRequest(request.status)) {
         await this.deleteOne({ id: requestId })
       } else {
-        await this.deleteWithEntity(request)
+        await this.deleteViaEntity(request)
       }
 
       return request
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw createNotFoundError(
-          `Request with id "${requestId}" was not found`,
-        )
+        throw notFoundError(`Request with id "${requestId}" was not found`)
       }
 
-      throw createServerError(
-        `Error while deleting request by id "${requestId}"`,
-      )
+      throw serverError(`Error while deleting request by id "${requestId}"`)
     }
   }
 
@@ -113,10 +125,10 @@ class RequestService implements IRequestService {
       return request
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw createNotFoundError('Request was not found')
+        throw notFoundError('Request was not found')
       }
 
-      throw createServerError('Error while deleting request')
+      throw serverError('Error while deleting request')
     }
   }
 
@@ -124,7 +136,15 @@ class RequestService implements IRequestService {
     try {
       await this.requestRepository.deleteMany(filter)
     } catch (error) {
-      throw createServerError()
+      if (isBadRequestError(error)) {
+        if (isEmptyFilterError(error.kind)) {
+          throw badRequestError(
+            'Deleting many requests with empty filter forbidden',
+          )
+        }
+      }
+
+      throw serverError('Error while deleting many requests')
     }
   }
 }

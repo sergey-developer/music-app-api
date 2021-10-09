@@ -1,9 +1,10 @@
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
 import { IArtistController } from 'api/artist/controller'
 import { ArtistService, IArtistService } from 'api/artist/service'
 import { RequestStatusEnum } from 'api/request/constants'
+import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
 class ArtistController implements IArtistController {
   private readonly artistService: IArtistService
@@ -30,29 +31,30 @@ class ArtistController implements IArtistController {
       }
 
       res.status(StatusCodes.OK).send(artists)
-    } catch (error: any) {
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .send({ message: error.message })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
   public createOne: IArtistController['createOne'] = async (req, res) => {
-    const user = req.user!
-
     try {
+      const user = req.user!
+      const { name, info, photo } = req.body
+
       const artist = await this.artistService.createOne({
-        name: req.body.name,
-        info: req.body.info,
-        photo: req.body.photo,
+        name,
+        info,
+        photo,
         userId: user.userId,
       })
 
-      const response = pick(artist, 'id')
+      const result = pick(artist, 'id')
 
-      res.status(StatusCodes.OK).send(response)
-    } catch (error: any) {
-      res.status(error.statusCode).send(error)
+      res.status(StatusCodes.CREATED).send(result)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -68,7 +70,8 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Artist was successfully deleted' })
-    } catch (error) {
+    } catch (exception) {
+      const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }

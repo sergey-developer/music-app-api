@@ -1,15 +1,20 @@
 import runApp from 'app/runApp'
-import { connectDb } from 'database/connection'
+import { connectDatabase } from 'database/connection'
 
 const init = async () => {
-  await connectDb()
+  await connectDatabase()
   runApp()
 }
 
 init()
 
 // TODO: Обработать везде ошибки
-//  (обработал: album repo/service)
+//  (обработал: album, artist, track, request, track history, user, session, image)
+//  (не обработал: только auth.signup остальное обработал)
+
+// TODO: получать и создавать все альбомы и трэки так же как артистов
+// TODO: Настроить логирование ошибок и т.п. (в файл?)
+
 // TODO: сделать обновление request
 // TODO: remove props with undefined value from dto
 
@@ -20,8 +25,6 @@ init()
 //  при удалении, not found и т.д.
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
 // TODO: настроить выдачу статических файлов (express.static)
-
-// TODO: получать все альбомы и трэки так же как артистов
 
 // TODO: Исп-ть либу для валидации unique
 // TODO: Создать модель Social (для ссылок на youtube и т.д.)
@@ -43,5 +46,4 @@ init()
 // TODO: установить логин пароль для базы данных
 // TODO: Написать тесты
 // TODO: Настроить production режим
-// TODO: Настроить логирование ошибок и т.п. (в файл?)
 // TODO: Swagger подключить и генерирование типов для него

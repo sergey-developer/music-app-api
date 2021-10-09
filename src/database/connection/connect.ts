@@ -2,9 +2,9 @@ import { connect } from 'mongoose'
 
 import { dbConfig } from 'configs/db'
 
-const connectDb = async () => {
+const connectDatabase = async () => {
   try {
-    await connect(dbConfig.dbURL, {
+    await connect(dbConfig.url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
@@ -17,4 +17,4 @@ const connectDb = async () => {
   }
 }
 
-export default connectDb
+export default connectDatabase

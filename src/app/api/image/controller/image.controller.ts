@@ -1,8 +1,12 @@
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
 import { IImageController } from 'api/image/controller'
 import { IImageService, ImageService } from 'api/image/service'
+import {
+  badRequestError,
+  ensureHttpError,
+} from 'shared/utils/errors/httpErrors'
 
 class ImageController implements IImageController {
   private readonly imageService: IImageService
@@ -15,17 +19,15 @@ class ImageController implements IImageController {
     const file = req.file
 
     try {
-      if (file) {
-        const image = await this.imageService.createOne(file)
-        const response = pick(image, 'id', 'src')
+      if (!file) throw badRequestError('File was not provided')
 
-        res.status(StatusCodes.OK).send(response)
-        return
-      }
+      const image = await this.imageService.createOne(file)
+      const result = pick(image, 'id', 'src')
 
-      throw new Error('handle error') // TODO: handle error
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
+      res.status(StatusCodes.CREATED).send(result)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -39,8 +41,9 @@ class ImageController implements IImageController {
       await this.imageService.deleteOneById(imageId)
 
       res.sendStatus(StatusCodes.OK)
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 }

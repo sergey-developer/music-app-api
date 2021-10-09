@@ -1,4 +1,4 @@
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
@@ -18,26 +18,29 @@ class AlbumController implements IAlbumController {
     try {
       const albums = await this.albumService.getAll(filter)
       res.status(StatusCodes.OK).send(albums)
-    } catch (exception: any) {
+    } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }
 
   public createOne: IAlbumController['createOne'] = async (req, res) => {
-    const user = req.user!
-
     try {
+      const user = req.user!
+      const { name, image, releaseDate, artist } = req.body
+
       const album = await this.albumService.createOne({
-        name: req.body.name,
-        image: req.body.image,
-        releaseDate: req.body.releaseDate,
-        artist: req.body.artist,
+        name,
+        image,
+        releaseDate,
+        artist,
         userId: user.userId,
       })
 
-      res.status(StatusCodes.OK).send(pick(album, 'id'))
-    } catch (exception: any) {
+      const result = pick(album, 'id')
+
+      res.status(StatusCodes.CREATED).send(result)
+    } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -49,7 +52,7 @@ class AlbumController implements IAlbumController {
     try {
       const album = await this.albumService.getOneById(albumId)
       res.status(StatusCodes.OK).send(album)
-    } catch (exception: any) {
+    } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -67,7 +70,7 @@ class AlbumController implements IAlbumController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Album was successfully deleted' })
-    } catch (exception: any) {
+    } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }

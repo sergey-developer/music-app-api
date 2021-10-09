@@ -4,14 +4,10 @@ import {
   CreateTrackHistoryDto,
   DeleteOneTrackHistoryByIdParams,
 } from 'api/trackHistory/dto'
-import { ITrackHistoryDocumentArray } from 'api/trackHistory/interface'
-import { ControllerResult, ResBody } from 'shared/interface/response'
+import { ControllerResult } from 'shared/interface/response'
 
 export interface ITrackHistoryController {
-  getAll: (
-    req: Request,
-    res: Response<ResBody<ITrackHistoryDocumentArray>>,
-  ) => ControllerResult
+  getAll: (req: Request, res: Response) => ControllerResult
 
   createOne: (
     req: Request<any, any, CreateTrackHistoryDto>,

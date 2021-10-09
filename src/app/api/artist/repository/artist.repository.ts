@@ -1,7 +1,11 @@
-import { ArtistModel, IArtistModel } from 'api/artist/model'
+import isEmpty from 'lodash/isEmpty'
+import { FilterQuery } from 'mongoose'
+
+import { ArtistModel, IArtistDocument, IArtistModel } from 'api/artist/model'
 import { IArtistRepository } from 'api/artist/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
-import { createNotFoundError } from 'shared/utils/errors/httpErrors'
+import { omitUndefined } from 'shared/utils/common'
+import { notFoundError } from 'shared/utils/errors/httpErrors'
 
 class ArtistRepository implements IArtistRepository {
   private readonly artist: IArtistModel
@@ -15,7 +19,15 @@ class ArtistRepository implements IArtistRepository {
   }
 
   public findAllWhere: IArtistRepository['findAllWhere'] = async (filter) => {
-    return this.artist.find({ _id: { $in: filter.ids } }).exec()
+    const { ids }: typeof filter = omitUndefined(filter)
+
+    const filterById: FilterQuery<IArtistDocument> = isEmpty(ids)
+      ? {}
+      : { _id: { $in: ids } }
+
+    const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
+
+    return this.artist.find(filterToApply).exec()
   }
 
   public createOne: IArtistRepository['createOne'] = async (payload) => {
@@ -32,7 +44,7 @@ class ArtistRepository implements IArtistRepository {
 
       return deletedArtist
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 }

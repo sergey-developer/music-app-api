@@ -6,6 +6,7 @@ import {
   Length,
 } from 'class-validator'
 
+import { DocumentId } from 'database/interface/document'
 import { stringMessages } from 'shared/constants/validator'
 
 class CreateAlbumDto {
@@ -22,10 +23,10 @@ class CreateAlbumDto {
 
   @IsOptional()
   @IsMongoId()
-  image?: string
+  image?: DocumentId
 
   @IsMongoId()
-  artist!: string
+  artist!: DocumentId
 }
 
 export default CreateAlbumDto

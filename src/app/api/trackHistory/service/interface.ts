@@ -11,7 +11,6 @@ export interface IGetAllTrackHistoryServiceFilter {
 export interface ICreateTrackHistoryServicePayload
   extends CreateTrackHistoryDto {
   userId: DocumentId
-  listenDate: Date
 }
 
 export interface ITrackHistoryService {

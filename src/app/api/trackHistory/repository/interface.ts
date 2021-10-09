@@ -15,7 +15,9 @@ export interface IDeleteManyTrackHistoryRepositoryFilter
   }> {}
 
 export interface ICreateTrackHistoryRepositoryPayload
-  extends ICreateTrackHistoryServicePayload {}
+  extends ICreateTrackHistoryServicePayload {
+  listenDate: string
+}
 
 export interface ITrackHistoryRepository {
   findAllWhere: (

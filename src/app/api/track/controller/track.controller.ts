@@ -1,8 +1,9 @@
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
 import { ITrackController } from 'api/track/controller'
 import { ITrackService, TrackService } from 'api/track/service'
+import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
 class TrackController implements ITrackController {
   private readonly trackService: ITrackService
@@ -16,31 +17,32 @@ class TrackController implements ITrackController {
 
     try {
       const tracks = await this.trackService.getAll(filter)
-
       res.status(StatusCodes.OK).send(tracks)
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
   public createOne: ITrackController['createOne'] = async (req, res) => {
     try {
       const user = req.user!
-      const payload = {
-        name: req.body.name,
-        duration: req.body.duration,
-        youtube: req.body.youtube,
-        album: req.body.album,
+      const { name, duration, youtube, album } = req.body
+
+      const track = await this.trackService.createOne({
+        name,
+        duration,
+        youtube,
+        album,
         userId: user.userId,
-      }
+      })
 
-      const track = await this.trackService.createOne(payload)
+      const result = pick(track, 'id')
 
-      const response = pick(track, 'id')
-
-      res.status(StatusCodes.OK).send(response)
-    } catch (error: any) {
-      res.status(error.statusCode).send(error)
+      res.status(StatusCodes.CREATED).send(result)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -56,7 +58,8 @@ class TrackController implements ITrackController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Track was successfully deleted' })
-    } catch (error) {
+    } catch (exception) {
+      const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }

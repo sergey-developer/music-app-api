@@ -1,9 +1,21 @@
 import isEmpty from 'lodash/isEmpty'
+import { FilterQuery } from 'mongoose'
 
-import { ITrackHistoryModel, TrackHistoryModel } from 'api/trackHistory/model'
+import {
+  ITrackHistoryDocument,
+  ITrackHistoryModel,
+  TrackHistoryModel,
+} from 'api/trackHistory/model'
 import { ITrackHistoryRepository } from 'api/trackHistory/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
-import { createNotFoundError } from 'shared/utils/errors/httpErrors'
+import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { omitUndefined } from 'shared/utils/common'
+import {
+  badRequestError,
+  isBadRequestError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryRepository implements ITrackHistoryRepository {
   private readonly trackHistory: ITrackHistoryModel
@@ -34,25 +46,33 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
 
       return deletedTrackHistory
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
   public deleteMany: ITrackHistoryRepository['deleteMany'] = async (filter) => {
-    if (isEmpty(filter)) return
-
-    const filterByTrack = isEmpty(filter.trackIds)
-      ? {}
-      : { track: { $in: filter.trackIds! } }
-
-    const deleteManyFilter = { ...filterByTrack }
-
-    if (isEmpty(deleteManyFilter)) return
-
     try {
-      await this.trackHistory.deleteMany(deleteManyFilter)
+      const { trackIds }: typeof filter = omitUndefined(filter)
+
+      const filterByTrack: FilterQuery<ITrackHistoryDocument> = isEmpty(
+        trackIds,
+      )
+        ? {}
+        : { track: { $in: trackIds } }
+
+      const filterToApply: FilterQuery<ITrackHistoryDocument> = {
+        ...filterByTrack,
+      }
+
+      if (isEmpty(filterToApply)) {
+        throw badRequestError(null, {
+          kind: ErrorKindsEnum.EmptyFilter,
+        })
+      }
+
+      await this.trackHistory.deleteMany(filterToApply)
     } catch (error) {
-      throw error
+      throw isBadRequestError(error) ? error : serverError()
     }
   }
 }

@@ -1,10 +1,11 @@
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
 import { ITrackHistoryController } from 'api/trackHistory/controller'
 import {
   ITrackHistoryService,
   TrackHistoryService,
 } from 'api/trackHistory/service'
+import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryController implements ITrackHistoryController {
   private readonly trackHistoryService: ITrackHistoryService
@@ -14,32 +15,34 @@ class TrackHistoryController implements ITrackHistoryController {
   }
 
   public getAll: ITrackHistoryController['getAll'] = async (req, res) => {
-    const user = req.user!
-
     try {
+      const user = req.user!
+
       const trackHistory = await this.trackHistoryService.getAll({
         userId: user.userId,
       })
 
       res.status(StatusCodes.OK).send(trackHistory)
-    } catch (error) {
-      res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
   public createOne: ITrackHistoryController['createOne'] = async (req, res) => {
-    const user = req.user!
-
     try {
+      const user = req.user!
+      const { track } = req.body
+
       await this.trackHistoryService.createOne({
+        track,
         userId: user.userId,
-        track: req.body.track,
-        listenDate: new Date(),
       })
 
       res.sendStatus(StatusCodes.CREATED)
-    } catch (error: any) {
-      res.status(error.statusCode).send(error)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -55,7 +58,8 @@ class TrackHistoryController implements ITrackHistoryController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Track history was successfully deleted' })
-    } catch (error) {
+    } catch (exception) {
+      const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }

@@ -1,14 +1,16 @@
 import { IUserDocument } from 'api/user/model'
 import { ICreateUserServicePayload } from 'api/user/service'
-import { MaybeNull } from 'shared/interface/utils/common'
 
 export interface ICreateUserRepositoryPayload
   extends ICreateUserServicePayload {}
 
+export interface IFindOneUserRepositoryFilter
+  extends Partial<{
+    email: IUserDocument['email']
+  }> {}
+
 export interface IUserRepository {
   create: (payload: ICreateUserRepositoryPayload) => Promise<IUserDocument>
 
-  findOneByEmail: (
-    email: IUserDocument['email'],
-  ) => Promise<MaybeNull<IUserDocument>>
+  findOne: (filter: IFindOneUserRepositoryFilter) => Promise<IUserDocument>
 }

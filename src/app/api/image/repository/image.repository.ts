@@ -1,7 +1,16 @@
+import isEmpty from 'lodash/isEmpty'
+
 import { IImageModel, ImageModel } from 'api/image/model'
 import { IImageRepository } from 'api/image/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
-import { createNotFoundError } from 'shared/utils/errors/httpErrors'
+import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { omitUndefined } from 'shared/utils/common'
+import {
+  badRequestError,
+  isBadRequestError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class ImageRepository implements IImageRepository {
   private readonly image: IImageModel
@@ -11,13 +20,13 @@ class ImageRepository implements IImageRepository {
   }
 
   public createOne: IImageRepository['createOne'] = async (payload) => {
-    const newArtist = new this.image({
+    const image = new this.image({
       src: payload.path,
       fileName: payload.filename,
       originalName: payload.originalname,
     })
 
-    return newArtist.save()
+    return image.save()
   }
 
   public deleteOneById: IImageRepository['deleteOneById'] = async (id) => {
@@ -29,16 +38,26 @@ class ImageRepository implements IImageRepository {
 
       return deletedImage
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
   public deleteMany: IImageRepository['deleteMany'] = async (filter) => {
     try {
-      const filterById = filter.ids?.length ? { _id: { $in: filter.ids } } : {}
-      await this.image.deleteMany({ ...filterById })
+      const { ids }: typeof filter = omitUndefined(filter)
+
+      const filterById = isEmpty(ids) ? {} : { _id: { $in: ids } }
+      const filterToApply = { ...filterById }
+
+      if (isEmpty(filterToApply)) {
+        throw badRequestError(null, {
+          kind: ErrorKindsEnum.EmptyFilter,
+        })
+      }
+
+      await this.image.deleteMany(filterToApply)
     } catch (error) {
-      throw error
+      throw isBadRequestError(error) ? error : serverError()
     }
   }
 }

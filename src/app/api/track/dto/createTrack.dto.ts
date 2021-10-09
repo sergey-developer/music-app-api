@@ -1,5 +1,6 @@
 import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 
+import { DocumentId } from 'database/interface/document'
 import { stringMessages } from 'shared/constants/validator'
 
 class CreateTrackDto {
@@ -22,7 +23,7 @@ class CreateTrackDto {
   youtube?: string
 
   @IsMongoId()
-  album!: string
+  album!: DocumentId
 }
 
 export default CreateTrackDto

@@ -1,7 +1,12 @@
 import { IUserRepository, UserRepository } from 'api/user/repository'
 import { IUserService } from 'api/user/service'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
-import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
+import {
+  badRequestError,
+  isNotFoundError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class UserService implements IUserService {
   private readonly userRepository: IUserRepository
@@ -14,27 +19,28 @@ class UserService implements IUserService {
     try {
       const user = await this.userRepository.create(payload)
       return user
-    } catch (error: any) {
-      // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
-      if (error.name === ErrorKindsEnum.ValidationError) {
-        throw new BadRequestResponse(error.name, error.message, {
+    } catch (error) {
+      if (isValidationError(error.name)) {
+        throw badRequestError(error.message, {
+          kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw new ServerErrorResponse(
-        ErrorKindsEnum.UnknownServerError,
-        'Error was occurred while creating User',
-      )
+      throw serverError('Error while creating new user')
     }
   }
 
   public getOneByEmail: IUserService['getOneByEmail'] = async (email) => {
     try {
-      const user = await this.userRepository.findOneByEmail(email)
+      const user = await this.userRepository.findOne({ email })
       return user
     } catch (error) {
-      throw error
+      if (isNotFoundError(error)) {
+        throw notFoundError(`User with email "${email}" was not found`)
+      }
+
+      throw serverError(`Error while getting user by email "${email}"`)
     }
   }
 }

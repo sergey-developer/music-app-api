@@ -5,7 +5,7 @@ import {
 } from 'class-transformer-validator'
 import { RequestHandler } from 'express'
 import createError from 'http-errors'
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 

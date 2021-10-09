@@ -1,9 +1,21 @@
 import isEmpty from 'lodash/isEmpty'
+import { FilterQuery } from 'mongoose'
 
-import { IRequestModel, RequestModel } from 'api/request/model'
+import {
+  IRequestDocument,
+  IRequestModel,
+  RequestModel,
+} from 'api/request/model'
 import { IRequestRepository } from 'api/request/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
-import { createNotFoundError } from 'shared/utils/errors/httpErrors'
+import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { omitUndefined } from 'shared/utils/common'
+import {
+  badRequestError,
+  isBadRequestError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class RequestRepository implements IRequestRepository {
   private readonly request: IRequestModel
@@ -12,17 +24,38 @@ class RequestRepository implements IRequestRepository {
     this.request = RequestModel
   }
 
-  public findAllWhere: IRequestRepository['findAllWhere'] = async (filter) => {
-    // TODO: refactor
-    const entityNameCond = filter.kind ? { entityName: filter.kind } : {}
-    const statusCond = filter.status ? { status: filter.status } : {}
-    const creatorCond = filter.creator ? { creator: filter.creator } : {}
+  public findAll: IRequestRepository['findAll'] = async () => {
+    return this.request.find().exec()
+  }
 
-    return this.request
-      .find({
-        $and: [entityNameCond, statusCond, creatorCond],
-      })
-      .exec()
+  public findAllWhere: IRequestRepository['findAllWhere'] = async (filter) => {
+    const { status, creator, kind }: typeof filter = omitUndefined(filter)
+
+    const filterByEntityName: FilterQuery<IRequestDocument> = kind
+      ? { entityName: kind }
+      : {}
+
+    const filterByStatus: FilterQuery<IRequestDocument> = status
+      ? { status }
+      : {}
+
+    const filterByCreator: FilterQuery<IRequestDocument> = creator
+      ? { creator }
+      : {}
+
+    const andConditions: Array<FilterQuery<IRequestDocument>> = []
+
+    if (!isEmpty(filterByEntityName)) andConditions.push(filterByEntityName)
+    if (!isEmpty(filterByStatus)) andConditions.push(filterByStatus)
+    if (!isEmpty(filterByCreator)) andConditions.push(filterByCreator)
+
+    const andFilter: FilterQuery<IRequestDocument> = isEmpty(andConditions)
+      ? {}
+      : { $and: andConditions }
+
+    const filterToApply: FilterQuery<IRequestDocument> = { ...andFilter }
+
+    return this.request.find(filterToApply).exec()
   }
 
   public createOne: IRequestRepository['createOne'] = async (payload) => {
@@ -35,45 +68,56 @@ class RequestRepository implements IRequestRepository {
       const request = await this.request.findById(id).orFail().exec()
       return request
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
-  public deleteOne: IRequestRepository['deleteOne'] = async ({
-    id,
-    entityId,
-  }) => {
+  public deleteOne: IRequestRepository['deleteOne'] = async (filter) => {
     try {
-      const filterById = id ? { _id: id } : {}
-      const filterByEntity = entityId ? { entity: entityId } : {}
-      const filter = { ...filterById, ...filterByEntity }
+      const { id, entityId }: typeof filter = omitUndefined(filter)
 
-      // TODO: handle case when filter is empty
+      const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
+
+      const filterByEntity: FilterQuery<IRequestDocument> = entityId
+        ? { entity: entityId }
+        : {}
+
+      const filterToApply: FilterQuery<IRequestDocument> = {
+        ...filterById,
+        ...filterByEntity,
+      }
+
       const request = await this.request
-        .findOneAndDelete(filter)
+        .findOneAndDelete(filterToApply)
         .orFail()
         .populate('entity')
         .exec()
 
       return request
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
-  public deleteMany: IRequestRepository['deleteMany'] = async ({
-    entityIds,
-  }) => {
+  public deleteMany: IRequestRepository['deleteMany'] = async (filter) => {
     try {
-      const filterByEntityIds = isEmpty(entityIds)
+      const { entityIds }: typeof filter = omitUndefined(filter)
+
+      const filterByEntity: FilterQuery<IRequestDocument> = isEmpty(entityIds)
         ? {}
         : { entity: { $in: entityIds } }
 
-      const filter = { ...filterByEntityIds }
+      const filterToApply: FilterQuery<IRequestDocument> = { ...filterByEntity }
 
-      await this.request.deleteMany(filter)
+      if (isEmpty(filterToApply)) {
+        throw badRequestError(null, {
+          kind: ErrorKindsEnum.EmptyFilter,
+        })
+      }
+
+      await this.request.deleteMany(filterToApply)
     } catch (error) {
-      throw error
+      throw isBadRequestError(error) ? error : serverError()
     }
   }
 }

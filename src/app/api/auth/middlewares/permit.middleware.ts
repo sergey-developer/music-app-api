@@ -1,19 +1,27 @@
 import { RequestHandler } from 'express'
-import StatusCodes from 'http-status-codes'
 
 import { UserRoleEnum } from 'api/user/interface'
+import {
+  forbiddenError,
+  unauthorizedError,
+} from 'shared/utils/errors/httpErrors'
 
 const permit =
   (...roles: UserRoleEnum[]): RequestHandler =>
   (req, res, next) => {
     const user = req.user
 
-    if (user && roles.includes(user.role)) {
+    if (!user) {
+      const error = unauthorizedError()
+      res.status(error.status).send(error)
+      return
+    }
+
+    if (roles.includes(user.role)) {
       next()
     } else {
-      res
-        .status(StatusCodes.FORBIDDEN)
-        .send({ message: StatusCodes.getStatusText(StatusCodes.FORBIDDEN) })
+      const error = forbiddenError('No access')
+      res.status(error.status).send(error)
     }
   }
 

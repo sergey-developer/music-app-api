@@ -1,8 +1,10 @@
 import { IsMongoId } from 'class-validator'
 
+import { DocumentId } from 'database/interface/document'
+
 class CreateTrackHistoryDto {
   @IsMongoId()
-  track!: string
+  track!: DocumentId
 }
 
 export default CreateTrackHistoryDto

@@ -1,5 +1,13 @@
 import { ISessionRepository, SessionRepository } from 'api/session/repository'
 import { ISessionService } from 'api/session/service'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
+import {
+  badRequestError,
+  isNotFoundError,
+  notFoundError,
+  serverError,
+  unauthorizedError,
+} from 'shared/utils/errors/httpErrors'
 
 class SessionService implements ISessionService {
   private readonly sessionRepository: ISessionRepository
@@ -18,8 +26,14 @@ class SessionService implements ISessionService {
 
       return session
     } catch (error) {
-      throw error
-      // TODO: handle error
+      if (isValidationError(error.name)) {
+        throw badRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
+
+      throw serverError('Error while creating new session')
     }
   }
 
@@ -30,8 +44,11 @@ class SessionService implements ISessionService {
       const session = await this.sessionRepository.findOneByToken(token)
       return session
     } catch (error) {
-      throw error
-      // TODO: handle error
+      if (isNotFoundError(error)) {
+        throw unauthorizedError(`Session with token "${token}" was not found`)
+      }
+
+      throw serverError(`Error while getting session by token "${token}"`)
     }
   }
 
@@ -41,8 +58,11 @@ class SessionService implements ISessionService {
     try {
       await this.sessionRepository.deleteOneByToken(token)
     } catch (error) {
-      throw error
-      // TODO: handle error
+      if (isNotFoundError(error)) {
+        throw notFoundError(`Session with token "${token}" was not found`)
+      }
+
+      throw serverError(`Error while deleting session by token "${token}"`)
     }
   }
 }

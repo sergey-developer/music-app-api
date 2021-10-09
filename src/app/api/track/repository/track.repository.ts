@@ -1,9 +1,17 @@
 import isEmpty from 'lodash/isEmpty'
+import { FilterQuery } from 'mongoose'
 
-import { ITrackModel, TrackModel } from 'api/track/model'
+import { ITrackDocument, ITrackModel, TrackModel } from 'api/track/model'
 import { ITrackRepository } from 'api/track/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
-import { createNotFoundError } from 'shared/utils/errors/httpErrors'
+import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { omitUndefined } from 'shared/utils/common'
+import {
+  badRequestError,
+  isBadRequestError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: ITrackModel
@@ -17,23 +25,29 @@ class TrackRepository implements ITrackRepository {
   }
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
-    if (filter.artist) {
-      return this.track.findByArtistId(filter.artist)
+    const { artist, album, albumIds }: typeof filter = omitUndefined(filter)
+
+    const filterByAlbum: FilterQuery<ITrackDocument> = album ? { album } : {}
+    const filterByAlbumsIds: FilterQuery<ITrackDocument> = isEmpty(albumIds)
+      ? {}
+      : { album: { $in: albumIds } }
+
+    const andConditions: Array<FilterQuery<ITrackDocument>> = []
+
+    if (!isEmpty(filterByAlbum)) andConditions.push(filterByAlbum)
+    if (!isEmpty(filterByAlbumsIds)) andConditions.push(filterByAlbumsIds)
+
+    const andFilter: FilterQuery<ITrackDocument> = isEmpty(andConditions)
+      ? {}
+      : { $and: andConditions }
+
+    const filterToApply: FilterQuery<ITrackDocument> = { ...andFilter }
+
+    if (artist) {
+      return this.track.findByArtistId(artist, filterToApply)
     }
 
-    const filterByAlbum = filter.album ? { album: filter.album } : {}
-
-    const filterByAlbumsIds = filter.albumIds?.length
-      ? { album: { $in: filter.albumIds } }
-      : {}
-
-    const albumFilter = isEmpty(filterByAlbumsIds)
-      ? filterByAlbum
-      : filterByAlbumsIds
-
-    const findFilter = { ...albumFilter }
-
-    return this.track.find(findFilter).exec()
+    return this.track.find(filterToApply).exec()
   }
 
   public createOne: ITrackRepository['createOne'] = async (payload) => {
@@ -50,19 +64,29 @@ class TrackRepository implements ITrackRepository {
 
       return deletedTrack
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
   public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
-    const idFilter = isEmpty(filter.ids) ? {} : { _id: { $in: filter.ids } }
-    const deleteManyFilter = { ...idFilter }
-
     try {
-      await this.track.deleteMany(deleteManyFilter).orFail()
+      const { ids }: typeof filter = omitUndefined(filter)
+
+      const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
+        ? {}
+        : { _id: { $in: ids } }
+
+      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+
+      if (isEmpty(filterToApply)) {
+        throw badRequestError(null, {
+          kind: ErrorKindsEnum.EmptyFilter,
+        })
+      }
+
+      await this.track.deleteMany(filterToApply)
     } catch (error) {
-      // TODO: handle error
-      throw error
+      throw isBadRequestError(error) ? error : serverError()
     }
   }
 }

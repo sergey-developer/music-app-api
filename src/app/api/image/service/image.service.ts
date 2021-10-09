@@ -1,5 +1,16 @@
 import { IImageRepository, ImageRepository } from 'api/image/repository'
 import { IImageService } from 'api/image/service'
+import {
+  isEmptyFilterError,
+  isValidationError,
+} from 'shared/utils/errors/checkErrorKind'
+import {
+  badRequestError,
+  isBadRequestError,
+  isNotFoundError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class ImageService implements IImageService {
   private readonly imageRepository: IImageRepository
@@ -13,15 +24,27 @@ class ImageService implements IImageService {
       const image = await this.imageRepository.createOne(payload)
       return image
     } catch (error) {
-      throw error
+      if (isValidationError(error.name)) {
+        throw badRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
+
+      throw serverError('Error while creating new image')
     }
   }
 
   public deleteOneById: IImageService['deleteOneById'] = async (id) => {
     try {
-      return this.imageRepository.deleteOneById(id)
+      const image = await this.imageRepository.deleteOneById(id)
+      return image
     } catch (error) {
-      throw error
+      if (isNotFoundError(error)) {
+        throw notFoundError(`Image with id "${id}" was not found`)
+      }
+
+      throw serverError(`Error while deleting image by id "${id}"`)
     }
   }
 
@@ -29,7 +52,15 @@ class ImageService implements IImageService {
     try {
       await this.imageRepository.deleteMany(filter)
     } catch (error) {
-      throw error
+      if (isBadRequestError(error)) {
+        if (isEmptyFilterError(error.kind)) {
+          throw badRequestError(
+            'Deleting many images with empty filter forbidden',
+          )
+        }
+      }
+
+      throw serverError('Error while deleting many images')
     }
   }
 }

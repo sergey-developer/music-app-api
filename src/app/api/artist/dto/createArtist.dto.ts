@@ -1,5 +1,6 @@
 import { IsMongoId, IsOptional, IsString, Length } from 'class-validator'
 
+import { DocumentId } from 'database/interface/document'
 import { stringMessages } from 'shared/constants/validator'
 
 class CreateArtistDto {
@@ -13,7 +14,7 @@ class CreateArtistDto {
 
   @IsOptional()
   @IsMongoId()
-  photo?: string
+  photo?: DocumentId
 
   @IsOptional()
   @IsString({

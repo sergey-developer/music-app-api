@@ -1,4 +1,3 @@
-import get from 'lodash/get'
 import isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocument } from 'api/album/model'
@@ -10,18 +9,17 @@ import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import {
   isEmptyFilterError,
   isValidationError,
 } from 'shared/utils/errors/checkErrorKind'
 import {
-  createBadRequestError,
-  createNotFoundError,
-  createServerError,
+  badRequestError,
   isBadRequestError,
   isHttpError,
   isNotFoundError,
+  notFoundError,
+  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class AlbumService implements IAlbumService {
@@ -54,15 +52,14 @@ class AlbumService implements IAlbumService {
       return isEmpty(filter)
         ? this.albumRepository.findAll()
         : this.albumRepository.findAllWhere(filter)
-    } catch (error: any) {
-      throw createServerError('Error white getting albums')
+    } catch (error) {
+      throw serverError('Error while getting albums')
     }
   }
 
   public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
-
-    const serverError = createServerError('Error while creating new album')
+    const theServerError = serverError('Error while creating new album')
 
     try {
       album = await this.albumRepository.createOne({
@@ -73,20 +70,20 @@ class AlbumService implements IAlbumService {
       })
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw createBadRequestError(error.message, {
-          kind: ErrorKindsEnum.ValidationError,
+        throw badRequestError(error.message, {
+          kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw serverError
+      throw theServerError
     }
 
     try {
       await this.requestService.createOne({
-        creator: payload.userId,
-        entity: album.id,
         entityName: ModelNamesEnum.Album,
+        entity: album.id,
+        creator: payload.userId,
       })
 
       return album
@@ -96,15 +93,15 @@ class AlbumService implements IAlbumService {
         // log to file (начало удаления)
         await this.albumRepository.deleteOneById(album.id)
         // log to file (конец удаления)
-        throw serverError
+        throw theServerError
       } catch (error) {
         if (isHttpError(error)) {
-          throw serverError
+          throw theServerError
         }
 
         console.error(`Album by id "${album.id}" was not deleted`)
         // log not deleted album to file (Album by id "${album.id}" was not deleted)
-        throw serverError
+        throw theServerError
       }
     }
   }
@@ -115,10 +112,10 @@ class AlbumService implements IAlbumService {
       return album
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw createNotFoundError(`Album with id "${id}" was not found`)
+        throw notFoundError(`Album with id "${id}" was not found`)
       }
 
-      throw createServerError(`Error while getting album by id "${id}"`)
+      throw serverError(`Error while getting album by id "${id}"`)
     }
   }
 
@@ -129,10 +126,10 @@ class AlbumService implements IAlbumService {
       album = await this.albumRepository.deleteOneById(id)
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw createNotFoundError(`Album with id "${id}" was not found`)
+        throw notFoundError(`Album with id "${id}" was not found`)
       }
 
-      throw createServerError(`Error while deleting album by id "${id}"`)
+      throw serverError(`Error while deleting album by id "${id}"`)
     }
 
     try {
@@ -154,12 +151,12 @@ class AlbumService implements IAlbumService {
 
       return album
     } catch (error) {
-      throw createServerError('Error while deleting related objects of album')
+      throw serverError('Error while deleting related objects of album')
     }
   }
 
-  public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
-    const albumsToDelete = get(filter, 'albums', [])
+  public deleteMany: IAlbumService['deleteMany'] = async ({ albums }) => {
+    const albumsToDelete = albums || []
 
     const albumIds: DocumentIdArray = []
     const imageIds: DocumentIdArray = []
@@ -174,13 +171,13 @@ class AlbumService implements IAlbumService {
     } catch (error) {
       if (isBadRequestError(error)) {
         if (isEmptyFilterError(error.kind)) {
-          throw createBadRequestError(
+          throw badRequestError(
             'Deleting many albums with empty filter forbidden',
           )
         }
       }
 
-      throw createServerError('Error while deleting many albums')
+      throw serverError('Error while deleting many albums')
     }
 
     try {
@@ -197,7 +194,7 @@ class AlbumService implements IAlbumService {
 
       await this.requestService.deleteMany({ entityIds: albumIds })
     } catch (error) {
-      throw createServerError('Error while deleting related objects of albums')
+      throw serverError('Error while deleting related objects of albums')
     }
   }
 }

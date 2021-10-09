@@ -1,4 +1,4 @@
-import { Model } from 'mongoose'
+import { FilterQuery, Model } from 'mongoose'
 
 import { IAlbumDocument } from 'api/album/model'
 import { ITrackDocumentArray } from 'api/track/interface'
@@ -13,5 +13,8 @@ export interface ITrackDocument {
 }
 
 export interface ITrackModel extends Model<ITrackDocument> {
-  findByArtistId(id: DocumentId): Promise<ITrackDocumentArray>
+  findByArtistId(
+    id: DocumentId,
+    filter: FilterQuery<ITrackDocument>,
+  ): Promise<ITrackDocumentArray>
 }

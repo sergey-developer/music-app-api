@@ -4,13 +4,12 @@ import {
   DeleteOneRequestByIdParams,
   GetAllRequestsQuery,
 } from 'api/request/dto'
-import { IRequestDocumentArray } from 'api/request/interface'
-import { ControllerResult, ResBody } from 'shared/interface/response'
+import { ControllerResult } from 'shared/interface/response'
 
 export interface IRequestController {
   getAll: (
     req: Request<{}, any, any, GetAllRequestsQuery>,
-    res: Response<ResBody<IRequestDocumentArray>>,
+    res: Response,
   ) => ControllerResult
 
   deleteOneById: (

@@ -1,19 +1,22 @@
 import isEmpty from 'lodash/isEmpty'
 
 import { IAlbumDocumentArray } from 'api/album/interface'
-import { IAlbumDocument } from 'api/album/model'
 import { AlbumService, IAlbumService } from 'api/album/service'
 import { IArtistDocument } from 'api/artist/model'
 import { ArtistRepository, IArtistRepository } from 'api/artist/repository'
 import { IArtistService } from 'api/artist/service'
 import { IImageService, ImageService } from 'api/image/service'
 import { IRequestService, RequestService } from 'api/request/service'
-import { ITrackDocument } from 'api/track/model'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
-import { createServerError } from 'shared/utils/errors/httpErrors'
-import { BadRequestResponse, ServerErrorResponse } from 'shared/utils/response'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
+import {
+  badRequestError,
+  isHttpError,
+  isNotFoundError,
+  notFoundError,
+  serverError,
+} from 'shared/utils/errors/httpErrors'
 
 class ArtistService implements IArtistService {
   private readonly artistRepository: IArtistRepository
@@ -44,31 +47,35 @@ class ArtistService implements IArtistService {
         kind: ModelNamesEnum.Artist,
       })
 
-      const artistIds = requests.map((request) => {
-        const entity = request.entity as
-          | IArtistDocument
-          | IAlbumDocument
-          | ITrackDocument
-
-        return entity.id
-      })
-
-      return this.artistRepository.findAllWhere({
-        ids: artistIds,
-      })
+      const artists = requests.map(({ entity }) => entity as IArtistDocument)
+      return artists
     } catch (error) {
-      throw error
+      throw serverError('Error while getting artists')
     }
   }
 
   public createOne: IArtistService['createOne'] = async (payload) => {
+    let artist: IArtistDocument
+    const theServerError = serverError('Error while creating new artist')
+
     try {
-      const artist = await this.artistRepository.createOne({
+      artist = await this.artistRepository.createOne({
         name: payload.name,
         info: payload.info,
         photo: payload.photo,
       })
+    } catch (error) {
+      if (isValidationError(error.name)) {
+        throw badRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
 
+      throw theServerError
+    }
+
+    try {
       await this.requestService.createOne({
         entityName: ModelNamesEnum.Artist,
         entity: artist.id,
@@ -76,30 +83,44 @@ class ArtistService implements IArtistService {
       })
 
       return artist
-    } catch (error: any) {
-      // TODO: при ошибки создания request удалять созданного артиста
-      // TODO: response создавать в контроллере, здесь просто выбрасывать нужную ошибку
-      if (error.name === ErrorKindsEnum.ValidationError) {
-        throw new BadRequestResponse(error.name, error.message, {
-          errors: error.errors,
-        })
-      }
+    } catch (error) {
+      // log to file (Create request error)
+      try {
+        // log to file (начало удаления)
+        await this.artistRepository.deleteOneById(artist.id)
+        // log to file (конец удаления)
+        throw theServerError
+      } catch (error) {
+        if (isHttpError(error)) {
+          throw theServerError
+        }
 
-      throw new ServerErrorResponse(
-        ErrorKindsEnum.UnknownServerError,
-        'Error was occurred while creating Artist',
-      )
+        console.error(`Artist by id "${artist.id}" was not deleted`)
+        // log not deleted artist to file (Artist by id "${artist.id}" was not deleted)
+        throw theServerError
+      }
     }
   }
 
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
+    let artist: IArtistDocument
+
     try {
-      const artist = await this.artistRepository.deleteOneById(id)
+      artist = await this.artistRepository.deleteOneById(id)
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        throw notFoundError(`Artist with id "${id}" was not found`)
+      }
+
+      throw serverError(`Error while deleting artist by id "${id}"`)
+    }
+
+    try {
       const artistHasPhoto = !!artist.photo
 
       if (artistHasPhoto) {
-        const photoId = artist.photo
-        await this.imageService.deleteOneById(photoId as string)
+        const photoId = artist.photo as string
+        await this.imageService.deleteOneById(photoId)
       }
 
       const albumsByArtistId = await this.getArtistAlbums(artist.id)
@@ -113,7 +134,7 @@ class ArtistService implements IArtistService {
 
       return artist
     } catch (error) {
-      throw createServerError()
+      throw serverError('Error while deleting related objects of artist')
     }
   }
 }

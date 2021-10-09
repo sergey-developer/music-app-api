@@ -1,14 +1,16 @@
 import isEmpty from 'lodash/isEmpty'
+import { FilterQuery } from 'mongoose'
 
-import { AlbumModel, IAlbumModel } from 'api/album/model'
+import { AlbumModel, IAlbumDocument, IAlbumModel } from 'api/album/model'
 import { IAlbumRepository } from 'api/album/repository'
 import { isNotFoundDatabaseError } from 'database/utils/errors'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { omitUndefined } from 'shared/utils/common'
 import {
-  createBadRequestError,
-  createNotFoundError,
-  createServerError,
+  badRequestError,
   isBadRequestError,
+  notFoundError,
+  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class AlbumRepository implements IAlbumRepository {
@@ -22,13 +24,13 @@ class AlbumRepository implements IAlbumRepository {
     return this.album.find().exec()
   }
 
-  public findAllWhere: IAlbumRepository['findAllWhere'] = async ({
-    artist,
-  }) => {
-    const filterByArtist = artist ? { artist } : {}
-    const filter = { ...filterByArtist }
+  public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
+    const { artist }: typeof filter = omitUndefined(filter)
 
-    return this.album.find(filter).exec()
+    const filterByArtist: FilterQuery<IAlbumDocument> = artist ? { artist } : {}
+    const filterToApply: FilterQuery<IAlbumDocument> = { ...filterByArtist }
+
+    return this.album.find(filterToApply).exec()
   }
 
   public createOne: IAlbumRepository['createOne'] = async (payload) => {
@@ -41,7 +43,7 @@ class AlbumRepository implements IAlbumRepository {
       const album = await this.album.findById(id).orFail().exec()
       return album
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
@@ -54,24 +56,29 @@ class AlbumRepository implements IAlbumRepository {
 
       return deletedAlbum
     } catch (error) {
-      throw isNotFoundDatabaseError(error) ? createNotFoundError() : error
+      throw isNotFoundDatabaseError(error) ? notFoundError() : error
     }
   }
 
-  public deleteMany: IAlbumRepository['deleteMany'] = async ({ ids }) => {
+  public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
     try {
-      const idFilter = isEmpty(ids) ? {} : { _id: { $in: ids } }
-      const filter = { ...idFilter }
+      const { ids }: typeof filter = omitUndefined(filter)
 
-      if (isEmpty(filter)) {
-        throw createBadRequestError(null, {
+      const filterById: FilterQuery<IAlbumDocument> = isEmpty(ids)
+        ? {}
+        : { _id: { $in: ids } }
+
+      const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
+
+      if (isEmpty(filterToApply)) {
+        throw badRequestError(null, {
           kind: ErrorKindsEnum.EmptyFilter,
         })
       }
 
-      await this.album.deleteMany(filter)
+      await this.album.deleteMany(filterToApply)
     } catch (error) {
-      throw isBadRequestError(error) ? error : createServerError()
+      throw isBadRequestError(error) ? error : serverError()
     }
   }
 }

@@ -24,6 +24,8 @@ export interface IDeleteManyRequestRepositoryFilter
   }> {}
 
 export interface IRequestRepository {
+  findAll: () => Promise<IRequestDocumentArray>
+
   findAllWhere: (
     filter: IFindAllRequestsRepositoryFilter,
   ) => Promise<IRequestDocumentArray>

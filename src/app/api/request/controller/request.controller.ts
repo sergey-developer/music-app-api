@@ -1,7 +1,8 @@
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
 import { IRequestController } from 'api/request/controller'
 import { IRequestService, RequestService } from 'api/request/service'
+import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
 class RequestController implements IRequestController {
   private readonly requestService: IRequestService
@@ -15,12 +16,10 @@ class RequestController implements IRequestController {
 
     try {
       const requests = await this.requestService.getAll(filter)
-
       res.status(StatusCodes.OK).send(requests)
-    } catch (error: any) {
-      res
-        .status(StatusCodes.INTERNAL_SERVER_ERROR)
-        .send({ message: error.message })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
     }
   }
 
@@ -36,7 +35,8 @@ class RequestController implements IRequestController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Request was successfully deleted' })
-    } catch (error) {
+    } catch (exception) {
+      const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }

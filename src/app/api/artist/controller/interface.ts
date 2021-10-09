@@ -2,11 +2,10 @@ import { Request, Response } from 'express'
 
 import {
   CreateArtistDto,
-  CreateArtistResultDto,
   DeleteOneArtistByIdParams,
   GetAllArtistsQuery,
 } from 'api/artist/dto'
-import { ControllerResult, ResBody } from 'shared/interface/response'
+import { ControllerResult } from 'shared/interface/response'
 
 export interface IArtistController {
   getAll: (
@@ -16,7 +15,7 @@ export interface IArtistController {
 
   createOne: (
     req: Request<any, any, CreateArtistDto>,
-    res: Response<CreateArtistResultDto>,
+    res: Response,
   ) => ControllerResult
 
   deleteOneById: (
