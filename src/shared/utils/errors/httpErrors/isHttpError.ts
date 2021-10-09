@@ -1,3 +1,3 @@
-import createError from 'http-errors'
+import { isHttpError } from 'http-errors'
 
-export default (error: unknown): boolean => createError.isHttpError(error)
+export default isHttpError

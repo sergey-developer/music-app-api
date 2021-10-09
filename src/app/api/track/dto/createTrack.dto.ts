@@ -1,6 +1,6 @@
 import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 
-import { stringMessages } from 'shared/constants/validation'
+import { stringMessages } from 'shared/constants/validator'
 
 class CreateTrackDto {
   @IsString({

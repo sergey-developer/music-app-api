@@ -8,7 +8,8 @@ const init = async () => {
 
 init()
 
-// TODO: Обработать везде ошибки и поставить тип ошибки в catch
+// TODO: Обработать везде ошибки
+//  (обработал: album repo/service)
 // TODO: сделать обновление request
 // TODO: remove props with undefined value from dto
 

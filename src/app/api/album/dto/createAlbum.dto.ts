@@ -6,7 +6,7 @@ import {
   Length,
 } from 'class-validator'
 
-import { stringMessages } from 'shared/constants/validation'
+import { stringMessages } from 'shared/constants/validator'
 
 class CreateAlbumDto {
   @IsString({

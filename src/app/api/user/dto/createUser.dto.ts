@@ -1,6 +1,6 @@
 import { IsEmail, IsString, Length } from 'class-validator'
 
-import { stringMessages } from 'shared/constants/validation'
+import { stringMessages } from 'shared/constants/validator'
 
 class CreateUserDto {
   @IsString({

@@ -62,7 +62,7 @@ class AlbumService implements IAlbumService {
   public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
 
-    const serverError = createServerError('Error while creating Album')
+    const serverError = createServerError('Error while creating new album')
 
     try {
       album = await this.albumRepository.createOne({
@@ -123,8 +123,19 @@ class AlbumService implements IAlbumService {
   }
 
   public deleteOneById: IAlbumService['deleteOneById'] = async (id) => {
+    let album: IAlbumDocument
+
     try {
-      const album = await this.albumRepository.deleteOneById(id)
+      album = await this.albumRepository.deleteOneById(id)
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        throw createNotFoundError(`Album with id "${id}" was not found`)
+      }
+
+      throw createServerError(`Error while deleting album by id "${id}"`)
+    }
+
+    try {
       const albumHasImage = !!album.image
 
       if (albumHasImage) {
@@ -133,9 +144,9 @@ class AlbumService implements IAlbumService {
       }
 
       const tracksByAlbumId = await this.getTracksByAlbumId(album.id)
-      const albumHaveTracks = !isEmpty(tracksByAlbumId)
+      const albumHasTracks = !isEmpty(tracksByAlbumId)
 
-      if (albumHaveTracks) {
+      if (albumHasTracks) {
         await this.trackService.deleteMany({ tracks: tracksByAlbumId })
       }
 
@@ -143,11 +154,7 @@ class AlbumService implements IAlbumService {
 
       return album
     } catch (error) {
-      if (isNotFoundError(error)) {
-        throw createNotFoundError(`Album with id "${id}" was not found`)
-      }
-
-      throw createServerError(`Error while deleting album by id "${id}"`)
+      throw createServerError('Error while deleting related objects of album')
     }
   }
 
@@ -167,11 +174,13 @@ class AlbumService implements IAlbumService {
     } catch (error) {
       if (isBadRequestError(error)) {
         if (isEmptyFilterError(error.kind)) {
-          throw createBadRequestError('Can`t delete with empty filter')
+          throw createBadRequestError(
+            'Deleting many albums with empty filter forbidden',
+          )
         }
       }
 
-      throw createServerError('Error while deleting albums')
+      throw createServerError('Error while deleting many albums')
     }
 
     try {

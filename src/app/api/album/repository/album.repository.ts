@@ -61,7 +61,6 @@ class AlbumRepository implements IAlbumRepository {
   public deleteMany: IAlbumRepository['deleteMany'] = async ({ ids }) => {
     try {
       const idFilter = isEmpty(ids) ? {} : { _id: { $in: ids } }
-
       const filter = { ...idFilter }
 
       if (isEmpty(filter)) {

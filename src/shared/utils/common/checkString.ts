@@ -1,5 +1,6 @@
-const checkString = (value: string) => {
-  return (anotherValue: string): boolean => value === anotherValue
-}
+import curry from 'lodash/curry'
 
-export default checkString
+const checkString = (str: string, anotherStr: string): boolean =>
+  str === anotherStr
+
+export default curry(checkString)

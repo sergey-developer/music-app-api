@@ -1,19 +1,8 @@
-import createError from 'http-errors'
-import StatusCodes from 'http-status-codes'
+import { StatusCodes } from 'http-status-codes'
 
-import { CheckHttpError, CreateHttpError } from 'shared/utils/errors/httpErrors'
+import { checkHttpError, createHttpError } from 'shared/utils/errors/httpErrors'
 
-const defaultMessage = StatusCodes.getStatusText(StatusCodes.BAD_REQUEST)
-
-const createBadRequestError: CreateHttpError = (message, props) => {
-  const msg = message || defaultMessage
-
-  return props
-    ? createError(StatusCodes.BAD_REQUEST, msg, props)
-    : new createError.BadRequest(msg)
-}
-
-const isBadRequestError: CheckHttpError = (error) =>
-  error instanceof createError.BadRequest
+const createBadRequestError = createHttpError(StatusCodes.BAD_REQUEST)
+const isBadRequestError = checkHttpError(StatusCodes.BAD_REQUEST)
 
 export { createBadRequestError, isBadRequestError }

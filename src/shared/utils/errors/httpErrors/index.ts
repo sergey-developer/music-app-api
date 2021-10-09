@@ -1,4 +1,4 @@
-export * from './interface'
+export * from './httpError'
 
 export * from './notFoundError'
 export * from './unauthorizedError'
