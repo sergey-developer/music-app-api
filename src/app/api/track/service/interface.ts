@@ -5,7 +5,7 @@ import { ITrackRepository } from 'api/track/repository'
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface IGetAllTracksServiceFilter
-  extends GetAllTracksQuery,
+  extends Omit<GetAllTracksQuery, 'album'>,
     Partial<{
       albumIds: DocumentIdArray
     }> {}

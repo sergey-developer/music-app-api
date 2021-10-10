@@ -37,17 +37,11 @@ class RequestRepository implements IRequestRepository {
       ? { creator }
       : {}
 
-    const andConditions: Array<FilterQuery<IRequestDocument>> = []
-
-    if (!isEmpty(filterByEntityName)) andConditions.push(filterByEntityName)
-    if (!isEmpty(filterByStatus)) andConditions.push(filterByStatus)
-    if (!isEmpty(filterByCreator)) andConditions.push(filterByCreator)
-
-    const andFilter: FilterQuery<IRequestDocument> = isEmpty(andConditions)
-      ? {}
-      : { $and: andConditions }
-
-    const filterToApply: FilterQuery<IRequestDocument> = { ...andFilter }
+    const filterToApply: FilterQuery<IRequestDocument> = {
+      ...filterByEntityName,
+      ...filterByStatus,
+      ...filterByCreator,
+    }
 
     return this.request.find(filterToApply).exec()
   }

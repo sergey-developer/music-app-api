@@ -2,6 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
 import { IArtistController } from 'api/artist/controller'
+import { IArtistDocumentArray } from 'api/artist/interface'
 import { ArtistService, IArtistService } from 'api/artist/service'
 import { RequestStatusEnum } from 'api/request/constants'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
@@ -14,13 +15,11 @@ class ArtistController implements IArtistController {
   }
 
   public getAll: IArtistController['getAll'] = async (req, res) => {
-    // TODO: написать мидлвар optionalAuth и если есть токен то проверять сессию как в auth и
-    //  записывать в req.userIsAuthorized. Проверку сессии вынести в функцию и исп-ть в обоих мидлварах
-    const userIsAuthorized = req.cookies.token
+    const userIsAuthorized = !!req.user
     const filter = req.query
 
     try {
-      let artists
+      let artists: IArtistDocumentArray
 
       if (userIsAuthorized) {
         artists = await this.artistService.getAll(filter)

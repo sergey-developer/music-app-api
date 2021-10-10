@@ -8,7 +8,7 @@ import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
 import { ModelNamesEnum } from 'database/constants'
-import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { DocumentIdArray } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
 import {
   isEmptyFilterError,
@@ -34,12 +34,6 @@ class AlbumService implements IAlbumService {
     return this.trackService.getAll({ albumIds })
   }
 
-  private getTracksByAlbumId = async (
-    albumId: DocumentId,
-  ): Promise<ITrackDocumentArray> => {
-    return this.trackService.getAll({ album: albumId })
-  }
-
   public constructor() {
     this.albumRepository = AlbumRepository
     this.requestService = RequestService
@@ -49,9 +43,22 @@ class AlbumService implements IAlbumService {
 
   public getAll: IAlbumService['getAll'] = async (filter) => {
     try {
-      return isEmpty(filter)
-        ? this.albumRepository.findAll()
-        : this.albumRepository.findAllWhere(filter)
+      const { status, userId, artist } = filter
+
+      const requests = await this.requestService.getAll({
+        status,
+        creator: userId,
+        kind: ModelNamesEnum.Album,
+      })
+
+      const albumIds = requests.map((request) => {
+        const entity = request.entity as IAlbumDocument
+        return entity.id
+      })
+
+      const repoFilter = { artist, ids: albumIds }
+
+      return this.albumRepository.findAllWhere(repoFilter)
     } catch (error) {
       throw serverError('Error while getting albums')
     }
@@ -140,7 +147,7 @@ class AlbumService implements IAlbumService {
         await this.imageService.deleteOneById(imageId)
       }
 
-      const tracksByAlbumId = await this.getTracksByAlbumId(album.id)
+      const tracksByAlbumId = await this.getTracksByAlbumsIds([album.id])
       const albumHasTracks = !isEmpty(tracksByAlbumId)
 
       if (albumHasTracks) {

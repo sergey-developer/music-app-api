@@ -14,15 +14,18 @@ class AlbumRepository implements IAlbumRepository {
     this.album = AlbumModel
   }
 
-  public findAll: IAlbumRepository['findAll'] = async () => {
-    return this.album.find().exec()
-  }
-
   public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
-    const { artist }: typeof filter = omitUndefined(filter)
+    const { artist, ids }: typeof filter = omitUndefined(filter)
 
     const filterByArtist: FilterQuery<IAlbumDocument> = artist ? { artist } : {}
-    const filterToApply: FilterQuery<IAlbumDocument> = { ...filterByArtist }
+    const filterById: FilterQuery<IAlbumDocument> = isEmpty(ids)
+      ? {}
+      : { _id: { $in: ids } }
+
+    const filterToApply: FilterQuery<IAlbumDocument> = {
+      ...filterByArtist,
+      ...filterById,
+    }
 
     return this.album.find(filterToApply).exec()
   }

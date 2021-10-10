@@ -8,11 +8,6 @@ const init = async () => {
 
 init()
 
-// TODO: Обработать везде ошибки
-//  (обработал: album, artist, track, request, track history, user, session, image, auth)
-//  (не обработал: )
-
-// TODO: получать и создавать все альбомы и трэки так же как артистов
 // TODO: Настроить логирование ошибок и т.п. (в файл?)
 
 // TODO: сделать обновление request

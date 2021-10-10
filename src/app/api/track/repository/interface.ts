@@ -5,7 +5,10 @@ import { IGetAllTracksServiceFilter } from 'api/track/service'
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
 
 export interface IGetAllTracksRepositoryFilter
-  extends IGetAllTracksServiceFilter {}
+  extends Pick<IGetAllTracksServiceFilter, 'artist' | 'albumIds'>,
+    Partial<{
+      ids: DocumentIdArray
+    }> {}
 
 export interface IDeleteManyTracksRepositoryFilter
   extends Partial<{
@@ -15,8 +18,6 @@ export interface IDeleteManyTracksRepositoryFilter
 export interface ICreateTrackRepositoryPayload extends CreateTrackDto {}
 
 export interface ITrackRepository {
-  findAll: () => Promise<ITrackDocumentArray>
-
   findAllWhere: (
     filter: IGetAllTracksRepositoryFilter,
   ) => Promise<ITrackDocumentArray>

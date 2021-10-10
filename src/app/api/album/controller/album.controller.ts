@@ -2,7 +2,9 @@ import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
 import { IAlbumController } from 'api/album/controller'
+import { IAlbumDocumentArray } from 'api/album/interface'
 import { AlbumService, IAlbumService } from 'api/album/service'
+import { RequestStatusEnum } from 'api/request/constants'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
 class AlbumController implements IAlbumController {
@@ -13,10 +15,20 @@ class AlbumController implements IAlbumController {
   }
 
   public getAll: IAlbumController['getAll'] = async (req, res) => {
+    const userIsAuthorized = !!req.user
     const filter = req.query
 
     try {
-      const albums = await this.albumService.getAll(filter)
+      let albums: IAlbumDocumentArray
+
+      if (userIsAuthorized) {
+        albums = await this.albumService.getAll(filter)
+      } else {
+        albums = await this.albumService.getAll({
+          status: RequestStatusEnum.Approved,
+        })
+      }
+
       res.status(StatusCodes.OK).send(albums)
     } catch (exception) {
       const error = ensureHttpError(exception)

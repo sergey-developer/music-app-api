@@ -1,5 +1,3 @@
-import isEmpty from 'lodash/isEmpty'
-
 import { IRequestService, RequestService } from 'api/request/service'
 import { ITrackDocument } from 'api/track/model'
 import { ITrackRepository, TrackRepository } from 'api/track/repository'
@@ -35,9 +33,22 @@ class TrackService implements ITrackService {
 
   public getAll: ITrackService['getAll'] = async (filter) => {
     try {
-      return isEmpty(filter)
-        ? this.trackRepository.findAll()
-        : this.trackRepository.findAllWhere(filter)
+      const { status, userId, artist, albumIds } = filter
+
+      const requests = await this.requestService.getAll({
+        status,
+        creator: userId,
+        kind: ModelNamesEnum.Track,
+      })
+
+      const trackIds = requests.map((request) => {
+        const entity = request.entity as ITrackDocument
+        return entity.id
+      })
+
+      const repoFilter = { artist, albumIds, ids: trackIds }
+
+      return this.trackRepository.findAllWhere(repoFilter)
     } catch (error) {
       throw serverError('Error while getting tracks')
     }

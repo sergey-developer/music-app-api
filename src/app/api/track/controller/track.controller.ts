@@ -1,7 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
+import { RequestStatusEnum } from 'api/request/constants'
 import { ITrackController } from 'api/track/controller'
+import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
@@ -13,10 +15,23 @@ class TrackController implements ITrackController {
   }
 
   public getAll: ITrackController['getAll'] = async (req, res) => {
-    const filter = req.query
+    const userIsAuthorized = !!req.user
+    const { album, ...filter } = req.query
 
     try {
-      const tracks = await this.trackService.getAll(filter)
+      let tracks: ITrackDocumentArray
+
+      if (userIsAuthorized) {
+        tracks = await this.trackService.getAll({
+          ...filter,
+          albumIds: album ? [album] : undefined,
+        })
+      } else {
+        tracks = await this.trackService.getAll({
+          status: RequestStatusEnum.Approved,
+        })
+      }
+
       res.status(StatusCodes.OK).send(tracks)
     } catch (exception) {
       const error = ensureHttpError(exception)

@@ -14,28 +14,21 @@ class TrackRepository implements ITrackRepository {
     this.track = TrackModel
   }
 
-  public findAll: ITrackRepository['findAll'] = async () => {
-    return this.track.find().exec()
-  }
-
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
-    const { artist, album, albumIds }: typeof filter = omitUndefined(filter)
+    const { artist, albumIds, ids }: typeof filter = omitUndefined(filter)
 
-    const filterByAlbum: FilterQuery<ITrackDocument> = album ? { album } : {}
-    const filterByAlbumsIds: FilterQuery<ITrackDocument> = isEmpty(albumIds)
+    const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
+      ? {}
+      : { _id: { $in: ids } }
+
+    const filterByAlbum: FilterQuery<ITrackDocument> = isEmpty(albumIds)
       ? {}
       : { album: { $in: albumIds } }
 
-    const andConditions: Array<FilterQuery<ITrackDocument>> = []
-
-    if (!isEmpty(filterByAlbum)) andConditions.push(filterByAlbum)
-    if (!isEmpty(filterByAlbumsIds)) andConditions.push(filterByAlbumsIds)
-
-    const andFilter: FilterQuery<ITrackDocument> = isEmpty(andConditions)
-      ? {}
-      : { $and: andConditions }
-
-    const filterToApply: FilterQuery<ITrackDocument> = { ...andFilter }
+    const filterToApply: FilterQuery<ITrackDocument> = {
+      ...filterById,
+      ...filterByAlbum,
+    }
 
     if (artist) {
       return this.track.findByArtistId(artist, filterToApply)

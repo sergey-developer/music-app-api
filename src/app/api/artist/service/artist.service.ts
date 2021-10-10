@@ -47,8 +47,14 @@ class ArtistService implements IArtistService {
         kind: ModelNamesEnum.Artist,
       })
 
-      const artists = requests.map(({ entity }) => entity as IArtistDocument)
-      return artists
+      const artistIds = requests.map((request) => {
+        const entity = request.entity as IArtistDocument
+        return entity.id
+      })
+
+      const repoFilter = { ids: artistIds }
+
+      return this.artistRepository.findAllWhere(repoFilter)
     } catch (error) {
       throw serverError('Error while getting artists')
     }
