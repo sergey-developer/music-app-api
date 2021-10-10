@@ -9,11 +9,11 @@ import { IImageService, ImageService } from 'api/image/service'
 import { IRequestService, RequestService } from 'api/request/service'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
+import { isNotFoundDBError } from 'database/utils/errors'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   badRequestError,
   isHttpError,
-  isNotFoundError,
   notFoundError,
   serverError,
 } from 'shared/utils/errors/httpErrors'
@@ -108,7 +108,7 @@ class ArtistService implements IArtistService {
     try {
       artist = await this.artistRepository.deleteOneById(id)
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Artist with id "${id}" was not found`)
       }
 

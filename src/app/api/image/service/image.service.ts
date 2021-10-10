@@ -1,5 +1,6 @@
 import { IImageRepository, ImageRepository } from 'api/image/repository'
 import { IImageService } from 'api/image/service'
+import { isNotFoundDBError } from 'database/utils/errors'
 import {
   isEmptyFilterError,
   isValidationError,
@@ -7,7 +8,6 @@ import {
 import {
   badRequestError,
   isBadRequestError,
-  isNotFoundError,
   notFoundError,
   serverError,
 } from 'shared/utils/errors/httpErrors'
@@ -40,7 +40,7 @@ class ImageService implements IImageService {
       const image = await this.imageRepository.deleteOneById(id)
       return image
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Image with id "${id}" was not found`)
       }
 
@@ -52,12 +52,10 @@ class ImageService implements IImageService {
     try {
       await this.imageRepository.deleteMany(filter)
     } catch (error) {
-      if (isBadRequestError(error)) {
-        if (isEmptyFilterError(error.kind)) {
-          throw badRequestError(
-            'Deleting many images with empty filter forbidden',
-          )
-        }
+      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
+        throw badRequestError(
+          'Deleting many images with empty filter forbidden',
+        )
       }
 
       throw serverError('Error while deleting many images')

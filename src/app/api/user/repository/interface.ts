@@ -13,4 +13,6 @@ export interface IUserRepository {
   create: (payload: ICreateUserRepositoryPayload) => Promise<IUserDocument>
 
   findOne: (filter: IFindOneUserRepositoryFilter) => Promise<IUserDocument>
+
+  deleteOneById: (id: IUserDocument['id']) => Promise<IUserDocument>
 }

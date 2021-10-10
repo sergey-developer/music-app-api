@@ -12,17 +12,18 @@ const permit =
     const user = req.user
 
     if (!user) {
-      const error = unauthorizedError()
+      const error = unauthorizedError('Unauthorized')
       res.status(error.status).send(error)
       return
     }
 
-    if (roles.includes(user.role)) {
-      next()
-    } else {
+    if (!roles.includes(user.role)) {
       const error = forbiddenError('No access')
       res.status(error.status).send(error)
+      return
     }
+
+    next()
   }
 
 export default permit

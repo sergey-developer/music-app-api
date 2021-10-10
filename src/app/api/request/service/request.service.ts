@@ -15,6 +15,7 @@ import {
   isArtistModelName,
   isTrackModelName,
 } from 'database/utils/checkModelName'
+import { isNotFoundDBError } from 'database/utils/errors'
 import { isEmptyFilterError } from 'shared/utils/errors/checkErrorKind'
 import {
   badRequestError,
@@ -95,7 +96,7 @@ class RequestService implements IRequestService {
     try {
       request = await this.requestRepository.findOneById(requestId)
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Request with id "${requestId}" was not found`)
       }
 
@@ -124,7 +125,7 @@ class RequestService implements IRequestService {
       const request = await this.requestRepository.deleteOne(filter)
       return request
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError('Request was not found')
       }
 
@@ -136,12 +137,10 @@ class RequestService implements IRequestService {
     try {
       await this.requestRepository.deleteMany(filter)
     } catch (error) {
-      if (isBadRequestError(error)) {
-        if (isEmptyFilterError(error.kind)) {
-          throw badRequestError(
-            'Deleting many requests with empty filter forbidden',
-          )
-        }
+      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
+        throw badRequestError(
+          'Deleting many requests with empty filter forbidden',
+        )
       }
 
       throw serverError('Error while deleting many requests')

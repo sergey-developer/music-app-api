@@ -7,4 +7,6 @@ export interface IUserService {
   create: (payload: ICreateUserServicePayload) => Promise<IUserDocument>
 
   getOneByEmail: (email: IUserDocument['email']) => Promise<IUserDocument>
+
+  deleteOneById: (id: IUserDocument['id']) => Promise<IUserDocument>
 }

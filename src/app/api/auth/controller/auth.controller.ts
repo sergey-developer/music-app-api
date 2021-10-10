@@ -4,10 +4,12 @@ import pick from 'lodash/pick'
 
 import { IAuthController } from 'api/auth/controller'
 import { ISessionService, SessionService } from 'api/session/service'
+import { IUserDocument } from 'api/user/model'
 import { IUserService, UserService } from 'api/user/service'
 import {
   badRequestError,
   ensureHttpError,
+  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class AuthController implements IAuthController {
@@ -20,44 +22,75 @@ class AuthController implements IAuthController {
   }
 
   public signup: IAuthController['signup'] = async (req, res) => {
+    let user: IUserDocument
+
     try {
       const { email, username, password } = req.body
 
-      const user = await this.userService.create({
+      user = await this.userService.create({
         email,
         username,
         password,
       })
-      const session = await this.sessionService.create(user)
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+      return
+    }
+
+    try {
+      const session = await this.sessionService.create({
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      })
 
       const result = merge(pick(user, 'id', 'role'), pick(session, 'token'))
 
       res.status(StatusCodes.OK).send(result)
+      return
     } catch (exception) {
-      // TODO: если ошибки при создании сессии то удалять созданного пользователя
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+      const error = serverError('Error while creating new user')
+
+      try {
+        await this.userService.deleteOneById(user.id)
+        res.status(error.status).send(error)
+        return
+      } catch (exception) {
+        console.log(`User with id "${user.id}" was not deleted`)
+        res.status(error.status).send(error)
+        return
+      }
     }
   }
 
   public signin: IAuthController['signin'] = async (req, res) => {
+    let user: IUserDocument
+
     try {
       const { email, password } = req.body
 
-      const user = await this.userService.getOneByEmail(email)
+      user = await this.userService.getOneByEmail(email)
 
       const isCorrectPassword = await user.checkPassword(password)
 
       if (!isCorrectPassword) throw badRequestError('Wrong password')
-
-      const session = await this.sessionService.create(user)
-
-      const result = merge(pick(user, 'id', 'role'), pick(session, 'token'))
-
-      res.status(StatusCodes.OK).send(result)
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
+      return
+    }
+
+    try {
+      const session = await this.sessionService.create(user)
+      const result = merge(pick(user, 'id', 'role'), pick(session, 'token'))
+
+      res.status(StatusCodes.OK).send(result)
+      return
+    } catch {
+      const error = serverError('Sign in error')
+      res.status(error.status).send(error)
+      return
     }
   }
 }

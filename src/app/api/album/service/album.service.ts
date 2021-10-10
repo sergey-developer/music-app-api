@@ -9,6 +9,7 @@ import { ITrackDocumentArray } from 'api/track/interface'
 import { ITrackService, TrackService } from 'api/track/service'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { isNotFoundDBError } from 'database/utils/errors'
 import {
   isEmptyFilterError,
   isValidationError,
@@ -17,7 +18,6 @@ import {
   badRequestError,
   isBadRequestError,
   isHttpError,
-  isNotFoundError,
   notFoundError,
   serverError,
 } from 'shared/utils/errors/httpErrors'
@@ -111,7 +111,7 @@ class AlbumService implements IAlbumService {
       const album = await this.albumRepository.findOneById(id)
       return album
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Album with id "${id}" was not found`)
       }
 
@@ -125,7 +125,7 @@ class AlbumService implements IAlbumService {
     try {
       album = await this.albumRepository.deleteOneById(id)
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Album with id "${id}" was not found`)
       }
 
@@ -169,12 +169,10 @@ class AlbumService implements IAlbumService {
     try {
       await this.albumRepository.deleteMany({ ids: albumIds })
     } catch (error) {
-      if (isBadRequestError(error)) {
-        if (isEmptyFilterError(error.kind)) {
-          throw badRequestError(
-            'Deleting many albums with empty filter forbidden',
-          )
-        }
+      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
+        throw badRequestError(
+          'Deleting many albums with empty filter forbidden',
+        )
       }
 
       throw serverError('Error while deleting many albums')

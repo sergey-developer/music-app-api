@@ -9,6 +9,7 @@ import {
   TrackHistoryService,
 } from 'api/trackHistory/service'
 import { ModelNamesEnum } from 'database/constants'
+import { isNotFoundDBError } from 'database/utils/errors'
 import {
   isEmptyFilterError,
   isValidationError,
@@ -17,7 +18,6 @@ import {
   badRequestError,
   isBadRequestError,
   isHttpError,
-  isNotFoundError,
   notFoundError,
   serverError,
 } from 'shared/utils/errors/httpErrors'
@@ -98,7 +98,7 @@ class TrackService implements ITrackService {
     try {
       track = await this.trackRepository.deleteOneById(id)
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Track with id "${id}" was not found`)
       }
 
@@ -122,12 +122,10 @@ class TrackService implements ITrackService {
     try {
       await this.trackRepository.deleteMany({ ids: trackIds })
     } catch (error) {
-      if (isBadRequestError(error)) {
-        if (isEmptyFilterError(error.kind)) {
-          throw badRequestError(
-            'Deleting many tracks with empty filter forbidden',
-          )
-        }
+      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
+        throw badRequestError(
+          'Deleting many tracks with empty filter forbidden',
+        )
       }
 
       throw serverError('Error while deleting many tracks')

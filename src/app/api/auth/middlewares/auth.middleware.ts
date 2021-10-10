@@ -38,6 +38,7 @@ const auth = async <Req extends Request, Res extends Response>(
 
     error = ensureHttpError(exception)
     res.status(error.status).send(error)
+    return
   }
 }
 

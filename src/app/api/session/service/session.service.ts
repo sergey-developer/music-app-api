@@ -1,9 +1,9 @@
 import { ISessionRepository, SessionRepository } from 'api/session/repository'
 import { ISessionService } from 'api/session/service'
+import { isNotFoundDBError } from 'database/utils/errors'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   badRequestError,
-  isNotFoundError,
   notFoundError,
   serverError,
   unauthorizedError,
@@ -44,7 +44,7 @@ class SessionService implements ISessionService {
       const session = await this.sessionRepository.findOneByToken(token)
       return session
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw unauthorizedError(`Session with token "${token}" was not found`)
       }
 
@@ -58,7 +58,7 @@ class SessionService implements ISessionService {
     try {
       await this.sessionRepository.deleteOneByToken(token)
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Session with token "${token}" was not found`)
       }
 

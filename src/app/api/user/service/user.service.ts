@@ -1,9 +1,9 @@
 import { IUserRepository, UserRepository } from 'api/user/repository'
 import { IUserService } from 'api/user/service'
+import { isNotFoundDBError } from 'database/utils/errors'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   badRequestError,
-  isNotFoundError,
   notFoundError,
   serverError,
 } from 'shared/utils/errors/httpErrors'
@@ -36,11 +36,24 @@ class UserService implements IUserService {
       const user = await this.userRepository.findOne({ email })
       return user
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`User with email "${email}" was not found`)
       }
 
       throw serverError(`Error while getting user by email "${email}"`)
+    }
+  }
+
+  public deleteOneById: IUserService['deleteOneById'] = async (id) => {
+    try {
+      const user = await this.userRepository.deleteOneById(id)
+      return user
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw notFoundError(`User with id "${id}" was not found`)
+      }
+
+      throw serverError(`Error while deleting user by id "${id}"`)
     }
   }
 }

@@ -3,6 +3,7 @@ import {
   TrackHistoryRepository,
 } from 'api/trackHistory/repository'
 import { ITrackHistoryService } from 'api/trackHistory/service'
+import { isNotFoundDBError } from 'database/utils/errors'
 import {
   isEmptyFilterError,
   isValidationError,
@@ -10,7 +11,6 @@ import {
 import {
   badRequestError,
   isBadRequestError,
-  isNotFoundError,
   notFoundError,
   serverError,
 } from 'shared/utils/errors/httpErrors'
@@ -56,7 +56,7 @@ class TrackHistoryService implements ITrackHistoryService {
       const trackHistory = await this.trackHistoryRepository.deleteOneById(id)
       return trackHistory
     } catch (error) {
-      if (isNotFoundError(error)) {
+      if (isNotFoundDBError(error)) {
         throw notFoundError(`Track history with id "${id}" was not found`)
       }
 
@@ -68,12 +68,10 @@ class TrackHistoryService implements ITrackHistoryService {
     try {
       await this.trackHistoryRepository.deleteMany(filter)
     } catch (error) {
-      if (isBadRequestError(error)) {
-        if (isEmptyFilterError(error.kind)) {
-          throw badRequestError(
-            'Deleting many tracks`s histories with empty filter forbidden',
-          )
-        }
+      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
+        throw badRequestError(
+          'Deleting many tracks`s histories with empty filter forbidden',
+        )
       }
 
       throw serverError('Error while deleting many tracks`s histories')

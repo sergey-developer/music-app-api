@@ -3,15 +3,9 @@ import { FilterQuery } from 'mongoose'
 
 import { ITrackDocument, ITrackModel, TrackModel } from 'api/track/model'
 import { ITrackRepository } from 'api/track/repository'
-import { isNotFoundDatabaseError } from 'database/utils/errors'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import {
-  badRequestError,
-  isBadRequestError,
-  notFoundError,
-  serverError,
-} from 'shared/utils/errors/httpErrors'
+import { badRequestError } from 'shared/utils/errors/httpErrors'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: ITrackModel
@@ -56,38 +50,25 @@ class TrackRepository implements ITrackRepository {
   }
 
   public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {
-    try {
-      const deletedTrack = await this.track
-        .findByIdAndDelete(id)
-        .orFail()
-        .exec()
-
-      return deletedTrack
-    } catch (error) {
-      throw isNotFoundDatabaseError(error) ? notFoundError() : error
-    }
+    return this.track.findByIdAndDelete(id).orFail().exec()
   }
 
   public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
-    try {
-      const { ids }: typeof filter = omitUndefined(filter)
+    const { ids }: typeof filter = omitUndefined(filter)
 
-      const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
-        ? {}
-        : { _id: { $in: ids } }
+    const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
+      ? {}
+      : { _id: { $in: ids } }
 
-      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+    const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      if (isEmpty(filterToApply)) {
-        throw badRequestError(null, {
-          kind: ErrorKindsEnum.EmptyFilter,
-        })
-      }
-
-      await this.track.deleteMany(filterToApply)
-    } catch (error) {
-      throw isBadRequestError(error) ? error : serverError()
+    if (isEmpty(filterToApply)) {
+      throw badRequestError(null, {
+        kind: ErrorKindsEnum.EmptyFilter,
+      })
     }
+
+    await this.track.deleteMany(filterToApply)
   }
 }
 

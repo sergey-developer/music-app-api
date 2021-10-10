@@ -2,9 +2,7 @@ import { FilterQuery } from 'mongoose'
 
 import { IUserDocument, IUserModel, UserModel } from 'api/user/model'
 import { IUserRepository } from 'api/user/repository'
-import { isNotFoundDatabaseError } from 'database/utils/errors'
 import { omitUndefined } from 'shared/utils/common'
-import { notFoundError } from 'shared/utils/errors/httpErrors'
 
 class UserRepository implements IUserRepository {
   private readonly user: IUserModel
@@ -19,17 +17,16 @@ class UserRepository implements IUserRepository {
   }
 
   public findOne: IUserRepository['findOne'] = async (filter) => {
-    try {
-      const { email }: typeof filter = omitUndefined(filter)
+    const { email }: typeof filter = omitUndefined(filter)
 
-      const filterByEmail: FilterQuery<IUserDocument> = email ? { email } : {}
-      const filterToApply: FilterQuery<IUserDocument> = { ...filterByEmail }
+    const filterByEmail: FilterQuery<IUserDocument> = email ? { email } : {}
+    const filterToApply: FilterQuery<IUserDocument> = { ...filterByEmail }
 
-      const user = await this.user.findOne(filterToApply).orFail().exec()
-      return user
-    } catch (error) {
-      throw isNotFoundDatabaseError(error) ? notFoundError() : error
-    }
+    return this.user.findOne(filterToApply).orFail().exec()
+  }
+
+  public deleteOneById: IUserRepository['deleteOneById'] = async (id) => {
+    return this.user.findByIdAndDelete(id).orFail().exec()
   }
 }
 
