@@ -1,5 +1,5 @@
-import { IMulterFile } from 'api/uploads'
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { IMulterFile } from 'lib/multer'
 import { IImageDocument } from 'modules/image/model'
 
 export interface IDeleteManyImagesRepositoryFilter

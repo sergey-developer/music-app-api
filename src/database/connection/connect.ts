@@ -7,7 +7,7 @@ const connectDatabase = async () => {
   try {
     logger.info('Connecting database...')
 
-    await connect(dbConfig.url, {
+    await connect(dbConfig.URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })

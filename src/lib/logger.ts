@@ -2,15 +2,13 @@ import { createLogger, format, transports } from 'winston'
 
 import { appConfig } from 'configs/app'
 
-const errorLogPath: string = `${appConfig.logsPath}/error.log`
-
 const fileMsgFormat = format.printf(
   ({ level, message, timestamp }) => `${level}: ${timestamp}: ${message}`,
 )
 
 const file = new transports.File({
   level: 'warn',
-  filename: errorLogPath,
+  filename: appConfig.errorLogPath,
   format: format.combine(
     format.timestamp({ format: 'DD-MMM-YYYY HH:mm:ss' }),
     format.align(),

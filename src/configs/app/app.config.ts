@@ -1,19 +1,23 @@
 import path from 'path'
 
 interface IAppConfig {
-  rootPath: string
-  uploadPath: string
-  logsPath: string
-  basePath: string
+  imageUploadPath: string
+  errorLogPath: string
+  baseApiPath: string
 }
 
 const rootPath = process.cwd()
 
+const uploadPath = '/public/uploads' as const
+const logsPath = '/logs' as const
+
+const imageUploadPath = path.join(rootPath, `${uploadPath}/images`)
+const errorLogPath = path.join(rootPath, `${logsPath}/errors.log`)
+
 const config: IAppConfig = {
-  rootPath,
-  uploadPath: path.join(rootPath, '/public/uploads'),
-  logsPath: path.join(rootPath, '/logs'),
-  basePath: '/api',
+  imageUploadPath,
+  errorLogPath,
+  baseApiPath: '/api',
 }
 
 export default config
