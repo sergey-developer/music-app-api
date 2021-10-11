@@ -7,9 +7,9 @@ import { ISessionService, SessionService } from 'modules/session/service'
 import { IUserDocument } from 'modules/user/model'
 import { IUserService, UserService } from 'modules/user/service'
 import {
-  badRequestError,
+  BadRequestError,
+  ServerError,
   ensureHttpError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class AuthController implements IAuthController {
@@ -50,7 +50,7 @@ class AuthController implements IAuthController {
       res.status(StatusCodes.OK).send(result)
       return
     } catch (exception) {
-      const error = serverError('Error while creating new user')
+      const error = ServerError('Error while creating new user')
 
       try {
         await this.userService.deleteOneById(user.id)
@@ -74,7 +74,7 @@ class AuthController implements IAuthController {
 
       const isCorrectPassword = await user.checkPassword(password)
 
-      if (!isCorrectPassword) throw badRequestError('Wrong password')
+      if (!isCorrectPassword) throw BadRequestError('Wrong password')
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
@@ -88,7 +88,7 @@ class AuthController implements IAuthController {
       res.status(StatusCodes.OK).send(result)
       return
     } catch {
-      const error = serverError('Sign in error')
+      const error = ServerError('Sign in error')
       res.status(error.status).send(error)
       return
     }

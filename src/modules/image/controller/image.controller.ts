@@ -4,7 +4,7 @@ import pick from 'lodash/pick'
 import { IImageController } from 'modules/image/controller'
 import { IImageService, ImageService } from 'modules/image/service'
 import {
-  badRequestError,
+  BadRequestError,
   ensureHttpError,
 } from 'shared/utils/errors/httpErrors'
 
@@ -19,7 +19,7 @@ class ImageController implements IImageController {
     const file = req.file
 
     try {
-      if (!file) throw badRequestError('File was not provided')
+      if (!file) throw BadRequestError('File was not provided')
 
       const image = await this.imageService.createOne(file)
       const result = pick(image, 'id', 'src')

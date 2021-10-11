@@ -13,11 +13,11 @@ import {
   isValidationError,
 } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
   isBadRequestError,
   isHttpError,
-  notFoundError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class TrackService implements ITrackService {
@@ -50,13 +50,13 @@ class TrackService implements ITrackService {
 
       return this.trackRepository.findAllWhere(repoFilter)
     } catch (error) {
-      throw serverError('Error while getting tracks')
+      throw ServerError('Error while getting tracks')
     }
   }
 
   public createOne: ITrackService['createOne'] = async (payload) => {
     let track: ITrackDocument
-    const theServerError = serverError('Error while creating new track')
+    const serverError = ServerError('Error while creating new track')
 
     try {
       track = await this.trackRepository.createOne({
@@ -67,13 +67,13 @@ class TrackService implements ITrackService {
       })
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw theServerError
+      throw serverError
     }
 
     try {
@@ -90,15 +90,15 @@ class TrackService implements ITrackService {
         // log to file (начало удаления)
         await this.trackRepository.deleteOneById(track.id)
         // log to file (конец удаления)
-        throw theServerError
+        throw serverError
       } catch (error) {
         if (isHttpError(error)) {
-          throw theServerError
+          throw serverError
         }
 
         console.error(`Track by id "${track.id}" was not deleted`)
         // log not deleted track to file (Track by id "${track.id}" was not deleted)
-        throw theServerError
+        throw serverError
       }
     }
   }
@@ -110,10 +110,10 @@ class TrackService implements ITrackService {
       track = await this.trackRepository.deleteOneById(id)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Track with id "${id}" was not found`)
+        throw NotFoundError(`Track with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while deleting track by id "${id}"`)
+      throw ServerError(`Error while deleting track by id "${id}"`)
     }
 
     try {
@@ -122,7 +122,7 @@ class TrackService implements ITrackService {
 
       return track
     } catch (error) {
-      throw serverError('Error while deleting related objects of track')
+      throw ServerError('Error while deleting related objects of track')
     }
   }
 
@@ -134,19 +134,19 @@ class TrackService implements ITrackService {
       await this.trackRepository.deleteMany({ ids: trackIds })
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw badRequestError(
+        throw BadRequestError(
           'Deleting many tracks with empty filter forbidden',
         )
       }
 
-      throw serverError('Error while deleting many tracks')
+      throw ServerError('Error while deleting many tracks')
     }
 
     try {
       await this.trackHistoryService.deleteMany({ trackIds })
       await this.requestService.deleteMany({ entityIds: trackIds })
     } catch (error) {
-      throw serverError('Error while deleting related objects of tracks')
+      throw ServerError('Error while deleting related objects of tracks')
     }
   }
 }

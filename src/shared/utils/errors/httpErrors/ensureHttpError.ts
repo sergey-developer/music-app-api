@@ -1,9 +1,9 @@
 import { HttpError } from 'http-errors'
 
-import { isHttpError, serverError } from 'shared/utils/errors/httpErrors'
+import { ServerError, isHttpError } from 'shared/utils/errors/httpErrors'
 
 const ensureHttpError = (error: HttpError): HttpError => {
-  return isHttpError(error) ? error : serverError()
+  return isHttpError(error) ? error : ServerError()
 }
 
 export default ensureHttpError

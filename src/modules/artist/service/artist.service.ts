@@ -12,10 +12,10 @@ import { IImageService, ImageService } from 'modules/image/service'
 import { IRequestService, RequestService } from 'modules/request/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
   isHttpError,
-  notFoundError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class ArtistService implements IArtistService {
@@ -56,13 +56,13 @@ class ArtistService implements IArtistService {
 
       return this.artistRepository.findAllWhere(repoFilter)
     } catch (error) {
-      throw serverError('Error while getting artists')
+      throw ServerError('Error while getting artists')
     }
   }
 
   public createOne: IArtistService['createOne'] = async (payload) => {
     let artist: IArtistDocument
-    const theServerError = serverError('Error while creating new artist')
+    const serverError = ServerError('Error while creating new artist')
 
     try {
       artist = await this.artistRepository.createOne({
@@ -72,13 +72,13 @@ class ArtistService implements IArtistService {
       })
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw theServerError
+      throw serverError
     }
 
     try {
@@ -95,15 +95,15 @@ class ArtistService implements IArtistService {
         // log to file (начало удаления)
         await this.artistRepository.deleteOneById(artist.id)
         // log to file (конец удаления)
-        throw theServerError
+        throw serverError
       } catch (error) {
         if (isHttpError(error)) {
-          throw theServerError
+          throw serverError
         }
 
         console.error(`Artist by id "${artist.id}" was not deleted`)
         // log not deleted artist to file (Artist by id "${artist.id}" was not deleted)
-        throw theServerError
+        throw serverError
       }
     }
   }
@@ -115,10 +115,10 @@ class ArtistService implements IArtistService {
       artist = await this.artistRepository.deleteOneById(id)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Artist with id "${id}" was not found`)
+        throw NotFoundError(`Artist with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while deleting artist by id "${id}"`)
+      throw ServerError(`Error while deleting artist by id "${id}"`)
     }
 
     try {
@@ -140,7 +140,7 @@ class ArtistService implements IArtistService {
 
       return artist
     } catch (error) {
-      throw serverError('Error while deleting related objects of artist')
+      throw ServerError('Error while deleting related objects of artist')
     }
   }
 }

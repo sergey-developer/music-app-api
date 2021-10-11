@@ -21,11 +21,11 @@ import { ITrackDocument } from 'modules/track/model'
 import { ITrackService, TrackService } from 'modules/track/service'
 import { isEmptyFilterError } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
   isBadRequestError,
   isNotFoundError,
-  notFoundError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class RequestService implements IRequestService {
@@ -58,7 +58,7 @@ class RequestService implements IRequestService {
         await this.trackService.deleteOneById(entityId)
       }
     } catch (error) {
-      throw serverError()
+      throw ServerError()
     }
   }
 
@@ -75,7 +75,7 @@ class RequestService implements IRequestService {
         ? this.requestRepository.findAll()
         : this.requestRepository.findAllWhere(filter)
     } catch (error) {
-      throw serverError('Error while getting requests')
+      throw ServerError('Error while getting requests')
     }
   }
 
@@ -87,7 +87,7 @@ class RequestService implements IRequestService {
         creator: payload.creator,
       })
     } catch (error) {
-      throw serverError('Error while creating new request')
+      throw ServerError('Error while creating new request')
     }
   }
 
@@ -100,10 +100,10 @@ class RequestService implements IRequestService {
       request = await this.requestRepository.findOneById(requestId)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Request with id "${requestId}" was not found`)
+        throw NotFoundError(`Request with id "${requestId}" was not found`)
       }
 
-      throw serverError(`Error while deleting request by id "${requestId}"`)
+      throw ServerError(`Error while deleting request by id "${requestId}"`)
     }
 
     try {
@@ -116,10 +116,10 @@ class RequestService implements IRequestService {
       return request
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw notFoundError(`Request with id "${requestId}" was not found`)
+        throw NotFoundError(`Request with id "${requestId}" was not found`)
       }
 
-      throw serverError(`Error while deleting request by id "${requestId}"`)
+      throw ServerError(`Error while deleting request by id "${requestId}"`)
     }
   }
 
@@ -129,10 +129,10 @@ class RequestService implements IRequestService {
       return request
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError('Request was not found')
+        throw NotFoundError('Request was not found')
       }
 
-      throw serverError('Error while deleting request')
+      throw ServerError('Error while deleting request')
     }
   }
 
@@ -141,12 +141,12 @@ class RequestService implements IRequestService {
       await this.requestRepository.deleteMany(filter)
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw badRequestError(
+        throw BadRequestError(
           'Deleting many requests with empty filter forbidden',
         )
       }
 
-      throw serverError('Error while deleting many requests')
+      throw ServerError('Error while deleting many requests')
     }
   }
 }

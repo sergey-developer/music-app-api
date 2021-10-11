@@ -2,8 +2,8 @@ import { RequestHandler } from 'express'
 
 import { UserRoleEnum } from 'modules/user/constants'
 import {
-  forbiddenError,
-  unauthorizedError,
+  ForbiddenError,
+  UnauthorizedError,
 } from 'shared/utils/errors/httpErrors'
 
 const permit =
@@ -12,13 +12,13 @@ const permit =
     const user = req.user
 
     if (!user) {
-      const error = unauthorizedError('Unauthorized')
+      const error = UnauthorizedError('Unauthorized')
       res.status(error.status).send(error)
       return
     }
 
     if (!roles.includes(user.role)) {
-      const error = forbiddenError('No access')
+      const error = ForbiddenError('No access')
       res.status(error.status).send(error)
       return
     }

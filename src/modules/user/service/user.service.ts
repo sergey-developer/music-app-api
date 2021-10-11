@@ -3,9 +3,9 @@ import { IUserRepository, UserRepository } from 'modules/user/repository'
 import { IUserService } from 'modules/user/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
-  notFoundError,
-  serverError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
 } from 'shared/utils/errors/httpErrors'
 
 class UserService implements IUserService {
@@ -21,13 +21,13 @@ class UserService implements IUserService {
       return user
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw serverError('Error while creating new user')
+      throw ServerError('Error while creating new user')
     }
   }
 
@@ -37,10 +37,10 @@ class UserService implements IUserService {
       return user
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`User with email "${email}" was not found`)
+        throw NotFoundError(`User with email "${email}" was not found`)
       }
 
-      throw serverError(`Error while getting user by email "${email}"`)
+      throw ServerError(`Error while getting user by email "${email}"`)
     }
   }
 
@@ -50,10 +50,10 @@ class UserService implements IUserService {
       return user
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`User with id "${id}" was not found`)
+        throw NotFoundError(`User with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while deleting user by id "${id}"`)
+      throw ServerError(`Error while deleting user by id "${id}"`)
     }
   }
 }

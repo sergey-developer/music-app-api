@@ -5,8 +5,8 @@ import { envConfig } from 'configs/env'
 import { SessionService } from 'modules/session/service'
 import { isJwtError, verifyToken } from 'modules/session/utils'
 import {
+  UnauthorizedError,
   ensureHttpError,
-  unauthorizedError,
 } from 'shared/utils/errors/httpErrors'
 
 const auth = async <Req extends Request, Res extends Response>(
@@ -18,7 +18,7 @@ const auth = async <Req extends Request, Res extends Response>(
     // TODO: set type for cookies
     const token = req.cookies.token
 
-    if (!token) throw unauthorizedError('Token was not provided')
+    if (!token) throw UnauthorizedError('Token was not provided')
 
     const jwtPayload = verifyToken(token, envConfig.app.tokenSecret)
 
@@ -30,7 +30,7 @@ const auth = async <Req extends Request, Res extends Response>(
     let error
 
     if (isJwtError(exception)) {
-      error = unauthorizedError('Invalid token')
+      error = UnauthorizedError('Invalid token')
       res.status(error.status).send(error)
       return
     }

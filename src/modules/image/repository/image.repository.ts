@@ -4,7 +4,7 @@ import { IImageModel, ImageModel } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { badRequestError } from 'shared/utils/errors/httpErrors'
+import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class ImageRepository implements IImageRepository {
   private readonly image: IImageModel
@@ -34,7 +34,7 @@ class ImageRepository implements IImageRepository {
     const filterToApply = { ...filterById }
 
     if (isEmpty(filterToApply)) {
-      throw badRequestError(null, {
+      throw BadRequestError(null, {
         kind: ErrorKindsEnum.EmptyFilter,
       })
     }

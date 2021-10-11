@@ -15,11 +15,11 @@ import {
   isValidationError,
 } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
   isBadRequestError,
   isHttpError,
-  notFoundError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class AlbumService implements IAlbumService {
@@ -60,13 +60,13 @@ class AlbumService implements IAlbumService {
 
       return this.albumRepository.findAllWhere(repoFilter)
     } catch (error) {
-      throw serverError('Error while getting albums')
+      throw ServerError('Error while getting albums')
     }
   }
 
   public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
-    const theServerError = serverError('Error while creating new album')
+    const serverError = ServerError('Error while creating new album')
 
     try {
       album = await this.albumRepository.createOne({
@@ -77,13 +77,13 @@ class AlbumService implements IAlbumService {
       })
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw theServerError
+      throw serverError
     }
 
     try {
@@ -100,15 +100,15 @@ class AlbumService implements IAlbumService {
         // log to file (начало удаления)
         await this.albumRepository.deleteOneById(album.id)
         // log to file (конец удаления)
-        throw theServerError
+        throw serverError
       } catch (error) {
         if (isHttpError(error)) {
-          throw theServerError
+          throw serverError
         }
 
         console.error(`Album by id "${album.id}" was not deleted`)
         // log not deleted album to file (Album by id "${album.id}" was not deleted)
-        throw theServerError
+        throw serverError
       }
     }
   }
@@ -119,10 +119,10 @@ class AlbumService implements IAlbumService {
       return album
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Album with id "${id}" was not found`)
+        throw NotFoundError(`Album with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while getting album by id "${id}"`)
+      throw ServerError(`Error while getting album by id "${id}"`)
     }
   }
 
@@ -133,10 +133,10 @@ class AlbumService implements IAlbumService {
       album = await this.albumRepository.deleteOneById(id)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Album with id "${id}" was not found`)
+        throw NotFoundError(`Album with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while deleting album by id "${id}"`)
+      throw ServerError(`Error while deleting album by id "${id}"`)
     }
 
     try {
@@ -158,7 +158,7 @@ class AlbumService implements IAlbumService {
 
       return album
     } catch (error) {
-      throw serverError('Error while deleting related objects of album')
+      throw ServerError('Error while deleting related objects of album')
     }
   }
 
@@ -177,12 +177,12 @@ class AlbumService implements IAlbumService {
       await this.albumRepository.deleteMany({ ids: albumIds })
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw badRequestError(
+        throw BadRequestError(
           'Deleting many albums with empty filter forbidden',
         )
       }
 
-      throw serverError('Error while deleting many albums')
+      throw ServerError('Error while deleting many albums')
     }
 
     try {
@@ -199,7 +199,7 @@ class AlbumService implements IAlbumService {
 
       await this.requestService.deleteMany({ entityIds: albumIds })
     } catch (error) {
-      throw serverError('Error while deleting related objects of albums')
+      throw ServerError('Error while deleting related objects of albums')
     }
   }
 }

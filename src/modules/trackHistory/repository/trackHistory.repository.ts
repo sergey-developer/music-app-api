@@ -9,7 +9,7 @@ import {
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { badRequestError } from 'shared/utils/errors/httpErrors'
+import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryRepository implements ITrackHistoryRepository {
   private readonly trackHistory: ITrackHistoryModel
@@ -47,7 +47,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     }
 
     if (isEmpty(filterToApply)) {
-      throw badRequestError(null, {
+      throw BadRequestError(null, {
         kind: ErrorKindsEnum.EmptyFilter,
       })
     }

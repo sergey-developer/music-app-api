@@ -6,10 +6,10 @@ import {
 import { ISessionService } from 'modules/session/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
-  notFoundError,
-  serverError,
-  unauthorizedError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
+  UnauthorizedError,
 } from 'shared/utils/errors/httpErrors'
 
 class SessionService implements ISessionService {
@@ -30,13 +30,13 @@ class SessionService implements ISessionService {
       return session
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw serverError('Error while creating new session')
+      throw ServerError('Error while creating new session')
     }
   }
 
@@ -48,10 +48,10 @@ class SessionService implements ISessionService {
       return session
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw unauthorizedError(`Session with token "${token}" was not found`)
+        throw UnauthorizedError(`Session with token "${token}" was not found`)
       }
 
-      throw serverError(`Error while getting session by token "${token}"`)
+      throw ServerError(`Error while getting session by token "${token}"`)
     }
   }
 
@@ -62,10 +62,10 @@ class SessionService implements ISessionService {
       await this.sessionRepository.deleteOneByToken(token)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Session with token "${token}" was not found`)
+        throw NotFoundError(`Session with token "${token}" was not found`)
       }
 
-      throw serverError(`Error while deleting session by token "${token}"`)
+      throw ServerError(`Error while deleting session by token "${token}"`)
     }
   }
 }

@@ -6,10 +6,10 @@ import {
   isValidationError,
 } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
   isBadRequestError,
-  notFoundError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class ImageService implements IImageService {
@@ -25,13 +25,13 @@ class ImageService implements IImageService {
       return image
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw serverError('Error while creating new image')
+      throw ServerError('Error while creating new image')
     }
   }
 
@@ -41,10 +41,10 @@ class ImageService implements IImageService {
       return image
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Image with id "${id}" was not found`)
+        throw NotFoundError(`Image with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while deleting image by id "${id}"`)
+      throw ServerError(`Error while deleting image by id "${id}"`)
     }
   }
 
@@ -53,12 +53,12 @@ class ImageService implements IImageService {
       await this.imageRepository.deleteMany(filter)
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw badRequestError(
+        throw BadRequestError(
           'Deleting many images with empty filter forbidden',
         )
       }
 
-      throw serverError('Error while deleting many images')
+      throw ServerError('Error while deleting many images')
     }
   }
 }

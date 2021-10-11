@@ -5,7 +5,7 @@ import { ITrackDocument, ITrackModel, TrackModel } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
 import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { badRequestError } from 'shared/utils/errors/httpErrors'
+import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: ITrackModel
@@ -56,7 +56,7 @@ class TrackRepository implements ITrackRepository {
     const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
     if (isEmpty(filterToApply)) {
-      throw badRequestError(null, {
+      throw BadRequestError(null, {
         kind: ErrorKindsEnum.EmptyFilter,
       })
     }

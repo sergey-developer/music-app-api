@@ -9,10 +9,10 @@ import {
   isValidationError,
 } from 'shared/utils/errors/checkErrorKind'
 import {
-  badRequestError,
+  BadRequestError,
+  NotFoundError,
+  ServerError,
   isBadRequestError,
-  notFoundError,
-  serverError,
 } from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryService implements ITrackHistoryService {
@@ -26,7 +26,7 @@ class TrackHistoryService implements ITrackHistoryService {
     try {
       return this.trackHistoryRepository.findAllWhere(filter)
     } catch (error) {
-      throw serverError('Error while getting tracks`s histories')
+      throw ServerError('Error while getting tracks`s histories')
     }
   }
 
@@ -41,13 +41,13 @@ class TrackHistoryService implements ITrackHistoryService {
     } catch (error) {
       // TODO: протестировать ошибку валидации
       if (isValidationError(error.name)) {
-        throw badRequestError(error.message, {
+        throw BadRequestError(error.message, {
           kind: error.name,
           errors: error.errors,
         })
       }
 
-      throw serverError('Error while creating new track history')
+      throw ServerError('Error while creating new track history')
     }
   }
 
@@ -57,10 +57,10 @@ class TrackHistoryService implements ITrackHistoryService {
       return trackHistory
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw notFoundError(`Track history with id "${id}" was not found`)
+        throw NotFoundError(`Track history with id "${id}" was not found`)
       }
 
-      throw serverError(`Error while deleting track history by id "${id}"`)
+      throw ServerError(`Error while deleting track history by id "${id}"`)
     }
   }
 
@@ -69,12 +69,12 @@ class TrackHistoryService implements ITrackHistoryService {
       await this.trackHistoryRepository.deleteMany(filter)
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw badRequestError(
+        throw BadRequestError(
           'Deleting many tracks`s histories with empty filter forbidden',
         )
       }
 
-      throw serverError('Error while deleting many tracks`s histories')
+      throw ServerError('Error while deleting many tracks`s histories')
     }
   }
 }
