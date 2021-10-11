@@ -1,4 +1,4 @@
-import { auth } from 'api/auth'
+import { auth } from 'modules/auth/middlewares'
 import { TrackHistoryController } from 'modules/trackHistory/controller'
 import {
   CreateTrackHistoryDto,

@@ -1,4 +1,3 @@
-import { auth } from 'api/auth'
 import { AlbumController } from 'modules/album/controller'
 import {
   CreateAlbumDto,
@@ -6,6 +5,7 @@ import {
   GetAllAlbumsQuery,
   GetOneAlbumByIdParams,
 } from 'modules/album/dto'
+import { auth } from 'modules/auth/middlewares'
 import { CreateRouter } from 'shared/interface/router'
 import { body, params, query } from 'shared/middlewares/validation'
 

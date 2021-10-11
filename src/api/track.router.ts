@@ -1,4 +1,4 @@
-import { auth } from 'api/auth'
+import { auth } from 'modules/auth/middlewares'
 import { TrackController } from 'modules/track/controller'
 import {
   CreateTrackDto,
