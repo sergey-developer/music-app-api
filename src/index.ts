@@ -8,7 +8,7 @@ const init = async () => {
 
 init()
 
-// TODO: Настроить логирование ошибок и т.п. (в файл?)
+// TODO: Настроить вывод ошибок в файл
 
 // TODO: сделать обновление request
 // TODO: remove props with undefined value from dto

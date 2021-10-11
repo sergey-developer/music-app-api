@@ -1,15 +1,18 @@
 import { connect } from 'mongoose'
 
 import { dbConfig } from 'configs/db'
+import logger from 'lib/logger'
 
 const connectDatabase = async () => {
   try {
+    logger.info('Connecting database...')
+
     await connect(dbConfig.url, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
 
-    console.log('Mongoose connected to the database')
+    logger.info('Mongoose connected to the database')
   } catch (error) {
     console.error('Cannot connect to the database: ', error)
 

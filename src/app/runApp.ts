@@ -1,18 +1,17 @@
-import express, { Application } from 'express'
+import express from 'express'
 
-import { createRoutes } from 'app/routes'
 import { envConfig } from 'configs/env'
 import logger from 'lib/logger'
 
 import setupApp from './setupApp'
 
-const runApp = () => {
-  const expressApp: Application = express()
-  const app = setupApp(expressApp)
+const runApp = (): void => {
+  logger.info('Setting up application...')
+  const app = setupApp(express())
+  const port = envConfig.app.port
 
-  app.listen(envConfig.app.port, () => {
-    logger.info(`Server started on ${envConfig.app.port} port`)
-    createRoutes(app)
+  app.listen(port, () => {
+    logger.info(`Server started on ${port} port`)
   })
 }
 

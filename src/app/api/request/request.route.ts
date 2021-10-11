@@ -1,19 +1,13 @@
-import express from 'express'
-
 import auth from 'api/auth/middlewares/auth.middleware'
 import { RequestController } from 'api/request/controller'
 import {
   DeleteOneRequestByIdParams,
   GetAllRequestsQuery,
 } from 'api/request/dto'
-import { APIRoute } from 'app/routes/interface'
-import { makeRoutePath } from 'app/routes/utils'
+import { CreateRouter } from 'app/routes/interface'
 import { params, query } from 'shared/middlewares/validation'
 
-const route: APIRoute = (app) => {
-  const router = express.Router()
-  const routePath = makeRoutePath('requests')
-
+const createRouter: CreateRouter = (router) => {
   router.get('/', [auth, query(GetAllRequestsQuery)], RequestController.getAll)
 
   router.delete(
@@ -22,7 +16,7 @@ const route: APIRoute = (app) => {
     RequestController.deleteOneById,
   )
 
-  app.use(routePath, router)
+  return router
 }
 
-export default route
+export default createRouter

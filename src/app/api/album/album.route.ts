@@ -1,5 +1,3 @@
-import express from 'express'
-
 import { AlbumController } from 'api/album/controller'
 import {
   CreateAlbumDto,
@@ -8,14 +6,10 @@ import {
 } from 'api/album/dto'
 import { GetOneAlbumByIdParams } from 'api/album/dto/params.dto'
 import auth from 'api/auth/middlewares/auth.middleware'
-import { APIRoute } from 'app/routes/interface'
-import { makeRoutePath } from 'app/routes/utils'
+import { CreateRouter } from 'app/routes/interface'
 import { body, params, query } from 'shared/middlewares/validation'
 
-const route: APIRoute = (app) => {
-  const router = express.Router()
-  const routePath = makeRoutePath('albums')
-
+const createRouter: CreateRouter = (router) => {
   router.get('/', query(GetAllAlbumsQuery), AlbumController.getAll)
 
   router.get(
@@ -32,7 +26,7 @@ const route: APIRoute = (app) => {
     AlbumController.deleteOneById,
   )
 
-  app.use(routePath, router)
+  return router
 }
 
-export default route
+export default createRouter
