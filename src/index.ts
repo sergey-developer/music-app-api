@@ -1,5 +1,5 @@
-import runApp from 'app/runApp'
 import { connectDatabase } from 'database/connection'
+import { runApp } from 'shared/utils/app'
 
 const init = async () => {
   await connectDatabase()

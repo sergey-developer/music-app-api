@@ -1,4 +1,4 @@
-import { JwtVerifyResult } from 'api/session/interface'
+import { JwtVerifyResult } from 'modules/session/interface'
 
 declare global {
   namespace Express {

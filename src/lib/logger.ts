@@ -5,14 +5,14 @@ import { appConfig } from 'configs/app'
 const errorLogPath: string = `${appConfig.logsPath}/error.log`
 
 const fileMsgFormat = format.printf(
-  ({ level, message, timestamp }) => `${level}: ${message}. ${timestamp}`,
+  ({ level, message, timestamp }) => `${level}: ${timestamp}: ${message}`,
 )
 
 const file = new transports.File({
   level: 'warn',
   filename: errorLogPath,
   format: format.combine(
-    format.timestamp({ format: 'DD-MM-YYYY hh:mm:ss' }),
+    format.timestamp({ format: 'DD-MMM-YYYY HH:mm:ss' }),
     format.align(),
     fileMsgFormat,
   ),

@@ -52,8 +52,8 @@
     ".ts": {
       "options": {
         "extraAliases": [
-          "app",
           "api",
+          "modules",
           "shared",
           "configs",
           "lib",
