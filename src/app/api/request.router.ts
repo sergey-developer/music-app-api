@@ -1,10 +1,10 @@
+import { CreateRouter } from 'api/routers/interface'
 import { auth } from 'modules/auth/middlewares'
 import { RequestController } from 'modules/request/controller'
 import {
   DeleteOneRequestByIdParams,
   GetAllRequestsQuery,
 } from 'modules/request/dto'
-import { CreateRouter } from 'shared/interface/router'
 import { params, query } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

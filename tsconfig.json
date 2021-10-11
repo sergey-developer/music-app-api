@@ -47,8 +47,9 @@
      "moduleResolution": "node",                    /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
      "baseUrl": "./",                             /* Base directory to resolve non-absolute module names. */
      "paths": {
-       "api/*": ["src/api/*"],
-       "modules/*": ["src/modules/*"],
+       "app/*": ["src/app/*"],
+       "api/*": ["src/app/api/*"],
+       "modules/*": ["src/app/modules/*"],
        "shared/*": ["src/shared/*"],
        "configs/*": ["src/configs/*"],
        "lib/*": ["src/lib/*"],

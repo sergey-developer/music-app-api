@@ -1,12 +1,12 @@
+import runApp from 'app/run'
 import { connectDatabase } from 'database/connection'
-import { runApp } from 'shared/utils/app'
 
-const init = async () => {
+const runServer = async () => {
   await connectDatabase()
   runApp()
 }
 
-init()
+runServer()
 
 // TODO: Настроить вывод ошибок в файл
 

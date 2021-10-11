@@ -1,3 +1,4 @@
+import { CreateRouter } from 'api/routers/interface'
 import { ArtistController } from 'modules/artist/controller'
 import {
   CreateArtistDto,
@@ -5,7 +6,6 @@ import {
   GetAllArtistsQuery,
 } from 'modules/artist/dto'
 import { auth } from 'modules/auth/middlewares'
-import { CreateRouter } from 'shared/interface/router'
 import { body, params, query } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

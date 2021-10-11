@@ -1,3 +1,4 @@
+import { CreateRouter } from 'api/routers/interface'
 import { AlbumController } from 'modules/album/controller'
 import {
   CreateAlbumDto,
@@ -6,7 +7,6 @@ import {
   GetOneAlbumByIdParams,
 } from 'modules/album/dto'
 import { auth } from 'modules/auth/middlewares'
-import { CreateRouter } from 'shared/interface/router'
 import { body, params, query } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

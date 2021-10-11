@@ -1,8 +1,8 @@
+import { CreateRouter } from 'api/routers/interface'
 import { auth } from 'modules/auth/middlewares'
 import { ImageController } from 'modules/image/controller'
 import { DeleteOneImageByIdParams } from 'modules/image/dto'
 import { upload } from 'modules/uploads/middlewares/upload'
-import { CreateRouter } from 'shared/interface/router'
 import { params } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

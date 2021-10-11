@@ -1,3 +1,4 @@
+import { CreateRouter } from 'api/routers/interface'
 import { auth } from 'modules/auth/middlewares'
 import { TrackController } from 'modules/track/controller'
 import {
@@ -5,7 +6,6 @@ import {
   DeleteOneTrackByIdParams,
   GetAllTracksQuery,
 } from 'modules/track/dto'
-import { CreateRouter } from 'shared/interface/router'
 import { body, params, query } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

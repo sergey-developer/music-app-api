@@ -7,7 +7,7 @@ import { IArtistDocument } from 'modules/artist/model'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ITrackDocument } from 'modules/track/model'
 import { IUserDocument } from 'modules/user/model'
-import { MaybeNull } from 'shared/interface/utils/common'
+import { MaybeNull } from 'shared/interface/utils'
 
 export interface IRequestDocument {
   id: string

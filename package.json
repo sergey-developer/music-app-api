@@ -52,12 +52,13 @@
     ".ts": {
       "options": {
         "extraAliases": [
+          "database",
+          "app",
           "api",
           "modules",
           "shared",
           "configs",
-          "lib",
-          "database"
+          "lib"
         ]
       }
     }

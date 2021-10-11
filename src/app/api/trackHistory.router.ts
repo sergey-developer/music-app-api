@@ -1,10 +1,10 @@
+import { CreateRouter } from 'api/routers/interface'
 import { auth } from 'modules/auth/middlewares'
 import { TrackHistoryController } from 'modules/trackHistory/controller'
 import {
   CreateTrackHistoryDto,
   DeleteOneTrackHistoryByIdParams,
 } from 'modules/trackHistory/dto'
-import { CreateRouter } from 'shared/interface/router'
 import { body, params } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

@@ -4,9 +4,9 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express, { Application } from 'express'
 
-import { createRouters } from 'shared/utils/router'
+import createRouters from 'api/routers'
 
-const setupApp = (app: Application): Application => {
+const setup = (app: Application): Application => {
   app.use(express.json())
   app.use(cors())
   app.use(cookieParser())
@@ -17,4 +17,4 @@ const setupApp = (app: Application): Application => {
   return app
 }
 
-export default setupApp
+export default setup

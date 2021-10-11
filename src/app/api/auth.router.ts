@@ -1,6 +1,6 @@
+import { CreateRouter } from 'api/routers/interface'
 import { AuthController } from 'modules/auth/controller'
 import { SigninUserDto, SignupUserDto } from 'modules/auth/dto'
-import { CreateRouter } from 'shared/interface/router'
 import { body } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {

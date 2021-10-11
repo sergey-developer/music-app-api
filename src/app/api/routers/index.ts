@@ -2,11 +2,12 @@ import albumRouter from 'api/album.router'
 import artistRouter from 'api/artist.router'
 import authRouter from 'api/auth.router'
 import requestRouter from 'api/request.router'
+import { RoutersEnum } from 'api/routers/constants'
+import { ApiRouter } from 'api/routers/interface'
+import { createRouters } from 'api/routers/utils'
 import trackRouter from 'api/track.router'
 import trackHistoryRouter from 'api/trackHistory.router'
 import uploadsRouter from 'api/uploads.router'
-import { RoutersEnum } from 'shared/constants/routers'
-import { ApiRouter } from 'shared/interface/router'
 
 const routers: ApiRouter[] = [
   { name: RoutersEnum.Auth, create: authRouter },
@@ -18,4 +19,4 @@ const routers: ApiRouter[] = [
   { name: RoutersEnum.Uploads, create: uploadsRouter },
 ]
 
-export default routers
+export default createRouters(routers)

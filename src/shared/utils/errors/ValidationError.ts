@@ -1,5 +1,5 @@
 import ErrorKindsEnum from 'shared/constants/errorKinds'
-import { MaybeArray } from 'shared/interface/utils/common'
+import { MaybeArray } from 'shared/interface/utils'
 
 export interface IValidationError {
   name: string

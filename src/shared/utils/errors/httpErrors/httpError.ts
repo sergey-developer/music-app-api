@@ -1,7 +1,7 @@
 import createError, { HttpError } from 'http-errors'
 import { StatusCodes, getReasonPhrase } from 'http-status-codes'
 
-import { MaybeNull } from 'shared/interface/utils/common'
+import { MaybeNull } from 'shared/interface/utils'
 
 const createHttpError =
   (status: StatusCodes) =>
