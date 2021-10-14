@@ -1,4 +1,5 @@
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import { IUserRepository, UserRepository } from 'modules/user/repository'
 import { IUserService } from 'modules/user/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
@@ -27,6 +28,7 @@ class UserService implements IUserService {
         })
       }
 
+      logger.error(error.stack)
       throw ServerError('Error while creating new user')
     }
   }
@@ -40,7 +42,8 @@ class UserService implements IUserService {
         throw NotFoundError(`User with email "${email}" was not found`)
       }
 
-      throw ServerError(`Error while getting user by email "${email}"`)
+      logger.error(error.stack)
+      throw ServerError('Error while getting user')
     }
   }
 
@@ -53,7 +56,8 @@ class UserService implements IUserService {
         throw NotFoundError(`User with id "${id}" was not found`)
       }
 
-      throw ServerError(`Error while deleting user by id "${id}"`)
+      logger.error(error.stack)
+      throw ServerError('Error while deleting user')
     }
   }
 }

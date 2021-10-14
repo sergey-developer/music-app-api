@@ -1,4 +1,5 @@
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import {
   ITrackHistoryRepository,
   TrackHistoryRepository,
@@ -26,6 +27,7 @@ class TrackHistoryService implements ITrackHistoryService {
     try {
       return this.trackHistoryRepository.findAllWhere(filter)
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while getting tracks`s histories')
     }
   }
@@ -47,6 +49,7 @@ class TrackHistoryService implements ITrackHistoryService {
         })
       }
 
+      logger.error(error.stack)
       throw ServerError('Error while creating new track history')
     }
   }
@@ -60,7 +63,8 @@ class TrackHistoryService implements ITrackHistoryService {
         throw NotFoundError(`Track history with id "${id}" was not found`)
       }
 
-      throw ServerError(`Error while deleting track history by id "${id}"`)
+      logger.error(error.stack)
+      throw ServerError('Error while deleting track history')
     }
   }
 
@@ -70,11 +74,12 @@ class TrackHistoryService implements ITrackHistoryService {
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
         throw BadRequestError(
-          'Deleting many tracks`s histories with empty filter forbidden',
+          'Deleting tracks`s histories with empty filter forbidden',
         )
       }
 
-      throw ServerError('Error while deleting many tracks`s histories')
+      logger.error(error.stack)
+      throw ServerError('Error while deleting tracks`s histories')
     }
   }
 }

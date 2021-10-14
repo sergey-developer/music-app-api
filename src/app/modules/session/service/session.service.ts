@@ -1,4 +1,5 @@
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import {
   ISessionRepository,
   SessionRepository,
@@ -36,7 +37,8 @@ class SessionService implements ISessionService {
         })
       }
 
-      throw ServerError('Error while creating new session')
+      logger.error(error.stack)
+      throw ServerError()
     }
   }
 
@@ -51,7 +53,8 @@ class SessionService implements ISessionService {
         throw UnauthorizedError(`Session with token "${token}" was not found`)
       }
 
-      throw ServerError(`Error while getting session by token "${token}"`)
+      logger.error(error.stack)
+      throw ServerError()
     }
   }
 
@@ -65,7 +68,8 @@ class SessionService implements ISessionService {
         throw NotFoundError(`Session with token "${token}" was not found`)
       }
 
-      throw ServerError(`Error while deleting session by token "${token}"`)
+      logger.error(error.stack)
+      throw ServerError()
     }
   }
 }

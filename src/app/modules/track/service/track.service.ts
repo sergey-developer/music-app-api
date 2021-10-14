@@ -1,5 +1,6 @@
 import { ModelNamesEnum } from 'database/constants'
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import { IRequestService, RequestService } from 'modules/request/service'
 import { ITrackDocument } from 'modules/track/model'
 import { ITrackRepository, TrackRepository } from 'modules/track/repository'
@@ -17,7 +18,6 @@ import {
   NotFoundError,
   ServerError,
   isBadRequestError,
-  isHttpError,
 } from 'shared/utils/errors/httpErrors'
 
 class TrackService implements ITrackService {
@@ -50,13 +50,15 @@ class TrackService implements ITrackService {
 
       return this.trackRepository.findAllWhere(repoFilter)
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while getting tracks')
     }
   }
 
   public createOne: ITrackService['createOne'] = async (payload) => {
     let track: ITrackDocument
-    const serverError = ServerError('Error while creating new track')
+
+    const serverErrorMsg = 'Error while creating new track'
 
     try {
       track = await this.trackRepository.createOne({
@@ -73,7 +75,8 @@ class TrackService implements ITrackService {
         })
       }
 
-      throw serverError
+      logger.error(error.stack)
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -85,26 +88,26 @@ class TrackService implements ITrackService {
 
       return track
     } catch (error) {
-      // log to file (Create request error)
-      try {
-        // log to file (начало удаления)
-        await this.trackRepository.deleteOneById(track.id)
-        // log to file (конец удаления)
-        throw serverError
-      } catch (error) {
-        if (isHttpError(error)) {
-          throw serverError
-        }
+      logger.error(error.stack, {
+        message: `Error while creating request for track with id: "${track.id}"`,
+      })
 
-        console.error(`Track by id "${track.id}" was not deleted`)
-        // log not deleted track to file (Track by id "${track.id}" was not deleted)
-        throw serverError
+      try {
+        await this.trackRepository.deleteOneById(track.id)
+      } catch (error) {
+        logger.warn(error.stack, {
+          message: `Track by id "${track.id}" was not deleted`,
+        })
       }
+
+      throw ServerError(serverErrorMsg)
     }
   }
 
   public deleteOneById: ITrackService['deleteOneById'] = async (id) => {
     let track: ITrackDocument
+
+    const serverErrorMsg = 'Error while deleting track'
 
     try {
       track = await this.trackRepository.deleteOneById(id)
@@ -113,7 +116,8 @@ class TrackService implements ITrackService {
         throw NotFoundError(`Track with id "${id}" was not found`)
       }
 
-      throw ServerError(`Error while deleting track by id "${id}"`)
+      logger.error(error.stack)
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -122,31 +126,41 @@ class TrackService implements ITrackService {
 
       return track
     } catch (error) {
-      throw ServerError('Error while deleting related objects of track')
+      logger.error(error.stack, {
+        message: `Error while deleting related objects of track with id: "${track.id}"`,
+      })
+
+      throw ServerError(serverErrorMsg)
     }
   }
 
-  public deleteMany: ITrackService['deleteMany'] = async ({ tracks }) => {
-    const tracksToDelete = tracks || []
-    const trackIds = tracksToDelete.map((track) => track.id)
+  public deleteMany: ITrackService['deleteMany'] = async (filter) => {
+    const { tracks = [] } = filter
+    const trackIds = tracks.map((track) => track.id)
+
+    const serverErrorMsg = 'Error while deleting tracks'
 
     try {
       await this.trackRepository.deleteMany({ ids: trackIds })
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError(
-          'Deleting many tracks with empty filter forbidden',
-        )
+        throw BadRequestError('Deleting tracks with empty filter forbidden')
       }
 
-      throw ServerError('Error while deleting many tracks')
+      logger.error(error.stack)
+      throw ServerError(serverErrorMsg)
     }
 
     try {
       await this.trackHistoryService.deleteMany({ trackIds })
       await this.requestService.deleteMany({ entityIds: trackIds })
     } catch (error) {
-      throw ServerError('Error while deleting related objects of tracks')
+      logger.error(error.stack, {
+        message: 'Error while deleting related objects of tracks',
+        args: { filter },
+      })
+
+      throw ServerError(serverErrorMsg)
     }
   }
 }

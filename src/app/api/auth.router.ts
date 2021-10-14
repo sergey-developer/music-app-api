@@ -1,4 +1,4 @@
-import { CreateRouter } from 'api/routers/interface'
+import { CreateRouter } from 'api/interface'
 import { AuthController } from 'modules/auth/controller'
 import { SigninUserDto, SignupUserDto } from 'modules/auth/dto'
 import { body } from 'shared/middlewares/validation'

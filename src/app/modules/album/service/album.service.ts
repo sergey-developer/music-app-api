@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentIdArray } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
 import { AlbumRepository, IAlbumRepository } from 'modules/album/repository'
 import { IAlbumService } from 'modules/album/service'
@@ -19,7 +20,6 @@ import {
   NotFoundError,
   ServerError,
   isBadRequestError,
-  isHttpError,
 } from 'shared/utils/errors/httpErrors'
 
 class AlbumService implements IAlbumService {
@@ -31,7 +31,13 @@ class AlbumService implements IAlbumService {
   private getTracksByAlbumsIds = async (
     albumIds: DocumentIdArray,
   ): Promise<ITrackDocumentArray> => {
-    return this.trackService.getAll({ albumIds })
+    try {
+      const tracks = await this.trackService.getAll({ albumIds })
+      return tracks
+    } catch (error) {
+      logger.error(error.stack)
+      throw error
+    }
   }
 
   public constructor() {
@@ -60,6 +66,7 @@ class AlbumService implements IAlbumService {
 
       return this.albumRepository.findAllWhere(repoFilter)
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while getting albums')
     }
   }
@@ -83,6 +90,7 @@ class AlbumService implements IAlbumService {
         })
       }
 
+      logger.error(error.stack)
       throw serverError
     }
 
@@ -95,21 +103,19 @@ class AlbumService implements IAlbumService {
 
       return album
     } catch (error) {
-      // log to file (Create request error)
-      try {
-        // log to file (начало удаления)
-        await this.albumRepository.deleteOneById(album.id)
-        // log to file (конец удаления)
-        throw serverError
-      } catch (error) {
-        if (isHttpError(error)) {
-          throw serverError
-        }
+      logger.error(error.stack, {
+        message: `Error while creating request for album with id: "${album.id}"`,
+      })
 
-        console.error(`Album by id "${album.id}" was not deleted`)
-        // log not deleted album to file (Album by id "${album.id}" was not deleted)
-        throw serverError
+      try {
+        await this.albumRepository.deleteOneById(album.id)
+      } catch (error) {
+        logger.warn(error.stack, {
+          message: `Album by id "${album.id}" was not deleted`,
+        })
       }
+
+      throw serverError
     }
   }
 
@@ -122,6 +128,7 @@ class AlbumService implements IAlbumService {
         throw NotFoundError(`Album with id "${id}" was not found`)
       }
 
+      logger.error(error.stack)
       throw ServerError(`Error while getting album by id "${id}"`)
     }
   }
@@ -136,6 +143,7 @@ class AlbumService implements IAlbumService {
         throw NotFoundError(`Album with id "${id}" was not found`)
       }
 
+      logger.error(error.stack)
       throw ServerError(`Error while deleting album by id "${id}"`)
     }
 
@@ -158,6 +166,7 @@ class AlbumService implements IAlbumService {
 
       return album
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while deleting related objects of album')
     }
   }
@@ -177,12 +186,11 @@ class AlbumService implements IAlbumService {
       await this.albumRepository.deleteMany({ ids: albumIds })
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError(
-          'Deleting many albums with empty filter forbidden',
-        )
+        throw BadRequestError('Deleting albums with empty filter forbidden')
       }
 
-      throw ServerError('Error while deleting many albums')
+      logger.error(error.stack)
+      throw ServerError('Error while deleting albums')
     }
 
     try {
@@ -199,6 +207,7 @@ class AlbumService implements IAlbumService {
 
       await this.requestService.deleteMany({ entityIds: albumIds })
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while deleting related objects of albums')
     }
   }

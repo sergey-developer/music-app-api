@@ -1,4 +1,4 @@
-import { CreateRouter } from 'api/routers/interface'
+import { CreateRouter } from 'api/interface'
 import { ArtistController } from 'modules/artist/controller'
 import {
   CreateArtistDto,

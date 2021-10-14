@@ -1,4 +1,4 @@
-import { CreateRouter } from 'api/routers/interface'
+import { CreateRouter } from 'api/interface'
 import { auth } from 'modules/auth/middlewares'
 import { TrackController } from 'modules/track/controller'
 import {

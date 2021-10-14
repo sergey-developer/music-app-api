@@ -1,4 +1,5 @@
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import { IImageRepository, ImageRepository } from 'modules/image/repository'
 import { IImageService } from 'modules/image/service'
 import {
@@ -31,6 +32,7 @@ class ImageService implements IImageService {
         })
       }
 
+      logger.error(error.stack)
       throw ServerError('Error while creating new image')
     }
   }
@@ -44,6 +46,7 @@ class ImageService implements IImageService {
         throw NotFoundError(`Image with id "${id}" was not found`)
       }
 
+      logger.error(error.stack)
       throw ServerError(`Error while deleting image by id "${id}"`)
     }
   }
@@ -53,12 +56,11 @@ class ImageService implements IImageService {
       await this.imageRepository.deleteMany(filter)
     } catch (error) {
       if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError(
-          'Deleting many images with empty filter forbidden',
-        )
+        throw BadRequestError('Deleting images with empty filter forbidden')
       }
 
-      throw ServerError('Error while deleting many images')
+      logger.error(error.stack)
+      throw ServerError('Error while deleting images')
     }
   }
 }

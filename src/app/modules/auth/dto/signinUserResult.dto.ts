@@ -1,5 +1,8 @@
-import { CreateUserResultDto } from 'modules/user/dto'
+import { ISessionDocument } from 'modules/session/model'
+import { IUserDocument } from 'modules/user/model'
 
-interface SigninUserResultDto extends CreateUserResultDto {}
+interface SigninUserResultDto
+  extends Pick<IUserDocument, 'id' | 'role'>,
+    Pick<ISessionDocument, 'token'> {}
 
 export default SigninUserResultDto

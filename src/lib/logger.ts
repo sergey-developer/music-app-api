@@ -1,9 +1,18 @@
+import isEmpty from 'lodash/isEmpty'
 import { createLogger, format, transports } from 'winston'
 
 import { appConfig } from 'configs/app'
 
 const fileMsgFormat = format.printf(
-  ({ level, message, timestamp }) => `${level}: ${timestamp}: ${message}`,
+  ({ level, message, timestamp, ...metadata }) => {
+    let msg = `${timestamp}: [${level}]: ${message}.`
+
+    if (!isEmpty(metadata)) {
+      msg += ` Metadata: ${JSON.stringify(metadata)}`
+    }
+
+    return msg
+  },
 )
 
 const file = new transports.File({

@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty'
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
+import logger from 'lib/logger'
 import { IAlbumDocumentArray } from 'modules/album/interface'
 import { AlbumService, IAlbumService } from 'modules/album/service'
 import { IArtistDocument } from 'modules/artist/model'
@@ -15,7 +16,6 @@ import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isHttpError,
 } from 'shared/utils/errors/httpErrors'
 
 class ArtistService implements IArtistService {
@@ -27,9 +27,16 @@ class ArtistService implements IArtistService {
   private getArtistAlbums = async (
     artistId: DocumentId,
   ): Promise<IAlbumDocumentArray> => {
-    return this.albumService.getAll({
-      artist: artistId,
-    })
+    try {
+      const albums = await this.albumService.getAll({
+        artist: artistId,
+      })
+
+      return albums
+    } catch (error) {
+      logger.error(error.stack)
+      throw error
+    }
   }
 
   constructor() {
@@ -56,6 +63,7 @@ class ArtistService implements IArtistService {
 
       return this.artistRepository.findAllWhere(repoFilter)
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while getting artists')
     }
   }
@@ -78,6 +86,7 @@ class ArtistService implements IArtistService {
         })
       }
 
+      logger.error(error.stack)
       throw serverError
     }
 
@@ -90,21 +99,19 @@ class ArtistService implements IArtistService {
 
       return artist
     } catch (error) {
-      // log to file (Create request error)
-      try {
-        // log to file (начало удаления)
-        await this.artistRepository.deleteOneById(artist.id)
-        // log to file (конец удаления)
-        throw serverError
-      } catch (error) {
-        if (isHttpError(error)) {
-          throw serverError
-        }
+      logger.error(error.stack, {
+        message: `Error while creating request for artist with id: "${artist.id}"`,
+      })
 
-        console.error(`Artist by id "${artist.id}" was not deleted`)
-        // log not deleted artist to file (Artist by id "${artist.id}" was not deleted)
-        throw serverError
+      try {
+        await this.artistRepository.deleteOneById(artist.id)
+      } catch (error) {
+        logger.warn(error.stack, {
+          message: `Artist by id "${artist.id}" was not deleted`,
+        })
       }
+
+      throw serverError
     }
   }
 
@@ -118,6 +125,7 @@ class ArtistService implements IArtistService {
         throw NotFoundError(`Artist with id "${id}" was not found`)
       }
 
+      logger.error(error.stack)
       throw ServerError(`Error while deleting artist by id "${id}"`)
     }
 
@@ -140,6 +148,7 @@ class ArtistService implements IArtistService {
 
       return artist
     } catch (error) {
+      logger.error(error.stack)
       throw ServerError('Error while deleting related objects of artist')
     }
   }

@@ -8,18 +8,16 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: Настроить вывод ошибок в файл
-
 // TODO: сделать обновление request
 // TODO: remove props with undefined value from dto
 
 // TODO: в dto вынести сообщения в константы и переиспользовать
 // TODO: для IsMongoId установить сообщение
-// TODO: сделать обработку ошибок в контроллерах как у album
 // TODO: сделать функцию для генерации таких ошибок { message: 'Album was successfully deleted' }
 //  при удалении, not found и т.д.
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
 // TODO: настроить выдачу статических файлов (express.static)
+// TODO: отрефакторить сообщения об ошибках
 
 // TODO: Исп-ть либу для валидации unique
 // TODO: Создать модель Social (для ссылок на youtube и т.д.)
