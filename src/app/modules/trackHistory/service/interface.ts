@@ -18,7 +18,7 @@ export interface ITrackHistoryService {
     filter: IGetAllTrackHistoryServiceFilter,
   ) => Promise<ITrackHistoryDocumentArray>
 
-  createOne: (
+  create: (
     payload: ICreateTrackHistoryServicePayload,
   ) => Promise<ITrackHistoryDocument>
 

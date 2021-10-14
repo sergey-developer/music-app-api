@@ -5,6 +5,8 @@ import {
   DeleteOneAlbumByIdParams,
   GetAllAlbumsQuery,
   GetOneAlbumByIdParams,
+  UpdateAlbumByIdParams,
+  UpdateAlbumDto,
 } from 'modules/album/dto'
 import { ControllerResult } from 'shared/interface/response'
 
@@ -14,8 +16,13 @@ export interface IAlbumController {
     res: Response,
   ) => ControllerResult
 
-  createOne: (
+  create: (
     req: Request<{}, any, CreateAlbumDto>,
+    res: Response,
+  ) => ControllerResult
+
+  updateById: (
+    req: Request<Pick<UpdateAlbumByIdParams, 'id'>, any, UpdateAlbumDto>,
     res: Response,
   ) => ControllerResult
 

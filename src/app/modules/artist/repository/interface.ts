@@ -17,9 +17,7 @@ export interface IArtistRepository {
     filter: IFindAllArtistsRepositoryFilter,
   ) => Promise<IArtistDocumentArray>
 
-  createOne: (
-    payload: ICreateArtistRepositoryPayload,
-  ) => Promise<IArtistDocument>
+  create: (payload: ICreateArtistRepositoryPayload) => Promise<IArtistDocument>
 
   deleteOneById: (id: DocumentId) => Promise<IArtistDocument>
 }

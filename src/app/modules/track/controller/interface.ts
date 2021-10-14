@@ -13,7 +13,7 @@ export interface ITrackController {
     res: Response,
   ) => ControllerResult
 
-  createOne: (
+  create: (
     req: Request<any, any, CreateTrackDto>,
     res: Response,
   ) => ControllerResult

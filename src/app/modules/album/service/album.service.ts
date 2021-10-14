@@ -31,13 +31,7 @@ class AlbumService implements IAlbumService {
   private getTracksByAlbumsIds = async (
     albumIds: DocumentIdArray,
   ): Promise<ITrackDocumentArray> => {
-    try {
-      const tracks = await this.trackService.getAll({ albumIds })
-      return tracks
-    } catch (error) {
-      logger.error(error.stack)
-      throw error
-    }
+    return this.trackService.getAll({ albumIds })
   }
 
   public constructor() {
@@ -71,12 +65,12 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public createOne: IAlbumService['createOne'] = async (payload) => {
+  public create: IAlbumService['create'] = async (payload) => {
     let album: IAlbumDocument
     const serverError = ServerError('Error while creating new album')
 
     try {
-      album = await this.albumRepository.createOne({
+      album = await this.albumRepository.create({
         name: payload.name,
         image: payload.image,
         releaseDate: payload.releaseDate,
@@ -95,7 +89,7 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      await this.requestService.createOne({
+      await this.requestService.create({
         entityName: ModelNamesEnum.Album,
         entity: album.id,
         creator: payload.userId,
@@ -116,6 +110,30 @@ class AlbumService implements IAlbumService {
       }
 
       throw serverError
+    }
+  }
+
+  public update: IAlbumService['update'] = async (filter, payload) => {
+    try {
+      await this.albumRepository.update(filter, payload)
+    } catch (error) {
+      if (isValidationError(error.name)) {
+        throw BadRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
+
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Album was not found')
+      }
+
+      logger.error(error.stack, {
+        message: 'Update album error',
+        args: { filter, payload },
+      })
+
+      throw ServerError('Error while updating album')
     }
   }
 
@@ -171,13 +189,13 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public deleteMany: IAlbumService['deleteMany'] = async ({ albums }) => {
-    const albumsToDelete = albums || []
+  public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
+    const { albums = [] } = filter
 
     const albumIds: DocumentIdArray = []
     const imageIds: DocumentIdArray = []
 
-    albumsToDelete.forEach((album) => {
+    albums.forEach((album) => {
       albumIds.push(album.id)
       if (album.image) imageIds.push(album.image as string)
     })

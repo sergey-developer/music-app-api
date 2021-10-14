@@ -6,7 +6,7 @@ import { IRequestRepository } from 'modules/request/repository'
 
 export interface IGetAllRequestsServiceFilter extends GetAllRequestsQuery {}
 
-export interface ICreateOneRequestServicePayload
+export interface ICreateRequestServicePayload
   extends Pick<IRequestDocument, 'entityName' | 'entity' | 'creator'> {}
 
 export interface IRequestService {
@@ -14,9 +14,7 @@ export interface IRequestService {
     filter: IGetAllRequestsServiceFilter,
   ) => Promise<IRequestDocumentArray>
 
-  createOne: (
-    payload: ICreateOneRequestServicePayload,
-  ) => Promise<IRequestDocument>
+  create: (payload: ICreateRequestServicePayload) => Promise<IRequestDocument>
 
   deleteOne: IRequestRepository['deleteOne']
 

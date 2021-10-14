@@ -29,19 +29,19 @@ class AlbumController implements IAlbumController {
         })
       }
 
-      res.status(StatusCodes.OK).send(albums)
+      res.status(StatusCodes.OK).send({ data: albums })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }
 
-  public createOne: IAlbumController['createOne'] = async (req, res) => {
+  public create: IAlbumController['create'] = async (req, res) => {
     try {
       const user = req.user!
       const { name, image, releaseDate, artist } = req.body
 
-      const album = await this.albumService.createOne({
+      const album = await this.albumService.create({
         name,
         image,
         releaseDate,
@@ -51,7 +51,23 @@ class AlbumController implements IAlbumController {
 
       const result = pick(album, 'id')
 
-      res.status(StatusCodes.CREATED).send(result)
+      res
+        .status(StatusCodes.CREATED)
+        .send({ data: result, message: 'Album successfully created' })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
+  public updateById: IAlbumController['updateById'] = async (req, res) => {
+    try {
+      const filter = pick(req.params, 'id')
+      const payload = pick(req.body, 'image', 'artist', 'name', 'releaseDate')
+
+      await this.albumService.update(filter, payload)
+
+      res.status(StatusCodes.OK).send({ message: 'Album successfully updated' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
@@ -63,7 +79,7 @@ class AlbumController implements IAlbumController {
 
     try {
       const album = await this.albumService.getOneById(albumId)
-      res.status(StatusCodes.OK).send(album)
+      res.status(StatusCodes.OK).send({ data: album })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
@@ -79,9 +95,7 @@ class AlbumController implements IAlbumController {
     try {
       await this.albumService.deleteOneById(albumId)
 
-      res
-        .status(StatusCodes.OK)
-        .send({ message: 'Album was successfully deleted' })
+      res.status(StatusCodes.OK).send({ message: 'Album successfully deleted' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

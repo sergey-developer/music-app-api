@@ -29,19 +29,19 @@ class ArtistController implements IArtistController {
         })
       }
 
-      res.status(StatusCodes.OK).send(artists)
+      res.status(StatusCodes.OK).send({ data: artists })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }
 
-  public createOne: IArtistController['createOne'] = async (req, res) => {
+  public create: IArtistController['create'] = async (req, res) => {
     try {
       const user = req.user!
       const { name, info, photo } = req.body
 
-      const artist = await this.artistService.createOne({
+      const artist = await this.artistService.create({
         name,
         info,
         photo,
@@ -50,7 +50,9 @@ class ArtistController implements IArtistController {
 
       const result = pick(artist, 'id')
 
-      res.status(StatusCodes.CREATED).send(result)
+      res
+        .status(StatusCodes.CREATED)
+        .send({ data: result, message: 'Artist successfully created' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
@@ -68,7 +70,7 @@ class ArtistController implements IArtistController {
 
       res
         .status(StatusCodes.OK)
-        .send({ message: 'Artist was successfully deleted' })
+        .send({ message: 'Artist successfully deleted' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

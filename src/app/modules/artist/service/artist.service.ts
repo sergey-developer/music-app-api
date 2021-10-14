@@ -68,12 +68,12 @@ class ArtistService implements IArtistService {
     }
   }
 
-  public createOne: IArtistService['createOne'] = async (payload) => {
+  public create: IArtistService['create'] = async (payload) => {
     let artist: IArtistDocument
     const serverError = ServerError('Error while creating new artist')
 
     try {
-      artist = await this.artistRepository.createOne({
+      artist = await this.artistRepository.create({
         name: payload.name,
         info: payload.info,
         photo: payload.photo,
@@ -91,7 +91,7 @@ class ArtistService implements IArtistService {
     }
 
     try {
-      await this.requestService.createOne({
+      await this.requestService.create({
         entityName: ModelNamesEnum.Artist,
         entity: artist.id,
         creator: payload.userId,

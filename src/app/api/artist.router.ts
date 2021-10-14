@@ -11,7 +11,7 @@ import { body, params, query } from 'shared/middlewares/validation'
 const createRouter: CreateRouter = (router) => {
   router.get('/', query(GetAllArtistsQuery), ArtistController.getAll)
 
-  router.post('/', [auth, body(CreateArtistDto)], ArtistController.createOne)
+  router.post('/', [auth, body(CreateArtistDto)], ArtistController.create)
 
   router.delete(
     '/:id',

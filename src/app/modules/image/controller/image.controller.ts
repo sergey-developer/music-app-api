@@ -24,7 +24,7 @@ class ImageController implements IImageController {
       const image = await this.imageService.createOne(file)
       const result = pick(image, 'id', 'src')
 
-      res.status(StatusCodes.CREATED).send(result)
+      res.status(StatusCodes.CREATED).send({ data: result })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

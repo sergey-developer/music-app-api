@@ -22,7 +22,7 @@ export interface ITrackRepository {
     filter: IGetAllTracksRepositoryFilter,
   ) => Promise<ITrackDocumentArray>
 
-  createOne: (payload: ICreateTrackRepositoryPayload) => Promise<ITrackDocument>
+  create: (payload: ICreateTrackRepositoryPayload) => Promise<ITrackDocument>
 
   deleteOneById: (id: DocumentId) => Promise<ITrackDocument>
 

@@ -9,7 +9,7 @@ import { ControllerResult } from 'shared/interface/response'
 export interface ITrackHistoryController {
   getAll: (req: Request, res: Response) => ControllerResult
 
-  createOne: (
+  create: (
     req: Request<any, any, CreateTrackHistoryDto>,
     res: Response,
   ) => ControllerResult

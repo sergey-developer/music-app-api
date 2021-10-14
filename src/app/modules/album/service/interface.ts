@@ -1,14 +1,25 @@
 import { DocumentId } from 'database/interface/document'
-import { CreateAlbumDto, GetAllAlbumsQuery } from 'modules/album/dto'
+import {
+  CreateAlbumDto,
+  GetAllAlbumsQuery,
+  UpdateAlbumDto,
+} from 'modules/album/dto'
 import { IAlbumDocumentArray } from 'modules/album/interface'
 import { IAlbumDocument } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
 
 export interface IGetAllAlbumsServiceFilter extends GetAllAlbumsQuery {}
 
-export interface ICreateOneAlbumServicePayload extends CreateAlbumDto {
+export interface ICreateAlbumServicePayload extends CreateAlbumDto {
   userId: DocumentId
 }
+
+export interface IUpdateAlbumServicePayload extends UpdateAlbumDto {}
+
+export interface IUpdateAlbumServiceFilter
+  extends Partial<{
+    id: DocumentId
+  }> {}
 
 export interface IDeleteManyAlbumsServiceFilter
   extends Partial<{
@@ -18,7 +29,12 @@ export interface IDeleteManyAlbumsServiceFilter
 export interface IAlbumService {
   getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<IAlbumDocumentArray>
 
-  createOne: (payload: ICreateOneAlbumServicePayload) => Promise<IAlbumDocument>
+  create: (payload: ICreateAlbumServicePayload) => Promise<IAlbumDocument>
+
+  update: (
+    filter: IUpdateAlbumServiceFilter,
+    payload: IUpdateAlbumServicePayload,
+  ) => Promise<void>
 
   getOneById: IAlbumRepository['findOneById']
 

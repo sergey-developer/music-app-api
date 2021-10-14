@@ -1,13 +1,13 @@
 import { IsEmail, IsString, Length } from 'class-validator'
 
-import { stringMessages } from 'shared/constants/validator'
+import { isString, lengthRange } from 'lib/class-validator/messages'
 
 class CreateUserDto {
   @IsString({
-    message: stringMessages.isString,
+    message: isString,
   })
   @Length(3, 30, {
-    message: stringMessages.length,
+    message: lengthRange,
   })
   username!: string
 
@@ -15,10 +15,10 @@ class CreateUserDto {
   email!: string
 
   @IsString({
-    message: stringMessages.isString,
+    message: isString,
   })
   @Length(3, 50, {
-    message: stringMessages.length,
+    message: lengthRange,
   })
   password!: string
 }

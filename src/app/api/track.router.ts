@@ -11,7 +11,7 @@ import { body, params, query } from 'shared/middlewares/validation'
 const createRouter: CreateRouter = (router) => {
   router.get('/', query(GetAllTracksQuery), TrackController.getAll)
 
-  router.post('/', [auth, body(CreateTrackDto)], TrackController.createOne)
+  router.post('/', [auth, body(CreateTrackDto)], TrackController.create)
 
   router.delete(
     '/:id',

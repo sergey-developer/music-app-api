@@ -17,7 +17,7 @@ class AuthController implements IAuthController {
       const payload = pick(req.body, 'email', 'password')
       const result = await this.authService.signin(payload)
 
-      res.status(StatusCodes.OK).send(result)
+      res.status(StatusCodes.OK).send({ data: result })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
@@ -29,7 +29,7 @@ class AuthController implements IAuthController {
       const payload = pick(req.body, 'email', 'username', 'password')
       const result = await this.authService.signup(payload)
 
-      res.status(StatusCodes.OK).send(result)
+      res.status(StatusCodes.OK).send({ data: result })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

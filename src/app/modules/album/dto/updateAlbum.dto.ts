@@ -13,24 +13,27 @@ import {
   MIN_LENGTH_ALBUM_NAME,
 } from 'modules/album/constants'
 
-class CreateAlbumDto {
+class UpdateAlbumDto {
+  @IsOptional()
   @IsString({
     message: isString,
   })
   @Length(MIN_LENGTH_ALBUM_NAME, MAX_LENGTH_ALBUM_NAME, {
     message: lengthRange,
   })
-  name!: string
+  name?: string
 
+  @IsOptional()
   @IsDateString()
-  releaseDate!: string
+  releaseDate?: string
 
   @IsOptional()
   @IsMongoId()
   image?: DocumentId
 
+  @IsOptional()
   @IsMongoId()
-  artist!: DocumentId
+  artist?: DocumentId
 }
 
-export default CreateAlbumDto
+export default UpdateAlbumDto

@@ -24,7 +24,7 @@ export interface ITrackHistoryRepository {
     filter: IFindAllTrackHistoryRepositoryFilter,
   ) => Promise<ITrackHistoryDocumentArray>
 
-  createOne: (
+  create: (
     payload: ICreateTrackHistoryRepositoryPayload,
   ) => Promise<ITrackHistoryDocument>
 

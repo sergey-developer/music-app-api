@@ -13,7 +13,7 @@ export interface IArtistController {
     res: Response,
   ) => ControllerResult
 
-  createOne: (
+  create: (
     req: Request<any, any, CreateArtistDto>,
     res: Response,
   ) => ControllerResult

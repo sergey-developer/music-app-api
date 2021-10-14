@@ -32,7 +32,7 @@ class ArtistRepository implements IArtistRepository {
     return this.artist.find(filterToApply).exec()
   }
 
-  public createOne: IArtistRepository['createOne'] = async (payload) => {
+  public create: IArtistRepository['create'] = async (payload) => {
     const artist = new this.artist(payload)
     return artist.save()
   }

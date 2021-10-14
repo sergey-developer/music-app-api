@@ -82,9 +82,9 @@ class RequestService implements IRequestService {
     }
   }
 
-  public createOne: IRequestService['createOne'] = async (payload) => {
+  public create: IRequestService['create'] = async (payload) => {
     try {
-      return this.requestRepository.createOne({
+      return this.requestRepository.create({
         entityName: payload.entityName,
         entity: payload.entity,
         creator: payload.creator,

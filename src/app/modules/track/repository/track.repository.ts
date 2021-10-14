@@ -37,7 +37,7 @@ class TrackRepository implements ITrackRepository {
     return this.track.find(filterToApply).exec()
   }
 
-  public createOne: ITrackRepository['createOne'] = async (payload) => {
+  public create: ITrackRepository['create'] = async (payload) => {
     const track = new this.track(payload)
     return track.save()
   }

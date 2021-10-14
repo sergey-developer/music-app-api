@@ -24,7 +24,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     return this.trackHistory.find(filter).exec()
   }
 
-  public createOne: ITrackHistoryRepository['createOne'] = async (payload) => {
+  public create: ITrackHistoryRepository['create'] = async (payload) => {
     const trackHistory = new this.trackHistory(payload)
     return trackHistory.save()
   }

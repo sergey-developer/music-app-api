@@ -18,23 +18,23 @@ class TrackHistoryController implements ITrackHistoryController {
     try {
       const user = req.user!
 
-      const trackHistory = await this.trackHistoryService.getAll({
+      const tracksHistories = await this.trackHistoryService.getAll({
         userId: user.userId,
       })
 
-      res.status(StatusCodes.OK).send(trackHistory)
+      res.status(StatusCodes.OK).send({ data: tracksHistories })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }
 
-  public createOne: ITrackHistoryController['createOne'] = async (req, res) => {
+  public create: ITrackHistoryController['create'] = async (req, res) => {
     try {
       const user = req.user!
       const { track } = req.body
 
-      await this.trackHistoryService.createOne({
+      await this.trackHistoryService.create({
         track,
         userId: user.userId,
       })
@@ -57,7 +57,7 @@ class TrackHistoryController implements ITrackHistoryController {
 
       res
         .status(StatusCodes.OK)
-        .send({ message: 'Track history was successfully deleted' })
+        .send({ message: 'Track history successfully deleted' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

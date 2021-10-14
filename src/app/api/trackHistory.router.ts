@@ -13,7 +13,7 @@ const createRouter: CreateRouter = (router) => {
   router.post(
     '/',
     [auth, body(CreateTrackHistoryDto)],
-    TrackHistoryController.createOne,
+    TrackHistoryController.create,
   )
 
   router.delete(

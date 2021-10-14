@@ -30,9 +30,19 @@ class AlbumRepository implements IAlbumRepository {
     return this.album.find(filterToApply).exec()
   }
 
-  public createOne: IAlbumRepository['createOne'] = async (payload) => {
+  public create: IAlbumRepository['create'] = async (payload) => {
     const album = new this.album(payload)
     return album.save()
+  }
+
+  public update: IAlbumRepository['update'] = async (filter, payload) => {
+    const { id }: typeof filter = omitUndefined(filter)
+    const updates: typeof payload = omitUndefined(payload)
+
+    const filterById: FilterQuery<IAlbumDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
+
+    await this.album.updateOne(filterToApply, updates).orFail().exec()
   }
 
   public findOneById: IAlbumRepository['findOneById'] = async (id) => {

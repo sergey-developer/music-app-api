@@ -9,6 +9,13 @@ export class GetOneAlbumByIdParams {
   id!: DocumentId
 }
 
+export class UpdateAlbumByIdParams {
+  @IsMongoId({
+    message: 'Not correct value of "$property" was provided: "$value"',
+  })
+  id!: DocumentId
+}
+
 export class DeleteOneAlbumByIdParams {
   @IsMongoId({
     message: 'Not correct value of "$property" was provided: "$value"',

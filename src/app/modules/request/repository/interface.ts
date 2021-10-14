@@ -2,12 +2,12 @@ import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import { IRequestDocumentArray } from 'modules/request/interface'
 import { IRequestDocument } from 'modules/request/model'
 import {
-  ICreateOneRequestServicePayload,
+  ICreateRequestServicePayload,
   IGetAllRequestsServiceFilter,
 } from 'modules/request/service'
 
-export interface ICreateOneRequestRepositoryPayload
-  extends ICreateOneRequestServicePayload {}
+export interface ICreateRequestRepositoryPayload
+  extends ICreateRequestServicePayload {}
 
 export interface IFindAllRequestsRepositoryFilter
   extends IGetAllRequestsServiceFilter {}
@@ -30,8 +30,8 @@ export interface IRequestRepository {
     filter: IFindAllRequestsRepositoryFilter,
   ) => Promise<IRequestDocumentArray>
 
-  createOne: (
-    payload: ICreateOneRequestRepositoryPayload,
+  create: (
+    payload: ICreateRequestRepositoryPayload,
   ) => Promise<IRequestDocument>
 
   findOneById: (id: DocumentId) => Promise<IRequestDocument>

@@ -46,7 +46,7 @@ class RequestRepository implements IRequestRepository {
     return this.request.find(filterToApply).exec()
   }
 
-  public createOne: IRequestRepository['createOne'] = async (payload) => {
+  public create: IRequestRepository['create'] = async (payload) => {
     const request = new this.request(payload)
     return request.save()
   }

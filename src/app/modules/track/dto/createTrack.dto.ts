@@ -1,20 +1,20 @@
 import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
-import { stringMessages } from 'shared/constants/validator'
+import { isString, lengthRange } from 'lib/class-validator/messages'
 
 class CreateTrackDto {
   @IsString({
-    message: stringMessages.isString,
+    message: isString,
   })
   @Length(3, 100, {
-    message: stringMessages.length,
+    message: lengthRange,
   })
   name!: string
 
   // TODO: валидировать по регулярке
   @IsString({
-    message: stringMessages.isString,
+    message: isString,
   })
   duration!: string
 

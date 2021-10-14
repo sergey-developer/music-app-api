@@ -8,8 +8,10 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: сделать обновление request
+// TODO: сделать обновление request и др. сущностей
 // TODO: remove props with undefined value from dto
+// TODO: отрефакторить везде сообщения об ошибках (для логирования)
+//  где-то добавить, поменять и т.п.
 
 // TODO: в dto вынести сообщения в константы и переиспользовать
 // TODO: для IsMongoId установить сообщение
@@ -17,7 +19,6 @@ runServer()
 //  при удалении, not found и т.д.
 // TODO: описать тип для ValidationError ответа {message, kind, errors}
 // TODO: настроить выдачу статических файлов (express.static)
-// TODO: отрефакторить сообщения об ошибках
 
 // TODO: Исп-ть либу для валидации unique
 // TODO: Создать модель Social (для ссылок на youtube и т.д.)

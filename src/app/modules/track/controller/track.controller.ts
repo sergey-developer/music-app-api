@@ -32,19 +32,19 @@ class TrackController implements ITrackController {
         })
       }
 
-      res.status(StatusCodes.OK).send(tracks)
+      res.status(StatusCodes.OK).send({ data: tracks })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
   }
 
-  public createOne: ITrackController['createOne'] = async (req, res) => {
+  public create: ITrackController['create'] = async (req, res) => {
     try {
       const user = req.user!
       const { name, duration, youtube, album } = req.body
 
-      const track = await this.trackService.createOne({
+      const track = await this.trackService.create({
         name,
         duration,
         youtube,
@@ -54,7 +54,9 @@ class TrackController implements ITrackController {
 
       const result = pick(track, 'id')
 
-      res.status(StatusCodes.CREATED).send(result)
+      res
+        .status(StatusCodes.CREATED)
+        .send({ data: result, message: 'Track successfully created' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
@@ -70,9 +72,7 @@ class TrackController implements ITrackController {
     try {
       await this.trackService.deleteOneById(trackId)
 
-      res
-        .status(StatusCodes.OK)
-        .send({ message: 'Track was successfully deleted' })
+      res.status(StatusCodes.OK).send({ message: 'Track successfully deleted' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
