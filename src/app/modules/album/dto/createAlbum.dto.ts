@@ -7,7 +7,7 @@ import {
 } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
-import { isString, lengthRange } from 'lib/class-validator/messages'
+import messages from 'lib/class-validator/messages'
 import {
   MAX_LENGTH_ALBUM_NAME,
   MIN_LENGTH_ALBUM_NAME,
@@ -15,10 +15,10 @@ import {
 
 class CreateAlbumDto {
   @IsString({
-    message: isString,
+    message: messages.string,
   })
   @Length(MIN_LENGTH_ALBUM_NAME, MAX_LENGTH_ALBUM_NAME, {
-    message: lengthRange,
+    message: messages.lengthRange,
   })
   name!: string
 

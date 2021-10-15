@@ -1,11 +1,8 @@
 import { CreateRouter } from 'api/interface'
 import { auth } from 'modules/auth/middlewares'
 import { TrackController } from 'modules/track/controller'
-import {
-  CreateTrackDto,
-  DeleteTrackParams,
-  GetAllTracksQuery,
-} from 'modules/track/dto'
+import { CreateTrackDto, GetAllTracksQuery } from 'modules/track/dto'
+import { IdParam } from 'shared/dto'
 import { body, params, query } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {
@@ -13,11 +10,7 @@ const createRouter: CreateRouter = (router) => {
 
   router.post('/', [auth, body(CreateTrackDto)], TrackController.create)
 
-  router.delete(
-    '/:id',
-    [auth, params(DeleteTrackParams)],
-    TrackController.deleteOneById,
-  )
+  router.delete('/:id', [auth, params(IdParam)], TrackController.deleteOne)
 
   return router
 }

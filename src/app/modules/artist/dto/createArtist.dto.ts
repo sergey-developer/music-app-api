@@ -1,7 +1,7 @@
 import { IsMongoId, IsOptional, IsString, Length } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
-import { isString, lengthRange } from 'lib/class-validator/messages'
+import messages from 'lib/class-validator/messages'
 import {
   MAX_LENGTH_ARTIST_INFO,
   MAX_LENGTH_ARTIST_NAME,
@@ -11,10 +11,10 @@ import {
 
 class CreateArtistDto {
   @IsString({
-    message: isString,
+    message: messages.string,
   })
   @Length(MIN_LENGTH_ARTIST_NAME, MAX_LENGTH_ARTIST_NAME, {
-    message: lengthRange,
+    message: messages.lengthRange,
   })
   name!: string
 
@@ -24,10 +24,10 @@ class CreateArtistDto {
 
   @IsOptional()
   @IsString({
-    message: isString,
+    message: messages.string,
   })
   @Length(MIN_LENGTH_ARTIST_INFO, MAX_LENGTH_ARTIST_INFO, {
-    message: lengthRange,
+    message: messages.lengthRange,
   })
   info?: string
 }

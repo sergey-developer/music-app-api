@@ -1,1 +1,1 @@
-export * from './params.dto'
+export { default as CreateImageResultDto } from './createImageResult.dto'

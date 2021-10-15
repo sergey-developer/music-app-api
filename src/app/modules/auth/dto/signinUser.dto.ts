@@ -1,13 +1,13 @@
 import { IsEmail, IsString } from 'class-validator'
 
-import { isString } from 'lib/class-validator/messages'
+import messages from 'lib/class-validator/messages'
 
 class SigninUserDto {
   @IsEmail()
   email!: string
 
   @IsString({
-    message: isString,
+    message: messages.string,
   })
   password!: string
 }

@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 
-import { DeleteRequestParams, GetAllRequestsQuery } from 'modules/request/dto'
+import { GetAllRequestsQuery } from 'modules/request/dto'
+import { IdParam } from 'shared/dto'
 import { ControllerResult } from 'shared/interface/response'
 
 export interface IRequestController {
@@ -10,7 +11,7 @@ export interface IRequestController {
   ) => ControllerResult
 
   deleteOne: (
-    req: Request<Pick<DeleteRequestParams, 'id'>>,
+    req: Request<Pick<IdParam, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

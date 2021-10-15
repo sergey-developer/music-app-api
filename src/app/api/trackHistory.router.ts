@@ -1,10 +1,8 @@
 import { CreateRouter } from 'api/interface'
 import { auth } from 'modules/auth/middlewares'
 import { TrackHistoryController } from 'modules/trackHistory/controller'
-import {
-  CreateTrackHistoryDto,
-  DeleteTrackHistoryParams,
-} from 'modules/trackHistory/dto'
+import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
+import { IdParam } from 'shared/dto'
 import { body, params } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {
@@ -18,8 +16,8 @@ const createRouter: CreateRouter = (router) => {
 
   router.delete(
     '/:id',
-    [auth, params(DeleteTrackHistoryParams)],
-    TrackHistoryController.deleteOneById,
+    [auth, params(IdParam)],
+    TrackHistoryController.deleteOne,
   )
 
   return router

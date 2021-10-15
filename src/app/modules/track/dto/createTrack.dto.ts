@@ -1,7 +1,7 @@
 import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
-import { isString, lengthRange } from 'lib/class-validator/messages'
+import messages from 'lib/class-validator/messages'
 import {
   MAX_LENGTH_TRACK_NAME,
   MIN_LENGTH_TRACK_NAME,
@@ -9,16 +9,16 @@ import {
 
 class CreateTrackDto {
   @IsString({
-    message: isString,
+    message: messages.string,
   })
   @Length(MIN_LENGTH_TRACK_NAME, MAX_LENGTH_TRACK_NAME, {
-    message: lengthRange,
+    message: messages.lengthRange,
   })
   name!: string
 
   // TODO: валидировать по регулярке
   @IsString({
-    message: isString,
+    message: messages.string,
   })
   duration!: string
 

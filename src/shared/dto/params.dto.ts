@@ -1,10 +1,11 @@
 import { IsMongoId } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
+import messages from 'lib/class-validator/messages'
 
-export class DeleteRequestParams {
+export class IdParam {
   @IsMongoId({
-    message: 'Not correct value of "$property" was provided: "$value"',
+    message: messages.mongoId,
   })
   id!: DocumentId
 }
