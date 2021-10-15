@@ -3,9 +3,7 @@ import { FilterQuery } from 'mongoose'
 
 import { AlbumModel, IAlbumDocument, IAlbumModel } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class AlbumRepository implements IAlbumRepository {
   private readonly album: IAlbumModel
@@ -61,12 +59,6 @@ class AlbumRepository implements IAlbumRepository {
       : { _id: { $in: ids } }
 
     const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
-
-    if (isEmpty(filterToApply)) {
-      throw BadRequestError(null, {
-        kind: ErrorKindsEnum.EmptyFilter,
-      })
-    }
 
     await this.album.deleteMany(filterToApply)
   }

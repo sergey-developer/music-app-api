@@ -1,16 +1,16 @@
+import isEmpty from 'lodash/isEmpty'
+
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IImageRepository, ImageRepository } from 'modules/image/repository'
 import { IImageService } from 'modules/image/service'
-import {
-  isEmptyFilterError,
-  isValidationError,
-} from 'shared/utils/errors/checkErrorKind'
+import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isBadRequestError,
 } from 'shared/utils/errors/httpErrors'
 
 class ImageService implements IImageService {
@@ -51,14 +51,16 @@ class ImageService implements IImageService {
     }
   }
 
-  public deleteMany: IImageRepository['deleteMany'] = async (filter) => {
+  public deleteMany: IImageRepository['deleteMany'] = async (rawFilter) => {
+    const filter: typeof rawFilter = omitUndefined(rawFilter)
+
+    if (isEmpty(filter)) {
+      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    }
+
     try {
       await this.imageRepository.deleteMany(filter)
     } catch (error) {
-      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError('Deleting images with empty filter forbidden')
-      }
-
       logger.error(error.stack)
       throw ServerError('Error while deleting images')
     }

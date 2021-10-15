@@ -122,6 +122,30 @@ class ArtistService implements IArtistService {
     }
   }
 
+  public updateById: IArtistService['updateById'] = async (id, payload) => {
+    try {
+      await this.artistRepository.update({ id }, payload)
+    } catch (error) {
+      if (isValidationError(error.name)) {
+        throw BadRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
+
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Artist was not found')
+      }
+
+      logger.error(error.stack, {
+        message: 'Update artist error',
+        args: { id, payload },
+      })
+
+      throw ServerError('Error while updating artist')
+    }
+  }
+
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     let artist: IArtistDocument
 

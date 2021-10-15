@@ -1,30 +1,28 @@
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
-import { CreateTrackDto } from 'modules/track/dto'
+import { CreateTrackDto, GetAllTracksQuery } from 'modules/track/dto'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument } from 'modules/track/model'
-import { IGetAllTracksServiceFilter } from 'modules/track/service'
 
-export interface IGetAllTracksRepositoryFilter
-  extends Pick<IGetAllTracksServiceFilter, 'artist' | 'albumIds'>,
+export interface IGetAllTracksFilter
+  extends Pick<GetAllTracksQuery, 'artist'>,
     Partial<{
       ids: DocumentIdArray
+      albumIds: DocumentIdArray
     }> {}
 
-export interface IDeleteManyTracksRepositoryFilter
+export interface IDeleteManyTracksFilter
   extends Partial<{
     ids: DocumentIdArray
   }> {}
 
-export interface ICreateTrackRepositoryPayload extends CreateTrackDto {}
+export interface ICreateTrackPayload extends CreateTrackDto {}
 
 export interface ITrackRepository {
-  findAllWhere: (
-    filter: IGetAllTracksRepositoryFilter,
-  ) => Promise<ITrackDocumentArray>
+  findAllWhere: (filter: IGetAllTracksFilter) => Promise<ITrackDocumentArray>
 
-  create: (payload: ICreateTrackRepositoryPayload) => Promise<ITrackDocument>
+  create: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
   deleteOneById: (id: DocumentId) => Promise<ITrackDocument>
 
-  deleteMany: (filter: IDeleteManyTracksRepositoryFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyTracksFilter) => Promise<void>
 }

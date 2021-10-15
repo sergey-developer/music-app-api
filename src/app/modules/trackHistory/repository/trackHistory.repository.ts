@@ -7,9 +7,7 @@ import {
   TrackHistoryModel,
 } from 'modules/trackHistory/model'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryRepository implements ITrackHistoryRepository {
   private readonly trackHistory: ITrackHistoryModel
@@ -44,12 +42,6 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
 
     const filterToApply: FilterQuery<ITrackHistoryDocument> = {
       ...filterByTrack,
-    }
-
-    if (isEmpty(filterToApply)) {
-      throw BadRequestError(null, {
-        kind: ErrorKindsEnum.EmptyFilter,
-      })
     }
 
     await this.trackHistory.deleteMany(filterToApply)

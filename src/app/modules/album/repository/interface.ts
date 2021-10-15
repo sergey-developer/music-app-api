@@ -1,47 +1,41 @@
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { CreateAlbumDto, UpdateAlbumDto } from 'modules/album/dto'
 import { IAlbumDocumentArray } from 'modules/album/interface'
 import { IAlbumDocument } from 'modules/album/model'
-import {
-  ICreateAlbumServicePayload,
-  IUpdateAlbumServiceFilter,
-  IUpdateAlbumServicePayload,
-} from 'modules/album/service'
 
-export interface IFindAllAlbumsRepositoryFilter
+export interface IFindAllAlbumsFilter
   extends Partial<{
     ids: DocumentIdArray
     artist: DocumentId
   }> {}
 
-export interface ICreateAlbumRepositoryPayload
-  extends Omit<ICreateAlbumServicePayload, 'userId'> {}
+export interface ICreateAlbumPayload extends CreateAlbumDto {}
 
-export interface IUpdateAlbumRepositoryPayload
-  extends IUpdateAlbumServicePayload {}
+export interface IUpdateAlbumPayload extends UpdateAlbumDto {}
 
-export interface IUpdateAlbumRepositoryFilter
-  extends IUpdateAlbumServiceFilter {}
+export interface IUpdateAlbumFilter
+  extends Partial<{
+    id: DocumentId
+  }> {}
 
-export interface IDeleteManyAlbumsRepositoryFilter
+export interface IDeleteManyAlbumsFilter
   extends Partial<{
     ids: DocumentIdArray
   }> {}
 
 export interface IAlbumRepository {
-  findAllWhere: (
-    filter: IFindAllAlbumsRepositoryFilter,
-  ) => Promise<IAlbumDocumentArray>
+  findAllWhere: (filter: IFindAllAlbumsFilter) => Promise<IAlbumDocumentArray>
 
   findOneById: (id: DocumentId) => Promise<IAlbumDocument>
 
-  create: (payload: ICreateAlbumRepositoryPayload) => Promise<IAlbumDocument>
+  create: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
   update: (
-    filter: IUpdateAlbumRepositoryFilter,
-    payload: IUpdateAlbumRepositoryPayload,
+    filter: IUpdateAlbumFilter,
+    payload: IUpdateAlbumPayload,
   ) => Promise<void>
 
   deleteOneById: (id: DocumentId) => Promise<IAlbumDocument>
 
-  deleteMany: (filter: IDeleteManyAlbumsRepositoryFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<void>
 }

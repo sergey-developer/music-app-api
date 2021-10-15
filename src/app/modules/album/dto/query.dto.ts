@@ -1,6 +1,7 @@
 import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
+import messages from 'lib/class-validator/messages'
 import { RequestStatusEnum } from 'modules/request/constants'
 
 export class GetAllAlbumsQuery {
@@ -10,13 +11,13 @@ export class GetAllAlbumsQuery {
 
   @IsOptional()
   @IsMongoId({
-    message: 'Not correct query value of "$property" was provided: "$value"',
+    message: messages.mongoId,
   })
   userId?: DocumentId
 
   @IsOptional()
   @IsMongoId({
-    message: 'Not correct query value of "$property" was provided: "$value"',
+    message: messages.mongoId,
   })
   artist?: DocumentId
 }

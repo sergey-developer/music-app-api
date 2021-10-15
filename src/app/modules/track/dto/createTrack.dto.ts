@@ -26,7 +26,9 @@ class CreateTrackDto {
   @IsUrl()
   youtube?: string
 
-  @IsMongoId()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
   album!: DocumentId
 }
 

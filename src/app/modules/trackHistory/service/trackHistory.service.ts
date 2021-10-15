@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty'
+
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import {
@@ -5,15 +7,13 @@ import {
   TrackHistoryRepository,
 } from 'modules/trackHistory/repository'
 import { ITrackHistoryService } from 'modules/trackHistory/service'
-import {
-  isEmptyFilterError,
-  isValidationError,
-} from 'shared/utils/errors/checkErrorKind'
+import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isBadRequestError,
 } from 'shared/utils/errors/httpErrors'
 
 class TrackHistoryService implements ITrackHistoryService {
@@ -68,16 +68,16 @@ class TrackHistoryService implements ITrackHistoryService {
     }
   }
 
-  public deleteMany: ITrackHistoryService['deleteMany'] = async (filter) => {
+  public deleteMany: ITrackHistoryService['deleteMany'] = async (rawFilter) => {
+    const filter: typeof rawFilter = omitUndefined(rawFilter)
+
+    if (isEmpty(filter)) {
+      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    }
+
     try {
       await this.trackHistoryRepository.deleteMany(filter)
     } catch (error) {
-      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError(
-          'Deleting tracks`s histories with empty filter forbidden',
-        )
-      }
-
       logger.error(error.stack)
       throw ServerError('Error while deleting tracks`s histories')
     }

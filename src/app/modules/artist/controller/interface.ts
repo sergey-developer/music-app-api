@@ -1,6 +1,10 @@
 import { Request, Response } from 'express'
 
-import { CreateArtistDto, GetAllArtistsQuery } from 'modules/artist/dto'
+import {
+  CreateArtistDto,
+  GetAllArtistsQuery,
+  UpdateArtistDto,
+} from 'modules/artist/dto'
 import { IdParam } from 'shared/dto'
 import { ControllerResult } from 'shared/interface/response'
 
@@ -14,6 +18,11 @@ export interface IArtistController {
 
   create: (
     req: Request<any, any, CreateArtistDto>,
+    res: Response,
+  ) => ControllerResult
+
+  update: (
+    req: Request<Pick<IdParam, 'id'>, any, UpdateArtistDto>,
     res: Response,
   ) => ControllerResult
 

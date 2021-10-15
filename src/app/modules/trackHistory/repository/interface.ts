@@ -1,34 +1,32 @@
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
 import { ITrackHistoryDocumentArray } from 'modules/trackHistory/interface'
 import { ITrackHistoryDocument } from 'modules/trackHistory/model'
-import {
-  ICreateTrackHistoryServicePayload,
-  IGetAllTrackHistoryServiceFilter,
-} from 'modules/trackHistory/service'
 
-export interface IFindAllTrackHistoryRepositoryFilter
-  extends IGetAllTrackHistoryServiceFilter {}
+export interface IFindAllTrackHistoryFilter {
+  userId: DocumentId
+}
 
-export interface IDeleteManyTrackHistoryRepositoryFilter
+export interface IDeleteManyTrackHistoryFilter
   extends Partial<{
     trackIds: DocumentIdArray
   }> {}
 
-export interface ICreateTrackHistoryRepositoryPayload
-  extends ICreateTrackHistoryServicePayload {
+export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
+  userId: DocumentId
   listenDate: string
 }
 
 export interface ITrackHistoryRepository {
   findAllWhere: (
-    filter: IFindAllTrackHistoryRepositoryFilter,
+    filter: IFindAllTrackHistoryFilter,
   ) => Promise<ITrackHistoryDocumentArray>
 
   create: (
-    payload: ICreateTrackHistoryRepositoryPayload,
+    payload: ICreateTrackHistoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
   deleteOneById: (id: DocumentId) => Promise<ITrackHistoryDocument>
 
-  deleteMany: (filter: IDeleteManyTrackHistoryRepositoryFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyTrackHistoryFilter) => Promise<void>
 }

@@ -11,15 +11,13 @@ import { IImageService, ImageService } from 'modules/image/service'
 import { IRequestService, RequestService } from 'modules/request/service'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackService, TrackService } from 'modules/track/service'
-import {
-  isEmptyFilterError,
-  isValidationError,
-} from 'shared/utils/errors/checkErrorKind'
+import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isBadRequestError,
 } from 'shared/utils/errors/httpErrors'
 
 class AlbumService implements IAlbumService {
@@ -127,9 +125,9 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public update: IAlbumService['update'] = async (filter, payload) => {
+  public updateById: IAlbumService['updateById'] = async (id, payload) => {
     try {
-      await this.albumRepository.update(filter, payload)
+      await this.albumRepository.update({ id }, payload)
     } catch (error) {
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
@@ -144,7 +142,7 @@ class AlbumService implements IAlbumService {
 
       logger.error(error.stack, {
         message: 'Update album error',
-        args: { filter, payload },
+        args: { id, payload },
       })
 
       throw ServerError('Error while updating album')
@@ -189,7 +187,15 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
+  public deleteMany: IAlbumService['deleteMany'] = async (rawFilter) => {
+    const filter: typeof rawFilter = omitUndefined(rawFilter)
+
+    if (isEmpty(filter)) {
+      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    }
+
+    const serverErrorMsg = 'Error while deleting albums'
+
     const { albums = [] } = filter
 
     const albumIds: DocumentIdArray = []
@@ -203,12 +209,8 @@ class AlbumService implements IAlbumService {
     try {
       await this.albumRepository.deleteMany({ ids: albumIds })
     } catch (error) {
-      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError('Deleting albums with empty filter forbidden')
-      }
-
       logger.error(error.stack)
-      throw ServerError('Error while deleting albums')
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -225,8 +227,11 @@ class AlbumService implements IAlbumService {
 
       await this.requestService.deleteMany({ entityIds: albumIds })
     } catch (error) {
-      logger.error(error.stack)
-      throw ServerError('Error while deleting related objects of albums')
+      logger.error(error.stack, {
+        message: 'Error while deleting related objects of albums',
+      })
+
+      throw ServerError(serverErrorMsg)
     }
   }
 }

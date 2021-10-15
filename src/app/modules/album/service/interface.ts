@@ -8,37 +8,29 @@ import { IAlbumDocumentArray } from 'modules/album/interface'
 import { IAlbumDocument } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
 
-export interface IGetAllAlbumsServiceFilter extends GetAllAlbumsQuery {}
+export interface IGetAllAlbumsFilter extends GetAllAlbumsQuery {}
 
-export interface ICreateAlbumServicePayload extends CreateAlbumDto {
+export interface ICreateAlbumPayload extends CreateAlbumDto {
   userId: DocumentId
 }
 
-export interface IUpdateAlbumServicePayload extends UpdateAlbumDto {}
+export interface IUpdateAlbumPayload extends UpdateAlbumDto {}
 
-export interface IUpdateAlbumServiceFilter
-  extends Partial<{
-    id: DocumentId
-  }> {}
-
-export interface IDeleteManyAlbumsServiceFilter
+export interface IDeleteManyAlbumsFilter
   extends Partial<{
     albums: IAlbumDocumentArray
   }> {}
 
 export interface IAlbumService {
-  getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<IAlbumDocumentArray>
+  getAll: (filter: IGetAllAlbumsFilter) => Promise<IAlbumDocumentArray>
 
   getOneById: IAlbumRepository['findOneById']
 
-  create: (payload: ICreateAlbumServicePayload) => Promise<IAlbumDocument>
+  create: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
-  update: (
-    filter: IUpdateAlbumServiceFilter,
-    payload: IUpdateAlbumServicePayload,
-  ) => Promise<void>
+  updateById: (id: DocumentId, payload: IUpdateAlbumPayload) => Promise<void>
 
   deleteOneById: IAlbumRepository['deleteOneById']
 
-  deleteMany: (filter: IDeleteManyAlbumsServiceFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<void>
 }

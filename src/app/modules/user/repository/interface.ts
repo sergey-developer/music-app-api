@@ -1,18 +1,17 @@
+import { CreateUserDto } from 'modules/user/dto'
 import { IUserDocument } from 'modules/user/model'
-import { ICreateUserServicePayload } from 'modules/user/service'
 
-export interface ICreateUserRepositoryPayload
-  extends ICreateUserServicePayload {}
+export interface ICreateUserPayload extends CreateUserDto {}
 
-export interface IFindOneUserRepositoryFilter
+export interface IFindOneUserFilter
   extends Partial<{
     email: IUserDocument['email']
   }> {}
 
 export interface IUserRepository {
-  findOne: (filter: IFindOneUserRepositoryFilter) => Promise<IUserDocument>
+  findOne: (filter: IFindOneUserFilter) => Promise<IUserDocument>
 
-  create: (payload: ICreateUserRepositoryPayload) => Promise<IUserDocument>
+  create: (payload: ICreateUserPayload) => Promise<IUserDocument>
 
   deleteOneById: (id: IUserDocument['id']) => Promise<IUserDocument>
 }

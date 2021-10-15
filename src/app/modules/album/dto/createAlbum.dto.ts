@@ -26,10 +26,14 @@ class CreateAlbumDto {
   releaseDate!: string
 
   @IsOptional()
-  @IsMongoId()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
   image?: DocumentId
 
-  @IsMongoId()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
   artist!: DocumentId
 }
 

@@ -5,12 +5,12 @@ import {
   SignupUserResultDto,
 } from 'modules/auth/dto'
 
-interface ISigninUserServicePayload extends SigninUserDto {}
+interface ISigninUserPayload extends SigninUserDto {}
 
-interface ISignupUserServicePayload extends SignupUserDto {}
+interface ISignupUserPayload extends SignupUserDto {}
 
 export interface IAuthService {
-  signin: (payload: ISigninUserServicePayload) => Promise<SigninUserResultDto>
+  signin: (payload: ISigninUserPayload) => Promise<SigninUserResultDto>
 
-  signup: (payload: ISignupUserServicePayload) => Promise<SignupUserResultDto>
+  signup: (payload: ISignupUserPayload) => Promise<SignupUserResultDto>
 }

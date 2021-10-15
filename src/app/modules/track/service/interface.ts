@@ -4,27 +4,27 @@ import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
 
-export interface IGetAllTracksServiceFilter
+export interface IGetAllTracksFilter
   extends Omit<GetAllTracksQuery, 'album'>,
     Partial<{
       albumIds: DocumentIdArray
     }> {}
 
-export interface IDeleteManyTracksServiceFilter
+export interface IDeleteManyTracksFilter
   extends Partial<{
     tracks: ITrackDocumentArray
   }> {}
 
-export interface ICreateTrackServicePayload extends CreateTrackDto {
+export interface ICreateTrackPayload extends CreateTrackDto {
   userId: DocumentId
 }
 
 export interface ITrackService {
-  getAll: (filter: IGetAllTracksServiceFilter) => Promise<ITrackDocumentArray>
+  getAll: (filter: IGetAllTracksFilter) => Promise<ITrackDocumentArray>
 
-  create: (payload: ICreateTrackServicePayload) => Promise<ITrackDocument>
+  create: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
   deleteOneById: ITrackRepository['deleteOneById']
 
-  deleteMany: (filter: IDeleteManyTracksServiceFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyTracksFilter) => Promise<void>
 }

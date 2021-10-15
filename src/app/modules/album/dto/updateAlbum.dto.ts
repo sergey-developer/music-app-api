@@ -28,11 +28,15 @@ class UpdateAlbumDto {
   releaseDate?: string
 
   @IsOptional()
-  @IsMongoId()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
   image?: DocumentId
 
   @IsOptional()
-  @IsMongoId()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
   artist?: DocumentId
 }
 

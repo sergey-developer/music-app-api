@@ -20,12 +20,12 @@ import { IRequestService } from 'modules/request/service'
 import { isApprovedRequest } from 'modules/request/utils'
 import { ITrackDocument } from 'modules/track/model'
 import { ITrackService, TrackService } from 'modules/track/service'
-import { isEmptyFilterError } from 'shared/utils/errors/checkErrorKind'
+import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
 import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isBadRequestError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
@@ -144,14 +144,16 @@ class RequestService implements IRequestService {
     }
   }
 
-  public deleteMany: IRequestService['deleteMany'] = async (filter) => {
+  public deleteMany: IRequestService['deleteMany'] = async (rawFilter) => {
+    const filter: typeof rawFilter = omitUndefined(rawFilter)
+
+    if (isEmpty(filter)) {
+      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    }
+
     try {
       await this.requestRepository.deleteMany(filter)
     } catch (error) {
-      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError('Deleting requests with empty filter forbidden')
-      }
-
       logger.error(error.stack)
       throw ServerError('Error while deleting requests')
     }

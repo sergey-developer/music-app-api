@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
+import { IAlbumController } from 'modules/album/controller'
 import { IArtistController } from 'modules/artist/controller'
 import { IArtistDocumentArray } from 'modules/artist/interface'
 import { ArtistService, IArtistService } from 'modules/artist/service'
@@ -65,6 +66,22 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.CREATED)
         .send({ data: result, message: 'Artist successfully created' })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
+  public update: IArtistController['update'] = async (req, res) => {
+    try {
+      const { id } = req.params
+      const payload = pick(req.body, 'name', 'photo', 'info')
+
+      await this.artistService.updateById(id, payload)
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Artist successfully updated' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

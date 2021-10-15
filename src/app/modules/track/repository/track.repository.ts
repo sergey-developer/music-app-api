@@ -3,9 +3,7 @@ import { FilterQuery } from 'mongoose'
 
 import { ITrackDocument, ITrackModel, TrackModel } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class TrackRepository implements ITrackRepository {
   private readonly track: ITrackModel
@@ -54,12 +52,6 @@ class TrackRepository implements ITrackRepository {
       : { _id: { $in: ids } }
 
     const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
-
-    if (isEmpty(filterToApply)) {
-      throw BadRequestError(null, {
-        kind: ErrorKindsEnum.EmptyFilter,
-      })
-    }
 
     await this.track.deleteMany(filterToApply)
   }

@@ -74,10 +74,10 @@ class AlbumController implements IAlbumController {
 
   public update: IAlbumController['update'] = async (req, res) => {
     try {
-      const filter = pick(req.params, 'id')
+      const { id } = req.params
       const payload = pick(req.body, 'image', 'artist', 'name', 'releaseDate')
 
-      await this.albumService.update(filter, payload)
+      await this.albumService.updateById(id, payload)
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully updated' })
     } catch (exception) {

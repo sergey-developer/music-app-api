@@ -2,13 +2,13 @@ import { ISessionDocument } from 'modules/session/model'
 import { ISessionRepository } from 'modules/session/repository'
 import { IUserDocument } from 'modules/user/model'
 
-export interface ICreateSessionServicePayload
+export interface ICreateSessionPayload
   extends Pick<IUserDocument, 'id' | 'email' | 'role'> {}
 
 export interface ISessionService {
   getOneByToken: ISessionRepository['findOneByToken']
 
-  create: (payload: ICreateSessionServicePayload) => Promise<ISessionDocument>
+  create: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
 
   deleteOneByToken: ISessionRepository['deleteOneByToken']
 }

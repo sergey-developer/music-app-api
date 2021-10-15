@@ -7,9 +7,7 @@ import {
   RequestModel,
 } from 'modules/request/model'
 import { IRequestRepository } from 'modules/request/repository'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class RequestRepository implements IRequestRepository {
   private readonly request: IRequestModel
@@ -84,12 +82,6 @@ class RequestRepository implements IRequestRepository {
       : { entity: { $in: entityIds } }
 
     const filterToApply: FilterQuery<IRequestDocument> = { ...filterByEntity }
-
-    if (isEmpty(filterToApply)) {
-      throw BadRequestError(null, {
-        kind: ErrorKindsEnum.EmptyFilter,
-      })
-    }
 
     await this.request.deleteMany(filterToApply)
   }

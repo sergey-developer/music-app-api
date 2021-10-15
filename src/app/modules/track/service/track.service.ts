@@ -1,3 +1,5 @@
+import isEmpty from 'lodash/isEmpty'
+
 import { ModelNamesEnum } from 'database/constants'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
@@ -9,15 +11,13 @@ import {
   ITrackHistoryService,
   TrackHistoryService,
 } from 'modules/trackHistory/service'
-import {
-  isEmptyFilterError,
-  isValidationError,
-} from 'shared/utils/errors/checkErrorKind'
+import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isBadRequestError,
 } from 'shared/utils/errors/httpErrors'
 
 class TrackService implements ITrackService {
@@ -134,7 +134,13 @@ class TrackService implements ITrackService {
     }
   }
 
-  public deleteMany: ITrackService['deleteMany'] = async (filter) => {
+  public deleteMany: ITrackService['deleteMany'] = async (rawFilter) => {
+    const filter: typeof rawFilter = omitUndefined(rawFilter)
+
+    if (isEmpty(filter)) {
+      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    }
+
     const { tracks = [] } = filter
     const trackIds = tracks.map((track) => track.id)
 
@@ -143,10 +149,6 @@ class TrackService implements ITrackService {
     try {
       await this.trackRepository.deleteMany({ ids: trackIds })
     } catch (error) {
-      if (isBadRequestError(error) && isEmptyFilterError(error.kind)) {
-        throw BadRequestError('Deleting tracks with empty filter forbidden')
-      }
-
       logger.error(error.stack)
       throw ServerError(serverErrorMsg)
     }

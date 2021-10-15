@@ -1,10 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
+import { FilterQuery } from 'mongoose'
 
-import { IImageModel, ImageModel } from 'modules/image/model'
+import { IImageDocument, IImageModel, ImageModel } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
-import ErrorKindsEnum from 'shared/constants/errorKinds'
 import { omitUndefined } from 'shared/utils/common'
-import { BadRequestError } from 'shared/utils/errors/httpErrors'
 
 class ImageRepository implements IImageRepository {
   private readonly image: IImageModel
@@ -30,14 +29,11 @@ class ImageRepository implements IImageRepository {
   public deleteMany: IImageRepository['deleteMany'] = async (filter) => {
     const { ids }: typeof filter = omitUndefined(filter)
 
-    const filterById = isEmpty(ids) ? {} : { _id: { $in: ids } }
-    const filterToApply = { ...filterById }
+    const filterById: FilterQuery<IImageDocument> = isEmpty(ids)
+      ? {}
+      : { _id: { $in: ids } }
 
-    if (isEmpty(filterToApply)) {
-      throw BadRequestError(null, {
-        kind: ErrorKindsEnum.EmptyFilter,
-      })
-    }
+    const filterToApply: FilterQuery<IImageDocument> = { ...filterById }
 
     await this.image.deleteMany(filterToApply)
   }

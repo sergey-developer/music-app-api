@@ -9,14 +9,15 @@ import {
   MIN_LENGTH_ARTIST_NAME,
 } from 'modules/artist/constants'
 
-class CreateArtistDto {
+class UpdateArtistDto {
+  @IsOptional()
   @IsString({
     message: messages.string,
   })
   @Length(MIN_LENGTH_ARTIST_NAME, MAX_LENGTH_ARTIST_NAME, {
     message: messages.lengthRange,
   })
-  name!: string
+  name?: string
 
   @IsOptional()
   @IsMongoId({
@@ -34,4 +35,4 @@ class CreateArtistDto {
   info?: string
 }
 
-export default CreateArtistDto
+export default UpdateArtistDto
