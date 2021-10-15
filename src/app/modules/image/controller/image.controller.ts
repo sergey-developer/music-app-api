@@ -32,10 +32,10 @@ class ImageController implements IImageController {
   }
 
   public deleteOne: IImageController['deleteOne'] = async (req, res) => {
-    const imageId = req.params.id
+    const { id } = req.params
 
     try {
-      await this.imageService.deleteOneById(imageId)
+      await this.imageService.deleteOneById(id)
 
       res.sendStatus(StatusCodes.OK)
     } catch (exception) {

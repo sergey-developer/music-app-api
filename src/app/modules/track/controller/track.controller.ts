@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
+import { IArtistController } from 'modules/artist/controller'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ITrackController } from 'modules/track/controller'
 import { ITrackDocumentArray } from 'modules/track/interface'
@@ -39,6 +40,18 @@ class TrackController implements ITrackController {
     }
   }
 
+  public getOne: ITrackController['getOne'] = async (req, res) => {
+    const { id } = req.params
+
+    try {
+      const track = await this.trackService.getOneById(id)
+      res.status(StatusCodes.OK).send({ data: track })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
   public create: ITrackController['create'] = async (req, res) => {
     try {
       const user = req.user!
@@ -63,11 +76,25 @@ class TrackController implements ITrackController {
     }
   }
 
+  public update: ITrackController['update'] = async (req, res) => {
+    try {
+      const { id } = req.params
+      const payload = pick(req.body, 'name', 'duration', 'youtube', 'album')
+
+      await this.trackService.updateById(id, payload)
+
+      res.status(StatusCodes.OK).send({ message: 'Track successfully updated' })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
   public deleteOne: ITrackController['deleteOne'] = async (req, res) => {
-    const trackId = req.params.id
+    const { id } = req.params
 
     try {
-      await this.trackService.deleteOneById(trackId)
+      await this.trackService.deleteOneById(id)
 
       res.status(StatusCodes.OK).send({ message: 'Track successfully deleted' })
     } catch (exception) {

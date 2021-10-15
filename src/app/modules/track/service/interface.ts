@@ -1,5 +1,9 @@
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
-import { CreateTrackDto, GetAllTracksQuery } from 'modules/track/dto'
+import {
+  CreateTrackDto,
+  GetAllTracksQuery,
+  UpdateTrackDto,
+} from 'modules/track/dto'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
@@ -9,6 +13,8 @@ export interface IGetAllTracksFilter
     Partial<{
       albumIds: DocumentIdArray
     }> {}
+
+export interface IUpdateTrackPayload extends UpdateTrackDto {}
 
 export interface IDeleteManyTracksFilter
   extends Partial<{
@@ -22,7 +28,11 @@ export interface ICreateTrackPayload extends CreateTrackDto {
 export interface ITrackService {
   getAll: (filter: IGetAllTracksFilter) => Promise<ITrackDocumentArray>
 
+  getOneById: (id: DocumentId) => Promise<ITrackDocument>
+
   create: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
+
+  updateById: (id: DocumentId, payload: IUpdateTrackPayload) => Promise<void>
 
   deleteOneById: ITrackRepository['deleteOneById']
 

@@ -55,6 +55,20 @@ class TrackService implements ITrackService {
     }
   }
 
+  public getOneById: ITrackService['getOneById'] = async (id) => {
+    try {
+      const track = await this.trackRepository.findOneById(id)
+      return track
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Track was not found')
+      }
+
+      logger.error(error.stack)
+      throw ServerError('Error while getting track')
+    }
+  }
+
   public create: ITrackService['create'] = async (payload) => {
     let track: ITrackDocument
 
@@ -101,6 +115,30 @@ class TrackService implements ITrackService {
       }
 
       throw ServerError(serverErrorMsg)
+    }
+  }
+
+  public updateById: ITrackService['updateById'] = async (id, payload) => {
+    try {
+      await this.trackRepository.update({ id }, payload)
+    } catch (error) {
+      if (isValidationError(error.name)) {
+        throw BadRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
+
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Track was not found')
+      }
+
+      logger.error(error.stack, {
+        message: 'Update track error',
+        args: { id, payload },
+      })
+
+      throw ServerError('Error while updating track')
     }
   }
 

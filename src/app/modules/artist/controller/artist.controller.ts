@@ -38,10 +38,10 @@ class ArtistController implements IArtistController {
   }
 
   public getOne: IArtistController['getOne'] = async (req, res) => {
-    const artistId = req.params.id
+    const { id } = req.params
 
     try {
-      const artist = await this.artistService.getOneById(artistId)
+      const artist = await this.artistService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: artist })
     } catch (exception) {
       const error = ensureHttpError(exception)
@@ -89,10 +89,10 @@ class ArtistController implements IArtistController {
   }
 
   public deleteOne: IArtistController['deleteOne'] = async (req, res) => {
-    const artistId = req.params.id
+    const { id } = req.params
 
     try {
-      await this.artistService.deleteOneById(artistId)
+      await this.artistService.deleteOneById(id)
 
       res
         .status(StatusCodes.OK)

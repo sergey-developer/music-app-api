@@ -8,10 +8,11 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: сделать обновление request и др. сущностей
+// TODO: сделать обновление и получение по id сущностей (сделал: artist, album, track)
 // TODO: remove props with undefined value from dto
-// TODO: отрефакторить везде сообщения об ошибках (для логирования)
+// TODO: отрефакторить везде сообщения об ошибках (server error, not fount, для логирования и т.д.)
 //  где-то добавить, поменять и т.п.
+// TODO: и конфиги
 
 // TODO: в dto вынести сообщения в константы и переиспользовать
 // TODO: для IsMongoId установить сообщение

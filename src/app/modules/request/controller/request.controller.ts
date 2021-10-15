@@ -24,10 +24,10 @@ class RequestController implements IRequestController {
   }
 
   public deleteOne: IRequestController['deleteOne'] = async (req, res) => {
-    const requestId = req.params.id
+    const { id } = req.params
 
     try {
-      await this.requestService.deleteOneWithEntity(requestId)
+      await this.requestService.deleteOneWithEntity(id)
 
       res
         .status(StatusCodes.OK)

@@ -37,10 +37,10 @@ class AlbumController implements IAlbumController {
   }
 
   public getOne: IAlbumController['getOne'] = async (req, res) => {
-    const albumId = req.params.id
+    const { id } = req.params
 
     try {
-      const album = await this.albumService.getOneById(albumId)
+      const album = await this.albumService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: album })
     } catch (exception) {
       const error = ensureHttpError(exception)
@@ -87,10 +87,10 @@ class AlbumController implements IAlbumController {
   }
 
   public deleteOne: IAlbumController['deleteOne'] = async (req, res) => {
-    const albumId = req.params.id
+    const { id } = req.params
 
     try {
-      await this.albumService.deleteOneById(albumId)
+      await this.albumService.deleteOneById(id)
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully deleted' })
     } catch (exception) {

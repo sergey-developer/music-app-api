@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
 
+import { IArtistRepository } from 'modules/artist/repository'
 import { ITrackDocument, ITrackModel, TrackModel } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
 import { omitUndefined } from 'shared/utils/common'
@@ -35,9 +36,23 @@ class TrackRepository implements ITrackRepository {
     return this.track.find(filterToApply).exec()
   }
 
+  public findOneById: ITrackRepository['findOneById'] = async (id) => {
+    return this.track.findById(id).orFail().exec()
+  }
+
   public create: ITrackRepository['create'] = async (payload) => {
     const track = new this.track(payload)
     return track.save()
+  }
+
+  public update: ITrackRepository['update'] = async (filter, payload) => {
+    const { id }: typeof filter = omitUndefined(filter)
+    const updates: typeof payload = omitUndefined(payload)
+
+    const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+
+    await this.track.updateOne(filterToApply, updates).orFail().exec()
   }
 
   public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {

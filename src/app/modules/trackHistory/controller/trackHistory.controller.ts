@@ -47,10 +47,10 @@ class TrackHistoryController implements ITrackHistoryController {
   }
 
   public deleteOne: ITrackHistoryController['deleteOne'] = async (req, res) => {
-    const trackHistoryId = req.params.id
+    const { id } = req.params
 
     try {
-      await this.trackHistoryService.deleteOneById(trackHistoryId)
+      await this.trackHistoryService.deleteOneById(id)
 
       res
         .status(StatusCodes.OK)
