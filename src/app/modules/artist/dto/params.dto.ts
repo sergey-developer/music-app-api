@@ -2,14 +2,14 @@ import { IsMongoId } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
 
-export class GetOneArtistByIdParams {
+export class GetArtistParams {
   @IsMongoId({
     message: 'Not correct value of "$property" was provided: "$value"',
   })
   id!: DocumentId
 }
 
-export class DeleteOneArtistByIdParams {
+export class DeleteArtistParams {
   @IsMongoId({
     message: 'Not correct value of "$property" was provided: "$value"',
   })

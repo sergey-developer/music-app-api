@@ -27,16 +27,9 @@ class ArtistService implements IArtistService {
   private getArtistAlbums = async (
     artistId: DocumentId,
   ): Promise<IAlbumDocumentArray> => {
-    try {
-      const albums = await this.albumService.getAll({
-        artist: artistId,
-      })
-
-      return albums
-    } catch (error) {
-      logger.error(error.stack)
-      throw error
-    }
+    return this.albumService.getAll({
+      artist: artistId,
+    })
   }
 
   constructor() {
@@ -65,6 +58,20 @@ class ArtistService implements IArtistService {
     } catch (error) {
       logger.error(error.stack)
       throw ServerError('Error while getting artists')
+    }
+  }
+
+  public getOneById: IArtistService['getOneById'] = async (id) => {
+    try {
+      const artist = await this.artistRepository.findOneById(id)
+      return artist
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Artist was not found')
+      }
+
+      logger.error(error.stack)
+      throw ServerError('Error while getting artist')
     }
   }
 

@@ -11,11 +11,6 @@ class UserRepository implements IUserRepository {
     this.user = UserModel
   }
 
-  public create: IUserRepository['create'] = async (payload) => {
-    const user = new this.user(payload)
-    return user.save()
-  }
-
   public findOne: IUserRepository['findOne'] = async (filter) => {
     const { email }: typeof filter = omitUndefined(filter)
 
@@ -23,6 +18,11 @@ class UserRepository implements IUserRepository {
     const filterToApply: FilterQuery<IUserDocument> = { ...filterByEmail }
 
     return this.user.findOne(filterToApply).orFail().exec()
+  }
+
+  public create: IUserRepository['create'] = async (payload) => {
+    const user = new this.user(payload)
+    return user.save()
   }
 
   public deleteOneById: IUserRepository['deleteOneById'] = async (id) => {

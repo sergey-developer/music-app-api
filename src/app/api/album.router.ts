@@ -2,11 +2,11 @@ import { CreateRouter } from 'api/interface'
 import { AlbumController } from 'modules/album/controller'
 import {
   CreateAlbumDto,
-  DeleteOneAlbumByIdParams,
+  DeleteAlbumParams,
+  GetAlbumParams,
   GetAllAlbumsQuery,
-  GetOneAlbumByIdParams,
-  UpdateAlbumByIdParams,
   UpdateAlbumDto,
+  UpdateAlbumParams,
 } from 'modules/album/dto'
 import { auth } from 'modules/auth/middlewares'
 import { body, params, query } from 'shared/middlewares/validation'
@@ -14,24 +14,20 @@ import { body, params, query } from 'shared/middlewares/validation'
 const createRouter: CreateRouter = (router) => {
   router.get('/', query(GetAllAlbumsQuery), AlbumController.getAll)
 
-  router.get(
-    '/:id',
-    [auth, params(GetOneAlbumByIdParams)],
-    AlbumController.getOneById,
-  )
+  router.get('/:id', [auth, params(GetAlbumParams)], AlbumController.getOne)
 
   router.post('/', [auth, body(CreateAlbumDto)], AlbumController.create)
 
   router.put(
     '/:id',
-    [auth, params(UpdateAlbumByIdParams), body(UpdateAlbumDto)],
-    AlbumController.updateById,
+    [auth, params(UpdateAlbumParams), body(UpdateAlbumDto)],
+    AlbumController.update,
   )
 
   router.delete(
     '/:id',
-    [auth, params(DeleteOneAlbumByIdParams)],
-    AlbumController.deleteOneById,
+    [auth, params(DeleteAlbumParams)],
+    AlbumController.deleteOne,
   )
 
   return router

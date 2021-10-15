@@ -30,6 +30,10 @@ class AlbumRepository implements IAlbumRepository {
     return this.album.find(filterToApply).exec()
   }
 
+  public findOneById: IAlbumRepository['findOneById'] = async (id) => {
+    return this.album.findById(id).orFail().exec()
+  }
+
   public create: IAlbumRepository['create'] = async (payload) => {
     const album = new this.album(payload)
     return album.save()
@@ -43,10 +47,6 @@ class AlbumRepository implements IAlbumRepository {
     const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
     await this.album.updateOne(filterToApply, updates).orFail().exec()
-  }
-
-  public findOneById: IAlbumRepository['findOneById'] = async (id) => {
-    return this.album.findById(id).orFail().exec()
   }
 
   public deleteOneById: IAlbumRepository['deleteOneById'] = async (id) => {

@@ -23,10 +23,7 @@ class RequestController implements IRequestController {
     }
   }
 
-  public deleteOneById: IRequestController['deleteOneById'] = async (
-    req,
-    res,
-  ) => {
+  public deleteOne: IRequestController['deleteOne'] = async (req, res) => {
     const requestId = req.params.id
 
     try {

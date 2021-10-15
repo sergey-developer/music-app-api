@@ -2,7 +2,7 @@ import { IsMongoId } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
 
-export class DeleteOneTrackByIdParams {
+export class DeleteTrackParams {
   @IsMongoId({
     message: 'Not correct value of "$property" was provided: "$value"',
   })

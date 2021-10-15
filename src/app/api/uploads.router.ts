@@ -1,7 +1,7 @@
 import { CreateRouter } from 'api/interface'
 import { auth } from 'modules/auth/middlewares'
 import { ImageController } from 'modules/image/controller'
-import { DeleteOneImageByIdParams } from 'modules/image/dto'
+import { DeleteImageParams } from 'modules/image/dto'
 import { uploadImage } from 'modules/image/middlewares'
 import { params } from 'shared/middlewares/validation'
 
@@ -14,8 +14,8 @@ const createRouter: CreateRouter = (router) => {
 
   router.delete(
     '/images/:id',
-    [auth, params(DeleteOneImageByIdParams)],
-    ImageController.deleteOneById,
+    [auth, params(DeleteImageParams)],
+    ImageController.deleteOne,
   )
 
   return router

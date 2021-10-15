@@ -13,6 +13,8 @@ export interface ICreateArtistServicePayload extends CreateArtistDto {
 export interface IArtistService {
   getAll: (filter: IGetAllArtistsServiceFilter) => Promise<IArtistDocumentArray>
 
+  getOneById: (id: DocumentId) => Promise<IArtistDocument>
+
   create: (payload: ICreateArtistServicePayload) => Promise<IArtistDocument>
 
   deleteOneById: IArtistRepository['deleteOneById']

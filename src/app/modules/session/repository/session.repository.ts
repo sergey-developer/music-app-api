@@ -8,6 +8,12 @@ class SessionRepository implements ISessionRepository {
     this.session = SessionModel
   }
 
+  public findOneByToken: ISessionRepository['findOneByToken'] = async (
+    token,
+  ) => {
+    return this.session.findOne({ token }).orFail().exec()
+  }
+
   public create: ISessionRepository['create'] = async (payload) => {
     const token = this.session.generateToken(payload)
     const session = new this.session({
@@ -16,12 +22,6 @@ class SessionRepository implements ISessionRepository {
     })
 
     return session.save()
-  }
-
-  public findOneByToken: ISessionRepository['findOneByToken'] = async (
-    token,
-  ) => {
-    return this.session.findOne({ token }).orFail().exec()
   }
 
   public deleteOneByToken: ISessionRepository['deleteOneByToken'] = async (

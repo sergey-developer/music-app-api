@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 
 import {
   CreateTrackDto,
-  DeleteOneTrackByIdParams,
+  DeleteTrackParams,
   GetAllTracksQuery,
 } from 'modules/track/dto'
 import { ControllerResult } from 'shared/interface/response'
@@ -18,8 +18,8 @@ export interface ITrackController {
     res: Response,
   ) => ControllerResult
 
-  deleteOneById: (
-    req: Request<Pick<DeleteOneTrackByIdParams, 'id'>>,
+  deleteOne: (
+    req: Request<Pick<DeleteTrackParams, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

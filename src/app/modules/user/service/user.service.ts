@@ -16,6 +16,20 @@ class UserService implements IUserService {
     this.userRepository = UserRepository
   }
 
+  public getOneByEmail: IUserService['getOneByEmail'] = async (email) => {
+    try {
+      const user = await this.userRepository.findOne({ email })
+      return user
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError(`User with email "${email}" was not found`)
+      }
+
+      logger.error(error.stack)
+      throw ServerError('Error while getting user')
+    }
+  }
+
   public create: IUserService['create'] = async (payload) => {
     try {
       const user = await this.userRepository.create(payload)
@@ -30,20 +44,6 @@ class UserService implements IUserService {
 
       logger.error(error.stack)
       throw ServerError('Error while creating new user')
-    }
-  }
-
-  public getOneByEmail: IUserService['getOneByEmail'] = async (email) => {
-    try {
-      const user = await this.userRepository.findOne({ email })
-      return user
-    } catch (error) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError(`User with email "${email}" was not found`)
-      }
-
-      logger.error(error.stack)
-      throw ServerError('Error while getting user')
     }
   }
 

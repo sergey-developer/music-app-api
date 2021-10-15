@@ -31,10 +31,7 @@ class ImageController implements IImageController {
     }
   }
 
-  public deleteOneById: IImageController['deleteOneById'] = async (
-    req,
-    res,
-  ) => {
+  public deleteOne: IImageController['deleteOne'] = async (req, res) => {
     const imageId = req.params.id
 
     try {

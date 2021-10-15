@@ -36,6 +36,18 @@ class AlbumController implements IAlbumController {
     }
   }
 
+  public getOne: IAlbumController['getOne'] = async (req, res) => {
+    const albumId = req.params.id
+
+    try {
+      const album = await this.albumService.getOneById(albumId)
+      res.status(StatusCodes.OK).send({ data: album })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
   public create: IAlbumController['create'] = async (req, res) => {
     try {
       const user = req.user!
@@ -60,7 +72,7 @@ class AlbumController implements IAlbumController {
     }
   }
 
-  public updateById: IAlbumController['updateById'] = async (req, res) => {
+  public update: IAlbumController['update'] = async (req, res) => {
     try {
       const filter = pick(req.params, 'id')
       const payload = pick(req.body, 'image', 'artist', 'name', 'releaseDate')
@@ -74,22 +86,7 @@ class AlbumController implements IAlbumController {
     }
   }
 
-  public getOneById: IAlbumController['getOneById'] = async (req, res) => {
-    const albumId = req.params.id
-
-    try {
-      const album = await this.albumService.getOneById(albumId)
-      res.status(StatusCodes.OK).send({ data: album })
-    } catch (exception) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
-    }
-  }
-
-  public deleteOneById: IAlbumController['deleteOneById'] = async (
-    req,
-    res,
-  ) => {
+  public deleteOne: IAlbumController['deleteOne'] = async (req, res) => {
     const albumId = req.params.id
 
     try {

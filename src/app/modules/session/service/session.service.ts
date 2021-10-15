@@ -20,6 +20,22 @@ class SessionService implements ISessionService {
     this.sessionRepository = SessionRepository
   }
 
+  public getOneByToken: ISessionRepository['findOneByToken'] = async (
+    token,
+  ) => {
+    try {
+      const session = await this.sessionRepository.findOneByToken(token)
+      return session
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw UnauthorizedError(`Session with token "${token}" was not found`)
+      }
+
+      logger.error(error.stack)
+      throw ServerError()
+    }
+  }
+
   public create: ISessionService['create'] = async (payload) => {
     try {
       const session = await this.sessionRepository.create({
@@ -35,22 +51,6 @@ class SessionService implements ISessionService {
           kind: error.name,
           errors: error.errors,
         })
-      }
-
-      logger.error(error.stack)
-      throw ServerError()
-    }
-  }
-
-  public getOneByToken: ISessionRepository['findOneByToken'] = async (
-    token,
-  ) => {
-    try {
-      const session = await this.sessionRepository.findOneByToken(token)
-      return session
-    } catch (error) {
-      if (isNotFoundDBError(error)) {
-        throw UnauthorizedError(`Session with token "${token}" was not found`)
       }
 
       logger.error(error.stack)

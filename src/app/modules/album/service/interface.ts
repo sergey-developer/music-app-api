@@ -29,14 +29,14 @@ export interface IDeleteManyAlbumsServiceFilter
 export interface IAlbumService {
   getAll: (filter: IGetAllAlbumsServiceFilter) => Promise<IAlbumDocumentArray>
 
+  getOneById: IAlbumRepository['findOneById']
+
   create: (payload: ICreateAlbumServicePayload) => Promise<IAlbumDocument>
 
   update: (
     filter: IUpdateAlbumServiceFilter,
     payload: IUpdateAlbumServicePayload,
   ) => Promise<void>
-
-  getOneById: IAlbumRepository['findOneById']
 
   deleteOneById: IAlbumRepository['deleteOneById']
 

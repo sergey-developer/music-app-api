@@ -2,11 +2,11 @@ import { Request, Response } from 'express'
 
 import {
   CreateAlbumDto,
-  DeleteOneAlbumByIdParams,
+  DeleteAlbumParams,
+  GetAlbumParams,
   GetAllAlbumsQuery,
-  GetOneAlbumByIdParams,
-  UpdateAlbumByIdParams,
   UpdateAlbumDto,
+  UpdateAlbumParams,
 } from 'modules/album/dto'
 import { ControllerResult } from 'shared/interface/response'
 
@@ -16,23 +16,23 @@ export interface IAlbumController {
     res: Response,
   ) => ControllerResult
 
+  getOne: (
+    req: Request<Pick<GetAlbumParams, 'id'>>,
+    res: Response,
+  ) => ControllerResult
+
   create: (
     req: Request<{}, any, CreateAlbumDto>,
     res: Response,
   ) => ControllerResult
 
-  updateById: (
-    req: Request<Pick<UpdateAlbumByIdParams, 'id'>, any, UpdateAlbumDto>,
+  update: (
+    req: Request<Pick<UpdateAlbumParams, 'id'>, any, UpdateAlbumDto>,
     res: Response,
   ) => ControllerResult
 
-  getOneById: (
-    req: Request<Pick<GetOneAlbumByIdParams, 'id'>>,
-    res: Response,
-  ) => ControllerResult
-
-  deleteOneById: (
-    req: Request<Pick<DeleteOneAlbumByIdParams, 'id'>>,
+  deleteOne: (
+    req: Request<Pick<DeleteAlbumParams, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

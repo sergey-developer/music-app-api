@@ -2,8 +2,9 @@ import { Request, Response } from 'express'
 
 import {
   CreateArtistDto,
-  DeleteOneArtistByIdParams,
+  DeleteArtistParams,
   GetAllArtistsQuery,
+  GetArtistParams,
 } from 'modules/artist/dto'
 import { ControllerResult } from 'shared/interface/response'
 
@@ -13,13 +14,18 @@ export interface IArtistController {
     res: Response,
   ) => ControllerResult
 
+  getOne: (
+    req: Request<Pick<GetArtistParams, 'id'>>,
+    res: Response,
+  ) => ControllerResult
+
   create: (
     req: Request<any, any, CreateArtistDto>,
     res: Response,
   ) => ControllerResult
 
-  deleteOneById: (
-    req: Request<Pick<DeleteOneArtistByIdParams, 'id'>>,
+  deleteOne: (
+    req: Request<Pick<DeleteArtistParams, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

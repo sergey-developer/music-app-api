@@ -65,6 +65,20 @@ class AlbumService implements IAlbumService {
     }
   }
 
+  public getOneById: IAlbumService['getOneById'] = async (id) => {
+    try {
+      const album = await this.albumRepository.findOneById(id)
+      return album
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError(`Album with id "${id}" was not found`)
+      }
+
+      logger.error(error.stack)
+      throw ServerError(`Error while getting album by id "${id}"`)
+    }
+  }
+
   public create: IAlbumService['create'] = async (payload) => {
     let album: IAlbumDocument
     const serverError = ServerError('Error while creating new album')
@@ -134,20 +148,6 @@ class AlbumService implements IAlbumService {
       })
 
       throw ServerError('Error while updating album')
-    }
-  }
-
-  public getOneById: IAlbumService['getOneById'] = async (id) => {
-    try {
-      const album = await this.albumRepository.findOneById(id)
-      return album
-    } catch (error) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Album with id "${id}" was not found`)
-      }
-
-      logger.error(error.stack)
-      throw ServerError(`Error while getting album by id "${id}"`)
     }
   }
 

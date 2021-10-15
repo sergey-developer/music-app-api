@@ -36,6 +36,18 @@ class ArtistController implements IArtistController {
     }
   }
 
+  public getOne: IArtistController['getOne'] = async (req, res) => {
+    const artistId = req.params.id
+
+    try {
+      const artist = await this.artistService.getOneById(artistId)
+      res.status(StatusCodes.OK).send({ data: artist })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
   public create: IArtistController['create'] = async (req, res) => {
     try {
       const user = req.user!
@@ -59,10 +71,7 @@ class ArtistController implements IArtistController {
     }
   }
 
-  public deleteOneById: IArtistController['deleteOneById'] = async (
-    req,
-    res,
-  ) => {
+  public deleteOne: IArtistController['deleteOne'] = async (req, res) => {
     const artistId = req.params.id
 
     try {

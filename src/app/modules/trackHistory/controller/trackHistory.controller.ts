@@ -46,10 +46,7 @@ class TrackHistoryController implements ITrackHistoryController {
     }
   }
 
-  public deleteOneById: ITrackHistoryController['deleteOneById'] = async (
-    req,
-    res,
-  ) => {
+  public deleteOne: ITrackHistoryController['deleteOne'] = async (req, res) => {
     const trackHistoryId = req.params.id
 
     try {

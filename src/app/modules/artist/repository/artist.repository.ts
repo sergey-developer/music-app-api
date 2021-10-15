@@ -16,10 +16,6 @@ class ArtistRepository implements IArtistRepository {
     this.artist = ArtistModel
   }
 
-  public findAll: IArtistRepository['findAll'] = async () => {
-    return this.artist.find().exec()
-  }
-
   public findAllWhere: IArtistRepository['findAllWhere'] = async (filter) => {
     const { ids }: typeof filter = omitUndefined(filter)
 
@@ -30,6 +26,10 @@ class ArtistRepository implements IArtistRepository {
     const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
 
     return this.artist.find(filterToApply).exec()
+  }
+
+  public findOneById: IArtistRepository['findOneById'] = async (id) => {
+    return this.artist.findById(id).orFail().exec()
   }
 
   public create: IArtistRepository['create'] = async (payload) => {

@@ -30,11 +30,11 @@ export interface IRequestRepository {
     filter: IFindAllRequestsRepositoryFilter,
   ) => Promise<IRequestDocumentArray>
 
+  findOneById: (id: DocumentId) => Promise<IRequestDocument>
+
   create: (
     payload: ICreateRequestRepositoryPayload,
   ) => Promise<IRequestDocument>
-
-  findOneById: (id: DocumentId) => Promise<IRequestDocument>
 
   deleteOne: (
     filter: IDeleteOneRequestRepositoryFilter,

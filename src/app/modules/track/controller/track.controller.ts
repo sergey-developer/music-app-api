@@ -63,10 +63,7 @@ class TrackController implements ITrackController {
     }
   }
 
-  public deleteOneById: ITrackController['deleteOneById'] = async (
-    req,
-    res,
-  ) => {
+  public deleteOne: ITrackController['deleteOne'] = async (req, res) => {
     const trackId = req.params.id
 
     try {

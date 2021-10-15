@@ -6,9 +6,9 @@ export interface ICreateSessionServicePayload
   extends Pick<IUserDocument, 'id' | 'email' | 'role'> {}
 
 export interface ISessionService {
-  create: (payload: ICreateSessionServicePayload) => Promise<ISessionDocument>
-
   getOneByToken: ISessionRepository['findOneByToken']
+
+  create: (payload: ICreateSessionServicePayload) => Promise<ISessionDocument>
 
   deleteOneByToken: ISessionRepository['deleteOneByToken']
 }

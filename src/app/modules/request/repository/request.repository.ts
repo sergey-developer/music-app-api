@@ -46,13 +46,13 @@ class RequestRepository implements IRequestRepository {
     return this.request.find(filterToApply).exec()
   }
 
+  public findOneById: IRequestRepository['findOneById'] = async (id) => {
+    return this.request.findById(id).orFail().exec()
+  }
+
   public create: IRequestRepository['create'] = async (payload) => {
     const request = new this.request(payload)
     return request.save()
-  }
-
-  public findOneById: IRequestRepository['findOneById'] = async (id) => {
-    return this.request.findById(id).orFail().exec()
   }
 
   public deleteOne: IRequestRepository['deleteOne'] = async (filter) => {

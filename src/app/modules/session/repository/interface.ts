@@ -4,11 +4,11 @@ import { ISessionDocument } from 'modules/session/model'
 export interface ICreateSessionRepositoryPayload extends JwtPayload {}
 
 export interface ISessionRepository {
+  findOneByToken: (token: JwtToken) => Promise<ISessionDocument>
+
   create: (
     payload: ICreateSessionRepositoryPayload,
   ) => Promise<ISessionDocument>
-
-  findOneByToken: (token: JwtToken) => Promise<ISessionDocument>
 
   deleteOneByToken: (token: JwtToken) => Promise<void>
 }

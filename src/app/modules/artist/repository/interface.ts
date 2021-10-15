@@ -11,11 +11,11 @@ export interface IFindAllArtistsRepositoryFilter
 export interface ICreateArtistRepositoryPayload extends CreateArtistDto {}
 
 export interface IArtistRepository {
-  findAll: () => Promise<IArtistDocumentArray>
-
   findAllWhere: (
     filter: IFindAllArtistsRepositoryFilter,
   ) => Promise<IArtistDocumentArray>
+
+  findOneById: (id: DocumentId) => Promise<IArtistDocument>
 
   create: (payload: ICreateArtistRepositoryPayload) => Promise<IArtistDocument>
 

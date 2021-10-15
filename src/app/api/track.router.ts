@@ -3,7 +3,7 @@ import { auth } from 'modules/auth/middlewares'
 import { TrackController } from 'modules/track/controller'
 import {
   CreateTrackDto,
-  DeleteOneTrackByIdParams,
+  DeleteTrackParams,
   GetAllTracksQuery,
 } from 'modules/track/dto'
 import { body, params, query } from 'shared/middlewares/validation'
@@ -15,7 +15,7 @@ const createRouter: CreateRouter = (router) => {
 
   router.delete(
     '/:id',
-    [auth, params(DeleteOneTrackByIdParams)],
+    [auth, params(DeleteTrackParams)],
     TrackController.deleteOneById,
   )
 
