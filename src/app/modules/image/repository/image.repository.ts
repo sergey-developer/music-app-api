@@ -25,9 +25,19 @@ class ImageRepository implements IImageRepository {
     return image.save()
   }
 
-  public deleteOne: IImageRepository['deleteOne'] = async (id, filename) => {
-    const image = await this.image.findByIdAndDelete(id).orFail().exec()
-    await deleteFile(this.imageUploadPath, filename)
+  public deleteOne: IImageRepository['deleteOne'] = async (rawFilter) => {
+    const { fileName } = rawFilter
+
+    const filterByName: FilterQuery<IImageDocument> = { fileName }
+    const filterToApply: FilterQuery<IImageDocument> = { ...filterByName }
+
+    const image = await this.image
+      .findOneAndDelete(filterToApply)
+      .orFail()
+      .exec()
+
+    await deleteFile(this.imageUploadPath, fileName)
+
     return image
   }
 

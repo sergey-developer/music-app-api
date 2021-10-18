@@ -10,7 +10,7 @@ export interface IFindAllRequestsFilter extends GetAllRequestsQuery {}
 
 export interface IDeleteOneRequestFilter
   extends Partial<{
-    id: DocumentId
+    id: IRequestDocument['id']
     entityId: DocumentId
   }> {}
 
@@ -26,7 +26,7 @@ export interface IRequestRepository {
     filter: IFindAllRequestsFilter,
   ) => Promise<IRequestDocumentArray>
 
-  findOneById: (id: DocumentId) => Promise<IRequestDocument>
+  findOneById: (id: IRequestDocument['id']) => Promise<IRequestDocument>
 
   create: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
 

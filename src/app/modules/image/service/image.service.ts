@@ -2,7 +2,6 @@ import isEmpty from 'lodash/isEmpty'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
-import { IArtistService } from 'modules/artist/service'
 import { IImageDocument } from 'modules/image/model'
 import { IImageRepository, ImageRepository } from 'modules/image/repository'
 import { IImageService } from 'modules/image/service'
@@ -13,7 +12,6 @@ import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  isNotFoundError,
   isServerError,
 } from 'shared/utils/errors/httpErrors'
 
@@ -59,15 +57,18 @@ class ImageService implements IImageService {
     }
   }
 
-  public updateById: IImageService['updateById'] = async (id, payload) => {
+  public updateByName: IImageService['updateByName'] = async (
+    fileName,
+    payload,
+  ) => {
     const serverErrorMsg = 'Error while updating image'
 
     try {
-      await this.deleteOneById(id)
+      await this.deleteByName(fileName)
     } catch (error) {
       logger.error(error.stack, {
         message: 'Update image error',
-        args: { id },
+        args: { fileName },
       })
 
       throw isServerError(error) ? ServerError(serverErrorMsg) : error
@@ -79,31 +80,16 @@ class ImageService implements IImageService {
     } catch (error) {
       logger.error(error.stack, {
         message: 'Update image error',
-        args: { id, payload },
+        args: { payload },
       })
 
       throw isServerError(error) ? ServerError(serverErrorMsg) : error
     }
   }
 
-  public deleteOneById: IImageService['deleteOneById'] = async (id) => {
-    const serverErrorMsg = 'Error while deleting image'
-    let imageToDelete: IImageDocument
-
+  public deleteByName: IImageService['deleteByName'] = async (fileName) => {
     try {
-      imageToDelete = await this.getOneById(id)
-    } catch (error) {
-      logger.error(error.stack, {
-        message: 'Delete image error',
-        args: { id },
-      })
-
-      throw ServerError(serverErrorMsg)
-    }
-
-    try {
-      const { id, fileName } = imageToDelete
-      const image = await this.imageRepository.deleteOne(id, fileName)
+      const image = await this.imageRepository.deleteOne({ fileName })
       return image
     } catch (error) {
       if (isNotFoundDBError(error)) {
@@ -111,7 +97,7 @@ class ImageService implements IImageService {
       }
 
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw ServerError('Error while deleting image')
     }
   }
 

@@ -38,10 +38,10 @@ class ImageController implements IImageController {
     try {
       if (!file) throw BadRequestError('File was not provided')
 
-      const { id } = req.params
+      const { filename } = req.params
 
-      const image = await this.imageService.updateById(id, file)
-      const result = pick(image, 'id', 'src')
+      const image = await this.imageService.updateByName(filename, file)
+      const result = pick(image, 'id', 'src', 'fileName')
 
       res.status(StatusCodes.OK).send({ data: result })
     } catch (exception) {
@@ -51,12 +51,11 @@ class ImageController implements IImageController {
   }
 
   public deleteOne: IImageController['deleteOne'] = async (req, res) => {
-    const { id } = req.params
+    const { filename } = req.params
 
     try {
-      await this.imageService.deleteOneById(id)
-
-      res.sendStatus(StatusCodes.OK)
+      await this.imageService.deleteByName(filename)
+      res.sendStatus(StatusCodes.NO_CONTENT)
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

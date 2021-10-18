@@ -28,11 +28,14 @@ export interface ICreateTrackPayload extends CreateTrackDto {
 export interface ITrackService {
   getAll: (filter: IGetAllTracksFilter) => Promise<ITrackDocumentArray>
 
-  getOneById: (id: DocumentId) => Promise<ITrackDocument>
+  getOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
   create: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
-  updateById: (id: DocumentId, payload: IUpdateTrackPayload) => Promise<void>
+  updateById: (
+    id: ITrackDocument['id'],
+    payload: IUpdateTrackPayload,
+  ) => Promise<void>
 
   deleteOneById: ITrackRepository['deleteOneById']
 

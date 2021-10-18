@@ -1,4 +1,3 @@
-import { DocumentId } from 'database/interface/document'
 import { CreateImageDto, UpdateImageDto } from 'modules/image/dto'
 import { IImageDocument } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
@@ -8,16 +7,18 @@ export interface ICreateImagePayload extends CreateImageDto {}
 export interface IUpdateImagePayload extends UpdateImageDto {}
 
 export interface IImageService {
-  getOneById: (id: DocumentId) => Promise<IImageDocument>
+  getOneById: (id: IImageDocument['id']) => Promise<IImageDocument>
 
   createOne: (payload: ICreateImagePayload) => Promise<IImageDocument>
 
-  updateById: (
-    id: DocumentId,
+  updateByName: (
+    fileName: IImageDocument['fileName'],
     payload: IUpdateImagePayload,
   ) => Promise<IImageDocument>
 
-  deleteOneById: (id: DocumentId) => Promise<IImageDocument>
+  deleteByName: (
+    fileName: IImageDocument['fileName'],
+  ) => Promise<IImageDocument>
 
   deleteMany: IImageRepository['deleteMany']
 }

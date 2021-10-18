@@ -15,7 +15,7 @@ export interface IUpdateAlbumPayload extends UpdateAlbumDto {}
 
 export interface IUpdateAlbumFilter
   extends Partial<{
-    id: DocumentId
+    id: IAlbumDocument['id']
   }> {}
 
 export interface IDeleteManyAlbumsFilter
@@ -26,7 +26,7 @@ export interface IDeleteManyAlbumsFilter
 export interface IAlbumRepository {
   findAllWhere: (filter: IFindAllAlbumsFilter) => Promise<IAlbumDocumentArray>
 
-  findOneById: (id: DocumentId) => Promise<IAlbumDocument>
+  findOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
   create: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
@@ -35,7 +35,7 @@ export interface IAlbumRepository {
     payload: IUpdateAlbumPayload,
   ) => Promise<void>
 
-  deleteOneById: (id: DocumentId) => Promise<IAlbumDocument>
+  deleteOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
   deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<void>
 }

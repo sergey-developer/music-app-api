@@ -1,4 +1,4 @@
-import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { DocumentIdArray } from 'database/interface/document'
 import { CreateArtistDto, UpdateArtistDto } from 'modules/artist/dto'
 import { IArtistDocumentArray } from 'modules/artist/interface'
 import { IArtistDocument } from 'modules/artist/model'
@@ -11,15 +11,16 @@ export interface IFindAllArtistsFilter
 export interface ICreateArtistPayload extends CreateArtistDto {}
 
 export interface IUpdateArtistPayload extends UpdateArtistDto {}
+
 export interface IUpdateArtistFilter
   extends Partial<{
-    id: DocumentId
+    id: IArtistDocument['id']
   }> {}
 
 export interface IArtistRepository {
   findAllWhere: (filter: IFindAllArtistsFilter) => Promise<IArtistDocumentArray>
 
-  findOneById: (id: DocumentId) => Promise<IArtistDocument>
+  findOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 
   create: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
 
@@ -28,5 +29,5 @@ export interface IArtistRepository {
     payload: IUpdateArtistPayload,
   ) => Promise<void>
 
-  deleteOneById: (id: DocumentId) => Promise<IArtistDocument>
+  deleteOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 }

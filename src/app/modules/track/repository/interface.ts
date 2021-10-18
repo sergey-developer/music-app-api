@@ -1,4 +1,4 @@
-import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { DocumentIdArray } from 'database/interface/document'
 import {
   CreateTrackDto,
   GetAllTracksQuery,
@@ -18,7 +18,7 @@ export interface IUpdateTrackPayload extends UpdateTrackDto {}
 
 export interface IUpdateTrackFilter
   extends Partial<{
-    id: DocumentId
+    id: ITrackDocument['id']
   }> {}
 
 export interface IDeleteManyTracksFilter
@@ -31,7 +31,7 @@ export interface ICreateTrackPayload extends CreateTrackDto {}
 export interface ITrackRepository {
   findAllWhere: (filter: IGetAllTracksFilter) => Promise<ITrackDocumentArray>
 
-  findOneById: (id: DocumentId) => Promise<ITrackDocument>
+  findOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
   create: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
@@ -40,7 +40,7 @@ export interface ITrackRepository {
     payload: IUpdateTrackPayload,
   ) => Promise<void>
 
-  deleteOneById: (id: DocumentId) => Promise<ITrackDocument>
+  deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
   deleteMany: (filter: IDeleteManyTracksFilter) => Promise<void>
 }
