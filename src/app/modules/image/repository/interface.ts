@@ -10,6 +10,7 @@ export interface IDeleteOneImageFilter {
 export interface IDeleteManyImagesFilter
   extends Partial<{
     ids: DocumentIdArray
+    fileNames: Array<IImageDocument['fileName']>
   }> {}
 
 export interface IImageRepository {

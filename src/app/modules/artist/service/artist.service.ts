@@ -9,6 +9,7 @@ import { AlbumService, IAlbumService } from 'modules/album/service'
 import { IArtistDocument } from 'modules/artist/model'
 import { ArtistRepository, IArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
+import { IImageDocument } from 'modules/image/model'
 import { IImageService, ImageService } from 'modules/image/service'
 import { IRequestService, RequestService } from 'modules/request/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
@@ -161,11 +162,11 @@ class ArtistService implements IArtistService {
     }
 
     try {
-      const artistHasPhoto = !!artist.photo
+      const artistHasPhoto = !isEmpty(artist.photo)
 
       if (artistHasPhoto) {
-        const photoId = artist.photo as string
-        await this.imageService.deleteOneById(photoId)
+        const photo = artist.photo as IImageDocument
+        await this.imageService.deleteByName(photo.fileName)
       }
 
       const albumsByArtistId = await this.getArtistAlbums(artist.id)

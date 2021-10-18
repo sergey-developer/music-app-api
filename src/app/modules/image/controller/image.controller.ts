@@ -23,7 +23,7 @@ class ImageController implements IImageController {
       if (!file) throw BadRequestError('File was not provided')
 
       const image = await this.imageService.createOne(file)
-      const result = pick(image, 'id', 'src')
+      const result = pick(image, 'id', 'src', 'fileName')
 
       res.status(StatusCodes.CREATED).send({ data: result })
     } catch (exception) {

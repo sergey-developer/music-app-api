@@ -48,7 +48,11 @@ class ArtistRepository implements IArtistRepository {
   }
 
   public deleteOneById: IArtistRepository['deleteOneById'] = async (id) => {
-    return this.artist.findByIdAndDelete(id).orFail().exec()
+    return this.artist
+      .findOneAndDelete({ _id: id })
+      .orFail()
+      .populate('photo')
+      .exec()
   }
 }
 

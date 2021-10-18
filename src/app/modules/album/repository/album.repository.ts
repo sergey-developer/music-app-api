@@ -48,7 +48,11 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public deleteOneById: IAlbumRepository['deleteOneById'] = async (id) => {
-    return this.album.findByIdAndDelete(id).orFail().exec()
+    return this.album
+      .findOneAndDelete({ _id: id })
+      .orFail()
+      .populate('image')
+      .exec()
   }
 
   public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {

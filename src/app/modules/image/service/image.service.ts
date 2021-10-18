@@ -1,8 +1,8 @@
 import isEmpty from 'lodash/isEmpty'
 
+import { appConfig } from 'configs/app'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
-import { IImageDocument } from 'modules/image/model'
 import { IImageRepository, ImageRepository } from 'modules/image/repository'
 import { IImageService } from 'modules/image/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
@@ -14,12 +14,15 @@ import {
   ServerError,
   isServerError,
 } from 'shared/utils/errors/httpErrors'
+import { deleteFile } from 'shared/utils/file'
 
 class ImageService implements IImageService {
   private readonly imageRepository: IImageRepository
+  private readonly imageUploadPath: string
 
-  constructor() {
+  public constructor() {
     this.imageRepository = ImageRepository
+    this.imageUploadPath = appConfig.imageUploadPath
   }
 
   public getOneById: IImageService['getOneById'] = async (id) => {
@@ -66,10 +69,19 @@ class ImageService implements IImageService {
     try {
       await this.deleteByName(fileName)
     } catch (error) {
-      logger.error(error.stack, {
-        message: 'Update image error',
+      logger.warn(error.stack, {
+        message: 'Delete image error',
         args: { fileName },
       })
+
+      try {
+        await this.deleteByName(payload.filename)
+      } catch (error) {
+        logger.warn(error.stack, {
+          message: 'Delete image error',
+          args: { fileName: payload.filename },
+        })
+      }
 
       throw isServerError(error) ? ServerError(serverErrorMsg) : error
     }
@@ -79,7 +91,7 @@ class ImageService implements IImageService {
       return image
     } catch (error) {
       logger.error(error.stack, {
-        message: 'Update image error',
+        message: 'Create image error',
         args: { payload },
       })
 
@@ -88,6 +100,12 @@ class ImageService implements IImageService {
   }
 
   public deleteByName: IImageService['deleteByName'] = async (fileName) => {
+    try {
+      await deleteFile(this.imageUploadPath, fileName)
+    } catch (error) {
+      throw NotFoundError('Image was not found')
+    }
+
     try {
       const image = await this.imageRepository.deleteOne({ fileName })
       return image
@@ -101,7 +119,7 @@ class ImageService implements IImageService {
     }
   }
 
-  public deleteMany: IImageRepository['deleteMany'] = async (rawFilter) => {
+  public deleteMany: IImageService['deleteMany'] = async (rawFilter) => {
     const filter: typeof rawFilter = omitUndefined(rawFilter)
 
     if (isEmpty(filter)) {

@@ -7,6 +7,7 @@ import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
 import { AlbumRepository, IAlbumRepository } from 'modules/album/repository'
 import { IAlbumService } from 'modules/album/service'
+import { IImageDocument } from 'modules/image/model'
 import { IImageService, ImageService } from 'modules/image/service'
 import { IRequestService, RequestService } from 'modules/request/service'
 import { ITrackDocumentArray } from 'modules/track/interface'
@@ -164,11 +165,11 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      const albumHasImage = !!album.image
+      const albumHasImage = !isEmpty(album.image)
 
       if (albumHasImage) {
-        const imageId = album.image as string
-        await this.imageService.deleteOneById(imageId)
+        const image = album.image as IImageDocument
+        await this.imageService.deleteByName(image.fileName)
       }
 
       const tracksByAlbumId = await this.getTracksByAlbumsIds([album.id])
@@ -199,11 +200,15 @@ class AlbumService implements IAlbumService {
     const { albums = [] } = filter
 
     const albumIds: DocumentIdArray = []
-    const imageIds: DocumentIdArray = []
+    const imageNames: Array<IImageDocument['fileName']> = []
 
     albums.forEach((album) => {
       albumIds.push(album.id)
-      if (album.image) imageIds.push(album.image as string)
+
+      if (!isEmpty(album.image)) {
+        const image = album.image as IImageDocument
+        imageNames.push(image.fileName)
+      }
     })
 
     try {
@@ -214,8 +219,8 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      if (!isEmpty(imageIds)) {
-        await this.imageService.deleteMany({ ids: imageIds })
+      if (!isEmpty(imageNames)) {
+        await this.imageService.deleteMany({ fileNames: imageNames })
       }
 
       const tracksByAlbumsIds = await this.getTracksByAlbumsIds(albumIds)

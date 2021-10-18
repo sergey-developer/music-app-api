@@ -8,7 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: сделать обновление и получение по id сущностей (сделал: artist, album, track)
+// TODO: сделать обновление, получение, и т.д. сущностей (сделал: artist, album, track, image)
 // TODO: remove props with undefined value from dto
 // TODO: отрефакторить везде сообщения об ошибках (server error, not fount, для логирования и т.д.)
 //  где-то добавить, поменять и т.п.

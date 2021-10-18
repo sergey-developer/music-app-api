@@ -1,19 +1,15 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
 
-import { appConfig } from 'configs/app'
 import { IImageDocument, IImageModel, ImageModel } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
 import { omitUndefined } from 'shared/utils/common'
-import { deleteFile } from 'shared/utils/file'
 
 class ImageRepository implements IImageRepository {
   private readonly image: IImageModel
-  private readonly imageUploadPath: string
 
   public constructor() {
     this.image = ImageModel
-    this.imageUploadPath = appConfig.imageUploadPath
   }
 
   public findOneById: IImageRepository['findOneById'] = async (id) => {
@@ -36,19 +32,24 @@ class ImageRepository implements IImageRepository {
       .orFail()
       .exec()
 
-    await deleteFile(this.imageUploadPath, fileName)
-
     return image
   }
 
   public deleteMany: IImageRepository['deleteMany'] = async (filter) => {
-    const { ids }: typeof filter = omitUndefined(filter)
+    const { ids, fileNames }: typeof filter = omitUndefined(filter)
 
     const filterById: FilterQuery<IImageDocument> = isEmpty(ids)
       ? {}
       : { _id: { $in: ids } }
 
-    const filterToApply: FilterQuery<IImageDocument> = { ...filterById }
+    const filterByFileName: FilterQuery<IImageDocument> = isEmpty(fileNames)
+      ? {}
+      : { fileName: { $in: fileNames } }
+
+    const filterToApply: FilterQuery<IImageDocument> = {
+      ...filterById,
+      ...filterByFileName,
+    }
 
     await this.image.deleteMany(filterToApply)
   }
