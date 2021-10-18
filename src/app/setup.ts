@@ -8,6 +8,7 @@ import { createRouters } from 'api/utils'
 import routers from 'app/api'
 
 const setup = (app: Application): Application => {
+  app.use(express.static('public/uploads/images'))
   app.use(express.json())
   app.use(cors())
   app.use(cookieParser())

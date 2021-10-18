@@ -1,29 +1,34 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
 
+import { appConfig } from 'configs/app'
 import { IImageDocument, IImageModel, ImageModel } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
 import { omitUndefined } from 'shared/utils/common'
+import { deleteFile } from 'shared/utils/file'
 
 class ImageRepository implements IImageRepository {
   private readonly image: IImageModel
+  private readonly imageUploadPath: string
 
   public constructor() {
     this.image = ImageModel
+    this.imageUploadPath = appConfig.imageUploadPath
+  }
+
+  public findOneById: IImageRepository['findOneById'] = async (id) => {
+    return this.image.findById(id).orFail().exec()
   }
 
   public createOne: IImageRepository['createOne'] = async (payload) => {
-    const image = new this.image({
-      src: payload.path,
-      fileName: payload.filename,
-      originalName: payload.originalname,
-    })
-
+    const image = new this.image(payload)
     return image.save()
   }
 
-  public deleteOneById: IImageRepository['deleteOneById'] = async (id) => {
-    return this.image.findByIdAndDelete(id).orFail().exec()
+  public deleteOne: IImageRepository['deleteOne'] = async (id, filename) => {
+    const image = await this.image.findByIdAndDelete(id).orFail().exec()
+    await deleteFile(this.imageUploadPath, filename)
+    return image
   }
 
   public deleteMany: IImageRepository['deleteMany'] = async (filter) => {

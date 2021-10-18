@@ -12,6 +12,12 @@ const createRouter: CreateRouter = (router) => {
     ImageController.createOne,
   )
 
+  router.put(
+    '/images/:id',
+    [auth, uploadImage.single('image')],
+    ImageController.update,
+  )
+
   router.delete(
     '/images/:id',
     [auth, params(IdParam)],

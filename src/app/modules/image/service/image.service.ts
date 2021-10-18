@@ -2,6 +2,8 @@ import isEmpty from 'lodash/isEmpty'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
+import { IArtistService } from 'modules/artist/service'
+import { IImageDocument } from 'modules/image/model'
 import { IImageRepository, ImageRepository } from 'modules/image/repository'
 import { IImageService } from 'modules/image/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
@@ -11,6 +13,8 @@ import {
   BadRequestError,
   NotFoundError,
   ServerError,
+  isNotFoundError,
+  isServerError,
 } from 'shared/utils/errors/httpErrors'
 
 class ImageService implements IImageService {
@@ -20,9 +24,27 @@ class ImageService implements IImageService {
     this.imageRepository = ImageRepository
   }
 
+  public getOneById: IImageService['getOneById'] = async (id) => {
+    try {
+      const image = await this.imageRepository.findOneById(id)
+      return image
+    } catch (error) {
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Image was not found')
+      }
+
+      logger.error(error.stack)
+      throw ServerError('Error while getting image')
+    }
+  }
+
   public createOne: IImageService['createOne'] = async (payload) => {
     try {
-      const image = await this.imageRepository.createOne(payload)
+      const image = await this.imageRepository.createOne({
+        src: payload.filename,
+        fileName: payload.filename,
+        originalName: payload.originalname,
+      })
       return image
     } catch (error) {
       if (isValidationError(error.name)) {
@@ -37,17 +59,59 @@ class ImageService implements IImageService {
     }
   }
 
-  public deleteOneById: IImageService['deleteOneById'] = async (id) => {
+  public updateById: IImageService['updateById'] = async (id, payload) => {
+    const serverErrorMsg = 'Error while updating image'
+
     try {
-      const image = await this.imageRepository.deleteOneById(id)
+      await this.deleteOneById(id)
+    } catch (error) {
+      logger.error(error.stack, {
+        message: 'Update image error',
+        args: { id },
+      })
+
+      throw isServerError(error) ? ServerError(serverErrorMsg) : error
+    }
+
+    try {
+      const image = await this.createOne(payload)
+      return image
+    } catch (error) {
+      logger.error(error.stack, {
+        message: 'Update image error',
+        args: { id, payload },
+      })
+
+      throw isServerError(error) ? ServerError(serverErrorMsg) : error
+    }
+  }
+
+  public deleteOneById: IImageService['deleteOneById'] = async (id) => {
+    const serverErrorMsg = 'Error while deleting image'
+    let imageToDelete: IImageDocument
+
+    try {
+      imageToDelete = await this.getOneById(id)
+    } catch (error) {
+      logger.error(error.stack, {
+        message: 'Delete image error',
+        args: { id },
+      })
+
+      throw ServerError(serverErrorMsg)
+    }
+
+    try {
+      const { id, fileName } = imageToDelete
+      const image = await this.imageRepository.deleteOne(id, fileName)
       return image
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Image with id "${id}" was not found`)
+        throw NotFoundError('Image was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError(`Error while deleting image by id "${id}"`)
+      throw ServerError(serverErrorMsg)
     }
   }
 

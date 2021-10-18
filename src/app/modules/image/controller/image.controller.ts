@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
+import { IArtistController } from 'modules/artist/controller'
 import { IImageController } from 'modules/image/controller'
 import { IImageService, ImageService } from 'modules/image/service'
 import {
@@ -25,6 +26,24 @@ class ImageController implements IImageController {
       const result = pick(image, 'id', 'src')
 
       res.status(StatusCodes.CREATED).send({ data: result })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
+  public update: IImageController['update'] = async (req, res) => {
+    const file = req.file
+
+    try {
+      if (!file) throw BadRequestError('File was not provided')
+
+      const { id } = req.params
+
+      const image = await this.imageService.updateById(id, file)
+      const result = pick(image, 'id', 'src')
+
+      res.status(StatusCodes.OK).send({ data: result })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
