@@ -22,6 +22,7 @@ import { ITrackDocument } from 'modules/track/model'
 import { ITrackService, TrackService } from 'modules/track/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
+import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   BadRequestError,
   NotFoundError,
@@ -92,6 +93,38 @@ class RequestService implements IRequestService {
     } catch (error) {
       logger.error(error.stack)
       throw ServerError('Error while creating new request')
+    }
+  }
+
+  public updateOneById: IRequestService['updateOneById'] = async (
+    id,
+    payload,
+  ) => {
+    try {
+      const updatedRequest = await this.requestRepository.updateOne(
+        { id },
+        payload,
+      )
+
+      return updatedRequest
+    } catch (error) {
+      if (isValidationError(error.name)) {
+        throw BadRequestError(error.message, {
+          kind: error.name,
+          errors: error.errors,
+        })
+      }
+
+      if (isNotFoundDBError(error)) {
+        throw NotFoundError('Request was not found')
+      }
+
+      logger.error(error.stack, {
+        message: 'Update request error',
+        args: { id, payload },
+      })
+
+      throw ServerError('Error while updating request')
     }
   }
 

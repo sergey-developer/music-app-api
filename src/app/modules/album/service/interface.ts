@@ -28,7 +28,7 @@ export interface IAlbumService {
 
   createOne: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
-  updateById: (
+  updateOneById: (
     id: IAlbumDocument['id'],
     payload: IUpdateAlbumPayload,
   ) => Promise<void>

@@ -2,7 +2,11 @@ import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
 import { ModelNamesEnum } from 'database/constants'
-import { RequestStatusEnum } from 'modules/request/constants'
+import {
+  MAX_LENGTH_REASON,
+  MIN_LENGTH_REASON,
+  RequestStatusEnum,
+} from 'modules/request/constants'
 import { IRequestDocument, IRequestModel } from 'modules/request/model'
 
 const toJson = require('@meanie/mongoose-to-json')
@@ -26,6 +30,8 @@ const RequestSchema = new Schema<
     reason: {
       type: String,
       trim: true,
+      minlength: MIN_LENGTH_REASON,
+      maxlength: MAX_LENGTH_REASON,
       default: null,
       // TODO: make capitalize
     },

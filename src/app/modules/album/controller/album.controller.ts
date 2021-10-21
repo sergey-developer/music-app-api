@@ -77,7 +77,7 @@ class AlbumController implements IAlbumController {
       const { id } = req.params
       const payload = pick(req.body, 'image', 'artist', 'name', 'releaseDate')
 
-      await this.albumService.updateById(id, payload)
+      await this.albumService.updateOneById(id, payload)
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully updated' })
     } catch (exception) {

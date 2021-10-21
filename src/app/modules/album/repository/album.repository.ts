@@ -38,8 +38,8 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public updateOne: IAlbumRepository['updateOne'] = async (filter, payload) => {
-    const { id }: typeof filter = omitUndefined(filter)
-    const updates: typeof payload = omitUndefined(payload)
+    const { id } = omitUndefined(filter)
+    const updates = omitUndefined(payload)
 
     const filterById: FilterQuery<IAlbumDocument> = id ? { _id: id } : {}
     const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }

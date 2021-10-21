@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
-import { IAlbumController } from 'modules/album/controller'
 import { IArtistController } from 'modules/artist/controller'
 import { IArtistDocumentArray } from 'modules/artist/interface'
 import { ArtistService, IArtistService } from 'modules/artist/service'
@@ -77,7 +76,7 @@ class ArtistController implements IArtistController {
       const { id } = req.params
       const payload = pick(req.body, 'name', 'photo', 'info')
 
-      await this.artistService.updateById(id, payload)
+      await this.artistService.updateOneById(id, payload)
 
       res
         .status(StatusCodes.OK)

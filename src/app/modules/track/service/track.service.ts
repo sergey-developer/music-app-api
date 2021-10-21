@@ -118,7 +118,10 @@ class TrackService implements ITrackService {
     }
   }
 
-  public updateById: ITrackService['updateById'] = async (id, payload) => {
+  public updateOneById: ITrackService['updateOneById'] = async (
+    id,
+    payload,
+  ) => {
     try {
       await this.trackRepository.updateOne({ id }, payload)
     } catch (error) {

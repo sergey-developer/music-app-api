@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
-import { IArtistController } from 'modules/artist/controller'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ITrackController } from 'modules/track/controller'
 import { ITrackDocumentArray } from 'modules/track/interface'
@@ -81,7 +80,7 @@ class TrackController implements ITrackController {
       const { id } = req.params
       const payload = pick(req.body, 'name', 'duration', 'youtube', 'album')
 
-      await this.trackService.updateById(id, payload)
+      await this.trackService.updateOneById(id, payload)
 
       res.status(StatusCodes.OK).send({ message: 'Track successfully updated' })
     } catch (exception) {

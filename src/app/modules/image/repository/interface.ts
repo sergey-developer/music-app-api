@@ -1,5 +1,3 @@
-import { QueryOptions } from 'mongoose'
-
 import { DocumentIdArray } from 'database/interface/document'
 import { IImageDocument } from 'modules/image/model'
 
@@ -33,7 +31,6 @@ export interface IImageRepository {
   updateOne: (
     filter: IUpdateImageFilter,
     payload: IUpdateImagePayload,
-    options?: QueryOptions,
   ) => Promise<IImageDocument>
 
   deleteOne: (filter: IDeleteOneImageFilter) => Promise<IImageDocument>

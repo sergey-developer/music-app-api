@@ -1,4 +1,5 @@
 import { StatusCodes } from 'http-status-codes'
+import pick from 'lodash/pick'
 
 import { IRequestController } from 'modules/request/controller'
 import { IRequestService, RequestService } from 'modules/request/service'
@@ -17,6 +18,22 @@ class RequestController implements IRequestController {
     try {
       const requests = await this.requestService.getAll(filter)
       res.status(StatusCodes.OK).send({ data: requests })
+    } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
+  public updateOne: IRequestController['updateOne'] = async (req, res) => {
+    try {
+      const { id } = req.params
+      const payload = pick(req.body, 'status', 'reason')
+
+      await this.requestService.updateOneById(id, payload)
+
+      res
+        .status(StatusCodes.OK)
+        .send({ message: 'Request successfully updated' })
     } catch (exception) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)

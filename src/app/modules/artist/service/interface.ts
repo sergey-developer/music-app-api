@@ -23,10 +23,10 @@ export interface IArtistService {
 
   createOne: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
 
-  updateById: (
+  updateOneById: (
     id: IArtistDocument['id'],
     payload: IUpdateArtistPayload,
-  ) => Promise<void>
+  ) => Promise<IArtistDocument>
 
   deleteOneById: IArtistRepository['deleteOneById']
 }

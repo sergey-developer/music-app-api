@@ -126,7 +126,10 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public updateById: IAlbumService['updateById'] = async (id, payload) => {
+  public updateOneById: IAlbumService['updateOneById'] = async (
+    id,
+    payload,
+  ) => {
     try {
       await this.albumRepository.updateOne({ id }, payload)
     } catch (error) {

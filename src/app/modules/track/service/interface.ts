@@ -32,7 +32,7 @@ export interface ITrackService {
 
   createOne: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
-  updateById: (
+  updateOneById: (
     id: ITrackDocument['id'],
     payload: IUpdateTrackPayload,
   ) => Promise<void>

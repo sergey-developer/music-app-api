@@ -123,9 +123,17 @@ class ArtistService implements IArtistService {
     }
   }
 
-  public updateById: IArtistService['updateById'] = async (id, payload) => {
+  public updateOneById: IArtistService['updateOneById'] = async (
+    id,
+    payload,
+  ) => {
     try {
-      await this.artistRepository.updateOne({ id }, payload)
+      const updatedArtist = await this.artistRepository.updateOne(
+        { id },
+        payload,
+      )
+
+      return updatedArtist
     } catch (error) {
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {

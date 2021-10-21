@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
-import { FilterQuery } from 'mongoose'
+import { FilterQuery, QueryOptions } from 'mongoose'
 
 import {
   IRequestDocument,
@@ -51,6 +51,25 @@ class RequestRepository implements IRequestRepository {
   public createOne: IRequestRepository['createOne'] = async (payload) => {
     const request = new this.request(payload)
     return request.save()
+  }
+
+  public updateOne: IRequestRepository['updateOne'] = async (
+    filter,
+    payload,
+  ) => {
+    const { id } = omitUndefined(filter)
+    const updates = omitUndefined(payload)
+
+    const defaultOptions: QueryOptions = { runValidators: true, new: true }
+    const optionsToApply: QueryOptions = defaultOptions
+
+    const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<IRequestDocument> = { ...filterById }
+
+    return this.request
+      .findOneAndUpdate(filterToApply, updates, optionsToApply)
+      .orFail()
+      .exec()
   }
 
   public deleteOne: IRequestRepository['deleteOne'] = async (filter) => {

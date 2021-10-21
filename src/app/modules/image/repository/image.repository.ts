@@ -1,8 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
-import merge from 'lodash/merge'
 import { FilterQuery, QueryOptions } from 'mongoose'
 
-import { IArtistDocument } from 'modules/artist/model'
 import { IImageDocument, IImageModel, ImageModel } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
 import { omitUndefined } from 'shared/utils/common'
@@ -23,18 +21,15 @@ class ImageRepository implements IImageRepository {
     return image.save()
   }
 
-  public updateOne: IImageRepository['updateOne'] = async (
-    filter,
-    payload,
-    options,
-  ) => {
-    const { id }: typeof filter = omitUndefined(filter)
-    const updates: typeof payload = omitUndefined(payload)
-    const defaultOptions: QueryOptions = { runValidators: true, new: true }
-    const optionsToApply: QueryOptions = merge(defaultOptions, options)
+  public updateOne: IImageRepository['updateOne'] = async (filter, payload) => {
+    const { id } = omitUndefined(filter)
+    const updates = omitUndefined(payload)
 
-    const filterById: FilterQuery<IArtistDocument> = id ? { _id: id } : {}
-    const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
+    const defaultOptions: QueryOptions = { runValidators: true, new: true }
+    const optionsToApply: QueryOptions = defaultOptions
+
+    const filterById: FilterQuery<IImageDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<IImageDocument> = { ...filterById }
 
     return this.image
       .findOneAndUpdate(filterToApply, updates, optionsToApply)

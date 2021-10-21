@@ -41,8 +41,8 @@ class ArtistRepository implements IArtistRepository {
     filter,
     payload,
   ) => {
-    const { id }: typeof filter = omitUndefined(filter)
-    const updates: typeof payload = omitUndefined(payload)
+    const { id } = omitUndefined(filter)
+    const updates = omitUndefined(payload)
 
     const filterById: FilterQuery<IArtistDocument> = id ? { _id: id } : {}
     const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
