@@ -32,19 +32,22 @@ class ArtistRepository implements IArtistRepository {
     return this.artist.findById(id).orFail().exec()
   }
 
-  public create: IArtistRepository['create'] = async (payload) => {
+  public createOne: IArtistRepository['createOne'] = async (payload) => {
     const artist = new this.artist(payload)
     return artist.save()
   }
 
-  public update: IArtistRepository['update'] = async (filter, payload) => {
+  public updateOne: IArtistRepository['updateOne'] = async (
+    filter,
+    payload,
+  ) => {
     const { id }: typeof filter = omitUndefined(filter)
     const updates: typeof payload = omitUndefined(payload)
 
     const filterById: FilterQuery<IArtistDocument> = id ? { _id: id } : {}
     const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
 
-    await this.artist.updateOne(filterToApply, updates).orFail().exec()
+    return this.artist.findOneAndUpdate(filterToApply, updates).orFail().exec()
   }
 
   public deleteOneById: IArtistRepository['deleteOneById'] = async (id) => {

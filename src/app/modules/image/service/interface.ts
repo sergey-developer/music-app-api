@@ -4,21 +4,24 @@ import { IImageRepository } from 'modules/image/repository'
 
 export interface ICreateImagePayload extends CreateImageDto {}
 
-export interface IUpdateImagePayload extends UpdateImageDto {}
+export interface IUpdateImagePayload extends Omit<UpdateImageDto, 'fileName'> {}
+
+export interface IUpdateImageFilter {
+  id: IImageDocument['id']
+  fileName: IImageDocument['fileName']
+}
 
 export interface IImageService {
   getOneById: (id: IImageDocument['id']) => Promise<IImageDocument>
 
   createOne: (payload: ICreateImagePayload) => Promise<IImageDocument>
 
-  updateByName: (
-    fileName: IImageDocument['fileName'],
+  updateOne: (
+    filter: IUpdateImageFilter,
     payload: IUpdateImagePayload,
   ) => Promise<IImageDocument>
 
-  deleteByName: (
-    fileName: IImageDocument['fileName'],
-  ) => Promise<IImageDocument>
+  deleteOneById: (id: IImageDocument['id']) => Promise<IImageDocument>
 
   deleteMany: IImageRepository['deleteMany']
 }

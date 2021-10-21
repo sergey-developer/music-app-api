@@ -52,12 +52,12 @@ class TrackController implements ITrackController {
     }
   }
 
-  public create: ITrackController['create'] = async (req, res) => {
+  public createOne: ITrackController['createOne'] = async (req, res) => {
     try {
       const user = req.user!
       const { name, duration, youtube, album } = req.body
 
-      const track = await this.trackService.create({
+      const track = await this.trackService.createOne({
         name,
         duration,
         youtube,
@@ -76,7 +76,7 @@ class TrackController implements ITrackController {
     }
   }
 
-  public update: ITrackController['update'] = async (req, res) => {
+  public updateOne: ITrackController['updateOne'] = async (req, res) => {
     try {
       const { id } = req.params
       const payload = pick(req.body, 'name', 'duration', 'youtube', 'album')

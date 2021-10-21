@@ -8,7 +8,7 @@ export interface ICreateSessionPayload
 export interface ISessionService {
   getOneByToken: ISessionRepository['findOneByToken']
 
-  create: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
+  createOne: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
 
   deleteOneByToken: ISessionRepository['deleteOneByToken']
 }

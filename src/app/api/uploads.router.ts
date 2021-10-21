@@ -1,8 +1,8 @@
 import { CreateRouter } from 'api/interface'
 import { auth } from 'modules/auth/middlewares'
 import { ImageController } from 'modules/image/controller'
-import { DeleteImageParams, UpdateImageParams } from 'modules/image/dto'
 import { uploadImage } from 'modules/image/middlewares'
+import { IdParam } from 'shared/dto'
 import { params } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {
@@ -13,14 +13,14 @@ const createRouter: CreateRouter = (router) => {
   )
 
   router.put(
-    '/images/:filename',
-    [auth, params(UpdateImageParams), uploadImage.single('image')],
-    ImageController.update,
+    '/images/:id',
+    [auth, params(IdParam), uploadImage.single('image')],
+    ImageController.updateOne,
   )
 
   router.delete(
-    '/images/:filename',
-    [auth, params(DeleteImageParams)],
+    '/images/:id',
+    [auth, params(IdParam)],
     ImageController.deleteOne,
   )
 

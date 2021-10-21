@@ -49,12 +49,12 @@ class ArtistController implements IArtistController {
     }
   }
 
-  public create: IArtistController['create'] = async (req, res) => {
+  public createOne: IArtistController['createOne'] = async (req, res) => {
     try {
       const user = req.user!
       const { name, info, photo } = req.body
 
-      const artist = await this.artistService.create({
+      const artist = await this.artistService.createOne({
         name,
         info,
         photo,
@@ -72,7 +72,7 @@ class ArtistController implements IArtistController {
     }
   }
 
-  public update: IArtistController['update'] = async (req, res) => {
+  public updateOne: IArtistController['updateOne'] = async (req, res) => {
     try {
       const { id } = req.params
       const payload = pick(req.body, 'name', 'photo', 'info')

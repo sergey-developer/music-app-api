@@ -14,12 +14,12 @@ const createRouter: CreateRouter = (router) => {
 
   router.get('/:id', [auth, params(IdParam)], TrackController.getOne)
 
-  router.post('/', [auth, body(CreateTrackDto)], TrackController.create)
+  router.post('/', [auth, body(CreateTrackDto)], TrackController.createOne)
 
   router.put(
     '/:id',
     [auth, params(IdParam), body(UpdateTrackDto)],
-    TrackController.update,
+    TrackController.updateOne,
   )
 
   router.delete('/:id', [auth, params(IdParam)], TrackController.deleteOne)

@@ -22,7 +22,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     return this.trackHistory.find(filter).exec()
   }
 
-  public create: ITrackHistoryRepository['create'] = async (payload) => {
+  public createOne: ITrackHistoryRepository['createOne'] = async (payload) => {
     const trackHistory = new this.trackHistory(payload)
     return trackHistory.save()
   }

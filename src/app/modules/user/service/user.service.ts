@@ -30,9 +30,9 @@ class UserService implements IUserService {
     }
   }
 
-  public create: IUserService['create'] = async (payload) => {
+  public createOne: IUserService['createOne'] = async (payload) => {
     try {
-      const user = await this.userRepository.create(payload)
+      const user = await this.userRepository.createOne(payload)
       return user
     } catch (error) {
       if (isValidationError(error.name)) {

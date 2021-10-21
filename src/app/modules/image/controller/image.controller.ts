@@ -1,7 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 
-import { IArtistController } from 'modules/artist/controller'
 import { IImageController } from 'modules/image/controller'
 import { IImageService, ImageService } from 'modules/image/service'
 import {
@@ -17,9 +16,9 @@ class ImageController implements IImageController {
   }
 
   public createOne: IImageController['createOne'] = async (req, res) => {
-    const file = req.file
-
     try {
+      const file = req.file
+
       if (!file) throw BadRequestError('File was not provided')
 
       const image = await this.imageService.createOne(file)
@@ -32,16 +31,17 @@ class ImageController implements IImageController {
     }
   }
 
-  public update: IImageController['update'] = async (req, res) => {
-    const file = req.file
-
+  public updateOne: IImageController['updateOne'] = async (req, res) => {
     try {
+      const file = req.file
+
       if (!file) throw BadRequestError('File was not provided')
 
-      const { filename } = req.params
+      const { id } = req.params
+      const { fileName } = req.body
 
-      const image = await this.imageService.updateByName(filename, file)
-      const result = pick(image, 'id', 'src', 'fileName')
+      const image = await this.imageService.updateOne({ id, fileName }, file)
+      const result = pick(image, 'src', 'fileName')
 
       res.status(StatusCodes.OK).send({ data: result })
     } catch (exception) {
@@ -51,10 +51,10 @@ class ImageController implements IImageController {
   }
 
   public deleteOne: IImageController['deleteOne'] = async (req, res) => {
-    const { filename } = req.params
+    const { id } = req.params
 
     try {
-      await this.imageService.deleteByName(filename)
+      await this.imageService.deleteOneById(id)
       res.sendStatus(StatusCodes.NO_CONTENT)
     } catch (exception) {
       const error = ensureHttpError(exception)

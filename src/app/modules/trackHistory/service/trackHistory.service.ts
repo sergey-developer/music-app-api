@@ -32,9 +32,9 @@ class TrackHistoryService implements ITrackHistoryService {
     }
   }
 
-  public create: ITrackHistoryService['create'] = async (payload) => {
+  public createOne: ITrackHistoryService['createOne'] = async (payload) => {
     try {
-      const trackHistory = await this.trackHistoryRepository.create({
+      const trackHistory = await this.trackHistoryRepository.createOne({
         ...payload,
         listenDate: new Date().toISOString(),
       })

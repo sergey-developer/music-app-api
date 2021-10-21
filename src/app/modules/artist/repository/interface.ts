@@ -22,12 +22,12 @@ export interface IArtistRepository {
 
   findOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 
-  create: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
+  createOne: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
 
-  update: (
+  updateOne: (
     filter: IUpdateArtistFilter,
     payload: IUpdateArtistPayload,
-  ) => Promise<void>
+  ) => Promise<IArtistDocument>
 
   deleteOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 }

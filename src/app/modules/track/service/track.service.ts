@@ -69,13 +69,13 @@ class TrackService implements ITrackService {
     }
   }
 
-  public create: ITrackService['create'] = async (payload) => {
+  public createOne: ITrackService['createOne'] = async (payload) => {
     let track: ITrackDocument
 
     const serverErrorMsg = 'Error while creating new track'
 
     try {
-      track = await this.trackRepository.create({
+      track = await this.trackRepository.createOne({
         name: payload.name,
         duration: payload.duration,
         youtube: payload.youtube,
@@ -94,7 +94,7 @@ class TrackService implements ITrackService {
     }
 
     try {
-      await this.requestService.create({
+      await this.requestService.createOne({
         entityName: ModelNamesEnum.Track,
         entity: track.id,
         creator: payload.userId,
@@ -120,7 +120,7 @@ class TrackService implements ITrackService {
 
   public updateById: ITrackService['updateById'] = async (id, payload) => {
     try {
-      await this.trackRepository.update({ id }, payload)
+      await this.trackRepository.updateOne({ id }, payload)
     } catch (error) {
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {

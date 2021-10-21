@@ -45,7 +45,7 @@ class AuthService implements IAuthService {
     }
 
     try {
-      const session = await this.sessionService.create({
+      const session = await this.sessionService.createOne({
         id: user.id,
         email: user.email,
         role: user.role,
@@ -68,7 +68,7 @@ class AuthService implements IAuthService {
     const serverErrorMsg = 'Something went wrong. Sign up error.'
 
     try {
-      user = await this.userService.create(payload)
+      user = await this.userService.createOne(payload)
     } catch (error) {
       if (isBadRequestError(error)) {
         throw error
@@ -79,7 +79,7 @@ class AuthService implements IAuthService {
     }
 
     try {
-      const session = await this.sessionService.create({
+      const session = await this.sessionService.createOne({
         id: user.id,
         email: user.email,
         role: user.role,

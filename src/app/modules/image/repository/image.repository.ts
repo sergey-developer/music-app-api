@@ -1,6 +1,8 @@
 import isEmpty from 'lodash/isEmpty'
-import { FilterQuery } from 'mongoose'
+import merge from 'lodash/merge'
+import { FilterQuery, QueryOptions } from 'mongoose'
 
+import { IArtistDocument } from 'modules/artist/model'
 import { IImageDocument, IImageModel, ImageModel } from 'modules/image/model'
 import { IImageRepository } from 'modules/image/repository'
 import { omitUndefined } from 'shared/utils/common'
@@ -21,11 +23,37 @@ class ImageRepository implements IImageRepository {
     return image.save()
   }
 
-  public deleteOne: IImageRepository['deleteOne'] = async (rawFilter) => {
-    const { fileName } = rawFilter
+  public updateOne: IImageRepository['updateOne'] = async (
+    filter,
+    payload,
+    options,
+  ) => {
+    const { id }: typeof filter = omitUndefined(filter)
+    const updates: typeof payload = omitUndefined(payload)
+    const defaultOptions: QueryOptions = { runValidators: true, new: true }
+    const optionsToApply: QueryOptions = merge(defaultOptions, options)
 
-    const filterByName: FilterQuery<IImageDocument> = { fileName }
-    const filterToApply: FilterQuery<IImageDocument> = { ...filterByName }
+    const filterById: FilterQuery<IArtistDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
+
+    return this.image
+      .findOneAndUpdate(filterToApply, updates, optionsToApply)
+      .orFail()
+      .exec()
+  }
+
+  public deleteOne: IImageRepository['deleteOne'] = async (filter) => {
+    const { id, fileName }: typeof filter = omitUndefined(filter)
+
+    const filterById: FilterQuery<IImageDocument> = id ? { _id: id } : {}
+    const filterByName: FilterQuery<IImageDocument> = fileName
+      ? { fileName }
+      : {}
+
+    const filterToApply: FilterQuery<IImageDocument> = {
+      ...filterById,
+      ...filterByName,
+    }
 
     const image = await this.image
       .findOneAndDelete(filterToApply)

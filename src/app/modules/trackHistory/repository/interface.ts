@@ -22,7 +22,7 @@ export interface ITrackHistoryRepository {
     filter: IFindAllTrackHistoryFilter,
   ) => Promise<ITrackHistoryDocumentArray>
 
-  create: (
+  createOne: (
     payload: ICreateTrackHistoryPayload,
   ) => Promise<ITrackHistoryDocument>
 

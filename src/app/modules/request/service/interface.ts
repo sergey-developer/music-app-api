@@ -12,7 +12,7 @@ export interface ICreateRequestPayload
 export interface IRequestService {
   getAll: (filter: IGetAllRequestsFilter) => Promise<IRequestDocumentArray>
 
-  create: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
+  createOne: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
 
   deleteOne: IRequestRepository['deleteOne']
 

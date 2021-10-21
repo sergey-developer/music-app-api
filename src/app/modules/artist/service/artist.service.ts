@@ -76,12 +76,12 @@ class ArtistService implements IArtistService {
     }
   }
 
-  public create: IArtistService['create'] = async (payload) => {
+  public createOne: IArtistService['createOne'] = async (payload) => {
     let artist: IArtistDocument
     const serverError = ServerError('Error while creating new artist')
 
     try {
-      artist = await this.artistRepository.create({
+      artist = await this.artistRepository.createOne({
         name: payload.name,
         info: payload.info,
         photo: payload.photo,
@@ -99,7 +99,7 @@ class ArtistService implements IArtistService {
     }
 
     try {
-      await this.requestService.create({
+      await this.requestService.createOne({
         entityName: ModelNamesEnum.Artist,
         entity: artist.id,
         creator: payload.userId,
@@ -125,7 +125,7 @@ class ArtistService implements IArtistService {
 
   public updateById: IArtistService['updateById'] = async (id, payload) => {
     try {
-      await this.artistRepository.update({ id }, payload)
+      await this.artistRepository.updateOne({ id }, payload)
     } catch (error) {
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
@@ -166,7 +166,7 @@ class ArtistService implements IArtistService {
 
       if (artistHasPhoto) {
         const photo = artist.photo as IImageDocument
-        await this.imageService.deleteByName(photo.fileName)
+        await this.imageService.deleteOneById(photo.id)
       }
 
       const albumsByArtistId = await this.getArtistAlbums(artist.id)

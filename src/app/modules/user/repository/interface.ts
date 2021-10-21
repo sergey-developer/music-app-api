@@ -11,7 +11,7 @@ export interface IFindOneUserFilter
 export interface IUserRepository {
   findOne: (filter: IFindOneUserFilter) => Promise<IUserDocument>
 
-  create: (payload: ICreateUserPayload) => Promise<IUserDocument>
+  createOne: (payload: ICreateUserPayload) => Promise<IUserDocument>
 
   deleteOneById: (id: IUserDocument['id']) => Promise<IUserDocument>
 }

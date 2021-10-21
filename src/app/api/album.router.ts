@@ -14,12 +14,12 @@ const createRouter: CreateRouter = (router) => {
 
   router.get('/:id', [auth, params(IdParam)], AlbumController.getOne)
 
-  router.post('/', [auth, body(CreateAlbumDto)], AlbumController.create)
+  router.post('/', [auth, body(CreateAlbumDto)], AlbumController.createOne)
 
   router.put(
     '/:id',
     [auth, params(IdParam), body(UpdateAlbumDto)],
-    AlbumController.update,
+    AlbumController.updateOne,
   )
 
   router.delete('/:id', [auth, params(IdParam)], AlbumController.deleteOne)

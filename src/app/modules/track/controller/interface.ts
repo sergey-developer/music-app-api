@@ -16,12 +16,12 @@ export interface ITrackController {
 
   getOne: (req: Request<Pick<IdParam, 'id'>>, res: Response) => ControllerResult
 
-  create: (
+  createOne: (
     req: Request<any, any, CreateTrackDto>,
     res: Response,
   ) => ControllerResult
 
-  update: (
+  updateOne: (
     req: Request<Pick<IdParam, 'id'>, any, UpdateTrackDto>,
     res: Response,
   ) => ControllerResult

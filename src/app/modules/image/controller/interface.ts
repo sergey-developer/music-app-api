@@ -1,18 +1,19 @@
 import { Request, Response } from 'express'
 
-import { DeleteImageParams, UpdateImageParams } from 'modules/image/dto'
+import { UpdateImageDto } from 'modules/image/dto'
+import { IdParam } from 'shared/dto'
 import { ControllerResult } from 'shared/interface/response'
 
 export interface IImageController {
   createOne: (req: Request, res: Response) => ControllerResult
 
-  update: (
-    req: Request<Pick<UpdateImageParams, 'filename'>>,
+  updateOne: (
+    req: Request<Pick<IdParam, 'id'>, any, Pick<UpdateImageDto, 'fileName'>>,
     res: Response,
   ) => ControllerResult
 
   deleteOne: (
-    req: Request<Pick<DeleteImageParams, 'filename'>>,
+    req: Request<Pick<IdParam, 'id'>>,
     res: Response,
   ) => ControllerResult
 }

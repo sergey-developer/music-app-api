@@ -14,7 +14,7 @@ class SessionRepository implements ISessionRepository {
     return this.session.findOne({ token }).orFail().exec()
   }
 
-  public create: ISessionRepository['create'] = async (payload) => {
+  public createOne: ISessionRepository['createOne'] = async (payload) => {
     const token = this.session.generateToken(payload)
     const session = new this.session({
       token,

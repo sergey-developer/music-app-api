@@ -40,19 +40,19 @@ class TrackRepository implements ITrackRepository {
     return this.track.findById(id).orFail().exec()
   }
 
-  public create: ITrackRepository['create'] = async (payload) => {
+  public createOne: ITrackRepository['createOne'] = async (payload) => {
     const track = new this.track(payload)
     return track.save()
   }
 
-  public update: ITrackRepository['update'] = async (filter, payload) => {
+  public updateOne: ITrackRepository['updateOne'] = async (filter, payload) => {
     const { id }: typeof filter = omitUndefined(filter)
     const updates: typeof payload = omitUndefined(payload)
 
     const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
     const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-    await this.track.updateOne(filterToApply, updates).orFail().exec()
+    return this.track.findOneAndUpdate(filterToApply, updates).orFail().exec()
   }
 
   public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {

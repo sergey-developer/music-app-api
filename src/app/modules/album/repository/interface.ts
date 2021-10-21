@@ -28,12 +28,12 @@ export interface IAlbumRepository {
 
   findOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
-  create: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
+  createOne: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
-  update: (
+  updateOne: (
     filter: IUpdateAlbumFilter,
     payload: IUpdateAlbumPayload,
-  ) => Promise<void>
+  ) => Promise<IAlbumDocument>
 
   deleteOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 

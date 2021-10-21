@@ -15,7 +15,6 @@ const ImageSchema = new Schema<IImageDocument, IImageModel, IImageDocument>({
     required: true,
   },
   src: {
-    // TODO: validate as url
     type: String,
     required: true,
     unique: true,

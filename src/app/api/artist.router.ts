@@ -14,12 +14,12 @@ const createRouter: CreateRouter = (router) => {
 
   router.get('/:id', [auth, params(IdParam)], ArtistController.getOne)
 
-  router.post('/', [auth, body(CreateArtistDto)], ArtistController.create)
+  router.post('/', [auth, body(CreateArtistDto)], ArtistController.createOne)
 
   router.put(
     '/:id',
     [auth, params(IdParam), body(UpdateArtistDto)],
-    ArtistController.update,
+    ArtistController.updateOne,
   )
 
   router.delete('/:id', [auth, params(IdParam)], ArtistController.deleteOne)

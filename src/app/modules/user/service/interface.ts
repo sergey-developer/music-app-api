@@ -6,7 +6,7 @@ export interface ICreateUserPayload extends CreateUserDto {}
 export interface IUserService {
   getOneByEmail: (email: IUserDocument['email']) => Promise<IUserDocument>
 
-  create: (payload: ICreateUserPayload) => Promise<IUserDocument>
+  createOne: (payload: ICreateUserPayload) => Promise<IUserDocument>
 
   deleteOneById: (id: IUserDocument['id']) => Promise<IUserDocument>
 }

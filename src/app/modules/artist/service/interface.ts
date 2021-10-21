@@ -21,7 +21,7 @@ export interface IArtistService {
 
   getOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 
-  create: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
+  createOne: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
 
   updateById: (
     id: IArtistDocument['id'],

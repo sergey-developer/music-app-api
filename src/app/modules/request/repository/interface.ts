@@ -28,7 +28,7 @@ export interface IRequestRepository {
 
   findOneById: (id: IRequestDocument['id']) => Promise<IRequestDocument>
 
-  create: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
+  createOne: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
 
   deleteOne: (filter: IDeleteOneRequestFilter) => Promise<IRequestDocument>
 

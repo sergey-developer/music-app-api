@@ -36,9 +36,9 @@ class SessionService implements ISessionService {
     }
   }
 
-  public create: ISessionService['create'] = async (payload) => {
+  public createOne: ISessionService['createOne'] = async (payload) => {
     try {
-      const session = await this.sessionRepository.create({
+      const session = await this.sessionRepository.createOne({
         userId: payload.id,
         email: payload.email,
         role: payload.role,

@@ -33,12 +33,12 @@ export interface ITrackRepository {
 
   findOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
-  create: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
+  createOne: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
-  update: (
+  updateOne: (
     filter: IUpdateTrackFilter,
     payload: IUpdateTrackPayload,
-  ) => Promise<void>
+  ) => Promise<ITrackDocument>
 
   deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 

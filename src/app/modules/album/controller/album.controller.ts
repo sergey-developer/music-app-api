@@ -48,12 +48,12 @@ class AlbumController implements IAlbumController {
     }
   }
 
-  public create: IAlbumController['create'] = async (req, res) => {
+  public createOne: IAlbumController['createOne'] = async (req, res) => {
     try {
       const user = req.user!
       const { name, image, releaseDate, artist } = req.body
 
-      const album = await this.albumService.create({
+      const album = await this.albumService.createOne({
         name,
         image,
         releaseDate,
@@ -72,7 +72,7 @@ class AlbumController implements IAlbumController {
     }
   }
 
-  public update: IAlbumController['update'] = async (req, res) => {
+  public updateOne: IAlbumController['updateOne'] = async (req, res) => {
     try {
       const { id } = req.params
       const payload = pick(req.body, 'image', 'artist', 'name', 'releaseDate')

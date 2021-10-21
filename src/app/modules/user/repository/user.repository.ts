@@ -20,7 +20,7 @@ class UserRepository implements IUserRepository {
     return this.user.findOne(filterToApply).orFail().exec()
   }
 
-  public create: IUserRepository['create'] = async (payload) => {
+  public createOne: IUserRepository['createOne'] = async (payload) => {
     const user = new this.user(payload)
     return user.save()
   }

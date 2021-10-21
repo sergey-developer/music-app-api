@@ -29,12 +29,12 @@ class TrackHistoryController implements ITrackHistoryController {
     }
   }
 
-  public create: ITrackHistoryController['create'] = async (req, res) => {
+  public createOne: ITrackHistoryController['createOne'] = async (req, res) => {
     try {
       const user = req.user!
       const { track } = req.body
 
-      await this.trackHistoryService.create({
+      await this.trackHistoryService.createOne({
         track,
         userId: user.userId,
       })

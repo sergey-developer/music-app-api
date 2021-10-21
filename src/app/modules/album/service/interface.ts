@@ -26,7 +26,7 @@ export interface IAlbumService {
 
   getOneById: IAlbumRepository['findOneById']
 
-  create: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
+  createOne: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
   updateById: (
     id: IAlbumDocument['id'],

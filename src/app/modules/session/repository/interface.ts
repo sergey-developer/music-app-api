@@ -6,7 +6,7 @@ export interface ICreateSessionPayload extends JwtPayload {}
 export interface ISessionRepository {
   findOneByToken: (token: JwtToken) => Promise<ISessionDocument>
 
-  create: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
+  createOne: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
 
   deleteOneByToken: (token: JwtToken) => Promise<void>
 }

@@ -78,12 +78,12 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public create: IAlbumService['create'] = async (payload) => {
+  public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
     const serverError = ServerError('Error while creating new album')
 
     try {
-      album = await this.albumRepository.create({
+      album = await this.albumRepository.createOne({
         name: payload.name,
         image: payload.image,
         releaseDate: payload.releaseDate,
@@ -102,7 +102,7 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      await this.requestService.create({
+      await this.requestService.createOne({
         entityName: ModelNamesEnum.Album,
         entity: album.id,
         creator: payload.userId,
@@ -128,7 +128,7 @@ class AlbumService implements IAlbumService {
 
   public updateById: IAlbumService['updateById'] = async (id, payload) => {
     try {
-      await this.albumRepository.update({ id }, payload)
+      await this.albumRepository.updateOne({ id }, payload)
     } catch (error) {
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
@@ -169,7 +169,7 @@ class AlbumService implements IAlbumService {
 
       if (albumHasImage) {
         const image = album.image as IImageDocument
-        await this.imageService.deleteByName(image.fileName)
+        await this.imageService.deleteOneById(image.id)
       }
 
       const tracksByAlbumId = await this.getTracksByAlbumsIds([album.id])

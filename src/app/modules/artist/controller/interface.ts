@@ -16,12 +16,12 @@ export interface IArtistController {
 
   getOne: (req: Request<Pick<IdParam, 'id'>>, res: Response) => ControllerResult
 
-  create: (
+  createOne: (
     req: Request<any, any, CreateArtistDto>,
     res: Response,
   ) => ControllerResult
 
-  update: (
+  updateOne: (
     req: Request<Pick<IdParam, 'id'>, any, UpdateArtistDto>,
     res: Response,
   ) => ControllerResult

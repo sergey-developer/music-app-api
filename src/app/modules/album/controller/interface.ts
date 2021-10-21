@@ -16,12 +16,12 @@ export interface IAlbumController {
 
   getOne: (req: Request<Pick<IdParam, 'id'>>, res: Response) => ControllerResult
 
-  create: (
+  createOne: (
     req: Request<{}, any, CreateAlbumDto>,
     res: Response,
   ) => ControllerResult
 
-  update: (
+  updateOne: (
     req: Request<Pick<IdParam, 'id'>, any, UpdateAlbumDto>,
     res: Response,
   ) => ControllerResult
