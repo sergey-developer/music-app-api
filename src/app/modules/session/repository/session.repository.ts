@@ -27,7 +27,7 @@ class SessionRepository implements ISessionRepository {
   public deleteOneByToken: ISessionRepository['deleteOneByToken'] = async (
     token,
   ) => {
-    await this.session.findOneAndDelete({ token }).orFail()
+    return this.session.findOneAndDelete({ token }).orFail().exec()
   }
 }
 

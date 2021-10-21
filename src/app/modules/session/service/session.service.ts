@@ -62,14 +62,15 @@ class SessionService implements ISessionService {
     token,
   ) => {
     try {
-      await this.sessionRepository.deleteOneByToken(token)
+      const session = await this.sessionRepository.deleteOneByToken(token)
+      return session
     } catch (error) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError(`Session with token "${token}" was not found`)
       }
 
       logger.error(error.stack)
-      throw ServerError()
+      throw ServerError('Error while deleting session')
     }
   }
 }

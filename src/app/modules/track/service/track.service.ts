@@ -110,7 +110,7 @@ class TrackService implements ITrackService {
         await this.trackRepository.deleteOneById(track.id)
       } catch (error) {
         logger.warn(error.stack, {
-          message: `Track by id "${track.id}" was not deleted`,
+          message: `Track by id "${track.id}" probably was not deleted`,
         })
       }
 

@@ -118,7 +118,7 @@ class AlbumService implements IAlbumService {
         await this.albumRepository.deleteOneById(album.id)
       } catch (error) {
         logger.warn(error.stack, {
-          message: `Album by id "${album.id}" was not deleted`,
+          message: `Album by id "${album.id}" probably was not deleted`,
         })
       }
 

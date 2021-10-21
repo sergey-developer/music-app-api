@@ -22,8 +22,8 @@ class AuthService implements IAuthService {
   }
 
   public signin: IAuthService['signin'] = async (payload) => {
-    let user: IUserDocument
     const serverErrorMsg = 'Something went wrong. Sign in error.'
+    let user: IUserDocument
 
     try {
       const { email, password } = payload
@@ -98,11 +98,24 @@ class AuthService implements IAuthService {
         await this.userService.deleteOneById(user.id)
       } catch (error) {
         logger.warn(error.stack, {
-          message: `User with id "${user.id}" was not deleted`,
+          message: `User with id "${user.id}" probably was not deleted`,
         })
       }
 
       throw ServerError(serverErrorMsg)
+    }
+  }
+
+  public logout: IAuthService['logout'] = async (token) => {
+    try {
+      await this.sessionService.deleteOneByToken(token)
+    } catch (error) {
+      if (isNotFoundError(error)) {
+        throw error
+      }
+
+      logger.error(error.stack)
+      throw ServerError('Error while logging out')
     }
   }
 }

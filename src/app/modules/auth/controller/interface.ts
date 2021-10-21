@@ -13,4 +13,6 @@ export interface IAuthController {
     req: Request<any, any, SignupUserDto>,
     res: Response,
   ) => ControllerResult
+
+  logout: (req: Request, res: Response) => ControllerResult
 }

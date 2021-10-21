@@ -115,7 +115,7 @@ class ArtistService implements IArtistService {
         await this.artistRepository.deleteOneById(artist.id)
       } catch (error) {
         logger.warn(error.stack, {
-          message: `Artist by id "${artist.id}" was not deleted`,
+          message: `Artist by id "${artist.id}" probably was not deleted`,
         })
       }
 

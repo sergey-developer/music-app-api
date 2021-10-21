@@ -8,5 +8,5 @@ export interface ISessionRepository {
 
   createOne: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
 
-  deleteOneByToken: (token: JwtToken) => Promise<void>
+  deleteOneByToken: (token: JwtToken) => Promise<ISessionDocument>
 }

@@ -3,7 +3,10 @@ import pick from 'lodash/pick'
 
 import { IAuthController } from 'modules/auth/controller'
 import { AuthService, IAuthService } from 'modules/auth/service'
-import { ensureHttpError } from 'shared/utils/errors/httpErrors'
+import {
+  ensureHttpError,
+  isNotFoundError,
+} from 'shared/utils/errors/httpErrors'
 
 class AuthController implements IAuthController {
   private readonly authService: IAuthService
@@ -31,6 +34,29 @@ class AuthController implements IAuthController {
 
       res.status(StatusCodes.OK).send({ data: result })
     } catch (exception) {
+      const error = ensureHttpError(exception)
+      res.status(error.status).send(error)
+    }
+  }
+
+  public logout: IAuthController['logout'] = async (req, res) => {
+    try {
+      const token = req.cookies.token
+
+      if (!token) {
+        res.sendStatus(StatusCodes.OK)
+        return
+      }
+
+      await this.authService.logout(token)
+
+      res.sendStatus(StatusCodes.OK)
+    } catch (exception) {
+      if (isNotFoundError(exception)) {
+        res.sendStatus(StatusCodes.OK)
+        return
+      }
+
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
