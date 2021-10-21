@@ -1,4 +1,3 @@
-import { DocumentId } from 'database/interface/document'
 import { GetAllRequestsQuery } from 'modules/request/dto'
 import { IRequestDocumentArray } from 'modules/request/interface'
 import { IRequestDocument } from 'modules/request/model'
@@ -25,7 +24,9 @@ export interface IRequestService {
 
   deleteOne: IRequestRepository['deleteOne']
 
-  deleteOneWithEntity: (requestId: DocumentId) => Promise<IRequestDocument>
+  deleteOneWithEntity: (
+    requestId: IRequestDocument['id'],
+  ) => Promise<IRequestDocument>
 
   deleteMany: IRequestRepository['deleteMany']
 }

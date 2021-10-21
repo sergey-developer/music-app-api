@@ -4,11 +4,12 @@ import { IImageRepository } from 'modules/image/repository'
 
 export interface ICreateImagePayload extends CreateImageDto {}
 
-export interface IUpdateImagePayload extends Omit<UpdateImageDto, 'fileName'> {}
+export interface IUpdateImagePayload
+  extends Omit<UpdateImageDto, 'currentFileName'> {}
 
 export interface IUpdateImageFilter {
   id: IImageDocument['id']
-  fileName: IImageDocument['fileName']
+  currentFileName: UpdateImageDto['currentFileName']
 }
 
 export interface IImageService {

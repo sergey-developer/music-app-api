@@ -1,7 +1,9 @@
 import { Model } from 'mongoose'
 
+import { DocumentId } from 'database/interface/document'
+
 export interface IImageDocument {
-  id: string
+  id: DocumentId
   src: string
   fileName: string
   originalName: string

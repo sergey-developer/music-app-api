@@ -6,6 +6,7 @@ import {
   MAX_LENGTH_TRACK_NAME,
   MIN_LENGTH_TRACK_NAME,
 } from 'modules/track/constants'
+import { ITrackDocument } from 'modules/track/model'
 
 class UpdateTrackDto {
   @IsOptional()
@@ -15,18 +16,18 @@ class UpdateTrackDto {
   @Length(MIN_LENGTH_TRACK_NAME, MAX_LENGTH_TRACK_NAME, {
     message: messages.lengthRange,
   })
-  name?: string
+  name?: ITrackDocument['name']
 
-  @IsOptional()
   // TODO: валидировать по регулярке
+  @IsOptional()
   @IsString({
     message: messages.string,
   })
-  duration?: string
+  duration?: ITrackDocument['duration']
 
   @IsOptional()
   @IsUrl()
-  youtube?: string
+  youtube?: ITrackDocument['youtube']
 
   @IsOptional()
   @IsMongoId({

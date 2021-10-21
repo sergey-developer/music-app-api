@@ -1,2 +1,3 @@
-export { default as RequestModel } from './request.model'
 export * from './interface'
+
+export { default as RequestModel } from './request.model'

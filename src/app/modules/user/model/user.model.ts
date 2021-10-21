@@ -1,7 +1,13 @@
 import { Schema, model } from 'mongoose'
 
 import { ModelNamesEnum } from 'database/constants'
-import { UserRoleEnum } from 'modules/user/constants'
+import {
+  MAX_LENGTH_PASSWORD,
+  MAX_LENGTH_USERNAME,
+  MIN_LENGTH_PASSWORD,
+  MIN_LENGTH_USERNAME,
+  UserRoleEnum,
+} from 'modules/user/constants'
 import { IUserDocument, IUserModel } from 'modules/user/model'
 import { checkPassword, generatePassword } from 'modules/user/utils'
 
@@ -12,6 +18,8 @@ const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
     type: String,
     required: true,
     unique: true,
+    minlength: MIN_LENGTH_USERNAME,
+    maxlength: MAX_LENGTH_USERNAME,
     // TODO: add validation
   },
   email: {
@@ -23,6 +31,8 @@ const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
     type: String,
     required: true,
     unique: true,
+    minlength: MIN_LENGTH_PASSWORD,
+    maxlength: MAX_LENGTH_PASSWORD,
     /**
      * Field from "@meanie/mongoose-to-json"
      * */

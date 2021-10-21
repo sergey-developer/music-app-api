@@ -12,6 +12,7 @@ import {
   MAX_LENGTH_ALBUM_NAME,
   MIN_LENGTH_ALBUM_NAME,
 } from 'modules/album/constants'
+import { IAlbumDocument } from 'modules/album/model'
 
 class UpdateAlbumDto {
   @IsOptional()
@@ -21,23 +22,23 @@ class UpdateAlbumDto {
   @Length(MIN_LENGTH_ALBUM_NAME, MAX_LENGTH_ALBUM_NAME, {
     message: messages.lengthRange,
   })
-  name?: string
+  name?: IAlbumDocument['name']
 
   @IsOptional()
   @IsDateString()
-  releaseDate?: string
-
-  @IsOptional()
-  @IsMongoId({
-    message: messages.mongoId,
-  })
-  image?: DocumentId
+  releaseDate?: IAlbumDocument['releaseDate']
 
   @IsOptional()
   @IsMongoId({
     message: messages.mongoId,
   })
   artist?: DocumentId
+
+  @IsOptional()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
+  image?: DocumentId
 }
 
 export default UpdateAlbumDto

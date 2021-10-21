@@ -74,7 +74,7 @@ class ImageService implements IImageService {
   }
 
   public updateOne: IImageService['updateOne'] = async (filter, payload) => {
-    const { id, fileName } = filter
+    const { id, currentFileName } = filter
 
     let updatedImage: IImageDocument
 
@@ -105,7 +105,7 @@ class ImageService implements IImageService {
       throw ServerError('Error while updating image')
     }
 
-    await this.deleteFileFromFs(fileName)
+    await this.deleteFileFromFs(currentFileName)
 
     return updatedImage
   }

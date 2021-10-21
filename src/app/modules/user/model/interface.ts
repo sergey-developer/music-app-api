@@ -1,5 +1,6 @@
 import { Model } from 'mongoose'
 
+import { DocumentId } from 'database/interface/document'
 import { UserRoleEnum } from 'modules/user/constants'
 
 export interface IUserDocumentMethods {
@@ -7,7 +8,7 @@ export interface IUserDocumentMethods {
 }
 
 export interface IUserDocument extends IUserDocumentMethods {
-  id: string
+  id: DocumentId
   username: string
   email: string
   password: string

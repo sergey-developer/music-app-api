@@ -7,6 +7,7 @@ import {
   MIN_LENGTH_PASSWORD,
   MIN_LENGTH_USERNAME,
 } from 'modules/user/constants'
+import { IUserDocument } from 'modules/user/model'
 
 class CreateUserDto {
   @IsString({
@@ -15,10 +16,10 @@ class CreateUserDto {
   @Length(MIN_LENGTH_USERNAME, MAX_LENGTH_USERNAME, {
     message: messages.lengthRange,
   })
-  username!: string
+  username!: IUserDocument['username']
 
   @IsEmail()
-  email!: string
+  email!: IUserDocument['email']
 
   @IsString({
     message: messages.string,
@@ -26,7 +27,7 @@ class CreateUserDto {
   @Length(MIN_LENGTH_PASSWORD, MAX_LENGTH_PASSWORD, {
     message: messages.lengthRange,
   })
-  password!: string
+  password!: IUserDocument['password']
 }
 
 export default CreateUserDto

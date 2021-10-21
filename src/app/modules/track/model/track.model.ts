@@ -5,6 +5,10 @@ import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { IArtistDocument } from 'modules/artist/model'
+import {
+  MAX_LENGTH_TRACK_NAME,
+  MIN_LENGTH_TRACK_NAME,
+} from 'modules/track/constants'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument, ITrackModel } from 'modules/track/model'
 
@@ -14,6 +18,8 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
   name: {
     type: String,
     required: true,
+    minlength: MIN_LENGTH_TRACK_NAME,
+    maxlength: MAX_LENGTH_TRACK_NAME,
   },
   duration: {
     type: String,

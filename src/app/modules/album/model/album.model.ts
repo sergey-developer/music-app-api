@@ -3,6 +3,10 @@ import autopopulate from 'mongoose-autopopulate'
 
 import { ModelNamesEnum } from 'database/constants'
 import uniqueValidation from 'database/plugins/uniqueValidation'
+import {
+  MAX_LENGTH_ALBUM_NAME,
+  MIN_LENGTH_ALBUM_NAME,
+} from 'modules/album/constants'
 import { IAlbumDocument, IAlbumModel } from 'modules/album/model'
 
 const toJson = require('@meanie/mongoose-to-json')
@@ -12,6 +16,8 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
     type: String,
     required: true,
     trim: true,
+    minlength: MIN_LENGTH_ALBUM_NAME,
+    maxlength: MAX_LENGTH_ALBUM_NAME,
   },
   releaseDate: {
     type: String,

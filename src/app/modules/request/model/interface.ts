@@ -1,7 +1,7 @@
 import { Model } from 'mongoose'
 
 import { ModelNamesEnum } from 'database/constants'
-import { PopulatedDoc } from 'database/interface/document'
+import { DocumentId, PopulatedDoc } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { IArtistDocument } from 'modules/artist/model'
 import { RequestStatusEnum } from 'modules/request/constants'
@@ -10,7 +10,7 @@ import { IUserDocument } from 'modules/user/model'
 import { MaybeNull } from 'shared/interface/utils'
 
 export interface IRequestDocument {
-  id: string
+  id: DocumentId
   entityName: ModelNamesEnum
   entity:
     | PopulatedDoc<IArtistDocument>
@@ -18,7 +18,7 @@ export interface IRequestDocument {
     | PopulatedDoc<ITrackDocument>
   creator: PopulatedDoc<IUserDocument>
   status: RequestStatusEnum
-  reason?: MaybeNull<string>
+  reason: MaybeNull<string>
 }
 
 export interface IRequestModel extends Model<IRequestDocument> {}

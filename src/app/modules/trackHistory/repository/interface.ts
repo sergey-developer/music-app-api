@@ -14,7 +14,7 @@ export interface IDeleteManyTrackHistoryFilter
 
 export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
   userId: DocumentId
-  listenDate: string
+  listenDate: ITrackHistoryDocument['listenDate']
 }
 
 export interface ITrackHistoryRepository {

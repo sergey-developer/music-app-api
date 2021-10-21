@@ -8,7 +8,11 @@ export interface IImageController {
   createOne: (req: Request, res: Response) => ControllerResult
 
   updateOne: (
-    req: Request<Pick<IdParam, 'id'>, any, Pick<UpdateImageDto, 'fileName'>>,
+    req: Request<
+      Pick<IdParam, 'id'>,
+      any,
+      Pick<UpdateImageDto, 'currentFileName'>
+    >,
     res: Response,
   ) => ControllerResult
 

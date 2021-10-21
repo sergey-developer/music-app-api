@@ -8,14 +8,13 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: сделать обновление, получение, и т.д. сущностей (сделал: artist, album, track, image, request)
 // TODO: remove props with undefined value from dto
 // TODO: не добавлять к каждому пути /api, сделать это один раз: app.use('/api', routes)
 // TODO: отрефакторить везде сообщения об ошибках (server error, not fount, для логирования и т.д.)
 //  где-то добавить, поменять и т.п.
 // TODO: отрефакторить конфиги (исп-ть либу "config"?)
 
-// TODO: в dto вынести сообщения в константы и переиспользовать
+// TODO: в dto вынести сообщения в константы и переиспользовать и протестить это
 // TODO: для IsMongoId установить сообщение
 // TODO: сделать функцию для генерации таких ошибок { message: 'Album was successfully deleted' }
 //  при удалении, not found и т.д.

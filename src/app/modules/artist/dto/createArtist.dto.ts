@@ -8,6 +8,7 @@ import {
   MIN_LENGTH_ARTIST_INFO,
   MIN_LENGTH_ARTIST_NAME,
 } from 'modules/artist/constants'
+import { IArtistDocument } from 'modules/artist/model'
 
 class CreateArtistDto {
   @IsString({
@@ -16,13 +17,7 @@ class CreateArtistDto {
   @Length(MIN_LENGTH_ARTIST_NAME, MAX_LENGTH_ARTIST_NAME, {
     message: messages.lengthRange,
   })
-  name!: string
-
-  @IsOptional()
-  @IsMongoId({
-    message: messages.mongoId,
-  })
-  photo?: DocumentId
+  name!: IArtistDocument['name']
 
   @IsOptional()
   @IsString({
@@ -31,7 +26,13 @@ class CreateArtistDto {
   @Length(MIN_LENGTH_ARTIST_INFO, MAX_LENGTH_ARTIST_INFO, {
     message: messages.lengthRange,
   })
-  info?: string
+  info?: IArtistDocument['info']
+
+  @IsOptional()
+  @IsMongoId({
+    message: messages.mongoId,
+  })
+  photo?: DocumentId
 }
 
 export default CreateArtistDto

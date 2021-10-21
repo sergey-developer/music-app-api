@@ -3,11 +3,12 @@ import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 import { DocumentId } from 'database/interface/document'
 import messages from 'lib/class-validator/messages'
 import { RequestStatusEnum } from 'modules/request/constants'
+import { IRequestDocument } from 'modules/request/model'
 
 export class GetAllAlbumsQuery {
   @IsOptional()
   @IsEnum(RequestStatusEnum)
-  status?: RequestStatusEnum
+  status?: IRequestDocument['status']
 
   @IsOptional()
   @IsMongoId({

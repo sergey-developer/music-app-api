@@ -1,11 +1,11 @@
 import { Model } from 'mongoose'
 
-import { PopulatedDoc } from 'database/interface/document'
+import { DocumentId, PopulatedDoc } from 'database/interface/document'
 import { JwtPayload, JwtToken } from 'modules/session/interface'
 import { IUserDocument } from 'modules/user/model'
 
 export interface ISessionDocument {
-  id: string
+  id: DocumentId
   user: PopulatedDoc<IUserDocument>
   token: JwtToken
 }

@@ -1,11 +1,11 @@
 import { FilterQuery, Model } from 'mongoose'
 
-import { PopulatedDoc } from 'database/interface/document'
+import { DocumentId, PopulatedDoc } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { ITrackDocumentArray } from 'modules/track/interface'
 
 export interface ITrackDocument {
-  id: string
+  id: DocumentId
   name: string
   duration: string
   album: PopulatedDoc<IAlbumDocument>

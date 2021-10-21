@@ -38,9 +38,13 @@ class ImageController implements IImageController {
       if (!file) throw BadRequestError('File was not provided')
 
       const { id } = req.params
-      const { fileName } = req.body
+      const { currentFileName } = req.body
 
-      const image = await this.imageService.updateOne({ id, fileName }, file)
+      const image = await this.imageService.updateOne(
+        { id, currentFileName },
+        file,
+      )
+
       const result = pick(image, 'src', 'fileName')
 
       res.status(StatusCodes.OK).send({ data: result })
