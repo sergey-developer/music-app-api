@@ -1,7 +1,7 @@
+import config from 'config'
 import { NextFunction, Request, Response } from 'express'
 import set from 'lodash/set'
 
-import { envConfig } from 'configs/env'
 import { SessionService } from 'modules/session/service'
 import { isJwtError, verifyToken } from 'modules/session/utils'
 import {
@@ -20,7 +20,8 @@ const auth = async <Req extends Request, Res extends Response>(
 
     if (!token) throw UnauthorizedError('Token was not provided')
 
-    const jwtPayload = verifyToken(token, envConfig.app.tokenSecret)
+    const tokenSecret: string = config.get('app.secrets.tokenSecret')
+    const jwtPayload = verifyToken(token, tokenSecret)
 
     await SessionService.getOneByToken(token)
 

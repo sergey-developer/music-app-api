@@ -1,11 +1,11 @@
+import config from 'config'
 import multer from 'multer'
 
-import { appConfig } from 'configs/app'
 import { createStorage } from 'lib/multer'
 import { IMAGE_MIME_TYPE_ERROR_MSG } from 'modules/image/constants'
 import { isAllowedMimetype } from 'modules/image/utils'
 
-const storage = createStorage(appConfig.imageUploadPath)
+const storage = createStorage(config.get('app.uploads.imagesDir'))
 
 const uploadImage = multer({
   storage,

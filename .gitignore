@@ -71,6 +71,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# environment configs
+config
+
 # dotenv environment variables file
 .env*
 

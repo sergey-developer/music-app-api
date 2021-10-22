@@ -1,6 +1,6 @@
+import config from 'config'
 import { Schema, model } from 'mongoose'
 
-import { envConfig } from 'configs/env'
 import { ModelNamesEnum } from 'database/constants'
 import { JwtPayload, JwtToken } from 'modules/session/interface'
 import { ISessionDocument, ISessionModel } from 'modules/session/model'
@@ -27,7 +27,7 @@ const SessionSchema = new Schema<
 })
 
 SessionSchema.static('generateToken', function (payload: JwtPayload): JwtToken {
-  const secret = envConfig.app.tokenSecret
+  const secret: string = config.get('app.secrets.tokenSecret')
   return generateToken(payload, secret)
 })
 

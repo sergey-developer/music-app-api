@@ -1,6 +1,6 @@
+import config from 'config'
 import isEmpty from 'lodash/isEmpty'
 
-import { appConfig } from 'configs/app'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IImageDocument } from 'modules/image/model'
@@ -24,7 +24,7 @@ class ImageService implements IImageService {
     try {
       await deleteFile(this.imageUploadPath, fileName)
     } catch (error) {
-      logger.error(error.stack, {
+      logger.warn(error.stack, {
         message: `Image with filename "${fileName}" probably was not deleted from file system`,
       })
     }
@@ -32,7 +32,7 @@ class ImageService implements IImageService {
 
   public constructor() {
     this.imageRepository = ImageRepository
-    this.imageUploadPath = appConfig.imageUploadPath
+    this.imageUploadPath = config.get('app.uploads.imagesDir')
   }
 
   public getOneById: IImageService['getOneById'] = async (id) => {
