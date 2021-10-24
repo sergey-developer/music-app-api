@@ -1,6 +1,5 @@
-import { IsMongoId, IsOptional, IsString, Length } from 'class-validator'
+import { IsOptional, IsString, Length } from 'class-validator'
 
-import { DocumentId } from 'database/interface/document'
 import messages from 'lib/class-validator/messages'
 import {
   MAX_LENGTH_ARTIST_INFO,
@@ -28,12 +27,6 @@ class UpdateArtistDto {
     message: messages.lengthRange,
   })
   info?: IArtistDocument['info']
-
-  @IsOptional()
-  @IsMongoId({
-    message: messages.mongoId,
-  })
-  photo?: DocumentId
 }
 
 export default UpdateArtistDto

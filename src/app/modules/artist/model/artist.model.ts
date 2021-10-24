@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose'
-import autopopulate from 'mongoose-autopopulate'
 
 import { ModelNamesEnum } from 'database/constants'
 import uniqueValidation from 'database/plugins/uniqueValidation'
@@ -34,16 +33,13 @@ const ArtistSchema = new Schema<IArtistDocument, IArtistModel, IArtistDocument>(
       // TODO: make capitalize, validation
     },
     photo: {
-      type: Schema.Types.ObjectId,
-      ref: ModelNamesEnum.Image,
+      type: String,
       default: null,
-      autopopulate: true,
     },
   },
 )
 
 ArtistSchema.plugin(toJson)
-ArtistSchema.plugin(autopopulate)
 ArtistSchema.plugin(uniqueValidation)
 
 const ArtistModel = model<IArtistDocument, IArtistModel>(

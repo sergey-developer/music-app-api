@@ -12,9 +12,12 @@ export interface IGetAllAlbumsFilter extends GetAllAlbumsQuery {}
 
 export interface ICreateAlbumPayload extends CreateAlbumDto {
   userId: DocumentId
+  image?: IAlbumDocument['image']
 }
 
-export interface IUpdateAlbumPayload extends UpdateAlbumDto {}
+export interface IUpdateAlbumPayload extends UpdateAlbumDto {
+  image: IAlbumDocument['image']
+}
 
 export interface IDeleteManyAlbumsFilter
   extends Partial<{

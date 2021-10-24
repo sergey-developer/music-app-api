@@ -9,8 +9,6 @@ import { AlbumService, IAlbumService } from 'modules/album/service'
 import { IArtistDocument } from 'modules/artist/model'
 import { ArtistRepository, IArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
-import { IImageDocument } from 'modules/image/model'
-import { IImageService, ImageService } from 'modules/image/service'
 import { IRequestService, RequestService } from 'modules/request/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
@@ -18,12 +16,14 @@ import {
   NotFoundError,
   ServerError,
 } from 'shared/utils/errors/httpErrors'
+import { deleteImageFromFs } from 'shared/utils/file'
+
+console.log({ AlbumService, RequestService })
 
 class ArtistService implements IArtistService {
   private readonly artistRepository: IArtistRepository
   private readonly albumService: IAlbumService
   private readonly requestService: IRequestService
-  private readonly imageService: IImageService
 
   private getArtistAlbums = async (
     artistId: DocumentId,
@@ -37,7 +37,6 @@ class ArtistService implements IArtistService {
     this.artistRepository = ArtistRepository
     this.albumService = AlbumService
     this.requestService = RequestService
-    this.imageService = ImageService
   }
 
   public getAll: IArtistService['getAll'] = async (filter) => {
@@ -87,6 +86,8 @@ class ArtistService implements IArtistService {
         photo: payload.photo,
       })
     } catch (error) {
+      if (payload.photo) deleteImageFromFs(payload.photo)
+
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
           kind: error.name,
@@ -113,10 +114,13 @@ class ArtistService implements IArtistService {
 
       try {
         await this.artistRepository.deleteOneById(artist.id)
+        if (artist.photo) deleteImageFromFs(artist.photo)
       } catch (error) {
         logger.warn(error.stack, {
           message: `Artist by id "${artist.id}" probably was not deleted`,
         })
+
+        if (artist.photo) deleteImageFromFs(artist.photo)
       }
 
       throw serverError
@@ -135,6 +139,8 @@ class ArtistService implements IArtistService {
 
       return updatedArtist
     } catch (error) {
+      if (payload.photo) deleteImageFromFs(payload.photo)
+
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
           kind: error.name,
@@ -160,23 +166,17 @@ class ArtistService implements IArtistService {
 
     try {
       artist = await this.artistRepository.deleteOneById(id)
+      if (artist.photo) deleteImageFromFs(artist.photo)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Artist with id "${id}" was not found`)
+        throw NotFoundError('Artist was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError(`Error while deleting artist by id "${id}"`)
+      throw ServerError('Error while deleting artist')
     }
 
     try {
-      const artistHasPhoto = !isEmpty(artist.photo)
-
-      if (artistHasPhoto) {
-        const photo = artist.photo as IImageDocument
-        await this.imageService.deleteOneById(photo.id)
-      }
-
       const albumsByArtistId = await this.getArtistAlbums(artist.id)
       const artistHasAlbums = !isEmpty(albumsByArtistId)
 

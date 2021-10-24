@@ -1,10 +1,4 @@
-import {
-  IsDateString,
-  IsMongoId,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator'
+import { IsDateString, IsMongoId, IsString, Length } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
 import messages from 'lib/class-validator/messages'
@@ -30,12 +24,6 @@ class CreateAlbumDto {
     message: messages.mongoId,
   })
   artist!: DocumentId
-
-  @IsOptional()
-  @IsMongoId({
-    message: messages.mongoId,
-  })
-  image?: DocumentId
 }
 
 export default CreateAlbumDto

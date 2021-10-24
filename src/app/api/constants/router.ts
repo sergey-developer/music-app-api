@@ -5,5 +5,4 @@ export enum RoutersEnum {
   Tracks = 'tracks',
   TrackHistory = 'trackHistory',
   Requests = 'requests',
-  Uploads = 'uploads',
 }

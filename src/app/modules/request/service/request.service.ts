@@ -91,6 +91,7 @@ class RequestService implements IRequestService {
         creator: payload.creator,
       })
     } catch (error) {
+      console.log({ error })
       logger.error(error.stack)
       throw ServerError('Error while creating new request')
     }

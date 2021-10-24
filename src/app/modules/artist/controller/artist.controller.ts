@@ -15,8 +15,9 @@ class ArtistController implements IArtistController {
   }
 
   public getAll: IArtistController['getAll'] = async (req, res) => {
-    const userIsAuthorized = !!req.user
-    const filter = req.query
+    const { user, query } = req
+    const userIsAuthorized = !!user
+    const filter = query
 
     try {
       let artists: IArtistDocumentArray
@@ -50,14 +51,14 @@ class ArtistController implements IArtistController {
 
   public createOne: IArtistController['createOne'] = async (req, res) => {
     try {
-      const user = req.user!
-      const { name, info, photo } = req.body
+      const { user, body, file } = req
+      const { name, info } = body
 
       const artist = await this.artistService.createOne({
         name,
         info,
-        photo,
-        userId: user.userId,
+        photo: file?.filename,
+        userId: user?.userId!,
       })
 
       const result = pick(artist, 'id')
@@ -73,10 +74,15 @@ class ArtistController implements IArtistController {
 
   public updateOne: IArtistController['updateOne'] = async (req, res) => {
     try {
-      const { id } = req.params
-      const payload = pick(req.body, 'name', 'photo', 'info')
+      const { params, body, file } = req
+      const { id } = params
+      const { name, info } = body
 
-      await this.artistService.updateOneById(id, payload)
+      await this.artistService.updateOneById(id, {
+        name,
+        info,
+        photo: file?.filename || null,
+      })
 
       res
         .status(StatusCodes.OK)

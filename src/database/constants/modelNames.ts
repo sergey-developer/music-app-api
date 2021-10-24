@@ -4,7 +4,6 @@ export enum ModelNamesEnum {
   Track = 'Track',
   TrackHistory = 'TrackHistory',
   Request = 'Request',
-  Image = 'Image',
   User = 'User',
   Session = 'Session',
 }

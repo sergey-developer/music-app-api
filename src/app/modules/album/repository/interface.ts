@@ -9,9 +9,13 @@ export interface IFindAllAlbumsFilter
     artist: DocumentId
   }> {}
 
-export interface ICreateAlbumPayload extends CreateAlbumDto {}
+export interface ICreateAlbumPayload extends CreateAlbumDto {
+  image?: IAlbumDocument['image']
+}
 
-export interface IUpdateAlbumPayload extends UpdateAlbumDto {}
+export interface IUpdateAlbumPayload extends UpdateAlbumDto {
+  image: IAlbumDocument['image']
+}
 
 export interface IUpdateAlbumFilter
   extends Partial<{

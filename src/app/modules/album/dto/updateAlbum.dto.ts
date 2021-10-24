@@ -33,12 +33,6 @@ class UpdateAlbumDto {
     message: messages.mongoId,
   })
   artist?: DocumentId
-
-  @IsOptional()
-  @IsMongoId({
-    message: messages.mongoId,
-  })
-  image?: DocumentId
 }
 
 export default UpdateAlbumDto

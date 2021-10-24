@@ -1,7 +1,7 @@
 {
   "ext": "ts",
   "watch": ["src"],
-  "ignore": ["public/*", "*.test.ts", "fixtures/*"],
+  "ignore": ["*.test.ts", "fixtures/*"],
   "execMap": {
     "ts": "ts-node"
   }

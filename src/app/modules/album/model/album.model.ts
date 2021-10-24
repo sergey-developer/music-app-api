@@ -24,10 +24,8 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
     required: true,
   },
   image: {
-    type: Schema.Types.ObjectId,
-    ref: ModelNamesEnum.Image,
+    type: String,
     default: null,
-    autopopulate: true,
   },
   artist: {
     type: Schema.Types.ObjectId,

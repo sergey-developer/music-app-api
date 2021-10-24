@@ -12,9 +12,12 @@ export interface IGetAllArtistsFilter extends GetAllArtistsQuery {}
 
 export interface ICreateArtistPayload extends CreateArtistDto {
   userId: DocumentId
+  photo?: IArtistDocument['photo']
 }
 
-export interface IUpdateArtistPayload extends UpdateArtistDto {}
+export interface IUpdateArtistPayload extends UpdateArtistDto {
+  photo: IArtistDocument['photo']
+}
 
 export interface IArtistService {
   getAll: (filter: IGetAllArtistsFilter) => Promise<IArtistDocumentArray>

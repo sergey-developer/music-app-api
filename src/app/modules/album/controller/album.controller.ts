@@ -15,8 +15,9 @@ class AlbumController implements IAlbumController {
   }
 
   public getAll: IAlbumController['getAll'] = async (req, res) => {
-    const userIsAuthorized = !!req.user
-    const filter = req.query
+    const { query, user } = req
+    const userIsAuthorized = !!user
+    const filter = query
 
     try {
       let albums: IAlbumDocumentArray
@@ -50,15 +51,15 @@ class AlbumController implements IAlbumController {
 
   public createOne: IAlbumController['createOne'] = async (req, res) => {
     try {
-      const user = req.user!
-      const { name, image, releaseDate, artist } = req.body
+      const { file, body, user } = req
+      const { name, releaseDate, artist } = body
 
       const album = await this.albumService.createOne({
         name,
-        image,
+        image: file?.filename,
         releaseDate,
         artist,
-        userId: user.userId,
+        userId: user?.userId!,
       })
 
       const result = pick(album, 'id')
@@ -74,10 +75,16 @@ class AlbumController implements IAlbumController {
 
   public updateOne: IAlbumController['updateOne'] = async (req, res) => {
     try {
-      const { id } = req.params
-      const payload = pick(req.body, 'image', 'artist', 'name', 'releaseDate')
+      const { file, params, body } = req
+      const { id } = params
+      const { name, releaseDate, artist } = body
 
-      await this.albumService.updateOneById(id, payload)
+      await this.albumService.updateOneById(id, {
+        name,
+        releaseDate,
+        artist,
+        image: file?.filename || null,
+      })
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully updated' })
     } catch (exception) {

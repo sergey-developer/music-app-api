@@ -7,6 +7,7 @@ import {
 } from 'modules/album/dto'
 import { auth } from 'modules/auth/middlewares'
 import { IdParam } from 'shared/dto'
+import uploadImage from 'shared/middlewares/uploadImage.middleware'
 import { body, params, query } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {
@@ -14,11 +15,15 @@ const createRouter: CreateRouter = (router) => {
 
   router.get('/:id', [auth, params(IdParam)], AlbumController.getOne)
 
-  router.post('/', [auth, body(CreateAlbumDto)], AlbumController.createOne)
+  router.post(
+    '/',
+    [auth, uploadImage('image'), body(CreateAlbumDto)],
+    AlbumController.createOne,
+  )
 
   router.put(
     '/:id',
-    [auth, params(IdParam), body(UpdateAlbumDto)],
+    [auth, params(IdParam), uploadImage('image'), body(UpdateAlbumDto)],
     AlbumController.updateOne,
   )
 

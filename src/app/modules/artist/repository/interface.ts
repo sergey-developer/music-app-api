@@ -8,9 +8,13 @@ export interface IFindAllArtistsFilter
     ids: DocumentIdArray
   }> {}
 
-export interface ICreateArtistPayload extends CreateArtistDto {}
+export interface ICreateArtistPayload extends CreateArtistDto {
+  photo?: IArtistDocument['photo']
+}
 
-export interface IUpdateArtistPayload extends UpdateArtistDto {}
+export interface IUpdateArtistPayload extends UpdateArtistDto {
+  photo: IArtistDocument['photo']
+}
 
 export interface IUpdateArtistFilter
   extends Partial<{
