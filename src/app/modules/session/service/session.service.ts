@@ -10,7 +10,6 @@ import {
   BadRequestError,
   NotFoundError,
   ServerError,
-  UnauthorizedError,
 } from 'shared/utils/errors/httpErrors'
 
 class SessionService implements ISessionService {
@@ -28,7 +27,7 @@ class SessionService implements ISessionService {
       return session
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw UnauthorizedError(`Session with token "${token}" was not found`)
+        throw NotFoundError(`Session with token "${token}" was not found`)
       }
 
       logger.error(error.stack)

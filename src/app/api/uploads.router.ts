@@ -6,15 +6,11 @@ import { IdParam } from 'shared/dto'
 import { params } from 'shared/middlewares/validation'
 
 const createRouter: CreateRouter = (router) => {
-  router.post(
-    '/images',
-    [auth, uploadImage.single('image')],
-    ImageController.createOne,
-  )
+  router.post('/images', [auth, uploadImage], ImageController.createOne)
 
   router.put(
     '/images/:id',
-    [auth, params(IdParam), uploadImage.single('image')],
+    [auth, params(IdParam), uploadImage],
     ImageController.updateOne,
   )
 

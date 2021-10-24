@@ -7,6 +7,7 @@ import { isJwtError, verifyToken } from 'modules/session/utils'
 import {
   UnauthorizedError,
   ensureHttpError,
+  isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
 const auth = async <Req extends Request, Res extends Response>(
@@ -28,15 +29,19 @@ const auth = async <Req extends Request, Res extends Response>(
     set(req, 'user', jwtPayload)
     next()
   } catch (exception) {
-    let error
-
     if (isJwtError(exception)) {
-      error = UnauthorizedError('Invalid token')
+      const error = UnauthorizedError('Invalid token')
       res.status(error.status).send(error)
       return
     }
 
-    error = ensureHttpError(exception)
+    if (isNotFoundError(exception)) {
+      const error = UnauthorizedError()
+      res.status(error.status).send(error)
+      return
+    }
+
+    const error = ensureHttpError(exception)
     res.status(error.status).send(error)
     return
   }

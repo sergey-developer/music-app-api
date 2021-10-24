@@ -8,4 +8,4 @@ export const ALLOWED_IMAGE_MIMETYPES: string[] = ALLOWED_IMAGE_EXTENSIONS.map(
   (ext) => `image/${ext}`,
 )
 
-export const IMAGE_MIME_TYPE_ERROR_MSG: string = `Only ${IMAGE_EXTENSIONS} format allowed!`
+export const IMAGE_MIME_TYPE_ERROR_MSG: string = `Only ${IMAGE_EXTENSIONS} format allowed`

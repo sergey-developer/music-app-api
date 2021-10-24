@@ -4,12 +4,11 @@ import {
   transformAndValidate,
 } from 'class-transformer-validator'
 import { RequestHandler } from 'express'
-import createError from 'http-errors'
-import { StatusCodes } from 'http-status-codes'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 
 import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { BadRequestError } from 'shared/utils/errors/httpErrors'
 import { getDtoValidationErrors } from 'shared/utils/validation'
 
 const defaultOptions: TransformValidationOptions = {
@@ -37,7 +36,7 @@ const dto =
       set(req, target, validatedDto)
       next()
     } catch (errors: any) {
-      const error = createError(StatusCodes.BAD_REQUEST, 'Validation failed', {
+      const error = BadRequestError('Validation failed', {
         kind: ErrorKindsEnum.ValidationError,
         errors: getDtoValidationErrors(errors),
       })
