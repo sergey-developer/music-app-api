@@ -6,6 +6,7 @@ import logger from 'lib/logger'
 import { createStorage, isMulterError } from 'lib/multer'
 import { IMAGE_MIME_TYPE_ERROR_MSG } from 'modules/image/constants'
 import { isAllowedMimetype } from 'modules/image/utils'
+import { TWO_MEGABYTES } from 'shared/constants/bytesSize'
 import {
   BadRequestError,
   ServerError,
@@ -17,18 +18,16 @@ const storage = createStorage(config.get('app.uploads.imagesDir'))
 const upload = multer({
   storage,
   fileFilter: (req, file, cb) => {
-    let errMsg
-    console.log({ file })
+    let errMsg: string = ''
 
     if (!isAllowedMimetype(file.mimetype)) {
       errMsg = IMAGE_MIME_TYPE_ERROR_MSG
     }
 
-    // if (file.size) {
-    //   errorMessage = ''
-    // }
-
     errMsg ? cb(BadRequestError(errMsg)) : cb(null, true)
+  },
+  limits: {
+    fileSize: TWO_MEGABYTES,
   },
 }).single('image')
 

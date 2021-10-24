@@ -35,10 +35,10 @@ const dto =
 
       set(req, target, validatedDto)
       next()
-    } catch (errors: any) {
+    } catch (exception) {
       const error = BadRequestError('Validation failed', {
         kind: ErrorKindsEnum.ValidationError,
-        errors: getDtoValidationErrors(errors),
+        errors: getDtoValidationErrors(exception),
       })
 
       res.status(error.status).send(error)

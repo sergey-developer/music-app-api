@@ -1,0 +1,1 @@
+export const TWO_MEGABYTES = 2097152

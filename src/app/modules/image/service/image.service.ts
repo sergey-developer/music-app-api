@@ -14,21 +14,11 @@ import {
   NotFoundError,
   ServerError,
 } from 'shared/utils/errors/httpErrors'
-import { deleteFile } from 'shared/utils/file'
+import { deleteFileFromFs } from 'shared/utils/file'
 
 class ImageService implements IImageService {
   private readonly imageRepository: IImageRepository
   private readonly imageUploadPath: string
-
-  private deleteFileFromFs = async (fileName: string) => {
-    try {
-      await deleteFile(this.imageUploadPath, fileName)
-    } catch (error) {
-      logger.warn(error.stack, {
-        message: `Image with filename "${fileName}" probably was not deleted from file system`,
-      })
-    }
-  }
 
   public constructor() {
     this.imageRepository = ImageRepository
@@ -105,7 +95,7 @@ class ImageService implements IImageService {
       throw ServerError('Error while updating image')
     }
 
-    await this.deleteFileFromFs(currentFileName)
+    await deleteFileFromFs(this.imageUploadPath, currentFileName)
 
     return updatedImage
   }
@@ -125,7 +115,7 @@ class ImageService implements IImageService {
       throw ServerError('Error while deleting image')
     }
 
-    await this.deleteFileFromFs(image.fileName)
+    await deleteFileFromFs(this.imageUploadPath, image.fileName)
 
     return image
   }

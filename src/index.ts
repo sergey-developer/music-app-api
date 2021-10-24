@@ -8,7 +8,6 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: Добавить валидацию размера для файлов и проверить её
 // TODO: remove props with undefined value from dto
 // TODO: не добавлять к каждому пути /api, сделать это один раз: app.use('/api', routes)
 // TODO: отрефакторить везде сообщения об ошибках (server error, not fount, для логирования и т.д.)
