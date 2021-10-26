@@ -18,8 +18,6 @@ import {
 } from 'shared/utils/errors/httpErrors'
 import { deleteImageFromFs } from 'shared/utils/file'
 
-console.log({ AlbumService, RequestService })
-
 class ArtistService implements IArtistService {
   private readonly artistRepository: IArtistRepository
   private readonly albumService: IAlbumService
