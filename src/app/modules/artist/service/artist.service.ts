@@ -1,15 +1,16 @@
 import isEmpty from 'lodash/isEmpty'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IAlbumDocumentArray } from 'modules/album/interface'
-import { AlbumService, IAlbumService } from 'modules/album/service'
+import { AlbumService } from 'modules/album/service'
 import { IArtistDocument } from 'modules/artist/model'
-import { ArtistRepository, IArtistRepository } from 'modules/artist/repository'
+import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
-import { IRequestService, RequestService } from 'modules/request/service'
+import { RequestService } from 'modules/request/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
   BadRequestError,
@@ -18,11 +19,8 @@ import {
 } from 'shared/utils/errors/httpErrors'
 import { deleteImageFromFs } from 'shared/utils/file'
 
+@singleton()
 class ArtistService implements IArtistService {
-  private readonly artistRepository: IArtistRepository
-  private readonly albumService: IAlbumService
-  private readonly requestService: IRequestService
-
   private getArtistAlbums = async (
     artistId: DocumentId,
   ): Promise<IAlbumDocumentArray> => {
@@ -31,11 +29,15 @@ class ArtistService implements IArtistService {
     })
   }
 
-  constructor() {
-    this.artistRepository = ArtistRepository
-    this.albumService = AlbumService
-    this.requestService = RequestService
-  }
+  constructor(
+    private readonly artistRepository: ArtistRepository,
+
+    @inject(delay(() => AlbumService))
+    private readonly albumService: AlbumService,
+
+    @inject(delay(() => RequestService))
+    private readonly requestService: RequestService,
+  ) {}
 
   public getAll: IArtistService['getAll'] = async (filter) => {
     try {
@@ -192,4 +194,4 @@ class ArtistService implements IArtistService {
   }
 }
 
-export default new ArtistService()
+export default ArtistService

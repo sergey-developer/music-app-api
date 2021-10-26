@@ -1,11 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
+import { singleton } from 'tsyringe'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
-import {
-  ITrackHistoryRepository,
-  TrackHistoryRepository,
-} from 'modules/trackHistory/repository'
+import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 import { ITrackHistoryService } from 'modules/trackHistory/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
@@ -16,12 +14,11 @@ import {
   ServerError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class TrackHistoryService implements ITrackHistoryService {
-  private readonly trackHistoryRepository: ITrackHistoryRepository
-
-  public constructor() {
-    this.trackHistoryRepository = TrackHistoryRepository
-  }
+  public constructor(
+    private readonly trackHistoryRepository: TrackHistoryRepository,
+  ) {}
 
   public getAll: ITrackHistoryService['getAll'] = async (filter) => {
     try {
@@ -84,4 +81,4 @@ class TrackHistoryService implements ITrackHistoryService {
   }
 }
 
-export default new TrackHistoryService()
+export default TrackHistoryService

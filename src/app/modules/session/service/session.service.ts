@@ -1,3 +1,5 @@
+import { singleton } from 'tsyringe'
+
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import {
@@ -12,12 +14,9 @@ import {
   ServerError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class SessionService implements ISessionService {
-  private readonly sessionRepository: ISessionRepository
-
-  public constructor() {
-    this.sessionRepository = SessionRepository
-  }
+  public constructor(private readonly sessionRepository: SessionRepository) {}
 
   public getOneByToken: ISessionRepository['findOneByToken'] = async (
     token,
@@ -74,4 +73,4 @@ class SessionService implements ISessionService {
   }
 }
 
-export default new SessionService()
+export default SessionService

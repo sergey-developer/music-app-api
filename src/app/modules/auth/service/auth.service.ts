@@ -1,10 +1,11 @@
 import pick from 'lodash/pick'
+import { singleton } from 'tsyringe'
 
 import logger from 'lib/logger'
 import { IAuthService } from 'modules/auth/service'
-import { ISessionService, SessionService } from 'modules/session/service'
+import { SessionService } from 'modules/session/service'
 import { IUserDocument } from 'modules/user/model'
-import { IUserService, UserService } from 'modules/user/service'
+import { UserService } from 'modules/user/service'
 import {
   BadRequestError,
   ServerError,
@@ -12,14 +13,12 @@ import {
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class AuthService implements IAuthService {
-  private readonly userService: IUserService
-  private readonly sessionService: ISessionService
-
-  public constructor() {
-    this.userService = UserService
-    this.sessionService = SessionService
-  }
+  public constructor(
+    private readonly userService: UserService,
+    private readonly sessionService: SessionService,
+  ) {}
 
   public signin: IAuthService['signin'] = async (payload) => {
     const serverErrorMsg = 'Something went wrong. Sign in error.'
@@ -120,4 +119,4 @@ class AuthService implements IAuthService {
   }
 }
 
-export default new AuthService()
+export default AuthService

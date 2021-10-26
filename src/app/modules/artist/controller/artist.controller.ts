@@ -1,18 +1,16 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
+import { singleton } from 'tsyringe'
 
 import { IArtistController } from 'modules/artist/controller'
 import { IArtistDocumentArray } from 'modules/artist/interface'
-import { ArtistService, IArtistService } from 'modules/artist/service'
+import { ArtistService } from 'modules/artist/service'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class ArtistController implements IArtistController {
-  private readonly artistService: IArtistService
-
-  constructor() {
-    this.artistService = ArtistService
-  }
+  constructor(private readonly artistService: ArtistService) {}
 
   public getAll: IArtistController['getAll'] = async (req, res) => {
     const { user, query } = req
@@ -109,4 +107,4 @@ class ArtistController implements IArtistController {
   }
 }
 
-export default new ArtistController()
+export default ArtistController

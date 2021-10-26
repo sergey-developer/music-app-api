@@ -1,3 +1,5 @@
+import { container as DiContainer } from 'tsyringe'
+
 import { CreateRouter } from 'api/interface'
 import { ArtistController } from 'modules/artist/controller'
 import {
@@ -10,24 +12,26 @@ import { IdParam } from 'shared/dto'
 import uploadImage from 'shared/middlewares/uploadImage.middleware'
 import { body, params, query } from 'shared/middlewares/validation'
 
-const createRouter: CreateRouter = (router) => {
-  router.get('/', query(GetAllArtistsQuery), ArtistController.getAll)
+const artistController = DiContainer.resolve(ArtistController)
 
-  router.get('/:id', [auth, params(IdParam)], ArtistController.getOne)
+const createRouter: CreateRouter = (router) => {
+  router.get('/', query(GetAllArtistsQuery), artistController.getAll)
+
+  router.get('/:id', [auth, params(IdParam)], artistController.getOne)
 
   router.post(
     '/',
     [auth, uploadImage('photo'), body(CreateArtistDto)],
-    ArtistController.createOne,
+    artistController.createOne,
   )
 
   router.put(
     '/:id',
     [auth, params(IdParam), uploadImage('photo'), body(UpdateArtistDto)],
-    ArtistController.updateOne,
+    artistController.updateOne,
   )
 
-  router.delete('/:id', [auth, params(IdParam)], ArtistController.deleteOne)
+  router.delete('/:id', [auth, params(IdParam)], artistController.deleteOne)
 
   return router
 }

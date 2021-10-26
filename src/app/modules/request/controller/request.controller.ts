@@ -1,16 +1,17 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { IRequestController } from 'modules/request/controller'
-import { IRequestService, RequestService } from 'modules/request/service'
+import { RequestService } from 'modules/request/service'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class RequestController implements IRequestController {
-  private readonly requestService: IRequestService
-
-  public constructor() {
-    this.requestService = RequestService
-  }
+  public constructor(
+    @inject(delay(() => RequestService))
+    private readonly requestService: RequestService,
+  ) {}
 
   public getAll: IRequestController['getAll'] = async (req, res) => {
     const filter = req.query
@@ -56,4 +57,4 @@ class RequestController implements IRequestController {
   }
 }
 
-export default new RequestController()
+export default RequestController

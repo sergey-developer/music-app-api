@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
+import { singleton } from 'tsyringe'
 
 import {
   ArtistModel,
@@ -9,6 +10,7 @@ import {
 import { IArtistRepository } from 'modules/artist/repository'
 import { omitUndefined } from 'shared/utils/common'
 
+@singleton()
 class ArtistRepository implements IArtistRepository {
   private readonly artist: IArtistModel
 
@@ -59,4 +61,4 @@ class ArtistRepository implements IArtistRepository {
   }
 }
 
-export default new ArtistRepository()
+export default ArtistRepository

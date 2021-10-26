@@ -1,18 +1,15 @@
 import { StatusCodes } from 'http-status-codes'
+import { singleton } from 'tsyringe'
 
 import { ITrackHistoryController } from 'modules/trackHistory/controller'
-import {
-  ITrackHistoryService,
-  TrackHistoryService,
-} from 'modules/trackHistory/service'
+import { TrackHistoryService } from 'modules/trackHistory/service'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class TrackHistoryController implements ITrackHistoryController {
-  private readonly trackHistoryService: ITrackHistoryService
-
-  public constructor() {
-    this.trackHistoryService = TrackHistoryService
-  }
+  public constructor(
+    private readonly trackHistoryService: TrackHistoryService,
+  ) {}
 
   public getAll: ITrackHistoryController['getAll'] = async (req, res) => {
     try {
@@ -62,4 +59,4 @@ class TrackHistoryController implements ITrackHistoryController {
   }
 }
 
-export default new TrackHistoryController()
+export default TrackHistoryController

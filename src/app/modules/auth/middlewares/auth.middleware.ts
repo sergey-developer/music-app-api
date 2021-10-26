@@ -1,6 +1,7 @@
 import config from 'config'
 import { NextFunction, Request, Response } from 'express'
 import set from 'lodash/set'
+import { container as DiContainer } from 'tsyringe'
 
 import { SessionService } from 'modules/session/service'
 import { isJwtError, verifyToken } from 'modules/session/utils'
@@ -9,6 +10,8 @@ import {
   ensureHttpError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
+
+const sessionService = DiContainer.resolve(SessionService)
 
 const auth = async <Req extends Request, Res extends Response>(
   req: Req,
@@ -24,7 +27,7 @@ const auth = async <Req extends Request, Res extends Response>(
     const tokenSecret: string = config.get('app.secrets.tokenSecret')
     const jwtPayload = verifyToken(token, tokenSecret)
 
-    await SessionService.getOneByToken(token)
+    await sessionService.getOneByToken(token)
 
     set(req, 'user', jwtPayload)
     next()

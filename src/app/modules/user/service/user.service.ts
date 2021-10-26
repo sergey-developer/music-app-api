@@ -1,6 +1,8 @@
+import { singleton } from 'tsyringe'
+
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
-import { IUserRepository, UserRepository } from 'modules/user/repository'
+import { UserRepository } from 'modules/user/repository'
 import { IUserService } from 'modules/user/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
@@ -9,12 +11,9 @@ import {
   ServerError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class UserService implements IUserService {
-  private readonly userRepository: IUserRepository
-
-  public constructor() {
-    this.userRepository = UserRepository
-  }
+  public constructor(private readonly userRepository: UserRepository) {}
 
   public getOneByEmail: IUserService['getOneByEmail'] = async (email) => {
     try {
@@ -62,4 +61,4 @@ class UserService implements IUserService {
   }
 }
 
-export default new UserService()
+export default UserService

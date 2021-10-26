@@ -1,3 +1,5 @@
+import { container as DiContainer } from 'tsyringe'
+
 import { CreateRouter } from 'api/interface'
 import { auth } from 'modules/auth/middlewares'
 import { TrackController } from 'modules/track/controller'
@@ -9,20 +11,22 @@ import {
 import { IdParam } from 'shared/dto'
 import { body, params, query } from 'shared/middlewares/validation'
 
+const trackController = DiContainer.resolve(TrackController)
+
 const createRouter: CreateRouter = (router) => {
-  router.get('/', query(GetAllTracksQuery), TrackController.getAll)
+  router.get('/', query(GetAllTracksQuery), trackController.getAll)
 
-  router.get('/:id', [auth, params(IdParam)], TrackController.getOne)
+  router.get('/:id', [auth, params(IdParam)], trackController.getOne)
 
-  router.post('/', [auth, body(CreateTrackDto)], TrackController.createOne)
+  router.post('/', [auth, body(CreateTrackDto)], trackController.createOne)
 
   router.put(
     '/:id',
     [auth, params(IdParam), body(UpdateTrackDto)],
-    TrackController.updateOne,
+    trackController.updateOne,
   )
 
-  router.delete('/:id', [auth, params(IdParam)], TrackController.deleteOne)
+  router.delete('/:id', [auth, params(IdParam)], trackController.deleteOne)
 
   return router
 }

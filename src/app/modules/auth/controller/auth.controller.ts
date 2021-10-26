@@ -1,19 +1,17 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
+import { singleton } from 'tsyringe'
 
 import { IAuthController } from 'modules/auth/controller'
-import { AuthService, IAuthService } from 'modules/auth/service'
+import { AuthService } from 'modules/auth/service'
 import {
   ensureHttpError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class AuthController implements IAuthController {
-  private readonly authService: IAuthService
-
-  public constructor() {
-    this.authService = AuthService
-  }
+  public constructor(private readonly authService: AuthService) {}
 
   public signin: IAuthController['signin'] = async (req, res) => {
     try {
@@ -63,4 +61,4 @@ class AuthController implements IAuthController {
   }
 }
 
-export default new AuthController()
+export default AuthController

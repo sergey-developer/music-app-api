@@ -1,18 +1,16 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
+import { singleton } from 'tsyringe'
 
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ITrackController } from 'modules/track/controller'
 import { ITrackDocumentArray } from 'modules/track/interface'
-import { ITrackService, TrackService } from 'modules/track/service'
+import { TrackService } from 'modules/track/service'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class TrackController implements ITrackController {
-  private readonly trackService: ITrackService
-
-  public constructor() {
-    this.trackService = TrackService
-  }
+  public constructor(private readonly trackService: TrackService) {}
 
   public getAll: ITrackController['getAll'] = async (req, res) => {
     const userIsAuthorized = !!req.user
@@ -103,4 +101,4 @@ class TrackController implements ITrackController {
   }
 }
 
-export default new TrackController()
+export default TrackController

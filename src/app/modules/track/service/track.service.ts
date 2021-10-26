@@ -1,16 +1,14 @@
 import isEmpty from 'lodash/isEmpty'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { ModelNamesEnum } from 'database/constants'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
-import { IRequestService, RequestService } from 'modules/request/service'
+import { RequestService } from 'modules/request/service'
 import { ITrackDocument } from 'modules/track/model'
-import { ITrackRepository, TrackRepository } from 'modules/track/repository'
+import { TrackRepository } from 'modules/track/repository'
 import { ITrackService } from 'modules/track/service'
-import {
-  ITrackHistoryService,
-  TrackHistoryService,
-} from 'modules/trackHistory/service'
+import { TrackHistoryService } from 'modules/trackHistory/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
@@ -20,16 +18,16 @@ import {
   ServerError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class TrackService implements ITrackService {
-  private readonly trackRepository: ITrackRepository
-  private readonly requestService: IRequestService
-  private readonly trackHistoryService: ITrackHistoryService
+  public constructor(
+    private readonly trackRepository: TrackRepository,
 
-  public constructor() {
-    this.trackRepository = TrackRepository
-    this.requestService = RequestService
-    this.trackHistoryService = TrackHistoryService
-  }
+    @inject(delay(() => RequestService))
+    private readonly requestService: RequestService,
+
+    private readonly trackHistoryService: TrackHistoryService,
+  ) {}
 
   public getAll: ITrackService['getAll'] = async (filter) => {
     try {
@@ -208,4 +206,4 @@ class TrackService implements ITrackService {
   }
 }
 
-export default new TrackService()
+export default TrackService

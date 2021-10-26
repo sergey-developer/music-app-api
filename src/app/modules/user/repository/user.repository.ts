@@ -1,9 +1,11 @@
 import { FilterQuery } from 'mongoose'
+import { singleton } from 'tsyringe'
 
 import { IUserDocument, IUserModel, UserModel } from 'modules/user/model'
 import { IUserRepository } from 'modules/user/repository'
 import { omitUndefined } from 'shared/utils/common'
 
+@singleton()
 class UserRepository implements IUserRepository {
   private readonly user: IUserModel
 
@@ -30,4 +32,4 @@ class UserRepository implements IUserRepository {
   }
 }
 
-export default new UserRepository()
+export default UserRepository

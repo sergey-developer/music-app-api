@@ -1,15 +1,16 @@
 import isEmpty from 'lodash/isEmpty'
+import { singleton } from 'tsyringe'
 
 import { ModelNamesEnum } from 'database/constants'
 import { DocumentIdArray } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
-import { AlbumRepository, IAlbumRepository } from 'modules/album/repository'
+import { AlbumRepository } from 'modules/album/repository'
 import { IAlbumService } from 'modules/album/service'
-import { IRequestService, RequestService } from 'modules/request/service'
+import { RequestService } from 'modules/request/service'
 import { ITrackDocumentArray } from 'modules/track/interface'
-import { ITrackService, TrackService } from 'modules/track/service'
+import { TrackService } from 'modules/track/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
@@ -19,22 +20,19 @@ import {
   ServerError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class AlbumService implements IAlbumService {
-  private readonly albumRepository: IAlbumRepository
-  private readonly requestService: IRequestService
-  private readonly trackService: ITrackService
-
   private getTracksByAlbumsIds = async (
     albumIds: DocumentIdArray,
   ): Promise<ITrackDocumentArray> => {
     return this.trackService.getAll({ albumIds })
   }
 
-  public constructor() {
-    this.albumRepository = AlbumRepository
-    this.requestService = RequestService
-    this.trackService = TrackService
-  }
+  public constructor(
+    private readonly albumRepository: AlbumRepository,
+    private readonly requestService: RequestService,
+    private readonly trackService: TrackService,
+  ) {}
 
   public getAll: IAlbumService['getAll'] = async (filter) => {
     try {
@@ -219,4 +217,4 @@ class AlbumService implements IAlbumService {
   }
 }
 
-export default new AlbumService()
+export default AlbumService

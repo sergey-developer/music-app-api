@@ -1,6 +1,9 @@
+import { singleton } from 'tsyringe'
+
 import { ISessionModel, SessionModel } from 'modules/session/model'
 import { ISessionRepository } from 'modules/session/repository'
 
+@singleton()
 class SessionRepository implements ISessionRepository {
   private readonly session: ISessionModel
 
@@ -31,4 +34,4 @@ class SessionRepository implements ISessionRepository {
   }
 }
 
-export default new SessionRepository()
+export default SessionRepository

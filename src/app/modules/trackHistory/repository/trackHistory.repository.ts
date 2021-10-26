@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
+import { singleton } from 'tsyringe'
 
 import {
   ITrackHistoryDocument,
@@ -9,6 +10,7 @@ import {
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 import { omitUndefined } from 'shared/utils/common'
 
+@singleton()
 class TrackHistoryRepository implements ITrackHistoryRepository {
   private readonly trackHistory: ITrackHistoryModel
 
@@ -48,4 +50,4 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
   }
 }
 
-export default new TrackHistoryRepository()
+export default TrackHistoryRepository

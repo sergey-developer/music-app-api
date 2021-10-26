@@ -1,4 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
+import { delay, inject, singleton } from 'tsyringe'
 
 import {
   isAlbumModelName,
@@ -8,18 +9,15 @@ import {
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
-import { AlbumService, IAlbumService } from 'modules/album/service'
+import { AlbumService } from 'modules/album/service'
 import { IArtistDocument } from 'modules/artist/model'
-import { ArtistService, IArtistService } from 'modules/artist/service'
+import { ArtistService } from 'modules/artist/service'
 import { IRequestDocument } from 'modules/request/model'
-import {
-  IRequestRepository,
-  RequestRepository,
-} from 'modules/request/repository'
+import { RequestRepository } from 'modules/request/repository'
 import { IRequestService } from 'modules/request/service'
 import { isApprovedRequest } from 'modules/request/utils'
 import { ITrackDocument } from 'modules/track/model'
-import { ITrackService, TrackService } from 'modules/track/service'
+import { TrackService } from 'modules/track/service'
 import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
@@ -30,12 +28,8 @@ import {
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class RequestService implements IRequestService {
-  private readonly requestRepository: IRequestRepository
-  private readonly artistService: IArtistService
-  private readonly albumService: IAlbumService
-  private readonly trackService: ITrackService
-
   private deleteViaEntity = async (
     request: IRequestDocument,
   ): Promise<void> => {
@@ -65,12 +59,16 @@ class RequestService implements IRequestService {
     }
   }
 
-  public constructor() {
-    this.requestRepository = RequestRepository
-    this.artistService = ArtistService
-    this.albumService = AlbumService
-    this.trackService = TrackService
-  }
+  public constructor(
+    private readonly requestRepository: RequestRepository,
+
+    private readonly artistService: ArtistService,
+
+    @inject(delay(() => AlbumService))
+    private readonly albumService: AlbumService,
+
+    private readonly trackService: TrackService,
+  ) {}
 
   public getAll: IRequestService['getAll'] = async (filter) => {
     try {
@@ -91,7 +89,6 @@ class RequestService implements IRequestService {
         creator: payload.creator,
       })
     } catch (error) {
-      console.log({ error })
       logger.error(error.stack)
       throw ServerError('Error while creating new request')
     }
@@ -194,4 +191,4 @@ class RequestService implements IRequestService {
   }
 }
 
-export default new RequestService()
+export default RequestService

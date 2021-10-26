@@ -1,10 +1,12 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
+import { singleton } from 'tsyringe'
 
 import { AlbumModel, IAlbumDocument, IAlbumModel } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
 import { omitUndefined } from 'shared/utils/common'
 
+@singleton()
 class AlbumRepository implements IAlbumRepository {
   private readonly album: IAlbumModel
 
@@ -64,4 +66,4 @@ class AlbumRepository implements IAlbumRepository {
   }
 }
 
-export default new AlbumRepository()
+export default AlbumRepository

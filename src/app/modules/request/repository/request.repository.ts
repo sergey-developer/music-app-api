@@ -1,5 +1,6 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery, QueryOptions } from 'mongoose'
+import { singleton } from 'tsyringe'
 
 import {
   IRequestDocument,
@@ -9,6 +10,7 @@ import {
 import { IRequestRepository } from 'modules/request/repository'
 import { omitUndefined } from 'shared/utils/common'
 
+@singleton()
 class RequestRepository implements IRequestRepository {
   private readonly request: IRequestModel
 
@@ -106,4 +108,4 @@ class RequestRepository implements IRequestRepository {
   }
 }
 
-export default new RequestRepository()
+export default RequestRepository

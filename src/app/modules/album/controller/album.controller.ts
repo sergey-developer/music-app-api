@@ -1,18 +1,16 @@
 import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
+import { singleton } from 'tsyringe'
 
 import { IAlbumController } from 'modules/album/controller'
 import { IAlbumDocumentArray } from 'modules/album/interface'
-import { AlbumService, IAlbumService } from 'modules/album/service'
+import { AlbumService } from 'modules/album/service'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ensureHttpError } from 'shared/utils/errors/httpErrors'
 
+@singleton()
 class AlbumController implements IAlbumController {
-  private readonly albumService: IAlbumService
-
-  public constructor() {
-    this.albumService = AlbumService
-  }
+  public constructor(private readonly albumService: AlbumService) {}
 
   public getAll: IAlbumController['getAll'] = async (req, res) => {
     const { query, user } = req
@@ -107,4 +105,4 @@ class AlbumController implements IAlbumController {
   }
 }
 
-export default new AlbumController()
+export default AlbumController
