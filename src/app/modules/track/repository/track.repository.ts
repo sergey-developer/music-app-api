@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
-import { FilterQuery } from 'mongoose'
+import { FilterQuery, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { EntityNamesEnum } from 'database/constants/entityNames'
@@ -51,10 +51,20 @@ class TrackRepository implements ITrackRepository {
     const { id } = omitUndefined(filter)
     const updates = omitUndefined(payload)
 
+    const defaultOptions: QueryOptions = {
+      runValidators: true,
+      new: true,
+      context: 'query',
+    }
+    const optionsToApply: QueryOptions = defaultOptions
+
     const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
     const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-    return this.track.findOneAndUpdate(filterToApply, updates).orFail().exec()
+    return this.track
+      .findOneAndUpdate(filterToApply, updates, optionsToApply)
+      .orFail()
+      .exec()
   }
 
   public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {

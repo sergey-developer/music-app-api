@@ -59,7 +59,11 @@ class RequestRepository implements IRequestRepository {
     const { id } = omitUndefined(filter)
     const updates = omitUndefined(payload)
 
-    const defaultOptions: QueryOptions = { runValidators: true, new: true }
+    const defaultOptions: QueryOptions = {
+      runValidators: true,
+      new: true,
+      context: 'query',
+    }
     const optionsToApply: QueryOptions = defaultOptions
 
     const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
