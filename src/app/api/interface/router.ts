@@ -1,8 +1,10 @@
 import { Router } from 'express'
 
+import { RoutersEnum } from 'api/constants'
+
 export type CreateRouter = (router: Router) => Router
 
 export type ApiRouter = {
-  name: string
-  create: CreateRouter
+  name: RoutersEnum
+  creator: CreateRouter
 }

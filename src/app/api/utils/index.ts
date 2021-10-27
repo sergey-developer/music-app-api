@@ -1,2 +1,1 @@
-export * from './routePath'
-export * from './createRouters'
+export { default as createRouters } from './createRouters'
