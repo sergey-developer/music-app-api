@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
-import { singleton } from 'tsyringe'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
@@ -17,6 +17,7 @@ import {
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {
   public constructor(
+    @inject(delay(() => TrackHistoryRepository))
     private readonly trackHistoryRepository: TrackHistoryRepository,
   ) {}
 

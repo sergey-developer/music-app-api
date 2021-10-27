@@ -6,8 +6,7 @@ import express, { Application } from 'express'
 
 import { createRouters } from 'api/utils'
 import routers from 'app/api'
-import { modelList } from 'database/constants/modelList'
-import registerModels from 'database/utils/registerModels'
+import { registerDependencies } from 'app/utils'
 
 const setupApp = (app: Application): Application => {
   app.use(express.static('public/uploads/images'))
@@ -16,7 +15,7 @@ const setupApp = (app: Application): Application => {
   app.use(cookieParser())
   // app.use(cookieParser(envConfig.app.cookieSecret))
 
-  registerModels(modelList)
+  registerDependencies()
   createRouters(app, routers)
 
   return app

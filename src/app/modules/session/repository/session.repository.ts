@@ -1,15 +1,16 @@
-import { singleton } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-import { ISessionModel, SessionModel } from 'modules/session/model'
+import { EntityNamesEnum } from 'database/constants/entityNames'
+import getModelName from 'database/utils/getModelName'
+import { ISessionModel } from 'modules/session/model'
 import { ISessionRepository } from 'modules/session/repository'
 
 @singleton()
 class SessionRepository implements ISessionRepository {
-  private readonly session: ISessionModel
-
-  public constructor() {
-    this.session = SessionModel
-  }
+  public constructor(
+    @inject(getModelName(EntityNamesEnum.Session))
+    private readonly session: ISessionModel,
+  ) {}
 
   public findOneByToken: ISessionRepository['findOneByToken'] = async (
     token,

@@ -1,17 +1,18 @@
 import { FilterQuery } from 'mongoose'
-import { singleton } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-import { IUserDocument, IUserModel, UserModel } from 'modules/user/model'
+import { EntityNamesEnum } from 'database/constants/entityNames'
+import getModelName from 'database/utils/getModelName'
+import { IUserDocument, IUserModel } from 'modules/user/model'
 import { IUserRepository } from 'modules/user/repository'
 import { omitUndefined } from 'shared/utils/common'
 
 @singleton()
 class UserRepository implements IUserRepository {
-  private readonly user: IUserModel
-
-  public constructor() {
-    this.user = UserModel
-  }
+  public constructor(
+    @inject(getModelName(EntityNamesEnum.User))
+    private readonly user: IUserModel,
+  ) {}
 
   public findOne: IUserRepository['findOne'] = async (filter) => {
     const { email }: typeof filter = omitUndefined(filter)

@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
@@ -13,7 +13,10 @@ import {
 
 @singleton()
 class UserService implements IUserService {
-  public constructor(private readonly userRepository: UserRepository) {}
+  public constructor(
+    @inject(delay(() => UserRepository))
+    private readonly userRepository: UserRepository,
+  ) {}
 
   public getOneByEmail: IUserService['getOneByEmail'] = async (email) => {
     try {

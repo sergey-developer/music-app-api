@@ -1,5 +1,5 @@
 import isEmpty from 'lodash/isEmpty'
-import { singleton } from 'tsyringe'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { EntityNamesEnum } from 'database/constants/entityNames'
 import { DocumentIdArray } from 'database/interface/document'
@@ -29,7 +29,9 @@ class AlbumService implements IAlbumService {
   }
 
   public constructor(
+    @inject(delay(() => AlbumRepository))
     private readonly albumRepository: AlbumRepository,
+
     private readonly requestService: RequestService,
     private readonly trackService: TrackService,
   ) {}

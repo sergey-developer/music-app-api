@@ -1,22 +1,19 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery, QueryOptions } from 'mongoose'
-import { singleton } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-import {
-  IRequestDocument,
-  IRequestModel,
-  RequestModel,
-} from 'modules/request/model'
+import { EntityNamesEnum } from 'database/constants/entityNames'
+import getModelName from 'database/utils/getModelName'
+import { IRequestDocument, IRequestModel } from 'modules/request/model'
 import { IRequestRepository } from 'modules/request/repository'
 import { omitUndefined } from 'shared/utils/common'
 
 @singleton()
 class RequestRepository implements IRequestRepository {
-  private readonly request: IRequestModel
-
-  public constructor() {
-    this.request = RequestModel
-  }
+  public constructor(
+    @inject(getModelName(EntityNamesEnum.Request))
+    private readonly request: IRequestModel,
+  ) {}
 
   public findAll: IRequestRepository['findAll'] = async () => {
     return this.request.find().exec()

@@ -1,18 +1,19 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
-import { singleton } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-import { ITrackDocument, ITrackModel, TrackModel } from 'modules/track/model'
+import { EntityNamesEnum } from 'database/constants/entityNames'
+import getModelName from 'database/utils/getModelName'
+import { ITrackDocument, ITrackModel } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
 import { omitUndefined } from 'shared/utils/common'
 
 @singleton()
 class TrackRepository implements ITrackRepository {
-  private readonly track: ITrackModel
-
-  public constructor() {
-    this.track = TrackModel
-  }
+  public constructor(
+    @inject(getModelName(EntityNamesEnum.Track))
+    private readonly track: ITrackModel,
+  ) {}
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
     const { artist, albumIds, ids }: typeof filter = omitUndefined(filter)

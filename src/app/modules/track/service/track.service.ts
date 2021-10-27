@@ -21,6 +21,7 @@ import {
 @singleton()
 class TrackService implements ITrackService {
   public constructor(
+    @inject(delay(() => TrackRepository))
     private readonly trackRepository: TrackRepository,
 
     @inject(delay(() => RequestService))

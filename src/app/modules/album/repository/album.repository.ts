@@ -1,18 +1,19 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
-import { singleton } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
-import { AlbumModel, IAlbumDocument, IAlbumModel } from 'modules/album/model'
+import { EntityNamesEnum } from 'database/constants/entityNames'
+import getModelName from 'database/utils/getModelName'
+import { IAlbumDocument, IAlbumModel } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
 import { omitUndefined } from 'shared/utils/common'
 
 @singleton()
 class AlbumRepository implements IAlbumRepository {
-  private readonly album: IAlbumModel
-
-  public constructor() {
-    this.album = AlbumModel
-  }
+  public constructor(
+    @inject(getModelName(EntityNamesEnum.Album))
+    private readonly album: IAlbumModel,
+  ) {}
 
   public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
     const { artist, ids }: typeof filter = omitUndefined(filter)

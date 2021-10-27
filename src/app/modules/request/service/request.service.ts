@@ -60,6 +60,7 @@ class RequestService implements IRequestService {
   }
 
   public constructor(
+    @inject(delay(() => RequestRepository))
     private readonly requestRepository: RequestRepository,
 
     private readonly artistService: ArtistService,

@@ -1,22 +1,22 @@
 import isEmpty from 'lodash/isEmpty'
 import { FilterQuery } from 'mongoose'
-import { singleton } from 'tsyringe'
+import { inject, singleton } from 'tsyringe'
 
+import { EntityNamesEnum } from 'database/constants/entityNames'
+import getModelName from 'database/utils/getModelName'
 import {
   ITrackHistoryDocument,
   ITrackHistoryModel,
-  TrackHistoryModel,
 } from 'modules/trackHistory/model'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 import { omitUndefined } from 'shared/utils/common'
 
 @singleton()
 class TrackHistoryRepository implements ITrackHistoryRepository {
-  private readonly trackHistory: ITrackHistoryModel
-
-  public constructor() {
-    this.trackHistory = TrackHistoryModel
-  }
+  public constructor(
+    @inject(getModelName(EntityNamesEnum.TrackHistory))
+    private readonly trackHistory: ITrackHistoryModel,
+  ) {}
 
   public findAllWhere: ITrackHistoryRepository['findAllWhere'] = async (
     filter,

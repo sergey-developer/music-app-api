@@ -1,4 +1,4 @@
-import { singleton } from 'tsyringe'
+import { delay, inject, singleton } from 'tsyringe'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
@@ -16,7 +16,10 @@ import {
 
 @singleton()
 class SessionService implements ISessionService {
-  public constructor(private readonly sessionRepository: SessionRepository) {}
+  public constructor(
+    @inject(delay(() => SessionRepository))
+    private readonly sessionRepository: SessionRepository,
+  ) {}
 
   public getOneByToken: ISessionRepository['findOneByToken'] = async (
     token,
