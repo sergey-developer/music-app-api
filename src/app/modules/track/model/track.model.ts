@@ -1,7 +1,7 @@
 import { FilterQuery, Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { DocumentId } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { IArtistDocument } from 'modules/artist/model'
@@ -31,7 +31,7 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
   },
   album: {
     type: Schema.Types.ObjectId,
-    ref: ModelNamesEnum.Album,
+    ref: EntityNamesEnum.Album,
     required: true,
     autopopulate: true,
   },
@@ -55,7 +55,7 @@ TrackSchema.plugin(toJson)
 TrackSchema.plugin(autopopulate)
 
 const TrackModel = model<ITrackDocument, ITrackModel>(
-  ModelNamesEnum.Track,
+  EntityNamesEnum.Track,
   TrackSchema,
 )
 

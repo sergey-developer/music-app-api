@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import uniqueValidation from 'database/plugins/uniqueValidation'
 import {
   MAX_LENGTH_ALBUM_NAME,
@@ -29,7 +29,7 @@ const AlbumSchema = new Schema<IAlbumDocument, IAlbumModel, IAlbumDocument>({
   },
   artist: {
     type: Schema.Types.ObjectId,
-    ref: ModelNamesEnum.Artist,
+    ref: EntityNamesEnum.Artist,
     required: true,
     autopopulate: true,
   },
@@ -40,7 +40,7 @@ AlbumSchema.plugin(autopopulate)
 AlbumSchema.plugin(uniqueValidation)
 
 const AlbumModel = model<IAlbumDocument, IAlbumModel>(
-  ModelNamesEnum.Album,
+  EntityNamesEnum.Album,
   AlbumSchema,
 )
 

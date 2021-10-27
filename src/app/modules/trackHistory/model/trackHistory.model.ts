@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import {
   ITrackHistoryDocument,
   ITrackHistoryModel,
@@ -20,13 +20,13 @@ const TrackHistorySchema = new Schema<
   },
   track: {
     type: Schema.Types.ObjectId,
-    ref: ModelNamesEnum.Track,
+    ref: EntityNamesEnum.Track,
     required: true,
     autopopulate: true,
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: ModelNamesEnum.User,
+    ref: EntityNamesEnum.User,
     required: true,
   },
 })
@@ -35,7 +35,7 @@ TrackHistorySchema.plugin(toJson)
 TrackHistorySchema.plugin(autopopulate)
 
 const TrackHistoryModel = model<ITrackHistoryDocument, ITrackHistoryModel>(
-  ModelNamesEnum.TrackHistory,
+  EntityNamesEnum.TrackHistory,
   TrackHistorySchema,
 )
 

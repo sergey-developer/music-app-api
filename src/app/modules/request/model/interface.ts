@@ -1,6 +1,6 @@
 import { Model } from 'mongoose'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { DocumentId, PopulatedDoc } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { IArtistDocument } from 'modules/artist/model'
@@ -11,7 +11,7 @@ import { MaybeNull } from 'shared/interface/utils'
 
 export interface IRequestDocument {
   id: DocumentId
-  entityName: ModelNamesEnum
+  entityName: EntityNamesEnum
   entity:
     | PopulatedDoc<IArtistDocument>
     | PopulatedDoc<IAlbumDocument>

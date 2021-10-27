@@ -1,6 +1,6 @@
 import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { DocumentId } from 'database/interface/document'
 import messages from 'lib/class-validator/messages'
 import { RequestStatusEnum } from 'modules/request/constants'
@@ -8,7 +8,7 @@ import { IRequestDocument } from 'modules/request/model'
 
 export class GetAllRequestsQuery {
   @IsOptional()
-  @IsEnum(ModelNamesEnum)
+  @IsEnum(EntityNamesEnum)
   kind?: IRequestDocument['entityName']
 
   @IsOptional()

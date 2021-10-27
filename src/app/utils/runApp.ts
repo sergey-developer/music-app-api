@@ -3,11 +3,11 @@ import express from 'express'
 
 import logger from 'lib/logger'
 
-import setup from './setup'
+import setupApp from './setupApp'
 
-const run = (): void => {
+const runApp = (): void => {
   logger.info('Setting up application...')
-  const app = setup(express())
+  const app = setupApp(express())
   const port: number = config.get('app.port')
 
   app.listen(port, () => {
@@ -15,4 +15,4 @@ const run = (): void => {
   })
 }
 
-export default run
+export default runApp

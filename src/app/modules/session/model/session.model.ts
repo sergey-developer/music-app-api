@@ -1,7 +1,7 @@
 import config from 'config'
 import { Schema, model } from 'mongoose'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { JwtPayload, JwtToken } from 'modules/session/interface'
 import { ISessionDocument, ISessionModel } from 'modules/session/model'
 import { generateToken } from 'modules/session/utils'
@@ -20,7 +20,7 @@ const SessionSchema = new Schema<
   },
   user: {
     type: Schema.Types.ObjectId,
-    ref: ModelNamesEnum.User,
+    ref: EntityNamesEnum.User,
     required: true,
     unique: true,
   },
@@ -34,7 +34,7 @@ SessionSchema.static('generateToken', function (payload: JwtPayload): JwtToken {
 SessionSchema.plugin(toJson)
 
 const SessionModel = model<ISessionDocument, ISessionModel>(
-  ModelNamesEnum.Session,
+  EntityNamesEnum.Session,
   SessionSchema,
 )
 

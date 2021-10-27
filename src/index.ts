@@ -1,4 +1,4 @@
-import runApp from 'app/run'
+import { runApp } from 'app/utils'
 import { connectDatabase } from 'database/connection'
 
 const runServer = async () => {

@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import {
   MAX_LENGTH_PASSWORD,
   MAX_LENGTH_USERNAME,
@@ -62,7 +62,7 @@ UserSchema.method(
 UserSchema.plugin(toJson)
 
 const UserModel = model<IUserDocument, IUserModel>(
-  ModelNamesEnum.User,
+  EntityNamesEnum.User,
   UserSchema,
 )
 

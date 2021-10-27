@@ -1,4 +1,4 @@
-export enum ModelNamesEnum {
+export enum EntityNamesEnum {
   Artist = 'Artist',
   Album = 'Album',
   Track = 'Track',

@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import uniqueValidation from 'database/plugins/uniqueValidation'
 import {
   MAX_LENGTH_ARTIST_INFO,
@@ -43,7 +43,7 @@ ArtistSchema.plugin(toJson)
 ArtistSchema.plugin(uniqueValidation)
 
 const ArtistModel = model<IArtistDocument, IArtistModel>(
-  ModelNamesEnum.Artist,
+  EntityNamesEnum.Artist,
   ArtistSchema,
 )
 

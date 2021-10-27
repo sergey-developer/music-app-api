@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { DocumentId } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
@@ -30,6 +30,7 @@ class ArtistService implements IArtistService {
   }
 
   constructor(
+    @inject(delay(() => ArtistRepository))
     private readonly artistRepository: ArtistRepository,
 
     @inject(delay(() => AlbumService))
@@ -44,7 +45,7 @@ class ArtistService implements IArtistService {
       const requests = await this.requestService.getAll({
         status: filter.status,
         creator: filter.userId,
-        kind: ModelNamesEnum.Artist,
+        kind: EntityNamesEnum.Artist,
       })
 
       const artistIds = requests.map((request) => {
@@ -101,7 +102,7 @@ class ArtistService implements IArtistService {
 
     try {
       await this.requestService.createOne({
-        entityName: ModelNamesEnum.Artist,
+        entityName: EntityNamesEnum.Artist,
         entity: artist.id,
         creator: payload.userId,
       })

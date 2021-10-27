@@ -5,7 +5,7 @@ import {
   isAlbumModelName,
   isArtistModelName,
   isTrackModelName,
-} from 'database/utils/checkModelName'
+} from 'database/utils/checkEntityName'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'

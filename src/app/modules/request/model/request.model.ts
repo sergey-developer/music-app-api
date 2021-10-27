@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import {
   MAX_LENGTH_REASON,
   MIN_LENGTH_REASON,
@@ -38,11 +38,15 @@ const RequestSchema = new Schema<
     entityName: {
       type: String,
       required: true,
-      enum: [ModelNamesEnum.Artist, ModelNamesEnum.Album, ModelNamesEnum.Track],
+      enum: [
+        EntityNamesEnum.Artist,
+        EntityNamesEnum.Album,
+        EntityNamesEnum.Track,
+      ],
     },
     creator: {
       type: Schema.Types.ObjectId,
-      ref: ModelNamesEnum.User,
+      ref: EntityNamesEnum.User,
       required: true,
       autopopulate: true,
     },
@@ -60,7 +64,7 @@ RequestSchema.plugin(toJson)
 RequestSchema.plugin(autopopulate)
 
 const RequestModel = model<IRequestDocument, IRequestModel>(
-  ModelNamesEnum.Request,
+  EntityNamesEnum.Request,
   RequestSchema,
 )
 

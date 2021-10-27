@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 import { singleton } from 'tsyringe'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { DocumentIdArray } from 'database/interface/document'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
@@ -41,7 +41,7 @@ class AlbumService implements IAlbumService {
       const requests = await this.requestService.getAll({
         status,
         creator: userId,
-        kind: ModelNamesEnum.Album,
+        kind: EntityNamesEnum.Album,
       })
 
       const albumIds = requests.map((request) => {
@@ -97,7 +97,7 @@ class AlbumService implements IAlbumService {
 
     try {
       await this.requestService.createOne({
-        entityName: ModelNamesEnum.Album,
+        entityName: EntityNamesEnum.Album,
         entity: album.id,
         creator: payload.userId,
       })

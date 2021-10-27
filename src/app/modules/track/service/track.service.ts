@@ -1,7 +1,7 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import { ModelNamesEnum } from 'database/constants'
+import { EntityNamesEnum } from 'database/constants/entityNames'
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { RequestService } from 'modules/request/service'
@@ -36,7 +36,7 @@ class TrackService implements ITrackService {
       const requests = await this.requestService.getAll({
         status,
         creator: userId,
-        kind: ModelNamesEnum.Track,
+        kind: EntityNamesEnum.Track,
       })
 
       const trackIds = requests.map((request) => {
@@ -93,7 +93,7 @@ class TrackService implements ITrackService {
 
     try {
       await this.requestService.createOne({
-        entityName: ModelNamesEnum.Track,
+        entityName: EntityNamesEnum.Track,
         entity: track.id,
         creator: payload.userId,
       })
