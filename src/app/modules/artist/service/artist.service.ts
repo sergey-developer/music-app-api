@@ -88,7 +88,7 @@ class ArtistService implements IArtistService {
       })
     } catch (error) {
       if (payload.photo) deleteImageFromFs(payload.photo)
-      console.log({ error })
+
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
           kind: error.name,
