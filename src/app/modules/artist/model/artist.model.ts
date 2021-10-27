@@ -1,7 +1,6 @@
 import { Schema, model } from 'mongoose'
 
 import { EntityNamesEnum } from 'database/constants/entityNames'
-import uniqueValidation from 'database/plugins/uniqueValidation'
 import {
   MAX_LENGTH_ARTIST_INFO,
   MAX_LENGTH_ARTIST_NAME,
@@ -11,16 +10,16 @@ import {
 import { IArtistDocument, IArtistModel } from 'modules/artist/model'
 
 const toJson = require('@meanie/mongoose-to-json')
+const uniqueValidation = require('mongoose-unique-validator')
 
 const ArtistSchema = new Schema<IArtistDocument, IArtistModel, IArtistDocument>(
   {
-    // @ts-ignore
     name: {
-      // TODO: make capitalize, validation
+      // TODO: make capitalize
       type: String,
       required: true,
       trim: true,
-      unique: 'Artist with name {value} is already exists',
+      unique: 'Artist with name "{VALUE}" is already exists' as any,
       minlength: MIN_LENGTH_ARTIST_NAME,
       maxlength: MAX_LENGTH_ARTIST_NAME,
     },

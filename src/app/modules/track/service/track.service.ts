@@ -70,7 +70,6 @@ class TrackService implements ITrackService {
 
   public createOne: ITrackService['createOne'] = async (payload) => {
     let track: ITrackDocument
-
     const serverErrorMsg = 'Error while creating new track'
 
     try {
@@ -146,14 +145,13 @@ class TrackService implements ITrackService {
 
   public deleteOneById: ITrackService['deleteOneById'] = async (id) => {
     let track: ITrackDocument
-
     const serverErrorMsg = 'Error while deleting track'
 
     try {
       track = await this.trackRepository.deleteOneById(id)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Track with id "${id}" was not found`)
+        throw NotFoundError('Track was not found')
       }
 
       logger.error(error.stack)
@@ -181,10 +179,10 @@ class TrackService implements ITrackService {
       throw BadRequestError(EMPTY_FILTER_ERR_MSG)
     }
 
+    const serverErrorMsg = 'Error while deleting tracks'
+
     const { tracks = [] } = filter
     const trackIds = tracks.map((track) => track.id)
-
-    const serverErrorMsg = 'Error while deleting tracks'
 
     try {
       await this.trackRepository.deleteMany({ ids: trackIds })

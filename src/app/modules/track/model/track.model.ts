@@ -13,6 +13,7 @@ import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument, ITrackModel } from 'modules/track/model'
 
 const toJson = require('@meanie/mongoose-to-json')
+const uniqueValidation = require('mongoose-unique-validator')
 
 const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
   name: {
@@ -27,7 +28,7 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
   },
   youtube: {
     type: String,
-    unique: true,
+    unique: 'Track with such link "{VALUE}" is already exists',
   },
   album: {
     type: Schema.Types.ObjectId,
@@ -53,6 +54,7 @@ TrackSchema.static(
 
 TrackSchema.plugin(toJson)
 TrackSchema.plugin(autopopulate)
+TrackSchema.plugin(uniqueValidation)
 
 const TrackModel = model<ITrackDocument, ITrackModel>(
   EntityNamesEnum.Track,

@@ -55,7 +55,10 @@ class AlbumService implements IAlbumService {
 
       return this.albumRepository.findAllWhere(repoFilter)
     } catch (error) {
-      logger.error(error.stack)
+      logger.error(error.stack, {
+        args: { filter },
+      })
+
       throw ServerError('Error while getting albums')
     }
   }
@@ -66,17 +69,20 @@ class AlbumService implements IAlbumService {
       return album
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Album with id "${id}" was not found`)
+        throw NotFoundError('Album was not found')
       }
 
-      logger.error(error.stack)
-      throw ServerError(`Error while getting album by id "${id}"`)
+      logger.error(error.stack, {
+        message: `Error while getting album by id "${id}"`,
+      })
+
+      throw ServerError('Error while getting album')
     }
   }
 
   public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
-    const serverError = ServerError('Error while creating new album')
+    const serverErrorMsg = 'Error while creating new album'
 
     try {
       album = await this.albumRepository.createOne({
@@ -93,8 +99,11 @@ class AlbumService implements IAlbumService {
         })
       }
 
-      logger.error(error.stack)
-      throw serverError
+      logger.error(error.stack, {
+        args: { payload },
+      })
+
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -118,7 +127,7 @@ class AlbumService implements IAlbumService {
         })
       }
 
-      throw serverError
+      throw ServerError(serverErrorMsg)
     }
   }
 
@@ -151,16 +160,20 @@ class AlbumService implements IAlbumService {
 
   public deleteOneById: IAlbumService['deleteOneById'] = async (id) => {
     let album: IAlbumDocument
+    const serverErrorMsg = 'Error while deleting album'
 
     try {
       album = await this.albumRepository.deleteOneById(id)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Album with id "${id}" was not found`)
+        throw NotFoundError('Album was not found')
       }
 
-      logger.error(error.stack)
-      throw ServerError(`Error while deleting album by id "${id}"`)
+      logger.error(error.stack, {
+        message: `Error while deleting album by id "${id}"`,
+      })
+
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -175,8 +188,11 @@ class AlbumService implements IAlbumService {
 
       return album
     } catch (error) {
-      logger.error(error.stack)
-      throw ServerError('Error while deleting related objects of album')
+      logger.error(error.stack, {
+        message: `Error while deleting related objects of album with id "${id}"`,
+      })
+
+      throw ServerError(serverErrorMsg)
     }
   }
 

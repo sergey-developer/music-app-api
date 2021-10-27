@@ -78,7 +78,7 @@ class ArtistService implements IArtistService {
 
   public createOne: IArtistService['createOne'] = async (payload) => {
     let artist: IArtistDocument
-    const serverError = ServerError('Error while creating new artist')
+    const serverErrorMsg = 'Error while creating new artist'
 
     try {
       artist = await this.artistRepository.createOne({
@@ -88,7 +88,7 @@ class ArtistService implements IArtistService {
       })
     } catch (error) {
       if (payload.photo) deleteImageFromFs(payload.photo)
-
+      console.log({ error })
       if (isValidationError(error.name)) {
         throw BadRequestError(error.message, {
           kind: error.name,
@@ -97,7 +97,7 @@ class ArtistService implements IArtistService {
       }
 
       logger.error(error.stack)
-      throw serverError
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -124,7 +124,7 @@ class ArtistService implements IArtistService {
         if (artist.photo) deleteImageFromFs(artist.photo)
       }
 
-      throw serverError
+      throw ServerError(serverErrorMsg)
     }
   }
 
@@ -164,6 +164,7 @@ class ArtistService implements IArtistService {
 
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     let artist: IArtistDocument
+    const serverErrorMsg = 'Error while deleting artist'
 
     try {
       artist = await this.artistRepository.deleteOneById(id)
@@ -174,7 +175,7 @@ class ArtistService implements IArtistService {
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while deleting artist')
+      throw ServerError(serverErrorMsg)
     }
 
     try {
@@ -189,8 +190,11 @@ class ArtistService implements IArtistService {
 
       return artist
     } catch (error) {
-      logger.error(error.stack)
-      throw ServerError('Error while deleting related objects of artist')
+      logger.error(error.stack, {
+        message: 'Error while deleting related objects of artist',
+      })
+
+      throw ServerError(serverErrorMsg)
     }
   }
 }

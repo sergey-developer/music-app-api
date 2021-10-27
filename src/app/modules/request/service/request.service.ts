@@ -55,7 +55,7 @@ class RequestService implements IRequestService {
       }
     } catch (error) {
       logger.error(error.stack)
-      throw ServerError()
+      throw ServerError('Error while deleting request')
     }
   }
 
@@ -137,7 +137,7 @@ class RequestService implements IRequestService {
       request = await this.requestRepository.findOneById(requestId)
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Request with id "${requestId}" was not found`)
+        throw NotFoundError('Request was not found')
       }
 
       logger.error(error.stack)
@@ -154,7 +154,7 @@ class RequestService implements IRequestService {
       return request
     } catch (error) {
       if (isNotFoundError(error)) {
-        throw NotFoundError(`Request with id "${requestId}" was not found`)
+        throw NotFoundError('Request was not found')
       }
 
       logger.error(error.stack)

@@ -58,7 +58,7 @@ class TrackHistoryService implements ITrackHistoryService {
       return trackHistory
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Track history with id "${id}" was not found`)
+        throw NotFoundError('Track history was not found')
       }
 
       logger.error(error.stack)

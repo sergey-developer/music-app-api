@@ -29,7 +29,7 @@ class SessionService implements ISessionService {
       return session
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Session with token "${token}" was not found`)
+        throw NotFoundError()
       }
 
       logger.error(error.stack)
@@ -67,11 +67,11 @@ class SessionService implements ISessionService {
       return session
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`Session with token "${token}" was not found`)
+        throw NotFoundError()
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while deleting session')
+      throw ServerError()
     }
   }
 }

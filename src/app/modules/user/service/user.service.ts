@@ -55,7 +55,7 @@ class UserService implements IUserService {
       return user
     } catch (error) {
       if (isNotFoundDBError(error)) {
-        throw NotFoundError(`User with id "${id}" was not found`)
+        throw NotFoundError('User was not found')
       }
 
       logger.error(error.stack)

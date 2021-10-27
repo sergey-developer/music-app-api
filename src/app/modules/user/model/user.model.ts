@@ -12,25 +12,24 @@ import { IUserDocument, IUserModel } from 'modules/user/model'
 import { checkPassword, generatePassword } from 'modules/user/utils'
 
 const toJson = require('@meanie/mongoose-to-json')
+const uniqueValidation = require('mongoose-unique-validator')
 
 const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
   username: {
     type: String,
     required: true,
-    unique: true,
+    unique: 'User with such name is already exists' as any,
     minlength: MIN_LENGTH_USERNAME,
     maxlength: MAX_LENGTH_USERNAME,
-    // TODO: add validation
   },
   email: {
     type: String,
     required: true,
-    unique: true, // TODO: add validation
+    unique: 'User with such email is already exists' as any,
   },
   password: {
     type: String,
     required: true,
-    unique: true,
     minlength: MIN_LENGTH_PASSWORD,
     maxlength: MAX_LENGTH_PASSWORD,
     /**
@@ -60,6 +59,7 @@ UserSchema.method(
 )
 
 UserSchema.plugin(toJson)
+UserSchema.plugin(uniqueValidation)
 
 const UserModel = model<IUserDocument, IUserModel>(
   EntityNamesEnum.User,

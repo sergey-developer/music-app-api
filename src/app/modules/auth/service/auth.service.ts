@@ -21,8 +21,8 @@ class AuthService implements IAuthService {
   ) {}
 
   public signin: IAuthService['signin'] = async (payload) => {
-    const serverErrorMsg = 'Something went wrong. Sign in error.'
     let user: IUserDocument
+    const serverErrorMsg = 'Sign in error'
 
     try {
       const { email, password } = payload
@@ -64,7 +64,7 @@ class AuthService implements IAuthService {
 
   public signup: IAuthService['signup'] = async (payload) => {
     let user: IUserDocument
-    const serverErrorMsg = 'Something went wrong. Sign up error.'
+    const serverErrorMsg = 'Sign up error'
 
     try {
       user = await this.userService.createOne(payload)
