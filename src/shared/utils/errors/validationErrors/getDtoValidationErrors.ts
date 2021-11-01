@@ -2,7 +2,7 @@ import { ValidationError } from 'class-validator'
 import reduce from 'lodash/reduce'
 import values from 'lodash/values'
 
-import { IValidationErrors } from 'shared/utils/errors/ValidationError'
+import { IValidationErrors } from 'shared/utils/errors/validationErrors'
 
 const getDtoValidationErrors = (
   errors: ValidationError[],
@@ -13,9 +13,8 @@ const getDtoValidationErrors = (
       const errorMessages = values(err.constraints)
 
       acc[err.property] = {
-        name: err.property,
         value: err.value,
-        message: errorMessages,
+        messages: errorMessages,
       }
 
       return acc

@@ -15,7 +15,6 @@ const uniqueValidation = require('mongoose-unique-validator')
 const ArtistSchema = new Schema<IArtistDocument, IArtistModel, IArtistDocument>(
   {
     name: {
-      // TODO: make capitalize
       type: String,
       required: true,
       trim: true,
@@ -29,7 +28,6 @@ const ArtistSchema = new Schema<IArtistDocument, IArtistModel, IArtistDocument>(
       trim: true,
       minlength: MIN_LENGTH_ARTIST_INFO,
       maxlength: MAX_LENGTH_ARTIST_INFO,
-      // TODO: make capitalize, validation
     },
     photo: {
       type: String,

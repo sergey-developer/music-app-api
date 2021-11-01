@@ -8,11 +8,8 @@ import {
 } from 'modules/session/repository'
 import { ISessionService } from 'modules/session/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
-import {
-  BadRequestError,
-  NotFoundError,
-  ServerError,
-} from 'shared/utils/errors/httpErrors'
+import { NotFoundError, ServerError } from 'shared/utils/errors/httpErrors'
+import { ValidationError } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class SessionService implements ISessionService {
@@ -48,10 +45,7 @@ class SessionService implements ISessionService {
       return session
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       logger.error(error.stack)

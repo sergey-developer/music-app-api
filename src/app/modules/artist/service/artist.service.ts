@@ -12,11 +12,8 @@ import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
 import { RequestService } from 'modules/request/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
-import {
-  BadRequestError,
-  NotFoundError,
-  ServerError,
-} from 'shared/utils/errors/httpErrors'
+import { NotFoundError, ServerError } from 'shared/utils/errors/httpErrors'
+import { ValidationError } from 'shared/utils/errors/validationErrors'
 import { deleteImageFromFs } from 'shared/utils/file'
 
 @singleton()
@@ -32,10 +29,8 @@ class ArtistService implements IArtistService {
   constructor(
     @inject(delay(() => ArtistRepository))
     private readonly artistRepository: ArtistRepository,
-
     @inject(delay(() => AlbumService))
     private readonly albumService: AlbumService,
-
     @inject(delay(() => RequestService))
     private readonly requestService: RequestService,
   ) {}
@@ -90,10 +85,7 @@ class ArtistService implements IArtistService {
       if (payload.photo) deleteImageFromFs(payload.photo)
 
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       logger.error(error.stack)
@@ -143,10 +135,7 @@ class ArtistService implements IArtistService {
       if (payload.photo) deleteImageFromFs(payload.photo)
 
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       if (isNotFoundDBError(error)) {

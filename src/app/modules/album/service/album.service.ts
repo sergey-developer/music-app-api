@@ -19,6 +19,7 @@ import {
   NotFoundError,
   ServerError,
 } from 'shared/utils/errors/httpErrors'
+import { ValidationError } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class AlbumService implements IAlbumService {
@@ -31,7 +32,6 @@ class AlbumService implements IAlbumService {
   public constructor(
     @inject(delay(() => AlbumRepository))
     private readonly albumRepository: AlbumRepository,
-
     private readonly requestService: RequestService,
     private readonly trackService: TrackService,
   ) {}
@@ -93,10 +93,7 @@ class AlbumService implements IAlbumService {
       })
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       logger.error(error.stack, {
@@ -139,10 +136,7 @@ class AlbumService implements IAlbumService {
       await this.albumRepository.updateOne({ id }, payload)
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       if (isNotFoundDBError(error)) {

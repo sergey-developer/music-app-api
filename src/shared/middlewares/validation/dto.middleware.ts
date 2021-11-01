@@ -8,8 +8,10 @@ import merge from 'lodash/merge'
 import set from 'lodash/set'
 
 import ErrorKindsEnum from 'shared/constants/errorKinds'
+import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import { BadRequestError } from 'shared/utils/errors/httpErrors'
-import { getDtoValidationErrors } from 'shared/utils/validation'
+import { getDtoValidationErrors } from 'shared/utils/errors/validationErrors'
+import { deleteImageFromFs } from 'shared/utils/file'
 
 const defaultOptions: TransformValidationOptions = {
   validator: {
@@ -36,7 +38,11 @@ const dto =
       set(req, target, validatedDto)
       next()
     } catch (exception) {
-      const error = BadRequestError('Validation failed', {
+      if (req.file) {
+        deleteImageFromFs(req.file.filename)
+      }
+
+      const error = BadRequestError(VALIDATION_ERR_MSG, {
         kind: ErrorKindsEnum.ValidationError,
         errors: getDtoValidationErrors(exception),
       })

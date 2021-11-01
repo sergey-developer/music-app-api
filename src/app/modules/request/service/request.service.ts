@@ -27,6 +27,7 @@ import {
   ServerError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
+import { ValidationError } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class RequestService implements IRequestService {
@@ -62,12 +63,9 @@ class RequestService implements IRequestService {
   public constructor(
     @inject(delay(() => RequestRepository))
     private readonly requestRepository: RequestRepository,
-
     private readonly artistService: ArtistService,
-
     @inject(delay(() => AlbumService))
     private readonly albumService: AlbumService,
-
     private readonly trackService: TrackService,
   ) {}
 
@@ -108,10 +106,7 @@ class RequestService implements IRequestService {
       return updatedRequest
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       if (isNotFoundDBError(error)) {

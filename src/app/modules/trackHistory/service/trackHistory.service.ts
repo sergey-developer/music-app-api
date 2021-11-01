@@ -13,6 +13,7 @@ import {
   NotFoundError,
   ServerError,
 } from 'shared/utils/errors/httpErrors'
+import { ValidationError } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {
@@ -39,12 +40,8 @@ class TrackHistoryService implements ITrackHistoryService {
 
       return trackHistory
     } catch (error) {
-      // TODO: протестировать ошибку валидации
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       logger.error(error.stack)

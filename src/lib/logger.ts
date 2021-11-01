@@ -23,7 +23,7 @@ const file = new transports.File({
     fileMsgFormat,
   ),
   handleExceptions: true,
-  // TODO: "handleRejections" does not exist in TS definitions, update lib later
+  // "handleRejections" does not exist in TS definitions, update lib later
   // @ts-ignore
   handleRejections: true,
 })

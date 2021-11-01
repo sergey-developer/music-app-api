@@ -17,16 +17,15 @@ import {
   NotFoundError,
   ServerError,
 } from 'shared/utils/errors/httpErrors'
+import { ValidationError } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class TrackService implements ITrackService {
   public constructor(
     @inject(delay(() => TrackRepository))
     private readonly trackRepository: TrackRepository,
-
     @inject(delay(() => RequestService))
     private readonly requestService: RequestService,
-
     private readonly trackHistoryService: TrackHistoryService,
   ) {}
 
@@ -81,10 +80,7 @@ class TrackService implements ITrackService {
       })
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       logger.error(error.stack)
@@ -124,10 +120,7 @@ class TrackService implements ITrackService {
       await this.trackRepository.updateOne({ id }, payload)
     } catch (error) {
       if (isValidationError(error.name)) {
-        throw BadRequestError(error.message, {
-          kind: error.name,
-          errors: error.errors,
-        })
+        throw ValidationError(null, error)
       }
 
       if (isNotFoundDBError(error)) {

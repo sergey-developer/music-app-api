@@ -33,7 +33,6 @@ const RequestSchema = new Schema<
       minlength: MIN_LENGTH_REASON,
       maxlength: MAX_LENGTH_REASON,
       default: null,
-      // TODO: make capitalize
     },
     entityName: {
       type: String,

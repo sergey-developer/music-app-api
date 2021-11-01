@@ -8,15 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: отрефакторить ответ из-за unique ошибки и getDtoValidationErrors,
-//  привести их к одной структуре
 // TODO: отрефакторить сообщения для логирования
-// TODO: Добавить валидацию в моделях
-
-// TODO: сделать функцию для генерации таких ошибок { message: 'Album was successfully deleted' }
-//  при удалении, not found и т.д.
-// TODO: описать тип для ValidationError ответа {message, kind, errors}
-
 // TODO: Сделать пагинацию
 // TODO: add validation content-type for route level
 // TODO: обрабатывать запрос на неизвестный (неопределённый) роут (unmatched route)
