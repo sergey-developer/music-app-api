@@ -29,7 +29,7 @@ class ArtistController implements IArtistController {
       }
 
       res.status(StatusCodes.OK).send({ data: artists })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -41,7 +41,7 @@ class ArtistController implements IArtistController {
     try {
       const artist = await this.artistService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: artist })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -64,7 +64,7 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.CREATED)
         .send({ data: result, message: 'Artist successfully created' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -85,7 +85,7 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Artist successfully updated' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -100,7 +100,7 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Artist successfully deleted' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }

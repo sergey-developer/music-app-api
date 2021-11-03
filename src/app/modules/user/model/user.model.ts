@@ -9,7 +9,8 @@ import {
   UserRoleEnum,
 } from 'modules/user/constants'
 import { IUserDocument, IUserModel } from 'modules/user/model'
-import { checkPassword, generatePassword } from 'modules/user/utils'
+import { preSaveHook } from 'modules/user/model/utils'
+import { checkPassword } from 'modules/user/utils'
 
 const toJson = require('@meanie/mongoose-to-json')
 const uniqueValidation = require('mongoose-unique-validator')
@@ -44,12 +45,7 @@ const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
   },
 })
 
-UserSchema.pre('save', async function (next): Promise<void> {
-  if (!this.isModified('password')) return next()
-
-  this.password = await generatePassword(this.password)
-  next()
-})
+UserSchema.pre('save', preSaveHook)
 
 UserSchema.method(
   'checkPassword',

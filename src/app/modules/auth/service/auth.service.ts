@@ -34,7 +34,7 @@ class AuthService implements IAuthService {
       if (!isCorrectPassword) {
         throw BadRequestError('Wrong password')
       }
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundError(error) || isBadRequestError(error)) {
         throw error
       }
@@ -56,7 +56,7 @@ class AuthService implements IAuthService {
       }
 
       return signinResult
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError(serverErrorMsg)
     }
@@ -68,7 +68,7 @@ class AuthService implements IAuthService {
 
     try {
       user = await this.userService.createOne(payload)
-    } catch (error) {
+    } catch (error: any) {
       if (isBadRequestError(error)) {
         throw error
       }
@@ -90,12 +90,12 @@ class AuthService implements IAuthService {
       }
 
       return signupResult
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
 
       try {
         await this.userService.deleteOneById(user.id)
-      } catch (error) {
+      } catch (error: any) {
         logger.warn(error.stack, {
           message: `User with id "${user.id}" probably was not deleted`,
         })
@@ -108,7 +108,7 @@ class AuthService implements IAuthService {
   public logout: IAuthService['logout'] = async (token) => {
     try {
       await this.sessionService.deleteOneByToken(token)
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundError(error)) {
         throw error
       }

@@ -54,7 +54,7 @@ class RequestService implements IRequestService {
       if (isTrackModelName(entityName)) {
         await this.trackService.deleteOneById(entityId)
       }
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while deleting request')
     }
@@ -74,7 +74,7 @@ class RequestService implements IRequestService {
       return isEmpty(filter)
         ? this.requestRepository.findAll()
         : this.requestRepository.findAllWhere(filter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while getting requests')
     }
@@ -87,7 +87,7 @@ class RequestService implements IRequestService {
         entity: payload.entity,
         creator: payload.creator,
       })
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while creating new request')
     }
@@ -104,7 +104,7 @@ class RequestService implements IRequestService {
       )
 
       return updatedRequest
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -130,7 +130,7 @@ class RequestService implements IRequestService {
 
     try {
       request = await this.requestRepository.findOneById(requestId)
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Request was not found')
       }
@@ -147,7 +147,7 @@ class RequestService implements IRequestService {
       }
 
       return request
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundError(error)) {
         throw NotFoundError('Request was not found')
       }
@@ -161,7 +161,7 @@ class RequestService implements IRequestService {
     try {
       const request = await this.requestRepository.deleteOne(filter)
       return request
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Request was not found')
       }
@@ -180,7 +180,7 @@ class RequestService implements IRequestService {
 
     try {
       await this.requestRepository.deleteMany(filter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while deleting requests')
     }

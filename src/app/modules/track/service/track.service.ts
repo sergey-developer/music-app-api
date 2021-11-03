@@ -47,7 +47,7 @@ class TrackService implements ITrackService {
       const repoFilter = { artist, albumIds, ids: trackIds }
 
       return this.trackRepository.findAllWhere(repoFilter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while getting tracks')
     }
@@ -57,7 +57,7 @@ class TrackService implements ITrackService {
     try {
       const track = await this.trackRepository.findOneById(id)
       return track
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Track was not found')
       }
@@ -78,7 +78,7 @@ class TrackService implements ITrackService {
         youtube: payload.youtube,
         album: payload.album,
       })
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -95,14 +95,14 @@ class TrackService implements ITrackService {
       })
 
       return track
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: `Error while creating request for track with id: "${track.id}"`,
       })
 
       try {
         await this.trackRepository.deleteOneById(track.id)
-      } catch (error) {
+      } catch (error: any) {
         logger.warn(error.stack, {
           message: `Track by id "${track.id}" probably was not deleted`,
         })
@@ -118,7 +118,7 @@ class TrackService implements ITrackService {
   ) => {
     try {
       await this.trackRepository.updateOne({ id }, payload)
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -142,7 +142,7 @@ class TrackService implements ITrackService {
 
     try {
       track = await this.trackRepository.deleteOneById(id)
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Track was not found')
       }
@@ -156,7 +156,7 @@ class TrackService implements ITrackService {
       await this.requestService.deleteOne({ entityId: track.id })
 
       return track
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: `Error while deleting related objects of track with id: "${track.id}"`,
       })
@@ -179,7 +179,7 @@ class TrackService implements ITrackService {
 
     try {
       await this.trackRepository.deleteMany({ ids: trackIds })
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError(serverErrorMsg)
     }
@@ -187,7 +187,7 @@ class TrackService implements ITrackService {
     try {
       await this.trackHistoryService.deleteMany({ trackIds })
       await this.requestService.deleteMany({ entityIds: trackIds })
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: 'Error while deleting related objects of tracks',
         args: { filter },

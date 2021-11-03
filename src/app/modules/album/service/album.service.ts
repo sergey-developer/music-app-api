@@ -54,7 +54,7 @@ class AlbumService implements IAlbumService {
       const repoFilter = { artist, ids: albumIds }
 
       return this.albumRepository.findAllWhere(repoFilter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         args: { filter },
       })
@@ -67,7 +67,7 @@ class AlbumService implements IAlbumService {
     try {
       const album = await this.albumRepository.findOneById(id)
       return album
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Album was not found')
       }
@@ -91,7 +91,7 @@ class AlbumService implements IAlbumService {
         releaseDate: payload.releaseDate,
         artist: payload.artist,
       })
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -111,14 +111,14 @@ class AlbumService implements IAlbumService {
       })
 
       return album
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: `Error while creating request for album with id: "${album.id}"`,
       })
 
       try {
         await this.albumRepository.deleteOneById(album.id)
-      } catch (error) {
+      } catch (error: any) {
         logger.warn(error.stack, {
           message: `Album by id "${album.id}" probably was not deleted`,
         })
@@ -134,7 +134,7 @@ class AlbumService implements IAlbumService {
   ) => {
     try {
       await this.albumRepository.updateOne({ id }, payload)
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -158,7 +158,7 @@ class AlbumService implements IAlbumService {
 
     try {
       album = await this.albumRepository.deleteOneById(id)
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Album was not found')
       }
@@ -181,7 +181,7 @@ class AlbumService implements IAlbumService {
       await this.requestService.deleteOne({ entityId: album.id })
 
       return album
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: `Error while deleting related objects of album with id "${id}"`,
       })
@@ -205,7 +205,7 @@ class AlbumService implements IAlbumService {
 
     try {
       await this.albumRepository.deleteMany({ ids: albumIds })
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError(serverErrorMsg)
     }
@@ -219,7 +219,7 @@ class AlbumService implements IAlbumService {
       }
 
       await this.requestService.deleteMany({ entityIds: albumIds })
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: 'Error while deleting related objects of albums',
       })

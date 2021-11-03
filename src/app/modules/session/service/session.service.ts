@@ -24,7 +24,7 @@ class SessionService implements ISessionService {
     try {
       const session = await this.sessionRepository.findOneByToken(token)
       return session
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError()
       }
@@ -43,7 +43,7 @@ class SessionService implements ISessionService {
       })
 
       return session
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -59,7 +59,7 @@ class SessionService implements ISessionService {
     try {
       const session = await this.sessionRepository.deleteOneByToken(token)
       return session
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError()
       }

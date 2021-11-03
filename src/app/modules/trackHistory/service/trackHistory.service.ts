@@ -25,7 +25,7 @@ class TrackHistoryService implements ITrackHistoryService {
   public getAll: ITrackHistoryService['getAll'] = async (filter) => {
     try {
       return this.trackHistoryRepository.findAllWhere(filter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while getting tracks`s histories')
     }
@@ -39,7 +39,7 @@ class TrackHistoryService implements ITrackHistoryService {
       })
 
       return trackHistory
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -53,7 +53,7 @@ class TrackHistoryService implements ITrackHistoryService {
     try {
       const trackHistory = await this.trackHistoryRepository.deleteOneById(id)
       return trackHistory
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Track history was not found')
       }
@@ -72,7 +72,7 @@ class TrackHistoryService implements ITrackHistoryService {
 
     try {
       await this.trackHistoryRepository.deleteMany(filter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while deleting tracks`s histories')
     }

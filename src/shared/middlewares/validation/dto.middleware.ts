@@ -37,7 +37,7 @@ const dto =
 
       set(req, target, validatedDto)
       next()
-    } catch (exception) {
+    } catch (exception: any) {
       if (req.file) {
         deleteImageFromFs(req.file.filename)
       }

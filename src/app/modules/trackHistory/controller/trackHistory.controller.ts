@@ -20,7 +20,7 @@ class TrackHistoryController implements ITrackHistoryController {
       })
 
       res.status(StatusCodes.OK).send({ data: tracksHistories })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -37,7 +37,7 @@ class TrackHistoryController implements ITrackHistoryController {
       })
 
       res.sendStatus(StatusCodes.CREATED)
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -52,7 +52,7 @@ class TrackHistoryController implements ITrackHistoryController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Track history successfully deleted' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }

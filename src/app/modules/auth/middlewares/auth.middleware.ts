@@ -31,7 +31,7 @@ const auth = async <Req extends Request, Res extends Response>(
 
     set(req, 'user', jwtPayload)
     next()
-  } catch (exception) {
+  } catch (exception: any) {
     if (isJwtError(exception)) {
       const error = UnauthorizedError('Invalid token')
       res.status(error.status).send(error)

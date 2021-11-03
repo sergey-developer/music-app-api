@@ -1,9 +1,9 @@
 import config from 'config'
-import { connect } from 'mongoose'
+import mongoose from 'mongoose'
 
 import logger from 'lib/logger'
 
-const connectDatabase = async () => {
+const connect = async (): Promise<void> => {
   try {
     logger.info('Connecting database...')
 
@@ -12,13 +12,13 @@ const connectDatabase = async () => {
     const name: string = config.get('db.name')
     const URI = `mongodb://${host}:${port}/${name}`
 
-    await connect(URI, {
+    await mongoose.connect(URI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     })
 
-    logger.info('Mongoose connected to the database')
-  } catch (error) {
+    logger.info('Mongoose connected to the database!')
+  } catch (error: any) {
     logger.error(error.stack, {
       message: 'Could`t connect to the database',
     })
@@ -27,4 +27,4 @@ const connectDatabase = async () => {
   }
 }
 
-export default connectDatabase
+export default connect

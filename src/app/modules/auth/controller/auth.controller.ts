@@ -19,7 +19,7 @@ class AuthController implements IAuthController {
       const result = await this.authService.signin(payload)
 
       res.status(StatusCodes.OK).send({ data: result })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -31,7 +31,7 @@ class AuthController implements IAuthController {
       const result = await this.authService.signup(payload)
 
       res.status(StatusCodes.OK).send({ data: result })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -49,7 +49,7 @@ class AuthController implements IAuthController {
       await this.authService.logout(token)
 
       res.sendStatus(StatusCodes.OK)
-    } catch (exception) {
+    } catch (exception: any) {
       if (isNotFoundError(exception)) {
         res.sendStatus(StatusCodes.OK)
         return

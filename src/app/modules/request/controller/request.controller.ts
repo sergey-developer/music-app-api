@@ -16,7 +16,7 @@ class RequestController implements IRequestController {
     try {
       const requests = await this.requestService.getAll(filter)
       res.status(StatusCodes.OK).send({ data: requests })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -32,7 +32,7 @@ class RequestController implements IRequestController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Request successfully updated' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -47,7 +47,7 @@ class RequestController implements IRequestController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Request successfully deleted' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }

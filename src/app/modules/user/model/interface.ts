@@ -1,4 +1,4 @@
-import { Model } from 'mongoose'
+import { Document, Model } from 'mongoose'
 
 import { DocumentId } from 'database/interface/document'
 import { UserRoleEnum } from 'modules/user/constants'
@@ -7,7 +7,7 @@ export interface IUserDocumentMethods {
   checkPassword: (password: string) => Promise<boolean>
 }
 
-export interface IUserDocument extends IUserDocumentMethods {
+export interface IUserDocument extends Document, IUserDocumentMethods {
   id: DocumentId
   username: string
   email: string

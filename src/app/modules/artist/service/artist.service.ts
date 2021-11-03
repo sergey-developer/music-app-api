@@ -51,7 +51,7 @@ class ArtistService implements IArtistService {
       const repoFilter = { ids: artistIds }
 
       return this.artistRepository.findAllWhere(repoFilter)
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack)
       throw ServerError('Error while getting artists')
     }
@@ -61,7 +61,7 @@ class ArtistService implements IArtistService {
     try {
       const artist = await this.artistRepository.findOneById(id)
       return artist
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Artist was not found')
       }
@@ -81,7 +81,7 @@ class ArtistService implements IArtistService {
         info: payload.info,
         photo: payload.photo,
       })
-    } catch (error) {
+    } catch (error: any) {
       if (payload.photo) deleteImageFromFs(payload.photo)
 
       if (isValidationError(error.name)) {
@@ -100,7 +100,7 @@ class ArtistService implements IArtistService {
       })
 
       return artist
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: `Error while creating request for artist with id: "${artist.id}"`,
       })
@@ -108,7 +108,7 @@ class ArtistService implements IArtistService {
       try {
         await this.artistRepository.deleteOneById(artist.id)
         if (artist.photo) deleteImageFromFs(artist.photo)
-      } catch (error) {
+      } catch (error: any) {
         logger.warn(error.stack, {
           message: `Artist by id "${artist.id}" probably was not deleted`,
         })
@@ -131,7 +131,7 @@ class ArtistService implements IArtistService {
       )
 
       return updatedArtist
-    } catch (error) {
+    } catch (error: any) {
       if (payload.photo) deleteImageFromFs(payload.photo)
 
       if (isValidationError(error.name)) {
@@ -158,7 +158,7 @@ class ArtistService implements IArtistService {
     try {
       artist = await this.artistRepository.deleteOneById(id)
       if (artist.photo) deleteImageFromFs(artist.photo)
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('Artist was not found')
       }
@@ -178,7 +178,7 @@ class ArtistService implements IArtistService {
       await this.requestService.deleteOne({ entityId: artist.id })
 
       return artist
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error.stack, {
         message: 'Error while deleting related objects of artist',
       })

@@ -24,7 +24,8 @@ class UserRepository implements IUserRepository {
   }
 
   public createOne: IUserRepository['createOne'] = async (payload) => {
-    const user = new this.user(payload)
+    const payloadToApply = omitUndefined(payload)
+    const user = new this.user(payloadToApply)
     return user.save()
   }
 

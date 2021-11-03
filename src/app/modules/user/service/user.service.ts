@@ -19,7 +19,7 @@ class UserService implements IUserService {
     try {
       const user = await this.userRepository.findOne({ email })
       return user
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError(`User with email "${email}" was not found`)
       }
@@ -33,7 +33,7 @@ class UserService implements IUserService {
     try {
       const user = await this.userRepository.createOne(payload)
       return user
-    } catch (error) {
+    } catch (error: any) {
       if (isValidationError(error.name)) {
         throw ValidationError(null, error)
       }
@@ -47,7 +47,7 @@ class UserService implements IUserService {
     try {
       const user = await this.userRepository.deleteOneById(id)
       return user
-    } catch (error) {
+    } catch (error: any) {
       if (isNotFoundDBError(error)) {
         throw NotFoundError('User was not found')
       }

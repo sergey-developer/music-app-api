@@ -29,7 +29,7 @@ class AlbumController implements IAlbumController {
       }
 
       res.status(StatusCodes.OK).send({ data: albums })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -41,7 +41,7 @@ class AlbumController implements IAlbumController {
     try {
       const album = await this.albumService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: album })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -65,7 +65,7 @@ class AlbumController implements IAlbumController {
       res
         .status(StatusCodes.CREATED)
         .send({ data: result, message: 'Album successfully created' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -85,7 +85,7 @@ class AlbumController implements IAlbumController {
       })
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully updated' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }
@@ -98,7 +98,7 @@ class AlbumController implements IAlbumController {
       await this.albumService.deleteOneById(id)
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully deleted' })
-    } catch (exception) {
+    } catch (exception: any) {
       const error = ensureHttpError(exception)
       res.status(error.status).send(error)
     }

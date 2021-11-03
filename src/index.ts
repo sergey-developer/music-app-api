@@ -8,6 +8,7 @@ const runServer = async () => {
 
 runServer()
 
+// TODO: Написать тесты
 // TODO: отрефакторить сообщения для логирования
 // TODO: Сделать пагинацию
 // TODO: add validation content-type for route level
@@ -16,7 +17,6 @@ runServer()
 // TODO: Настроить cors
 // TODO: Документировать код (интерфейсы)
 // TODO: установить логин пароль для базы данных
-// TODO: Написать тесты
 // TODO: Настроить production режим
 // TODO: Swagger подключить и генерирование типов для него
 
