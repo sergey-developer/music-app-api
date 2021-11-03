@@ -1,4 +1,4 @@
-import { Types } from 'mongoose'
+import { Error as MongooseError, Types } from 'mongoose'
 import { container } from 'tsyringe'
 
 import { EntityNamesEnum } from 'database/constants/entityNames'
@@ -15,8 +15,6 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  jest.resetAllMocks()
-
   container.register(getModelName(EntityNamesEnum.User), {
     useValue: UserModel,
   })
@@ -25,8 +23,9 @@ beforeEach(() => {
 })
 
 afterEach(async () => {
-  await db.clear()
+  jest.resetAllMocks()
   container.clearInstances()
+  await db.clear()
 })
 
 afterAll(async () => {
@@ -35,12 +34,14 @@ afterAll(async () => {
 })
 
 describe('User repository', () => {
-  describe('Create user', () => {
+  describe('Create one user', () => {
+    let createOneUserSpy: jest.SpyInstance
+
     beforeEach(() => {
-      jest.spyOn(userRepository, 'createOne')
+      createOneUserSpy = jest.spyOn(userRepository, 'createOne')
     })
 
-    it('create one user with role "user"', async () => {
+    it('with role "user"', async () => {
       const payload: ICreateUserPayload = {
         username: 'user 1',
         email: 'user@mail.ru',
@@ -49,6 +50,8 @@ describe('User repository', () => {
 
       const user = await userRepository.createOne(payload)
 
+      expect(createOneUserSpy).toHaveBeenCalledTimes(1)
+      expect(createOneUserSpy).toHaveBeenCalledWith(payload)
       expect(user._id).toBeInstanceOf(Types.ObjectId)
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
@@ -56,7 +59,7 @@ describe('User repository', () => {
       expect(user.role).toBe(UserRoleEnum.User)
     })
 
-    it('create one user with role "moderator"', async () => {
+    it('with role "moderator"', async () => {
       const payload: ICreateUserPayload = {
         username: 'moderator 1',
         email: 'moderator@mail.ru',
@@ -66,11 +69,31 @@ describe('User repository', () => {
 
       const user = await userRepository.createOne(payload)
 
+      expect(createOneUserSpy).toHaveBeenCalledTimes(1)
+      expect(createOneUserSpy).toHaveBeenCalledWith(payload)
       expect(user._id).toBeInstanceOf(Types.ObjectId)
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
       expect(user.password).not.toBe(payload.password)
       expect(user.role).toBe(UserRoleEnum.Moderator)
+    })
+
+    it('with invalid data throws validation error', async () => {
+      const payload: ICreateUserPayload = {
+        username: 'u1',
+        email: 'moderator@mail.ru',
+        password: '123',
+      }
+
+      try {
+        await userRepository.createOne(payload)
+      } catch (error) {
+        expect(createOneUserSpy).toHaveBeenCalledTimes(1)
+        expect(createOneUserSpy).toBeCalledWith(payload)
+        await expect(createOneUserSpy).rejects.toThrow(
+          MongooseError.ValidationError,
+        )
+      }
     })
   })
 })
