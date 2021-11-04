@@ -9,6 +9,10 @@ module.exports = {
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
   }),
-  modulePathIgnorePatterns: ['node_modules', 'config'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/node_modules',
+    '<rootDir>/config',
+    '<rootDir>/__tests__/fakeData',
+  ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 }

@@ -1,14 +1,12 @@
-import faker from 'faker'
-
 import * as db from 'database/utils/db'
-import { MIN_LENGTH_PASSWORD } from 'modules/user/constants'
+import { fakeCreateUserPayload, getFakePassword } from 'fakeData/user'
 import { IUserDocument, UserModel } from 'modules/user/model'
 import { preSaveHook } from 'modules/user/model/utils'
 
 describe('User model', () => {
   describe('Pre save hook', () => {
     it('Password field was modified and password was generated', async () => {
-      const notHashedPassword = faker.internet.password(MIN_LENGTH_PASSWORD)
+      const notHashedPassword = getFakePassword()
       const nextFn = jest.fn()
       const fnContext: Pick<IUserDocument, 'password' | 'isModified'> = {
         password: notHashedPassword,
@@ -23,7 +21,7 @@ describe('User model', () => {
     })
 
     it('Password field was not modified and password was not generated', async () => {
-      const notHashedPassword = faker.internet.password(MIN_LENGTH_PASSWORD)
+      const notHashedPassword = getFakePassword()
       const nextFn = jest.fn()
       const fnContext: Pick<IUserDocument, 'password' | 'isModified'> = {
         password: notHashedPassword,
@@ -39,14 +37,7 @@ describe('User model', () => {
   })
 
   describe('Check password', () => {
-    const createUserPayload: Pick<
-      IUserDocument,
-      'username' | 'email' | 'password'
-    > = {
-      username: faker.name.findName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(MIN_LENGTH_PASSWORD),
-    }
+    const createUserPayload = fakeCreateUserPayload()
 
     let user: IUserDocument
     let userCheckPasswordSpy: jest.SpyInstance
@@ -71,7 +62,7 @@ describe('User model', () => {
     })
 
     it('successful with correct password', async () => {
-      const passwordIsMatched: boolean = await user.checkPassword(
+      const passwordIsMatched = await user.checkPassword(
         createUserPayload.password,
       )
 
@@ -81,12 +72,8 @@ describe('User model', () => {
     })
 
     it('failure with not correct password', async () => {
-      const passwordToCheck: string =
-        faker.internet.password(MIN_LENGTH_PASSWORD)
-
-      const passwordIsMatched: boolean = await user.checkPassword(
-        passwordToCheck,
-      )
+      const passwordToCheck = getFakePassword()
+      const passwordIsMatched = await user.checkPassword(passwordToCheck)
 
       expect(userCheckPasswordSpy).toBeCalledTimes(1)
       expect(userCheckPasswordSpy).toBeCalledWith(passwordToCheck)

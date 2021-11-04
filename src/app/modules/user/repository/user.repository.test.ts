@@ -1,13 +1,15 @@
-import faker from 'faker'
 import { Error as MongooseError, Types } from 'mongoose'
-import { container } from 'tsyringe'
+import { container as DiContainer } from 'tsyringe'
 
 import { EntityNamesEnum } from 'database/constants/entityNames'
 import * as db from 'database/utils/db'
+import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
-import { MIN_LENGTH_PASSWORD, UserRoleEnum } from 'modules/user/constants'
+import { getFakeEmail } from 'fakeData/common'
+import { fakeCreateUserPayload } from 'fakeData/user'
+import { UserRoleEnum } from 'modules/user/constants'
 import { UserModel } from 'modules/user/model'
-import { ICreateUserPayload, UserRepository } from 'modules/user/repository'
+import { UserRepository } from 'modules/user/repository'
 
 let userRepository: UserRepository
 
@@ -16,15 +18,15 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  container.register(getModelName(EntityNamesEnum.User), {
+  DiContainer.register(getModelName(EntityNamesEnum.User), {
     useValue: UserModel,
   })
 
-  userRepository = container.resolve(UserRepository)
+  userRepository = DiContainer.resolve(UserRepository)
 })
 
 afterEach(async () => {
-  container.clearInstances()
+  DiContainer.clearInstances()
   await db.clear()
 })
 
@@ -41,13 +43,8 @@ describe('User repository', () => {
       createOneUserSpy = jest.spyOn(userRepository, 'createOne')
     })
 
-    it('with role "user"', async () => {
-      const payload: ICreateUserPayload = {
-        username: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(MIN_LENGTH_PASSWORD),
-      }
-
+    it('with correct data and role "user"', async () => {
+      const payload = fakeCreateUserPayload()
       const user = await userRepository.createOne(payload)
 
       expect(createOneUserSpy).toBeCalledTimes(1)
@@ -59,13 +56,8 @@ describe('User repository', () => {
       expect(user.role).toBe(UserRoleEnum.User)
     })
 
-    it('with role "moderator"', async () => {
-      const payload: ICreateUserPayload = {
-        username: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(MIN_LENGTH_PASSWORD),
-        role: UserRoleEnum.Moderator,
-      }
+    it('with correct data and role "moderator"', async () => {
+      const payload = fakeCreateUserPayload(undefined, UserRoleEnum.Moderator)
 
       const user = await userRepository.createOne(payload)
 
@@ -78,12 +70,8 @@ describe('User repository', () => {
       expect(user.role).toBe(UserRoleEnum.Moderator)
     })
 
-    it('with invalid data throws validation error', async () => {
-      const payload: ICreateUserPayload = {
-        username: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(MIN_LENGTH_PASSWORD),
-      }
+    it('with incorrect data throws validation error', async () => {
+      const payload = fakeCreateUserPayload('123')
 
       try {
         await userRepository.createOne(payload)
@@ -105,15 +93,10 @@ describe('User repository', () => {
     })
 
     it('by email which exists', async () => {
-      const newUser = await userRepository.createOne({
-        username: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(MIN_LENGTH_PASSWORD),
-      })
+      const createUserPayload = fakeCreateUserPayload()
+      const newUser = await userRepository.createOne(createUserPayload)
 
-      const findOneUserFilter = {
-        email: newUser.email,
-      }
+      const findOneUserFilter = { email: newUser.email }
       const user = await userRepository.findOne(findOneUserFilter)
 
       expect(findOneUserSpy).toBeCalledTimes(1)
@@ -122,9 +105,7 @@ describe('User repository', () => {
     })
 
     it('by email which not exists', async () => {
-      const findOneUserFilter = {
-        email: faker.internet.email(),
-      }
+      const findOneUserFilter = { email: getFakeEmail() }
 
       try {
         await userRepository.findOne(findOneUserFilter)
@@ -139,20 +120,14 @@ describe('User repository', () => {
   })
 
   describe('Delete one user', () => {
-    let createOneUserSpy: jest.SpyInstance
     let deleteOneUserSpy: jest.SpyInstance
 
     beforeEach(async () => {
-      createOneUserSpy = jest.spyOn(userRepository, 'createOne')
       deleteOneUserSpy = jest.spyOn(userRepository, 'deleteOne')
     })
 
     it('by id which exists', async () => {
-      const createUserPayload: ICreateUserPayload = {
-        username: faker.name.findName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(MIN_LENGTH_PASSWORD),
-      }
+      const createUserPayload = fakeCreateUserPayload()
       const newUser = await userRepository.createOne(createUserPayload)
 
       const deleteOneUserFilter = { id: newUser.id }
@@ -167,7 +142,7 @@ describe('User repository', () => {
     })
 
     it('by id which not exists', async () => {
-      const fakeMongoId = '6183982cdb7a2f951e5efd8b'
+      const fakeMongoId = generateMongoId()
       const deleteOneUserFilter = { id: fakeMongoId }
 
       try {
