@@ -20,7 +20,7 @@ class RequestRepository implements IRequestRepository {
   }
 
   public findAllWhere: IRequestRepository['findAllWhere'] = async (filter) => {
-    const { status, creator, kind }: typeof filter = omitUndefined(filter)
+    const { status, creator, kind } = omitUndefined(filter)
 
     const filterByEntityName: FilterQuery<IRequestDocument> = kind
       ? { entityName: kind }
@@ -76,7 +76,7 @@ class RequestRepository implements IRequestRepository {
   }
 
   public deleteOne: IRequestRepository['deleteOne'] = async (filter) => {
-    const { id, entityId }: typeof filter = omitUndefined(filter)
+    const { id, entityId } = omitUndefined(filter)
 
     const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
 
@@ -97,7 +97,7 @@ class RequestRepository implements IRequestRepository {
   }
 
   public deleteMany: IRequestRepository['deleteMany'] = async (filter) => {
-    const { entityIds }: typeof filter = omitUndefined(filter)
+    const { entityIds } = omitUndefined(filter)
 
     const filterByEntity: FilterQuery<IRequestDocument> = isEmpty(entityIds)
       ? {}

@@ -45,7 +45,7 @@ class UserService implements IUserService {
 
   public deleteOneById: IUserService['deleteOneById'] = async (id) => {
     try {
-      const user = await this.userRepository.deleteOneById(id)
+      const user = await this.userRepository.deleteOne({ id })
       return user
     } catch (error: any) {
       if (isNotFoundDBError(error)) {

@@ -15,7 +15,7 @@ class UserRepository implements IUserRepository {
   ) {}
 
   public findOne: IUserRepository['findOne'] = async (filter) => {
-    const { email }: typeof filter = omitUndefined(filter)
+    const { email } = omitUndefined(filter)
 
     const filterByEmail: FilterQuery<IUserDocument> = email ? { email } : {}
     const filterToApply: FilterQuery<IUserDocument> = { ...filterByEmail }
@@ -29,8 +29,13 @@ class UserRepository implements IUserRepository {
     return user.save()
   }
 
-  public deleteOneById: IUserRepository['deleteOneById'] = async (id) => {
-    return this.user.findByIdAndDelete(id).orFail().exec()
+  public deleteOne: IUserRepository['deleteOne'] = async (filter) => {
+    const { id } = omitUndefined(filter)
+
+    const filterById: FilterQuery<IUserDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<IUserDocument> = { ...filterById }
+
+    return this.user.findOneAndDelete(filterToApply).orFail().exec()
   }
 }
 

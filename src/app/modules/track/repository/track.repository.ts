@@ -16,7 +16,7 @@ class TrackRepository implements ITrackRepository {
   ) {}
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
-    const { artist, albumIds, ids }: typeof filter = omitUndefined(filter)
+    const { artist, albumIds, ids } = omitUndefined(filter)
 
     const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
       ? {}
@@ -72,7 +72,7 @@ class TrackRepository implements ITrackRepository {
   }
 
   public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
-    const { ids }: typeof filter = omitUndefined(filter)
+    const { ids } = omitUndefined(filter)
 
     const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
       ? {}

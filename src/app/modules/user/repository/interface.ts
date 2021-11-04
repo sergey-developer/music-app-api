@@ -11,10 +11,13 @@ export interface IFindOneUserFilter
     email: IUserDocument['email']
   }> {}
 
+export interface IDeleteOneUserFilter
+  extends Partial<{ id: IUserDocument['id'] }> {}
+
 export interface IUserRepository {
   findOne: (filter: IFindOneUserFilter) => Promise<IUserDocument>
 
   createOne: (payload: ICreateUserPayload) => Promise<IUserDocument>
 
-  deleteOneById: (id: IUserDocument['id']) => Promise<IUserDocument>
+  deleteOne: (filter: IDeleteOneUserFilter) => Promise<IUserDocument>
 }

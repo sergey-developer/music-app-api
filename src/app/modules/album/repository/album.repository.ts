@@ -16,7 +16,7 @@ class AlbumRepository implements IAlbumRepository {
   ) {}
 
   public findAllWhere: IAlbumRepository['findAllWhere'] = async (filter) => {
-    const { artist, ids }: typeof filter = omitUndefined(filter)
+    const { artist, ids } = omitUndefined(filter)
 
     const filterByArtist: FilterQuery<IAlbumDocument> = artist ? { artist } : {}
     const filterById: FilterQuery<IAlbumDocument> = isEmpty(ids)
@@ -65,7 +65,7 @@ class AlbumRepository implements IAlbumRepository {
   }
 
   public deleteMany: IAlbumRepository['deleteMany'] = async (filter) => {
-    const { ids }: typeof filter = omitUndefined(filter)
+    const { ids } = omitUndefined(filter)
 
     const filterById: FilterQuery<IAlbumDocument> = isEmpty(ids)
       ? {}

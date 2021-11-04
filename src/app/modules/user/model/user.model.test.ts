@@ -1,11 +1,14 @@
+import faker from 'faker'
+
 import * as db from 'database/utils/db'
+import { MIN_LENGTH_PASSWORD } from 'modules/user/constants'
 import { IUserDocument, UserModel } from 'modules/user/model'
 import { preSaveHook } from 'modules/user/model/utils'
 
 describe('User model', () => {
   describe('Pre save hook', () => {
     it('Password field was modified and password was generated', async () => {
-      const notHashedPassword = '12345678'
+      const notHashedPassword = faker.internet.password(MIN_LENGTH_PASSWORD)
       const nextFn = jest.fn()
       const fnContext: Pick<IUserDocument, 'password' | 'isModified'> = {
         password: notHashedPassword,
@@ -20,7 +23,7 @@ describe('User model', () => {
     })
 
     it('Password field was not modified and password was not generated', async () => {
-      const notHashedPassword = '87654321'
+      const notHashedPassword = faker.internet.password(MIN_LENGTH_PASSWORD)
       const nextFn = jest.fn()
       const fnContext: Pick<IUserDocument, 'password' | 'isModified'> = {
         password: notHashedPassword,
@@ -40,9 +43,9 @@ describe('User model', () => {
       IUserDocument,
       'username' | 'email' | 'password'
     > = {
-      username: 'User 1',
-      email: 'user1@mail.ru',
-      password: '12345678',
+      username: faker.name.findName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(MIN_LENGTH_PASSWORD),
     }
 
     let user: IUserDocument
@@ -78,7 +81,8 @@ describe('User model', () => {
     })
 
     it('failure with not correct password', async () => {
-      const passwordToCheck: string = '12345677'
+      const passwordToCheck: string =
+        faker.internet.password(MIN_LENGTH_PASSWORD)
 
       const passwordIsMatched: boolean = await user.checkPassword(
         passwordToCheck,

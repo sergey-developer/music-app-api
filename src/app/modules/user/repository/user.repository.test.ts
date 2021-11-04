@@ -1,13 +1,13 @@
+import faker from 'faker'
 import { Error as MongooseError, Types } from 'mongoose'
 import { container } from 'tsyringe'
 
 import { EntityNamesEnum } from 'database/constants/entityNames'
 import * as db from 'database/utils/db'
 import getModelName from 'database/utils/getModelName'
-import { UserRoleEnum } from 'modules/user/constants'
-import { IUserDocument, UserModel } from 'modules/user/model'
+import { MIN_LENGTH_PASSWORD, UserRoleEnum } from 'modules/user/constants'
+import { UserModel } from 'modules/user/model'
 import { ICreateUserPayload, UserRepository } from 'modules/user/repository'
-import { MaybeNull } from 'shared/interface/utils'
 
 let userRepository: UserRepository
 
@@ -43,9 +43,9 @@ describe('User repository', () => {
 
     it('with role "user"', async () => {
       const payload: ICreateUserPayload = {
-        username: 'user 1',
-        email: 'user@mail.ru',
-        password: '12345678',
+        username: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(MIN_LENGTH_PASSWORD),
       }
 
       const user = await userRepository.createOne(payload)
@@ -61,9 +61,9 @@ describe('User repository', () => {
 
     it('with role "moderator"', async () => {
       const payload: ICreateUserPayload = {
-        username: 'moderator 1',
-        email: 'moderator@mail.ru',
-        password: '12345678',
+        username: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(MIN_LENGTH_PASSWORD),
         role: UserRoleEnum.Moderator,
       }
 
@@ -80,9 +80,9 @@ describe('User repository', () => {
 
     it('with invalid data throws validation error', async () => {
       const payload: ICreateUserPayload = {
-        username: 'u1',
-        email: 'moderator@mail.ru',
-        password: '123',
+        username: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(MIN_LENGTH_PASSWORD),
       }
 
       try {
@@ -104,11 +104,11 @@ describe('User repository', () => {
       findOneUserSpy = jest.spyOn(userRepository, 'findOne')
     })
 
-    it('by email which exists in the database', async () => {
+    it('by email which exists', async () => {
       const newUser = await userRepository.createOne({
-        username: 'user 1',
-        email: 'user1@mail.ru',
-        password: '12345678',
+        username: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(MIN_LENGTH_PASSWORD),
       })
 
       const findOneUserFilter = {
@@ -121,9 +121,9 @@ describe('User repository', () => {
       expect(user.email).toBe(findOneUserFilter.email)
     })
 
-    it('by email which not exists in the database', async () => {
+    it('by email which not exists', async () => {
       const findOneUserFilter = {
-        email: 'notExistingEmail@mail.ru',
+        email: faker.internet.email(),
       }
 
       try {
@@ -132,6 +132,50 @@ describe('User repository', () => {
         expect(findOneUserSpy).toBeCalledTimes(1)
         expect(findOneUserSpy).toBeCalledWith(findOneUserFilter)
         await expect(findOneUserSpy).rejects.toThrow(
+          MongooseError.DocumentNotFoundError,
+        )
+      }
+    })
+  })
+
+  describe('Delete one user', () => {
+    let createOneUserSpy: jest.SpyInstance
+    let deleteOneUserSpy: jest.SpyInstance
+
+    beforeEach(async () => {
+      createOneUserSpy = jest.spyOn(userRepository, 'createOne')
+      deleteOneUserSpy = jest.spyOn(userRepository, 'deleteOne')
+    })
+
+    it('by id which exists', async () => {
+      const createUserPayload: ICreateUserPayload = {
+        username: faker.name.findName(),
+        email: faker.internet.email(),
+        password: faker.internet.password(MIN_LENGTH_PASSWORD),
+      }
+      const newUser = await userRepository.createOne(createUserPayload)
+
+      const deleteOneUserFilter = { id: newUser.id }
+      const deletedUser = await userRepository.deleteOne(deleteOneUserFilter)
+
+      expect(deleteOneUserSpy).toBeCalledTimes(1)
+      expect(deleteOneUserSpy).toBeCalledWith(deleteOneUserFilter)
+      expect(deletedUser.id).toBe(newUser.id)
+      expect(deletedUser.username).toBe(newUser.username)
+      expect(deletedUser.email).toBe(newUser.email)
+      expect(deletedUser.password).toBe(newUser.password)
+    })
+
+    it('by id which not exists', async () => {
+      const fakeMongoId = '6183982cdb7a2f951e5efd8b'
+      const deleteOneUserFilter = { id: fakeMongoId }
+
+      try {
+        await userRepository.deleteOne(deleteOneUserFilter)
+      } catch (error) {
+        expect(deleteOneUserSpy).toBeCalledTimes(1)
+        expect(deleteOneUserSpy).toBeCalledWith(deleteOneUserFilter)
+        await expect(deleteOneUserSpy).rejects.toThrow(
           MongooseError.DocumentNotFoundError,
         )
       }

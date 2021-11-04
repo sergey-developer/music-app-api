@@ -16,7 +16,7 @@ class ArtistRepository implements IArtistRepository {
   ) {}
 
   public findAllWhere: IArtistRepository['findAllWhere'] = async (filter) => {
-    const { ids }: typeof filter = omitUndefined(filter)
+    const { ids } = omitUndefined(filter)
 
     const filterById: FilterQuery<IArtistDocument> = isEmpty(ids)
       ? {}

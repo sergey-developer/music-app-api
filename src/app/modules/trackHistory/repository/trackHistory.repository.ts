@@ -36,7 +36,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
   }
 
   public deleteMany: ITrackHistoryRepository['deleteMany'] = async (filter) => {
-    const { trackIds }: typeof filter = omitUndefined(filter)
+    const { trackIds } = omitUndefined(filter)
 
     const filterByTrack: FilterQuery<ITrackHistoryDocument> = isEmpty(trackIds)
       ? {}
