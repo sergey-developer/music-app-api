@@ -14,9 +14,9 @@ describe('User model', () => {
 
       await preSaveHook.call(fnContext, nextFn, {})
 
-      expect(fnContext.isModified).toHaveBeenCalledWith('password')
+      expect(fnContext.isModified).toBeCalledWith('password')
       expect(fnContext.password).not.toBe(notHashedPassword)
-      expect(nextFn).toHaveBeenCalledTimes(1)
+      expect(nextFn).toBeCalledTimes(1)
     })
 
     it('Password field was not modified and password was not generated', async () => {
@@ -29,9 +29,9 @@ describe('User model', () => {
 
       await preSaveHook.call(fnContext, nextFn, {})
 
-      expect(fnContext.isModified).toHaveBeenCalledWith('password')
+      expect(fnContext.isModified).toBeCalledWith('password')
       expect(fnContext.password).toBe(notHashedPassword)
-      expect(nextFn).toHaveBeenCalledTimes(1)
+      expect(nextFn).toBeCalledTimes(1)
     })
   })
 
@@ -46,6 +46,7 @@ describe('User model', () => {
     }
 
     let user: IUserDocument
+    let userCheckPasswordSpy: jest.SpyInstance
 
     beforeAll(async () => {
       await db.connect()
@@ -63,23 +64,28 @@ describe('User model', () => {
     beforeEach(async () => {
       const newUser = new UserModel(createUserPayload)
       user = await newUser.save()
+      userCheckPasswordSpy = jest.spyOn(user, 'checkPassword')
     })
 
-    it('Checking is successful with correct password', async () => {
+    it('successful with correct password', async () => {
       const passwordIsMatched: boolean = await user.checkPassword(
         createUserPayload.password,
       )
 
+      expect(userCheckPasswordSpy).toBeCalledTimes(1)
+      expect(userCheckPasswordSpy).toBeCalledWith(createUserPayload.password)
       expect(passwordIsMatched).toBe(true)
     })
 
-    it('Checking is failure with not correct password', async () => {
+    it('failure with not correct password', async () => {
       const passwordToCheck: string = '12345677'
 
       const passwordIsMatched: boolean = await user.checkPassword(
         passwordToCheck,
       )
 
+      expect(userCheckPasswordSpy).toBeCalledTimes(1)
+      expect(userCheckPasswordSpy).toBeCalledWith(passwordToCheck)
       expect(passwordIsMatched).toBe(false)
     })
   })

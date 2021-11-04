@@ -5,8 +5,9 @@ import { EntityNamesEnum } from 'database/constants/entityNames'
 import * as db from 'database/utils/db'
 import getModelName from 'database/utils/getModelName'
 import { UserRoleEnum } from 'modules/user/constants'
-import { UserModel } from 'modules/user/model'
+import { IUserDocument, UserModel } from 'modules/user/model'
 import { ICreateUserPayload, UserRepository } from 'modules/user/repository'
+import { MaybeNull } from 'shared/interface/utils'
 
 let userRepository: UserRepository
 
@@ -23,7 +24,6 @@ beforeEach(() => {
 })
 
 afterEach(async () => {
-  jest.resetAllMocks()
   container.clearInstances()
   await db.clear()
 })
@@ -50,8 +50,8 @@ describe('User repository', () => {
 
       const user = await userRepository.createOne(payload)
 
-      expect(createOneUserSpy).toHaveBeenCalledTimes(1)
-      expect(createOneUserSpy).toHaveBeenCalledWith(payload)
+      expect(createOneUserSpy).toBeCalledTimes(1)
+      expect(createOneUserSpy).toBeCalledWith(payload)
       expect(user._id).toBeInstanceOf(Types.ObjectId)
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
@@ -69,8 +69,8 @@ describe('User repository', () => {
 
       const user = await userRepository.createOne(payload)
 
-      expect(createOneUserSpy).toHaveBeenCalledTimes(1)
-      expect(createOneUserSpy).toHaveBeenCalledWith(payload)
+      expect(createOneUserSpy).toBeCalledTimes(1)
+      expect(createOneUserSpy).toBeCalledWith(payload)
       expect(user._id).toBeInstanceOf(Types.ObjectId)
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
@@ -88,10 +88,51 @@ describe('User repository', () => {
       try {
         await userRepository.createOne(payload)
       } catch (error) {
-        expect(createOneUserSpy).toHaveBeenCalledTimes(1)
+        expect(createOneUserSpy).toBeCalledTimes(1)
         expect(createOneUserSpy).toBeCalledWith(payload)
         await expect(createOneUserSpy).rejects.toThrow(
           MongooseError.ValidationError,
+        )
+      }
+    })
+  })
+
+  describe('Find one user', () => {
+    let findOneUserSpy: jest.SpyInstance
+
+    beforeEach(async () => {
+      findOneUserSpy = jest.spyOn(userRepository, 'findOne')
+    })
+
+    it('by email which exists in the database', async () => {
+      const newUser = await userRepository.createOne({
+        username: 'user 1',
+        email: 'user1@mail.ru',
+        password: '12345678',
+      })
+
+      const findOneUserFilter = {
+        email: newUser.email,
+      }
+      const user = await userRepository.findOne(findOneUserFilter)
+
+      expect(findOneUserSpy).toBeCalledTimes(1)
+      expect(findOneUserSpy).toBeCalledWith(findOneUserFilter)
+      expect(user.email).toBe(findOneUserFilter.email)
+    })
+
+    it('by email which not exists in the database', async () => {
+      const findOneUserFilter = {
+        email: 'notExistingEmail@mail.ru',
+      }
+
+      try {
+        await userRepository.findOne(findOneUserFilter)
+      } catch (error) {
+        expect(findOneUserSpy).toBeCalledTimes(1)
+        expect(findOneUserSpy).toBeCalledWith(findOneUserFilter)
+        await expect(findOneUserSpy).rejects.toThrow(
+          MongooseError.DocumentNotFoundError,
         )
       }
     })

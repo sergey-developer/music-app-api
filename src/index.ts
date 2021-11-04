@@ -1,5 +1,5 @@
 import { runApp } from 'app/utils'
-import { connectDatabase } from 'database/connection'
+import { connect as connectDatabase } from 'database/utils/db'
 
 const runServer = async () => {
   await connectDatabase()
