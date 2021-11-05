@@ -4,7 +4,7 @@ import { Schema, model } from 'mongoose'
 import { EntityNamesEnum } from 'database/constants/entityNames'
 import { JwtPayload, JwtToken } from 'modules/session/interface'
 import { ISessionDocument, ISessionModel } from 'modules/session/model'
-import { generateToken as baseGenerateToken } from 'modules/session/utils'
+import { generateToken } from 'modules/session/utils'
 
 const toJson = require('@meanie/mongoose-to-json')
 
@@ -26,12 +26,11 @@ const SessionSchema = new Schema<
   },
 })
 
-const generateToken = function (payload: JwtPayload): JwtToken {
+SessionSchema.static('generateToken', function (payload: JwtPayload): JwtToken {
   const secret: string = config.get('app.secrets.tokenSecret')
-  return baseGenerateToken(payload, secret)
-}
+  return generateToken(payload, secret)
+})
 
-SessionSchema.static('generateToken', generateToken)
 SessionSchema.plugin(toJson)
 
 const SessionModel = model<ISessionDocument, ISessionModel>(
@@ -39,5 +38,4 @@ const SessionModel = model<ISessionDocument, ISessionModel>(
   SessionSchema,
 )
 
-export { generateToken }
 export default SessionModel

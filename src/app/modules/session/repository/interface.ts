@@ -3,10 +3,14 @@ import { ISessionDocument } from 'modules/session/model'
 
 export interface ICreateSessionPayload extends JwtPayload {}
 
+export interface IFindOneSessionFilter extends Partial<{ token: JwtToken }> {}
+
+export interface IDeleteOneSessionFilter extends Partial<{ token: JwtToken }> {}
+
 export interface ISessionRepository {
-  findOneByToken: (token: JwtToken) => Promise<ISessionDocument>
+  findOne: (filter: IFindOneSessionFilter) => Promise<ISessionDocument>
 
   createOne: (payload: ICreateSessionPayload) => Promise<ISessionDocument>
 
-  deleteOneByToken: (token: JwtToken) => Promise<ISessionDocument>
+  deleteOne: (filter: IDeleteOneSessionFilter) => Promise<ISessionDocument>
 }

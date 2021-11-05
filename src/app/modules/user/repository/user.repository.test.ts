@@ -1,38 +1,27 @@
-import { Error as MongooseError, Types } from 'mongoose'
+import { Error as MongooseError } from 'mongoose'
 import { container as DiContainer } from 'tsyringe'
 
+import { getFakeEmail } from '__tests__/fakeData/common'
+import { fakeCreateUserPayload } from '__tests__/fakeData/user'
+import { setupDB } from '__tests__/utils'
 import { EntityNamesEnum } from 'database/constants/entityNames'
-import * as db from 'database/utils/db'
 import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
-import { getFakeEmail } from 'fakeData/common'
-import { fakeCreateUserPayload } from 'fakeData/user'
 import { UserRoleEnum } from 'modules/user/constants'
 import { UserModel } from 'modules/user/model'
 import { UserRepository } from 'modules/user/repository'
 
 let userRepository: UserRepository
 
-beforeAll(async () => {
-  await db.connect()
-})
+setupDB()
 
 beforeEach(() => {
+  DiContainer.clearInstances()
   DiContainer.register(getModelName(EntityNamesEnum.User), {
     useValue: UserModel,
   })
 
   userRepository = DiContainer.resolve(UserRepository)
-})
-
-afterEach(async () => {
-  DiContainer.clearInstances()
-  await db.clear()
-})
-
-afterAll(async () => {
-  await db.drop()
-  await db.disconnect()
 })
 
 describe('User repository', () => {
@@ -49,7 +38,8 @@ describe('User repository', () => {
 
       expect(createOneUserSpy).toBeCalledTimes(1)
       expect(createOneUserSpy).toBeCalledWith(payload)
-      expect(user._id).toBeInstanceOf(Types.ObjectId)
+      expect(typeof user.id).toBe('string')
+      expect(user.id).toBeTruthy()
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
       expect(user.password).not.toBe(payload.password)
@@ -63,7 +53,8 @@ describe('User repository', () => {
 
       expect(createOneUserSpy).toBeCalledTimes(1)
       expect(createOneUserSpy).toBeCalledWith(payload)
-      expect(user._id).toBeInstanceOf(Types.ObjectId)
+      expect(typeof user.id).toBe('string')
+      expect(user.id).toBeTruthy()
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
       expect(user.password).not.toBe(payload.password)
@@ -74,7 +65,8 @@ describe('User repository', () => {
       const payload = fakeCreateUserPayload('123')
 
       try {
-        await userRepository.createOne(payload)
+        const user = await userRepository.createOne(payload)
+        expect(user).not.toBeDefined()
       } catch (error) {
         expect(createOneUserSpy).toBeCalledTimes(1)
         expect(createOneUserSpy).toBeCalledWith(payload)
@@ -108,7 +100,8 @@ describe('User repository', () => {
       const findOneUserFilter = { email: getFakeEmail() }
 
       try {
-        await userRepository.findOne(findOneUserFilter)
+        const user = await userRepository.findOne(findOneUserFilter)
+        expect(user).not.toBeDefined()
       } catch (error) {
         expect(findOneUserSpy).toBeCalledTimes(1)
         expect(findOneUserSpy).toBeCalledWith(findOneUserFilter)
@@ -139,6 +132,7 @@ describe('User repository', () => {
       expect(deletedUser.username).toBe(newUser.username)
       expect(deletedUser.email).toBe(newUser.email)
       expect(deletedUser.password).toBe(newUser.password)
+      expect(deletedUser.role).toBe(newUser.role)
     })
 
     it('by id which not exists', async () => {
@@ -146,7 +140,8 @@ describe('User repository', () => {
       const deleteOneUserFilter = { id: fakeMongoId }
 
       try {
-        await userRepository.deleteOne(deleteOneUserFilter)
+        const user = await userRepository.deleteOne(deleteOneUserFilter)
+        expect(user).not.toBeDefined()
       } catch (error) {
         expect(deleteOneUserSpy).toBeCalledTimes(1)
         expect(deleteOneUserSpy).toBeCalledWith(deleteOneUserFilter)

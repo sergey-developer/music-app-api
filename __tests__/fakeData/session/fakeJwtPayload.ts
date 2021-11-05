@@ -1,5 +1,5 @@
+import { getFakeEmail } from '__tests__/fakeData/common'
 import generateMongoId from 'database/utils/generateMongoId'
-import { getFakeEmail } from 'fakeData/common'
 import { JwtPayload } from 'modules/session/interface'
 import { UserRoleEnum } from 'modules/user/constants'
 

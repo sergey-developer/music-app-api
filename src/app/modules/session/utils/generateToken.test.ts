@@ -1,4 +1,4 @@
-import { fakeJwtPayload } from 'fakeData/session'
+import { fakeJwtPayload } from '__tests__/fakeData/session'
 import * as sessionUtils from 'modules/session/utils'
 
 describe('generateToken', () => {

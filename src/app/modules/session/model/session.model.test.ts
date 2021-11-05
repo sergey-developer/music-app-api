@@ -1,11 +1,11 @@
-import { fakeJwtPayload } from 'fakeData/session'
-import { generateToken } from 'modules/session/model/session.model'
+import { fakeJwtPayload } from '__tests__/fakeData/session'
+import { SessionModel } from 'modules/session/model'
 
 describe('Session model', () => {
   it('successful generate token by static method', () => {
-    const generateTokenSpy = jest.fn(generateToken)
+    const generateTokenSpy = jest.spyOn(SessionModel, 'generateToken')
     const jwtPayload = fakeJwtPayload()
-    const token = generateTokenSpy(jwtPayload)
+    const token = SessionModel.generateToken(jwtPayload)
 
     expect(generateTokenSpy).toBeCalledTimes(1)
     expect(generateTokenSpy).toBeCalledWith(jwtPayload)

@@ -15,7 +15,7 @@
        "shared/*": ["src/shared/*"],
        "lib/*": ["src/lib/*"],
        "database/*": ["src/database/*"],
-       "fakeData/*": ["__tests__/fakeData/*"]
+       "__tests__/*": ["__tests__/*"]
      },
     "esModuleInterop": true,
      "experimentalDecorators": true,

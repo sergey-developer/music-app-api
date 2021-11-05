@@ -1,5 +1,5 @@
+import { fakeCreateUserPayload, getFakePassword } from '__tests__/fakeData/user'
 import * as db from 'database/utils/db'
-import { fakeCreateUserPayload, getFakePassword } from 'fakeData/user'
 import { IUserDocument, UserModel } from 'modules/user/model'
 import { preSaveHook } from 'modules/user/model/utils'
 

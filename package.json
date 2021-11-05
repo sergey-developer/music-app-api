@@ -67,7 +67,7 @@
           "modules",
           "shared",
           "lib",
-          "fakeData"
+          "__tests__"
         ]
       }
     }

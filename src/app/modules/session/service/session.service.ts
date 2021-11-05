@@ -2,10 +2,7 @@ import { delay, inject, singleton } from 'tsyringe'
 
 import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
-import {
-  ISessionRepository,
-  SessionRepository,
-} from 'modules/session/repository'
+import { SessionRepository } from 'modules/session/repository'
 import { ISessionService } from 'modules/session/service'
 import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import { NotFoundError, ServerError } from 'shared/utils/errors/httpErrors'
@@ -18,11 +15,9 @@ class SessionService implements ISessionService {
     private readonly sessionRepository: SessionRepository,
   ) {}
 
-  public getOneByToken: ISessionRepository['findOneByToken'] = async (
-    token,
-  ) => {
+  public getOneByToken: ISessionService['getOneByToken'] = async (token) => {
     try {
-      const session = await this.sessionRepository.findOneByToken(token)
+      const session = await this.sessionRepository.findOne({ token })
       return session
     } catch (error: any) {
       if (isNotFoundDBError(error)) {
@@ -53,11 +48,11 @@ class SessionService implements ISessionService {
     }
   }
 
-  public deleteOneByToken: ISessionRepository['deleteOneByToken'] = async (
+  public deleteOneByToken: ISessionService['deleteOneByToken'] = async (
     token,
   ) => {
     try {
-      const session = await this.sessionRepository.deleteOneByToken(token)
+      const session = await this.sessionRepository.deleteOne({ token })
       return session
     } catch (error: any) {
       if (isNotFoundDBError(error)) {

@@ -1,12 +1,11 @@
-import { Types } from 'mongoose'
 import { container as DiContainer } from 'tsyringe'
 
+import { getFakeEmail } from '__tests__/fakeData/common'
+import { fakeCreateUserPayload } from '__tests__/fakeData/user'
+import { setupDB } from '__tests__/utils'
 import { EntityNamesEnum } from 'database/constants/entityNames'
-import * as db from 'database/utils/db'
 import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
-import { getFakeEmail } from 'fakeData/common'
-import { fakeCreateUserPayload } from 'fakeData/user'
 import { UserRoleEnum } from 'modules/user/constants'
 import { UserModel } from 'modules/user/model'
 import { UserService } from 'modules/user/service'
@@ -17,26 +16,15 @@ import {
 
 let userService: UserService
 
-beforeAll(async () => {
-  await db.connect()
-})
+setupDB()
 
 beforeEach(() => {
+  DiContainer.clearInstances()
   DiContainer.register(getModelName(EntityNamesEnum.User), {
     useValue: UserModel,
   })
 
   userService = DiContainer.resolve(UserService)
-})
-
-afterEach(async () => {
-  DiContainer.clearInstances()
-  await db.clear()
-})
-
-afterAll(async () => {
-  await db.drop()
-  await db.disconnect()
 })
 
 describe('User service', () => {
@@ -83,7 +71,8 @@ describe('User service', () => {
 
       expect(createOneUserSpy).toBeCalledTimes(1)
       expect(createOneUserSpy).toBeCalledWith(payload)
-      expect(user._id).toBeInstanceOf(Types.ObjectId)
+      expect(typeof user.id).toBe('string')
+      expect(user.id).toBeTruthy()
       expect(user.username).toBe(payload.username)
       expect(user.email).toBe(payload.email)
       expect(user.password).not.toBe(payload.password)
@@ -117,7 +106,11 @@ describe('User service', () => {
 
       expect(deleteOneUserByIdSpy).toBeCalledTimes(1)
       expect(deleteOneUserByIdSpy).toBeCalledWith(newUser.id)
-      expect(deletedUser).toBeDefined()
+      expect(deletedUser.id).toBe(newUser.id)
+      expect(deletedUser.username).toBe(newUser.username)
+      expect(deletedUser.password).toBe(newUser.password)
+      expect(deletedUser.email).toBe(newUser.email)
+      expect(deletedUser.role).toBe(newUser.role)
     })
 
     it('which not exists', async () => {
