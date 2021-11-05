@@ -45,11 +45,12 @@ describe('User service', () => {
       expect(user.email).toBe(newUser.email)
     })
 
-    it('which not exists', async () => {
+    it('which not exist and throw not found error', async () => {
       const fakeEmail = getFakeEmail()
 
       try {
-        await userService.getOneByEmail(fakeEmail)
+        const user = await userService.getOneByEmail(fakeEmail)
+        expect(user).not.toBeDefined()
       } catch (error) {
         expect(getOneUserByEmailSpy).toBeCalledTimes(1)
         expect(getOneUserByEmailSpy).toBeCalledWith(fakeEmail)
@@ -83,7 +84,8 @@ describe('User service', () => {
       const payload = fakeCreateUserPayload('123')
 
       try {
-        await userService.createOne(payload)
+        const user = await userService.createOne(payload)
+        expect(user).not.toBeDefined()
       } catch (error) {
         expect(createOneUserSpy).toBeCalledTimes(1)
         expect(createOneUserSpy).toBeCalledWith(payload)
@@ -113,11 +115,12 @@ describe('User service', () => {
       expect(deletedUser.role).toBe(newUser.role)
     })
 
-    it('which not exists', async () => {
+    it('which not exist and throw not found error', async () => {
       const fakeMongoId = generateMongoId()
 
       try {
-        await userService.deleteOneById(fakeMongoId)
+        const user = await userService.deleteOneById(fakeMongoId)
+        expect(user).not.toBeDefined()
       } catch (error) {
         expect(deleteOneUserByIdSpy).toBeCalledTimes(1)
         expect(deleteOneUserByIdSpy).toBeCalledWith(fakeMongoId)

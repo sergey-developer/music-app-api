@@ -1,1 +1,1 @@
-export { default as fakeJwtPayload } from './fakeJwtPayload'
+export { default as fakeCreateSessionPayload } from './fakeCreateSessionPayload'

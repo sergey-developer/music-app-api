@@ -48,7 +48,6 @@ describe('User repository', () => {
 
     it('with correct data and role "moderator"', async () => {
       const payload = fakeCreateUserPayload(undefined, UserRoleEnum.Moderator)
-
       const user = await userRepository.createOne(payload)
 
       expect(createOneUserSpy).toBeCalledTimes(1)
@@ -70,9 +69,7 @@ describe('User repository', () => {
       } catch (error) {
         expect(createOneUserSpy).toBeCalledTimes(1)
         expect(createOneUserSpy).toBeCalledWith(payload)
-        await expect(createOneUserSpy).rejects.toThrow(
-          MongooseError.ValidationError,
-        )
+        expect(error).toBeInstanceOf(MongooseError.ValidationError)
       }
     })
   })
@@ -96,7 +93,7 @@ describe('User repository', () => {
       expect(user.email).toBe(findOneUserFilter.email)
     })
 
-    it('by email which not exists', async () => {
+    it('by email which not exist and throw not found error', async () => {
       const findOneUserFilter = { email: getFakeEmail() }
 
       try {
@@ -105,9 +102,7 @@ describe('User repository', () => {
       } catch (error) {
         expect(findOneUserSpy).toBeCalledTimes(1)
         expect(findOneUserSpy).toBeCalledWith(findOneUserFilter)
-        await expect(findOneUserSpy).rejects.toThrow(
-          MongooseError.DocumentNotFoundError,
-        )
+        expect(error).toBeInstanceOf(MongooseError.DocumentNotFoundError)
       }
     })
   })
@@ -135,9 +130,8 @@ describe('User repository', () => {
       expect(deletedUser.role).toBe(newUser.role)
     })
 
-    it('by id which not exists', async () => {
-      const fakeMongoId = generateMongoId()
-      const deleteOneUserFilter = { id: fakeMongoId }
+    it('by id which not exist and throw not found error', async () => {
+      const deleteOneUserFilter = { id: generateMongoId() }
 
       try {
         const user = await userRepository.deleteOne(deleteOneUserFilter)
@@ -145,9 +139,7 @@ describe('User repository', () => {
       } catch (error) {
         expect(deleteOneUserSpy).toBeCalledTimes(1)
         expect(deleteOneUserSpy).toBeCalledWith(deleteOneUserFilter)
-        await expect(deleteOneUserSpy).rejects.toThrow(
-          MongooseError.DocumentNotFoundError,
-        )
+        expect(error).toBeInstanceOf(MongooseError.DocumentNotFoundError)
       }
     })
   })

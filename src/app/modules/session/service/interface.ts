@@ -2,7 +2,9 @@ import { ISessionDocument } from 'modules/session/model'
 import { IUserDocument } from 'modules/user/model'
 
 export interface ICreateSessionPayload
-  extends Pick<IUserDocument, 'id' | 'email' | 'role'> {}
+  extends Pick<IUserDocument, 'email' | 'role'> {
+  userId: IUserDocument['id']
+}
 
 export interface ISessionService {
   getOneByToken: (token: ISessionDocument['token']) => Promise<ISessionDocument>

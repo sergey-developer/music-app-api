@@ -18,7 +18,7 @@ const ArtistSchema = new Schema<IArtistDocument, IArtistModel, IArtistDocument>(
       type: String,
       required: true,
       trim: true,
-      unique: 'Artist with name "{VALUE}" is already exists' as any,
+      unique: 'Artist with name "{VALUE}" already exists' as any,
       minlength: MIN_LENGTH_ARTIST_NAME,
       maxlength: MAX_LENGTH_ARTIST_NAME,
     },

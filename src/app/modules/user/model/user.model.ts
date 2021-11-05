@@ -19,14 +19,14 @@ const UserSchema = new Schema<IUserDocument, IUserModel, IUserDocument>({
   username: {
     type: String,
     required: true,
-    unique: 'User with such name is already exists' as any,
+    unique: 'User with such name already exists' as any,
     minlength: MIN_LENGTH_USERNAME,
     maxlength: MAX_LENGTH_USERNAME,
   },
   email: {
     type: String,
     required: true,
-    unique: 'User with such email is already exists' as any,
+    unique: 'User with such email already exists' as any,
   },
   password: {
     type: String,

@@ -1,12 +1,12 @@
 import { getFakeEmail } from '__tests__/fakeData/common'
 import generateMongoId from 'database/utils/generateMongoId'
-import { JwtPayload } from 'modules/session/interface'
+import { ICreateSessionPayload } from 'modules/session/repository'
 import { UserRoleEnum } from 'modules/user/constants'
 
-const fakeJwtPayload = (): JwtPayload => ({
+const fakeCreateSessionPayload = (): Required<ICreateSessionPayload> => ({
   email: getFakeEmail(),
   role: UserRoleEnum.User,
   userId: generateMongoId(),
 })
 
-export default fakeJwtPayload
+export default fakeCreateSessionPayload

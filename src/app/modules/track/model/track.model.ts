@@ -28,7 +28,7 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
   },
   youtube: {
     type: String,
-    unique: 'Track with such link "{VALUE}" is already exists',
+    unique: 'Track with such link "{VALUE}" already exists',
   },
   album: {
     type: Schema.Types.ObjectId,

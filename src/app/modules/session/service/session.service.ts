@@ -32,7 +32,7 @@ class SessionService implements ISessionService {
   public createOne: ISessionService['createOne'] = async (payload) => {
     try {
       const session = await this.sessionRepository.createOne({
-        userId: payload.id,
+        userId: payload.userId,
         email: payload.email,
         role: payload.role,
       })

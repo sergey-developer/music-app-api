@@ -45,7 +45,7 @@ class AuthService implements IAuthService {
 
     try {
       const session = await this.sessionService.createOne({
-        id: user.id,
+        userId: user.id,
         email: user.email,
         role: user.role,
       })
@@ -79,7 +79,7 @@ class AuthService implements IAuthService {
 
     try {
       const session = await this.sessionService.createOne({
-        id: user.id,
+        userId: user.id,
         email: user.email,
         role: user.role,
       })

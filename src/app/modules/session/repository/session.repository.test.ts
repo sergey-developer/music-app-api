@@ -1,7 +1,7 @@
-import { Error as MongooseError, Types } from 'mongoose'
+import { Error as MongooseError } from 'mongoose'
 import { container as DiContainer } from 'tsyringe'
 
-import { fakeJwtPayload } from '__tests__/fakeData/session'
+import { fakeCreateSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
 import { EntityNamesEnum } from 'database/constants/entityNames'
 import getModelName from 'database/utils/getModelName'
@@ -22,43 +22,6 @@ beforeEach(() => {
 })
 
 describe('Session repository', () => {
-  describe('Find one session', () => {
-    let findOneSessionSpy: jest.SpyInstance
-
-    beforeEach(() => {
-      findOneSessionSpy = jest.spyOn(sessionRepository, 'findOne')
-    })
-
-    it('by token which exists', async () => {
-      const createSessionPayload = fakeJwtPayload()
-      const newSession = await sessionRepository.createOne(createSessionPayload)
-
-      const findOneSessionFilter = { token: newSession.token }
-      const session = await sessionRepository.findOne(findOneSessionFilter)
-
-      expect(findOneSessionSpy).toBeCalledTimes(1)
-      expect(findOneSessionSpy).toBeCalledWith(findOneSessionFilter)
-      expect(session.id).toBe(newSession.id)
-      expect(session.token).toBe(newSession.token)
-      expect(session.user).toEqual(newSession.user)
-    })
-
-    it('by token which not exists', async () => {
-      const findOneSessionFilter = { token: '123' }
-
-      try {
-        const session = await sessionRepository.findOne(findOneSessionFilter)
-        expect(session).not.toBeDefined()
-      } catch (error) {
-        expect(findOneSessionSpy).toBeCalledTimes(1)
-        expect(findOneSessionSpy).toBeCalledWith(findOneSessionFilter)
-        await expect(findOneSessionSpy).rejects.toThrow(
-          MongooseError.DocumentNotFoundError,
-        )
-      }
-    })
-  })
-
   describe('Create one session', () => {
     let createOneSessionSpy: jest.SpyInstance
 
@@ -67,7 +30,7 @@ describe('Session repository', () => {
     })
 
     it('with correct data', async () => {
-      const payload = fakeJwtPayload()
+      const payload = fakeCreateSessionPayload()
       const session = await sessionRepository.createOne(payload)
 
       expect(createOneSessionSpy).toBeCalledTimes(1)
@@ -76,12 +39,12 @@ describe('Session repository', () => {
       expect(session.id).toBeTruthy()
       expect(typeof session.token).toBe('string')
       expect(session.token).toBeTruthy()
-      expect(session.user).toBeInstanceOf(Types.ObjectId)
+      expect(session.user.toString()).toBe(payload.userId)
     })
 
     it('with incorrect data throws validation error', async () => {
       const payload = {
-        ...fakeJwtPayload(),
+        ...fakeCreateSessionPayload(),
         userId: 'notCorrectUserId',
       }
 
@@ -96,6 +59,41 @@ describe('Session repository', () => {
     })
   })
 
+  describe('Find one session', () => {
+    let findOneSessionSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      findOneSessionSpy = jest.spyOn(sessionRepository, 'findOne')
+    })
+
+    it('by token which exists', async () => {
+      const createSessionPayload = fakeCreateSessionPayload()
+      const newSession = await sessionRepository.createOne(createSessionPayload)
+
+      const findOneSessionFilter = { token: newSession.token }
+      const session = await sessionRepository.findOne(findOneSessionFilter)
+
+      expect(findOneSessionSpy).toBeCalledTimes(1)
+      expect(findOneSessionSpy).toBeCalledWith(findOneSessionFilter)
+      expect(session.id).toBe(newSession.id)
+      expect(session.token).toBe(newSession.token)
+      expect(session.user).toEqual(newSession.user)
+    })
+
+    it('by token which not exist and throw not found error', async () => {
+      const findOneSessionFilter = { token: 'tokenWhichNotExists' }
+
+      try {
+        const session = await sessionRepository.findOne(findOneSessionFilter)
+        expect(session).not.toBeDefined()
+      } catch (error) {
+        expect(findOneSessionSpy).toBeCalledTimes(1)
+        expect(findOneSessionSpy).toBeCalledWith(findOneSessionFilter)
+        expect(error).toBeInstanceOf(MongooseError.DocumentNotFoundError)
+      }
+    })
+  })
+
   describe('Delete one session', () => {
     let deleteOneSessionSpy: jest.SpyInstance
 
@@ -104,7 +102,7 @@ describe('Session repository', () => {
     })
 
     it('by token which exists', async () => {
-      const createSessionPayload = fakeJwtPayload()
+      const createSessionPayload = fakeCreateSessionPayload()
       const newSession = await sessionRepository.createOne(createSessionPayload)
 
       const deleteOneSessionFilter = { token: newSession.token }
@@ -119,8 +117,8 @@ describe('Session repository', () => {
       expect(deletedSession.user).toEqual(newSession.user)
     })
 
-    it('by token which not exists', async () => {
-      const deleteOneSessionFilter = { token: 'tokenWhichNotExist' }
+    it('by token which not exist and throw not found error', async () => {
+      const deleteOneSessionFilter = { token: 'tokenWhichNotExists' }
 
       try {
         const deletedSession = await sessionRepository.deleteOne(
@@ -131,9 +129,7 @@ describe('Session repository', () => {
       } catch (error) {
         expect(deleteOneSessionSpy).toBeCalledTimes(1)
         expect(deleteOneSessionSpy).toBeCalledWith(deleteOneSessionFilter)
-        await expect(deleteOneSessionSpy).rejects.toThrow(
-          MongooseError.DocumentNotFoundError,
-        )
+        expect(error).toBeInstanceOf(MongooseError.DocumentNotFoundError)
       }
     })
   })
