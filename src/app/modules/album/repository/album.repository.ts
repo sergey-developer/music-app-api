@@ -73,7 +73,7 @@ class AlbumRepository implements IAlbumRepository {
 
     const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
-    await this.album.deleteMany(filterToApply)
+    return this.album.deleteMany(filterToApply).exec()
   }
 }
 

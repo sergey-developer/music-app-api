@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 
+import config from 'config'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express, { Application } from 'express'
@@ -9,7 +10,7 @@ import routers from 'app/api'
 import { registerDependencies } from 'app/utils'
 
 const setupApp = (app: Application): Application => {
-  app.use(express.static('public/uploads/images'))
+  app.use(express.static(config.get('app.uploads.imagesDir')))
   app.use(express.json())
   app.use(cors())
   app.use(cookieParser())

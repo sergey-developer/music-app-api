@@ -29,19 +29,19 @@ beforeEach(() => {
 
 describe('User service', () => {
   describe('Get one user by email', () => {
-    let getOneUserByEmailSpy: jest.SpyInstance
+    let getOneByEmailSpy: jest.SpyInstance
 
     beforeEach(async () => {
-      getOneUserByEmailSpy = jest.spyOn(userService, 'getOneByEmail')
+      getOneByEmailSpy = jest.spyOn(userService, 'getOneByEmail')
     })
 
     it('which exists', async () => {
-      const createUserPayload = fakeCreateUserPayload()
-      const newUser = await userService.createOne(createUserPayload)
+      const userPayload = fakeCreateUserPayload()
+      const newUser = await userService.createOne(userPayload)
       const user = await userService.getOneByEmail(newUser.email)
 
-      expect(getOneUserByEmailSpy).toBeCalledTimes(1)
-      expect(getOneUserByEmailSpy).toBeCalledWith(newUser.email)
+      expect(getOneByEmailSpy).toBeCalledTimes(1)
+      expect(getOneByEmailSpy).toBeCalledWith(newUser.email)
       expect(user.email).toBe(newUser.email)
     })
 
@@ -52,62 +52,62 @@ describe('User service', () => {
         const user = await userService.getOneByEmail(fakeEmail)
         expect(user).not.toBeDefined()
       } catch (error) {
-        expect(getOneUserByEmailSpy).toBeCalledTimes(1)
-        expect(getOneUserByEmailSpy).toBeCalledWith(fakeEmail)
+        expect(getOneByEmailSpy).toBeCalledTimes(1)
+        expect(getOneByEmailSpy).toBeCalledWith(fakeEmail)
         expect(isNotFoundError(error)).toBe(true)
       }
     })
   })
 
   describe('Create one user', () => {
-    let createOneUserSpy: jest.SpyInstance
+    let createOneSpy: jest.SpyInstance
 
     beforeEach(async () => {
-      createOneUserSpy = jest.spyOn(userService, 'createOne')
+      createOneSpy = jest.spyOn(userService, 'createOne')
     })
 
     it('with correct data', async () => {
-      const payload = fakeCreateUserPayload()
-      const user = await userService.createOne(payload)
+      const userPayload = fakeCreateUserPayload()
+      const newUser = await userService.createOne(userPayload)
 
-      expect(createOneUserSpy).toBeCalledTimes(1)
-      expect(createOneUserSpy).toBeCalledWith(payload)
-      expect(typeof user.id).toBe('string')
-      expect(user.id).toBeTruthy()
-      expect(user.username).toBe(payload.username)
-      expect(user.email).toBe(payload.email)
-      expect(user.password).not.toBe(payload.password)
-      expect(user.role).toBe(UserRoleEnum.User)
+      expect(createOneSpy).toBeCalledTimes(1)
+      expect(createOneSpy).toBeCalledWith(userPayload)
+      expect(typeof newUser.id).toBe('string')
+      expect(newUser.id).toBeTruthy()
+      expect(newUser.username).toBe(userPayload.username)
+      expect(newUser.email).toBe(userPayload.email)
+      expect(newUser.password).not.toBe(userPayload.password)
+      expect(newUser.role).toBe(UserRoleEnum.User)
     })
 
     it('with incorrect data throws bad request error', async () => {
-      const payload = fakeCreateUserPayload('123')
+      const userPayload = fakeCreateUserPayload(null, { isIncorrect: true })
 
       try {
-        const user = await userService.createOne(payload)
-        expect(user).not.toBeDefined()
+        const newUser = await userService.createOne(userPayload)
+        expect(newUser).not.toBeDefined()
       } catch (error) {
-        expect(createOneUserSpy).toBeCalledTimes(1)
-        expect(createOneUserSpy).toBeCalledWith(payload)
+        expect(createOneSpy).toBeCalledTimes(1)
+        expect(createOneSpy).toBeCalledWith(userPayload)
         expect(isBadRequestError(error)).toBe(true)
       }
     })
   })
 
   describe('Delete one user by id', () => {
-    let deleteOneUserByIdSpy: jest.SpyInstance
+    let deleteOneByIdSpy: jest.SpyInstance
 
     beforeEach(async () => {
-      deleteOneUserByIdSpy = jest.spyOn(userService, 'deleteOneById')
+      deleteOneByIdSpy = jest.spyOn(userService, 'deleteOneById')
     })
 
     it('which exists', async () => {
-      const createUserPayload = fakeCreateUserPayload()
-      const newUser = await userService.createOne(createUserPayload)
+      const userPayload = fakeCreateUserPayload()
+      const newUser = await userService.createOne(userPayload)
       const deletedUser = await userService.deleteOneById(newUser.id)
 
-      expect(deleteOneUserByIdSpy).toBeCalledTimes(1)
-      expect(deleteOneUserByIdSpy).toBeCalledWith(newUser.id)
+      expect(deleteOneByIdSpy).toBeCalledTimes(1)
+      expect(deleteOneByIdSpy).toBeCalledWith(newUser.id)
       expect(deletedUser.id).toBe(newUser.id)
       expect(deletedUser.username).toBe(newUser.username)
       expect(deletedUser.password).toBe(newUser.password)
@@ -119,11 +119,11 @@ describe('User service', () => {
       const fakeMongoId = generateMongoId()
 
       try {
-        const user = await userService.deleteOneById(fakeMongoId)
-        expect(user).not.toBeDefined()
+        const deletedUser = await userService.deleteOneById(fakeMongoId)
+        expect(deletedUser).not.toBeDefined()
       } catch (error) {
-        expect(deleteOneUserByIdSpy).toBeCalledTimes(1)
-        expect(deleteOneUserByIdSpy).toBeCalledWith(fakeMongoId)
+        expect(deleteOneByIdSpy).toBeCalledTimes(1)
+        expect(deleteOneByIdSpy).toBeCalledWith(fakeMongoId)
         expect(isNotFoundError(error)).toBe(true)
       }
     })

@@ -191,7 +191,7 @@ class AlbumService implements IAlbumService {
   }
 
   public deleteMany: IAlbumService['deleteMany'] = async (rawFilter) => {
-    const filter: typeof rawFilter = omitUndefined(rawFilter)
+    const filter = omitUndefined(rawFilter)
 
     if (isEmpty(filter)) {
       throw BadRequestError(EMPTY_FILTER_ERR_MSG)

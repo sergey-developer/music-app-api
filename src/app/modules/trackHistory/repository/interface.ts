@@ -1,11 +1,19 @@
+import { DeleteResult } from 'mongodb'
+
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
 import { ITrackHistoryDocumentArray } from 'modules/trackHistory/interface'
 import { ITrackHistoryDocument } from 'modules/trackHistory/model'
 
-export interface IFindAllTrackHistoryFilter {
-  userId: DocumentId
-}
+export interface IFindAllTrackHistoryFilter
+  extends Partial<{
+    user: DocumentId
+  }> {}
+
+export interface IDeleteOneTrackHistoryFilter
+  extends Partial<{
+    id: ITrackHistoryDocument['id']
+  }> {}
 
 export interface IDeleteManyTrackHistoryFilter
   extends Partial<{
@@ -13,7 +21,7 @@ export interface IDeleteManyTrackHistoryFilter
   }> {}
 
 export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
-  userId: DocumentId
+  user: DocumentId
   listenDate: ITrackHistoryDocument['listenDate']
 }
 
@@ -26,9 +34,9 @@ export interface ITrackHistoryRepository {
     payload: ICreateTrackHistoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
-  deleteOneById: (
-    id: ITrackHistoryDocument['id'],
+  deleteOne: (
+    filter: IDeleteOneTrackHistoryFilter,
   ) => Promise<ITrackHistoryDocument>
 
-  deleteMany: (filter: IDeleteManyTrackHistoryFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyTrackHistoryFilter) => Promise<DeleteResult>
 }

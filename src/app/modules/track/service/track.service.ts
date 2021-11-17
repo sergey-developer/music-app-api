@@ -166,7 +166,7 @@ class TrackService implements ITrackService {
   }
 
   public deleteMany: ITrackService['deleteMany'] = async (rawFilter) => {
-    const filter: typeof rawFilter = omitUndefined(rawFilter)
+    const filter = omitUndefined(rawFilter)
 
     if (isEmpty(filter)) {
       throw BadRequestError(EMPTY_FILTER_ERR_MSG)

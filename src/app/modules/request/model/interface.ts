@@ -12,11 +12,10 @@ import { MaybeNull } from 'shared/interface/utils'
 export interface IRequestDocument {
   id: DocumentId
   entityName: EntityNamesEnum
-  entity:
-    | PopulatedDoc<IArtistDocument>
-    | PopulatedDoc<IAlbumDocument>
-    | PopulatedDoc<ITrackDocument>
-  creator: PopulatedDoc<IUserDocument>
+  entity: PopulatedDoc<
+    MaybeNull<IArtistDocument | IAlbumDocument | ITrackDocument>
+  >
+  creator: PopulatedDoc<MaybeNull<IUserDocument>>
   status: RequestStatusEnum
   reason: MaybeNull<string>
 }

@@ -8,7 +8,7 @@ export interface IAlbumDocument {
   id: DocumentId
   name: string
   releaseDate: string
-  artist: PopulatedDoc<IArtistDocument>
+  artist: PopulatedDoc<MaybeNull<IArtistDocument>>
   image: MaybeNull<string>
 }
 

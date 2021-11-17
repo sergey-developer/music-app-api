@@ -105,7 +105,7 @@ class RequestRepository implements IRequestRepository {
 
     const filterToApply: FilterQuery<IRequestDocument> = { ...filterByEntity }
 
-    await this.request.deleteMany(filterToApply)
+    return this.request.deleteMany(filterToApply).exec()
   }
 }
 

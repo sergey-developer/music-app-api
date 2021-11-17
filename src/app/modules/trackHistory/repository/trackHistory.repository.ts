@@ -29,10 +29,13 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     return trackHistory.save()
   }
 
-  public deleteOneById: ITrackHistoryRepository['deleteOneById'] = async (
-    id,
-  ) => {
-    return this.trackHistory.findByIdAndDelete(id).orFail().exec()
+  public deleteOne: ITrackHistoryRepository['deleteOne'] = async (filter) => {
+    const { id } = omitUndefined(filter)
+
+    const filterById: FilterQuery<ITrackHistoryDocument> = id ? { _id: id } : {}
+    const filterToApply: FilterQuery<ITrackHistoryDocument> = { ...filterById }
+
+    return this.trackHistory.findOneAndDelete(filterToApply).orFail().exec()
   }
 
   public deleteMany: ITrackHistoryRepository['deleteMany'] = async (filter) => {
@@ -46,7 +49,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
       ...filterByTrack,
     }
 
-    await this.trackHistory.deleteMany(filterToApply)
+    return this.trackHistory.deleteMany(filterToApply).exec()
   }
 }
 

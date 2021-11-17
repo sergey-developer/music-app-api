@@ -80,7 +80,7 @@ class TrackRepository implements ITrackRepository {
 
     const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-    await this.track.deleteMany(filterToApply)
+    return this.track.deleteMany(filterToApply).exec()
   }
 }
 

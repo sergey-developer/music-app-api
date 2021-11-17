@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongodb'
+
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import { GetAllRequestsQuery, UpdateRequestDto } from 'modules/request/dto'
 import { IRequestDocumentArray } from 'modules/request/interface'
@@ -42,5 +44,5 @@ export interface IRequestRepository {
 
   deleteOne: (filter: IDeleteOneRequestFilter) => Promise<IRequestDocument>
 
-  deleteMany: (filter: IDeleteManyRequestFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyRequestFilter) => Promise<DeleteResult>
 }

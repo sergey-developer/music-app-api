@@ -9,7 +9,7 @@ import {
   UserRoleEnum,
 } from 'modules/user/constants'
 import { IUserDocument, IUserModel } from 'modules/user/model'
-import { preSaveHook } from 'modules/user/model/utils'
+import { preSaveHook } from 'modules/user/model/hooks'
 import { checkPassword } from 'modules/user/utils'
 
 const toJson = require('@meanie/mongoose-to-json')

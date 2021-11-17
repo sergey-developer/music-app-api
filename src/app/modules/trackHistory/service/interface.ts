@@ -5,11 +5,11 @@ import { ITrackHistoryDocument } from 'modules/trackHistory/model'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 
 export interface IGetAllTrackHistoryFilter {
-  userId: DocumentId
+  user: DocumentId
 }
 
 export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
-  userId: DocumentId
+  user: DocumentId
 }
 
 export interface ITrackHistoryService {
@@ -21,7 +21,9 @@ export interface ITrackHistoryService {
     payload: ICreateTrackHistoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
-  deleteOneById: ITrackHistoryRepository['deleteOneById']
+  deleteOneById: (
+    id: ITrackHistoryDocument['id'],
+  ) => Promise<ITrackHistoryDocument>
 
   deleteMany: ITrackHistoryRepository['deleteMany']
 }

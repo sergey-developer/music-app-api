@@ -9,6 +9,7 @@ const runServer = async () => {
 runServer()
 
 // TODO: Написать тесты
+// TODO: Настроить jest-extended и исп-ть его
 // TODO: отрефакторить сообщения для логирования
 // TODO: Сделать пагинацию
 // TODO: add validation content-type for route level

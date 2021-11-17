@@ -51,7 +51,7 @@ class TrackHistoryService implements ITrackHistoryService {
 
   public deleteOneById: ITrackHistoryService['deleteOneById'] = async (id) => {
     try {
-      const trackHistory = await this.trackHistoryRepository.deleteOneById(id)
+      const trackHistory = await this.trackHistoryRepository.deleteOne({ id })
       return trackHistory
     } catch (error: any) {
       if (isNotFoundDBError(error)) {
@@ -64,7 +64,7 @@ class TrackHistoryService implements ITrackHistoryService {
   }
 
   public deleteMany: ITrackHistoryService['deleteMany'] = async (rawFilter) => {
-    const filter: typeof rawFilter = omitUndefined(rawFilter)
+    const filter = omitUndefined(rawFilter)
 
     if (isEmpty(filter)) {
       throw BadRequestError(EMPTY_FILTER_ERR_MSG)
