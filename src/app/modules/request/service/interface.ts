@@ -1,3 +1,4 @@
+import { DocumentIdArray } from 'database/interface/document'
 import { GetAllRequestsQuery } from 'modules/request/dto'
 import { IRequestDocumentArray } from 'modules/request/interface'
 import { IRequestDocument } from 'modules/request/model'
@@ -11,6 +12,11 @@ export interface ICreateRequestPayload
   extends Pick<IRequestDocument, 'entityName' | 'entity' | 'creator'> {}
 
 export interface IUpdateRequestPayload extends UpdateRequestDto {}
+
+export interface IDeleteManyRequestFilter
+  extends Partial<{
+    entityIds: DocumentIdArray
+  }> {}
 
 export interface IRequestService {
   getAll: (filter: IGetAllRequestsFilter) => Promise<IRequestDocumentArray>
@@ -28,5 +34,5 @@ export interface IRequestService {
     requestId: IRequestDocument['id'],
   ) => Promise<IRequestDocument>
 
-  deleteMany: IRequestRepository['deleteMany']
+  deleteMany: (filter: IDeleteManyRequestFilter) => Promise<void>
 }
