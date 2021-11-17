@@ -94,14 +94,14 @@ describe('Session repository', () => {
     })
   })
 
-  describe('Delete one session', () => {
+  describe('Delete one session where filter', () => {
     let deleteOneSpy: jest.SpyInstance
 
     beforeEach(() => {
       deleteOneSpy = jest.spyOn(sessionRepository, 'deleteOne')
     })
 
-    it('by token which exists', async () => {
+    it('has token which exists', async () => {
       const sessionPayload = fakeCreateSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
@@ -117,7 +117,7 @@ describe('Session repository', () => {
       expect(deletedSession.user).toEqual(newSession.user)
     })
 
-    it('by token which not exist and throws error', async () => {
+    it('has token which not exist and throws error', async () => {
       const deleteOneSessionFilter = { token: getRandomString() }
 
       try {

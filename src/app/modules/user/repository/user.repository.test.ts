@@ -109,14 +109,14 @@ describe('User repository', () => {
     })
   })
 
-  describe('Delete one user', () => {
+  describe('Delete one user where filter', () => {
     let deleteOneSpy: jest.SpyInstance
 
     beforeEach(async () => {
       deleteOneSpy = jest.spyOn(userRepository, 'deleteOne')
     })
 
-    it('by id which exists', async () => {
+    it('has id which exists', async () => {
       const userPayload = fakeCreateUserPayload()
       const newUser = await userRepository.createOne(userPayload)
 
@@ -132,7 +132,7 @@ describe('User repository', () => {
       expect(deletedUser.role).toBe(newUser.role)
     })
 
-    it('by id which not exist and throws error', async () => {
+    it('has id which not exist and throws error', async () => {
       const deleteOneUserFilter = { id: generateMongoId() }
 
       try {
