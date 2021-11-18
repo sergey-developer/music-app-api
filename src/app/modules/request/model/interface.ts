@@ -1,6 +1,6 @@
 import { Model } from 'mongoose'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DocumentId, PopulatedDoc } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { IArtistDocument } from 'modules/artist/model'

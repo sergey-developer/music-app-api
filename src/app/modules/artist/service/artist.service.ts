@@ -1,9 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import DatabaseError from 'database/custom-errors'
 import { DocumentId } from 'database/interface/document'
-import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IAlbumDocumentArray } from 'modules/album/interface'
 import { AlbumService } from 'modules/album/service'
@@ -62,7 +62,7 @@ class ArtistService implements IArtistService {
       const artist = await this.artistRepository.findOneById(id)
       return artist
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
+      if (error instanceof DatabaseError.NotFoundError) {
         throw NotFoundError('Artist was not found')
       }
 
@@ -138,7 +138,7 @@ class ArtistService implements IArtistService {
         throw ValidationError(null, error)
       }
 
-      if (isNotFoundDBError(error)) {
+      if (error instanceof DatabaseError.NotFoundError) {
         throw NotFoundError('Artist was not found')
       }
 
@@ -159,7 +159,7 @@ class ArtistService implements IArtistService {
       artist = await this.artistRepository.deleteOneById(id)
       if (artist.photo) deleteImageFromFs(artist.photo)
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
+      if (error instanceof DatabaseError.NotFoundError) {
         throw NotFoundError('Artist was not found')
       }
 

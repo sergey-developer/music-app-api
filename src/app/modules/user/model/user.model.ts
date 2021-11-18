@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   MAX_LENGTH_PASSWORD,
   MAX_LENGTH_USERNAME,

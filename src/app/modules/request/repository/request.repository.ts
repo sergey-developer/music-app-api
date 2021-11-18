@@ -1,12 +1,14 @@
 import isEmpty from 'lodash/isEmpty'
-import { FilterQuery, QueryOptions } from 'mongoose'
+import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import DatabaseError from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { IRequestDocument, IRequestModel } from 'modules/request/model'
 import { IRequestRepository } from 'modules/request/repository'
 import { omitUndefined } from 'shared/utils/common'
+import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class RequestRepository implements IRequestRepository {
@@ -16,96 +18,154 @@ class RequestRepository implements IRequestRepository {
   ) {}
 
   public findAll: IRequestRepository['findAll'] = async () => {
-    return this.request.find().exec()
+    try {
+      return this.request.find().exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public findAllWhere: IRequestRepository['findAllWhere'] = async (filter) => {
-    const { status, creator, kind } = omitUndefined(filter)
+    try {
+      const { status, creator, kind } = omitUndefined(filter)
 
-    const filterByEntityName: FilterQuery<IRequestDocument> = kind
-      ? { entityName: kind }
-      : {}
+      const filterByEntityName: FilterQuery<IRequestDocument> = kind
+        ? { entityName: kind }
+        : {}
 
-    const filterByStatus: FilterQuery<IRequestDocument> = status
-      ? { status }
-      : {}
+      const filterByStatus: FilterQuery<IRequestDocument> = status
+        ? { status }
+        : {}
 
-    const filterByCreator: FilterQuery<IRequestDocument> = creator
-      ? { creator }
-      : {}
+      const filterByCreator: FilterQuery<IRequestDocument> = creator
+        ? { creator }
+        : {}
 
-    const filterToApply: FilterQuery<IRequestDocument> = {
-      ...filterByEntityName,
-      ...filterByStatus,
-      ...filterByCreator,
+      const filterToApply: FilterQuery<IRequestDocument> = {
+        ...filterByEntityName,
+        ...filterByStatus,
+        ...filterByCreator,
+      }
+
+      return this.request.find(filterToApply).exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
     }
-
-    return this.request.find(filterToApply).exec()
   }
 
-  public findOneById: IRequestRepository['findOneById'] = async (id) => {
-    return this.request.findById(id).orFail().exec()
+  public findOne: IRequestRepository['findOne'] = async (id) => {
+    try {
+      return this.request.findById(id).orFail().exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public createOne: IRequestRepository['createOne'] = async (payload) => {
-    const request = new this.request(payload)
-    return request.save()
+    try {
+      const request = new this.request(payload)
+      return request.save()
+    } catch (error: any) {
+      if (error instanceof MongooseError.ValidationError) {
+        throw new DatabaseError.ValidationError(
+          error.message,
+          getValidationErrors(
+            error.errors as Record<string, MongooseError.ValidatorError>,
+          ),
+        )
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public updateOne: IRequestRepository['updateOne'] = async (
     filter,
     payload,
   ) => {
-    const { id } = omitUndefined(filter)
-    const updates = omitUndefined(payload)
+    try {
+      const { id } = omitUndefined(filter)
+      const updates = omitUndefined(payload)
 
-    const defaultOptions: QueryOptions = {
-      runValidators: true,
-      new: true,
-      context: 'query',
+      const defaultOptions: QueryOptions = {
+        runValidators: true,
+        new: true,
+        context: 'query',
+      }
+      const optionsToApply: QueryOptions = defaultOptions
+
+      const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<IRequestDocument> = { ...filterById }
+
+      return this.request
+        .findOneAndUpdate(filterToApply, updates, optionsToApply)
+        .orFail()
+        .exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      if (error instanceof MongooseError.ValidationError) {
+        throw new DatabaseError.ValidationError(
+          error.message,
+          getValidationErrors(
+            error.errors as Record<string, MongooseError.ValidatorError>,
+          ),
+        )
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
     }
-    const optionsToApply: QueryOptions = defaultOptions
-
-    const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
-    const filterToApply: FilterQuery<IRequestDocument> = { ...filterById }
-
-    return this.request
-      .findOneAndUpdate(filterToApply, updates, optionsToApply)
-      .orFail()
-      .exec()
   }
 
   public deleteOne: IRequestRepository['deleteOne'] = async (filter) => {
-    const { id, entityId } = omitUndefined(filter)
+    try {
+      const { id, entityId } = omitUndefined(filter)
 
-    const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
+      const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
 
-    const filterByEntity: FilterQuery<IRequestDocument> = entityId
-      ? { entity: entityId }
-      : {}
+      const filterByEntity: FilterQuery<IRequestDocument> = entityId
+        ? { entity: entityId }
+        : {}
 
-    const filterToApply: FilterQuery<IRequestDocument> = {
-      ...filterById,
-      ...filterByEntity,
+      const filterToApply: FilterQuery<IRequestDocument> = {
+        ...filterById,
+        ...filterByEntity,
+      }
+
+      return this.request
+        .findOneAndDelete(filterToApply)
+        .orFail()
+        .populate('entity')
+        .exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
     }
-
-    return this.request
-      .findOneAndDelete(filterToApply)
-      .orFail()
-      .populate('entity')
-      .exec()
   }
 
   public deleteMany: IRequestRepository['deleteMany'] = async (filter) => {
-    const { entityIds } = omitUndefined(filter)
+    try {
+      const { entityIds } = omitUndefined(filter)
 
-    const filterByEntity: FilterQuery<IRequestDocument> = isEmpty(entityIds)
-      ? {}
-      : { entity: { $in: entityIds } }
+      const filterByEntity: FilterQuery<IRequestDocument> = isEmpty(entityIds)
+        ? {}
+        : { entity: { $in: entityIds } }
 
-    const filterToApply: FilterQuery<IRequestDocument> = { ...filterByEntity }
+      const filterToApply: FilterQuery<IRequestDocument> = { ...filterByEntity }
 
-    return this.request.deleteMany(filterToApply).exec()
+      return this.request.deleteMany(filterToApply).exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 }
 

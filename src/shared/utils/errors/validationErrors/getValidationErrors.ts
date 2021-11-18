@@ -8,11 +8,7 @@ const getValidationErrors = (
 ): IValidationErrors => {
   return keys(errors).reduce((acc: IValidationErrors, name) => {
     const error = errors[name]
-
-    acc[name] = {
-      value: error.value,
-      messages: [error.message],
-    }
+    acc[name] = [error.message]
 
     return acc
   }, {})

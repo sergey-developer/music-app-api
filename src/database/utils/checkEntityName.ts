@@ -1,4 +1,4 @@
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { checkString } from 'shared/utils/common'
 
 const isArtistModelName = checkString(EntityNamesEnum.Artist)

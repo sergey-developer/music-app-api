@@ -2,7 +2,7 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeCreateTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
 import { TrackModel } from 'modules/track/model'

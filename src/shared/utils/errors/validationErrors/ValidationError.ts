@@ -1,6 +1,6 @@
 import { Error } from 'mongoose'
 
-import ErrorKindsEnum from 'shared/constants/errorKinds'
+import AppErrorKindsEnum from 'shared/constants/appErrorKindsEnum'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import { MaybeNull } from 'shared/interface/utils'
 import { BadRequestError } from 'shared/utils/errors/httpErrors'
@@ -13,7 +13,7 @@ const ValidationError = (
   const message = msg || VALIDATION_ERR_MSG
 
   return BadRequestError(message, {
-    kind: ErrorKindsEnum.ValidationError,
+    kind: AppErrorKindsEnum.ValidationError,
     errors: getValidationErrors(
       error.errors as Record<string, Error.ValidatorError>,
     ),

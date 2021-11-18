@@ -7,6 +7,11 @@ import { IRequestDocument } from 'modules/request/model'
 
 export interface IFindAllRequestsFilter extends GetAllRequestsQuery {}
 
+export interface IFindOneRequestFilter
+  extends Partial<{
+    id: IRequestDocument['id']
+  }> {}
+
 export interface ICreateRequestPayload
   extends Pick<IRequestDocument, 'entityName' | 'entity' | 'creator'> {}
 
@@ -33,7 +38,7 @@ export interface IRequestRepository {
     filter: IFindAllRequestsFilter,
   ) => Promise<IRequestDocumentArray>
 
-  findOneById: (id: IRequestDocument['id']) => Promise<IRequestDocument>
+  findOne: (filter: IFindOneRequestFilter) => Promise<IRequestDocument>
 
   createOne: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
 

@@ -1,19 +1,16 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import { isNotFoundDBError } from 'database/utils/errors'
+import DatabaseError from 'database/errors'
 import logger from 'lib/logger'
 import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 import { ITrackHistoryService } from 'modules/trackHistory/service'
-import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
-import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
-  BadRequestError,
-  NotFoundError,
-  ServerError,
-} from 'shared/utils/errors/httpErrors'
-import { ValidationError } from 'shared/utils/errors/validationErrors'
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import AppError from 'shared/utils/errors/appErrors'
 
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {
@@ -27,7 +24,7 @@ class TrackHistoryService implements ITrackHistoryService {
       return this.trackHistoryRepository.findAllWhere(filter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw ServerError('Error while getting tracks`s histories')
+      throw new AppError.UnknownError('Error while getting tracks`s histories')
     }
   }
 
@@ -40,12 +37,12 @@ class TrackHistoryService implements ITrackHistoryService {
 
       return trackHistory
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while creating new track history')
+      throw new AppError.UnknownError('Error while creating new track history')
     }
   }
 
@@ -54,27 +51,27 @@ class TrackHistoryService implements ITrackHistoryService {
       const trackHistory = await this.trackHistoryRepository.deleteOne({ id })
       return trackHistory
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError('Track history was not found')
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Track history was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while deleting track history')
+      throw new AppError.UnknownError('Error while deleting track history')
     }
   }
 
-  public deleteMany: ITrackHistoryService['deleteMany'] = async (rawFilter) => {
-    const filter = omitUndefined(rawFilter)
+  public deleteMany: ITrackHistoryService['deleteMany'] = async (filter) => {
+    const deleteManyFilter = omitUndefined(filter)
 
-    if (isEmpty(filter)) {
-      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    if (isEmpty(deleteManyFilter)) {
+      throw new AppError.EmptyFilterError(EMPTY_FILTER_ERR_MSG)
     }
 
     try {
-      await this.trackHistoryRepository.deleteMany(filter)
+      await this.trackHistoryRepository.deleteMany(deleteManyFilter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw ServerError('Error while deleting tracks`s histories')
+      throw new AppError.UnknownError('Error while deleting tracks`s histories')
     }
   }
 }

@@ -1,5 +1,5 @@
-import bcrypt from 'bcrypt'
+import { compare } from 'bcrypt'
 
 export default (password: string, hashedPassword: string): Promise<boolean> => {
-  return bcrypt.compare(password, hashedPassword)
+  return compare(password, hashedPassword)
 }

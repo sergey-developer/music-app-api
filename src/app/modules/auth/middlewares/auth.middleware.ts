@@ -5,10 +5,10 @@ import { container as DiContainer } from 'tsyringe'
 
 import { SessionService } from 'modules/session/service'
 import { isJwtError, verifyToken } from 'modules/session/utils'
+import AppError from 'shared/utils/errors/appErrors'
 import {
   UnauthorizedError,
   ensureHttpError,
-  isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
 const sessionService = DiContainer.resolve(SessionService)
@@ -38,7 +38,7 @@ const auth = async <Req extends Request, Res extends Response>(
       return
     }
 
-    if (isNotFoundError(exception)) {
+    if (exception instanceof AppError.NotFoundError) {
       const error = UnauthorizedError()
       res.status(error.status).send(error)
       return

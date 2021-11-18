@@ -1,8 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
-import { FilterQuery } from 'mongoose'
+import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import DatabaseError from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import {
   ITrackHistoryDocument,
@@ -10,6 +11,7 @@ import {
 } from 'modules/trackHistory/model'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 import { omitUndefined } from 'shared/utils/common'
+import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class TrackHistoryRepository implements ITrackHistoryRepository {
@@ -21,35 +23,71 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
   public findAllWhere: ITrackHistoryRepository['findAllWhere'] = async (
     filter,
   ) => {
-    return this.trackHistory.find(filter).exec()
+    try {
+      return this.trackHistory.find(filter).exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public createOne: ITrackHistoryRepository['createOne'] = async (payload) => {
-    const trackHistory = new this.trackHistory(payload)
-    return trackHistory.save()
+    try {
+      const trackHistory = new this.trackHistory(payload)
+      return trackHistory.save()
+    } catch (error: any) {
+      if (error instanceof MongooseError.ValidationError) {
+        throw new DatabaseError.ValidationError(
+          error.message,
+          getValidationErrors(
+            error.errors as Record<string, MongooseError.ValidatorError>,
+          ),
+        )
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public deleteOne: ITrackHistoryRepository['deleteOne'] = async (filter) => {
-    const { id } = omitUndefined(filter)
+    try {
+      const { id } = omitUndefined(filter)
 
-    const filterById: FilterQuery<ITrackHistoryDocument> = id ? { _id: id } : {}
-    const filterToApply: FilterQuery<ITrackHistoryDocument> = { ...filterById }
+      const filterById: FilterQuery<ITrackHistoryDocument> = id
+        ? { _id: id }
+        : {}
 
-    return this.trackHistory.findOneAndDelete(filterToApply).orFail().exec()
+      const filterToApply: FilterQuery<ITrackHistoryDocument> = {
+        ...filterById,
+      }
+
+      return this.trackHistory.findOneAndDelete(filterToApply).orFail().exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public deleteMany: ITrackHistoryRepository['deleteMany'] = async (filter) => {
-    const { trackIds } = omitUndefined(filter)
+    try {
+      const { trackIds } = omitUndefined(filter)
 
-    const filterByTrack: FilterQuery<ITrackHistoryDocument> = isEmpty(trackIds)
-      ? {}
-      : { track: { $in: trackIds } }
+      const filterByTrack: FilterQuery<ITrackHistoryDocument> = isEmpty(
+        trackIds,
+      )
+        ? {}
+        : { track: { $in: trackIds } }
 
-    const filterToApply: FilterQuery<ITrackHistoryDocument> = {
-      ...filterByTrack,
+      const filterToApply: FilterQuery<ITrackHistoryDocument> = {
+        ...filterByTrack,
+      }
+
+      return this.trackHistory.deleteMany(filterToApply).exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
     }
-
-    return this.trackHistory.deleteMany(filterToApply).exec()
   }
 }
 

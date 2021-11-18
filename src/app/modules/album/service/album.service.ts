@@ -1,9 +1,9 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import DatabaseError from 'database/custom-errors'
 import { DocumentIdArray } from 'database/interface/document'
-import { isNotFoundDBError } from 'database/utils/errors'
 import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
 import { AlbumRepository } from 'modules/album/repository'
@@ -68,7 +68,7 @@ class AlbumService implements IAlbumService {
       const album = await this.albumRepository.findOneById(id)
       return album
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
+      if (error instanceof DatabaseError.NotFoundError) {
         throw NotFoundError('Album was not found')
       }
 
@@ -139,7 +139,7 @@ class AlbumService implements IAlbumService {
         throw ValidationError(null, error)
       }
 
-      if (isNotFoundDBError(error)) {
+      if (error instanceof DatabaseError.NotFoundError) {
         throw NotFoundError('Album was not found')
       }
 
@@ -159,7 +159,7 @@ class AlbumService implements IAlbumService {
     try {
       album = await this.albumRepository.deleteOneById(id)
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
+      if (error instanceof DatabaseError.NotFoundError) {
         throw NotFoundError('Album was not found')
       }
 
@@ -190,16 +190,16 @@ class AlbumService implements IAlbumService {
     }
   }
 
-  public deleteMany: IAlbumService['deleteMany'] = async (rawFilter) => {
-    const filter = omitUndefined(rawFilter)
+  public deleteMany: IAlbumService['deleteMany'] = async (filter) => {
+    const deleteManyFilter = omitUndefined(filter)
 
-    if (isEmpty(filter)) {
+    if (isEmpty(deleteManyFilter)) {
       throw BadRequestError(EMPTY_FILTER_ERR_MSG)
     }
 
     const serverErrorMsg = 'Error while deleting albums'
 
-    const { albums = [] } = filter
+    const { albums = [] } = deleteManyFilter
 
     const albumIds: DocumentIdArray = albums.map((album) => album.id)
 

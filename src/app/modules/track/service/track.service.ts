@@ -1,31 +1,30 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
-import { isNotFoundDBError } from 'database/utils/errors'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import DatabaseError from 'database/errors'
 import logger from 'lib/logger'
 import { RequestService } from 'modules/request/service'
 import { ITrackDocument } from 'modules/track/model'
 import { TrackRepository } from 'modules/track/repository'
 import { ITrackService } from 'modules/track/service'
 import { TrackHistoryService } from 'modules/trackHistory/service'
-import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
-import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
-  BadRequestError,
-  NotFoundError,
-  ServerError,
-} from 'shared/utils/errors/httpErrors'
-import { ValidationError } from 'shared/utils/errors/validationErrors'
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import AppError from 'shared/utils/errors/appErrors'
 
 @singleton()
 class TrackService implements ITrackService {
   public constructor(
     @inject(delay(() => TrackRepository))
     private readonly trackRepository: TrackRepository,
+
     @inject(delay(() => RequestService))
     private readonly requestService: RequestService,
+
     private readonly trackHistoryService: TrackHistoryService,
   ) {}
 
@@ -44,26 +43,26 @@ class TrackService implements ITrackService {
         return entity.id
       })
 
-      const repoFilter = { artist, albumIds, ids: trackIds }
+      const findAllFilter = { artist, albumIds, ids: trackIds }
 
-      return this.trackRepository.findAllWhere(repoFilter)
+      return this.trackRepository.findAllWhere(findAllFilter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw ServerError('Error while getting tracks')
+      throw new AppError.UnknownError('Error while getting tracks')
     }
   }
 
   public getOneById: ITrackService['getOneById'] = async (id) => {
     try {
-      const track = await this.trackRepository.findOneById(id)
+      const track = await this.trackRepository.findOne({ id })
       return track
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError('Track was not found')
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Track was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while getting track')
+      throw new AppError.UnknownError('Error while getting track')
     }
   }
 
@@ -79,12 +78,12 @@ class TrackService implements ITrackService {
         album: payload.album,
       })
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -101,14 +100,14 @@ class TrackService implements ITrackService {
       })
 
       try {
-        await this.trackRepository.deleteOneById(track.id)
+        await this.trackRepository.deleteOne({ id: track.id })
       } catch (error: any) {
         logger.warn(error.stack, {
           message: `Track by id "${track.id}" probably was not deleted`,
         })
       }
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 
@@ -119,12 +118,12 @@ class TrackService implements ITrackService {
     try {
       await this.trackRepository.updateOne({ id }, payload)
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Track was not found')
       }
 
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError('Track was not found')
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
@@ -132,7 +131,7 @@ class TrackService implements ITrackService {
         args: { id, payload },
       })
 
-      throw ServerError('Error while updating track')
+      throw new AppError.UnknownError('Error while updating track')
     }
   }
 
@@ -141,14 +140,14 @@ class TrackService implements ITrackService {
     const serverErrorMsg = 'Error while deleting track'
 
     try {
-      track = await this.trackRepository.deleteOneById(id)
+      track = await this.trackRepository.deleteOne({ id })
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError('Track was not found')
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Track was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -161,27 +160,27 @@ class TrackService implements ITrackService {
         message: `Error while deleting related objects of track with id: "${track.id}"`,
       })
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 
-  public deleteMany: ITrackService['deleteMany'] = async (rawFilter) => {
-    const filter = omitUndefined(rawFilter)
+  public deleteMany: ITrackService['deleteMany'] = async (filter) => {
+    const deleteManyFilter = omitUndefined(filter)
 
-    if (isEmpty(filter)) {
-      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+    if (isEmpty(deleteManyFilter)) {
+      throw new AppError.EmptyFilterError(EMPTY_FILTER_ERR_MSG)
     }
 
     const serverErrorMsg = 'Error while deleting tracks'
 
-    const { tracks = [] } = filter
+    const { tracks = [] } = deleteManyFilter
     const trackIds = tracks.map((track) => track.id)
 
     try {
       await this.trackRepository.deleteMany({ ids: trackIds })
     } catch (error: any) {
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -193,7 +192,7 @@ class TrackService implements ITrackService {
         args: { filter },
       })
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 }

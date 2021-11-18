@@ -1,12 +1,11 @@
 import { delay, inject, singleton } from 'tsyringe'
 
-import { isNotFoundDBError } from 'database/utils/errors'
+import DatabaseError from 'database/errors'
 import logger from 'lib/logger'
 import { UserRepository } from 'modules/user/repository'
 import { IUserService } from 'modules/user/service'
-import { isValidationError } from 'shared/utils/errors/checkErrorKind'
-import { NotFoundError, ServerError } from 'shared/utils/errors/httpErrors'
-import { ValidationError } from 'shared/utils/errors/validationErrors'
+import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
+import AppError from 'shared/utils/errors/appErrors'
 
 @singleton()
 class UserService implements IUserService {
@@ -20,12 +19,14 @@ class UserService implements IUserService {
       const user = await this.userRepository.findOne({ email })
       return user
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError(`User with email "${email}" was not found`)
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError(
+          `User with email "${email}" was not found`,
+        )
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while getting user')
+      throw new AppError.UnknownError('Error while getting user')
     }
   }
 
@@ -34,12 +35,12 @@ class UserService implements IUserService {
       const user = await this.userRepository.createOne(payload)
       return user
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while creating new user')
+      throw new AppError.UnknownError('Error while creating new user')
     }
   }
 
@@ -48,12 +49,12 @@ class UserService implements IUserService {
       const user = await this.userRepository.deleteOne({ id })
       return user
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError('User was not found')
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('User was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while deleting user')
+      throw new AppError.UnknownError('Error while deleting user')
     }
   }
 }

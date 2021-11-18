@@ -7,7 +7,7 @@ import { RequestHandler } from 'express'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 
-import ErrorKindsEnum from 'shared/constants/errorKinds'
+import AppErrorKindsEnum from 'shared/constants/appErrorKindsEnum'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import { BadRequestError } from 'shared/utils/errors/httpErrors'
 import { getDtoValidationErrors } from 'shared/utils/errors/validationErrors'
@@ -43,7 +43,7 @@ const dto =
       }
 
       const error = BadRequestError(VALIDATION_ERR_MSG, {
-        kind: ErrorKindsEnum.ValidationError,
+        kind: AppErrorKindsEnum.ValidationError,
         errors: getDtoValidationErrors(exception),
       })
 

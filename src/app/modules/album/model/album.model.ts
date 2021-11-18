@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   MAX_LENGTH_ALBUM_NAME,
   MIN_LENGTH_ALBUM_NAME,

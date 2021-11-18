@@ -1,12 +1,11 @@
 import { delay, inject, singleton } from 'tsyringe'
 
-import { isNotFoundDBError } from 'database/utils/errors'
+import DatabaseError from 'database/errors'
 import logger from 'lib/logger'
 import { SessionRepository } from 'modules/session/repository'
 import { ISessionService } from 'modules/session/service'
-import { isValidationError } from 'shared/utils/errors/checkErrorKind'
-import { NotFoundError, ServerError } from 'shared/utils/errors/httpErrors'
-import { ValidationError } from 'shared/utils/errors/validationErrors'
+import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
+import AppError from 'shared/utils/errors/appErrors'
 
 @singleton()
 class SessionService implements ISessionService {
@@ -20,12 +19,12 @@ class SessionService implements ISessionService {
       const session = await this.sessionRepository.findOne({ token })
       return session
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError()
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Session was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError()
+      throw new AppError.UnknownError(error.message)
     }
   }
 
@@ -39,12 +38,12 @@ class SessionService implements ISessionService {
 
       return session
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw ServerError()
+      throw new AppError.UnknownError(error.message)
     }
   }
 
@@ -55,12 +54,12 @@ class SessionService implements ISessionService {
       const session = await this.sessionRepository.deleteOne({ token })
       return session
     } catch (error: any) {
-      if (isNotFoundDBError(error)) {
-        throw NotFoundError()
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Session was not found')
       }
 
       logger.error(error.stack)
-      throw ServerError()
+      throw new AppError.UnknownError(error.message)
     }
   }
 }

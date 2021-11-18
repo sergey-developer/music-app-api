@@ -1,4 +1,4 @@
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { IModelList } from 'database/constants/modelList'
 import getModelName from 'database/utils/getModelName'
 import { AlbumModel } from 'modules/album/model'

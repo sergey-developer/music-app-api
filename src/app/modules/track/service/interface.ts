@@ -37,7 +37,7 @@ export interface ITrackService {
     payload: IUpdateTrackPayload,
   ) => Promise<void>
 
-  deleteOneById: ITrackRepository['deleteOneById']
+  deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
   deleteMany: (filter: IDeleteManyTracksFilter) => Promise<void>
 }

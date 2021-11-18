@@ -1,6 +1,6 @@
 import { IsEnum, IsMongoId, IsOptional } from 'class-validator'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DocumentId } from 'database/interface/document'
 import messages from 'lib/class-validator/messages'
 import { RequestStatusEnum } from 'modules/request/constants'

@@ -6,12 +6,8 @@ import { IAuthService } from 'modules/auth/service'
 import { SessionService } from 'modules/session/service'
 import { IUserDocument } from 'modules/user/model'
 import { UserService } from 'modules/user/service'
-import {
-  BadRequestError,
-  ServerError,
-  isBadRequestError,
-  isNotFoundError,
-} from 'shared/utils/errors/httpErrors'
+import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
+import AppError from 'shared/utils/errors/appErrors'
 
 @singleton()
 class AuthService implements IAuthService {
@@ -22,25 +18,29 @@ class AuthService implements IAuthService {
 
   public signin: IAuthService['signin'] = async (payload) => {
     let user: IUserDocument
+    const { email, password } = payload
     const serverErrorMsg = 'Sign in error'
 
     try {
-      const { email, password } = payload
-
       user = await this.userService.getOneByEmail(email)
 
       const isCorrectPassword = await user.checkPassword(password)
 
       if (!isCorrectPassword) {
-        throw BadRequestError('Wrong password')
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, {
+          password: ['Wrong password'],
+        })
       }
     } catch (error: any) {
-      if (isNotFoundError(error) || isBadRequestError(error)) {
+      if (
+        error instanceof AppError.NotFoundError ||
+        error instanceof AppError.ValidationError
+      ) {
         throw error
       }
 
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -58,7 +58,7 @@ class AuthService implements IAuthService {
       return signinResult
     } catch (error: any) {
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 
@@ -69,12 +69,12 @@ class AuthService implements IAuthService {
     try {
       user = await this.userService.createOne(payload)
     } catch (error: any) {
-      if (isBadRequestError(error)) {
+      if (error instanceof AppError.ValidationError) {
         throw error
       }
 
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -101,7 +101,7 @@ class AuthService implements IAuthService {
         })
       }
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 
@@ -109,12 +109,12 @@ class AuthService implements IAuthService {
     try {
       await this.sessionService.deleteOneByToken(token)
     } catch (error: any) {
-      if (isNotFoundError(error)) {
+      if (error instanceof AppError.NotFoundError) {
         throw error
       }
 
       logger.error(error.stack)
-      throw ServerError('Error while logging out')
+      throw new AppError.UnknownError('Error while logging out')
     }
   }
 }

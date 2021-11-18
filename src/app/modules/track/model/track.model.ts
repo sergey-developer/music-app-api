@@ -1,7 +1,7 @@
 import { FilterQuery, Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DocumentId } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { IArtistDocument } from 'modules/artist/model'

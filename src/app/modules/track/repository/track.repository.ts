@@ -1,12 +1,14 @@
 import isEmpty from 'lodash/isEmpty'
-import { FilterQuery, QueryOptions } from 'mongoose'
+import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import DatabaseError from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { ITrackDocument, ITrackModel } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
 import { omitUndefined } from 'shared/utils/common'
+import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class TrackRepository implements ITrackRepository {
@@ -16,71 +18,135 @@ class TrackRepository implements ITrackRepository {
   ) {}
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
-    const { artist, albumIds, ids } = omitUndefined(filter)
+    try {
+      const { artist, albumIds, ids } = omitUndefined(filter)
 
-    const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
-      ? {}
-      : { _id: { $in: ids } }
+      const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
+        ? {}
+        : { _id: { $in: ids } }
 
-    const filterByAlbum: FilterQuery<ITrackDocument> = isEmpty(albumIds)
-      ? {}
-      : { album: { $in: albumIds } }
+      const filterByAlbum: FilterQuery<ITrackDocument> = isEmpty(albumIds)
+        ? {}
+        : { album: { $in: albumIds } }
 
-    const filterToApply: FilterQuery<ITrackDocument> = {
-      ...filterById,
-      ...filterByAlbum,
+      const filterToApply: FilterQuery<ITrackDocument> = {
+        ...filterById,
+        ...filterByAlbum,
+      }
+
+      if (artist) {
+        return this.track.findByArtistId(artist, filterToApply)
+      }
+
+      return this.track.find(filterToApply).exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
     }
-
-    if (artist) {
-      return this.track.findByArtistId(artist, filterToApply)
-    }
-
-    return this.track.find(filterToApply).exec()
   }
 
-  public findOneById: ITrackRepository['findOneById'] = async (id) => {
-    return this.track.findById(id).orFail().exec()
+  public findOne: ITrackRepository['findOne'] = async (filter) => {
+    try {
+      const { id } = omitUndefined(filter)
+
+      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+
+      return this.track.findOne(filterToApply).orFail().exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public createOne: ITrackRepository['createOne'] = async (payload) => {
-    const track = new this.track(payload)
-    return track.save()
+    try {
+      const track = new this.track(payload)
+      return track.save()
+    } catch (error: any) {
+      if (error instanceof MongooseError.ValidationError) {
+        throw new DatabaseError.ValidationError(
+          error.message,
+          getValidationErrors(
+            error.errors as Record<string, MongooseError.ValidatorError>,
+          ),
+        )
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public updateOne: ITrackRepository['updateOne'] = async (filter, payload) => {
-    const { id } = omitUndefined(filter)
-    const updates = omitUndefined(payload)
+    try {
+      const { id } = omitUndefined(filter)
+      const updates = omitUndefined(payload)
 
-    const defaultOptions: QueryOptions = {
-      runValidators: true,
-      new: true,
-      context: 'query',
+      const defaultOptions: QueryOptions = {
+        runValidators: true,
+        new: true,
+        context: 'query',
+      }
+      const optionsToApply: QueryOptions = defaultOptions
+
+      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+
+      return this.track
+        .findOneAndUpdate(filterToApply, updates, optionsToApply)
+        .orFail()
+        .exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      if (error instanceof MongooseError.ValidationError) {
+        throw new DatabaseError.ValidationError(
+          error.message,
+          getValidationErrors(
+            error.errors as Record<string, MongooseError.ValidatorError>,
+          ),
+        )
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
     }
-    const optionsToApply: QueryOptions = defaultOptions
-
-    const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
-    const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
-
-    return this.track
-      .findOneAndUpdate(filterToApply, updates, optionsToApply)
-      .orFail()
-      .exec()
   }
 
-  public deleteOneById: ITrackRepository['deleteOneById'] = async (id) => {
-    return this.track.findByIdAndDelete(id).orFail().exec()
+  public deleteOne: ITrackRepository['deleteOne'] = async (filter) => {
+    try {
+      const { id } = omitUndefined(filter)
+
+      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+
+      return this.track.findOneAndDelete(filterToApply).orFail().exec()
+    } catch (error: any) {
+      if (error instanceof MongooseError.DocumentNotFoundError) {
+        throw new DatabaseError.NotFoundError(error.message)
+      }
+
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 
   public deleteMany: ITrackRepository['deleteMany'] = async (filter) => {
-    const { ids } = omitUndefined(filter)
+    try {
+      const { ids } = omitUndefined(filter)
 
-    const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
-      ? {}
-      : { _id: { $in: ids } }
+      const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
+        ? {}
+        : { _id: { $in: ids } }
 
-    const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-    return this.track.deleteMany(filterToApply).exec()
+      return this.track.deleteMany(filterToApply).exec()
+    } catch (error: any) {
+      throw new DatabaseError.UnknownError(error.message)
+    }
   }
 }
 

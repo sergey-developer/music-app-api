@@ -9,16 +9,26 @@ import {
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument } from 'modules/track/model'
 
-export interface IGetAllTracksFilter
+export interface IFindAllTracksFilter
   extends Pick<GetAllTracksQuery, 'artist'>,
     Partial<{
       ids: DocumentIdArray
       albumIds: DocumentIdArray
     }> {}
 
+export interface IFindOneTrackFilter
+  extends Partial<{
+    id: ITrackDocument['id']
+  }> {}
+
 export interface IUpdateTrackPayload extends UpdateTrackDto {}
 
 export interface IUpdateTrackFilter
+  extends Partial<{
+    id: ITrackDocument['id']
+  }> {}
+
+export interface IDeleteOneTrackFilter
   extends Partial<{
     id: ITrackDocument['id']
   }> {}
@@ -31,9 +41,9 @@ export interface IDeleteManyTracksFilter
 export interface ICreateTrackPayload extends CreateTrackDto {}
 
 export interface ITrackRepository {
-  findAllWhere: (filter: IGetAllTracksFilter) => Promise<ITrackDocumentArray>
+  findAllWhere: (filter: IFindAllTracksFilter) => Promise<ITrackDocumentArray>
 
-  findOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
+  findOne: (filter: IFindOneTrackFilter) => Promise<ITrackDocument>
 
   createOne: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
 
@@ -42,7 +52,7 @@ export interface ITrackRepository {
     payload: IUpdateTrackPayload,
   ) => Promise<ITrackDocument>
 
-  deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
+  deleteOne: (filter: IDeleteOneTrackFilter) => Promise<ITrackDocument>
 
   deleteMany: (filter: IDeleteManyTracksFilter) => Promise<DeleteResult>
 }

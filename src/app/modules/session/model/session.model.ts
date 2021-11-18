@@ -1,7 +1,7 @@
 import config from 'config'
 import { Schema, model } from 'mongoose'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { JwtPayload, JwtToken } from 'modules/session/interface'
 import { ISessionDocument, ISessionModel } from 'modules/session/model'
 import { generateToken } from 'modules/session/utils'

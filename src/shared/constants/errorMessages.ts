@@ -1,3 +1,2 @@
-export const EMPTY_FILTER_ERR_MSG = 'Deleting with empty filter forbidden'
-
+export const EMPTY_FILTER_ERR_MSG = 'Empty filter is forbidden'
 export const VALIDATION_ERR_MSG = 'Validation failed'

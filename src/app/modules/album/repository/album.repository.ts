@@ -2,7 +2,7 @@ import isEmpty from 'lodash/isEmpty'
 import { FilterQuery, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
-import { EntityNamesEnum } from 'database/constants/entityNames'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import getModelName from 'database/utils/getModelName'
 import { IAlbumDocument, IAlbumModel } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'

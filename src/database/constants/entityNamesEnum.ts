@@ -1,4 +1,4 @@
-export enum EntityNamesEnum {
+enum EntityNamesEnum {
   Artist = 'Artist',
   Album = 'Album',
   Track = 'Track',
@@ -7,3 +7,5 @@ export enum EntityNamesEnum {
   User = 'User',
   Session = 'Session',
 }
+
+export default EntityNamesEnum
