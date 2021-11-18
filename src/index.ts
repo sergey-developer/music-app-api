@@ -8,6 +8,8 @@ const runServer = async () => {
 
 runServer()
 
+// TODO: осталось поправить artist, album, все контроллеры
+
 // TODO: Написать тесты
 // TODO: Написать тесты что выбрасывается server error
 // TODO: Поправить в репозиториях названия на findOne, DeleteOne и т.д.

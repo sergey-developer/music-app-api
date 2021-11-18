@@ -152,8 +152,8 @@ class RequestService implements IRequestService {
 
       return request
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Request was not found')
+      if (error instanceof AppError.NotFoundError) {
+        throw error
       }
 
       logger.error(error.stack)
