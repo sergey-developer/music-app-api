@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe'
 
 import { ITrackHistoryController } from 'modules/trackHistory/controller'
 import { TrackHistoryService } from 'modules/trackHistory/service'
-import { ensureHttpError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
 
 @singleton()
 class TrackHistoryController implements ITrackHistoryController {
@@ -20,9 +20,9 @@ class TrackHistoryController implements ITrackHistoryController {
       })
 
       res.status(StatusCodes.OK).send({ data: tracksHistories })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -37,9 +37,9 @@ class TrackHistoryController implements ITrackHistoryController {
       })
 
       res.sendStatus(StatusCodes.CREATED)
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -52,9 +52,9 @@ class TrackHistoryController implements ITrackHistoryController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Track history successfully deleted' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 }

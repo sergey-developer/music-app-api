@@ -10,7 +10,7 @@ import {
   VALIDATION_ERR_MSG,
 } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
-import AppError from 'shared/utils/errors/appErrors'
+import { AppError } from 'shared/utils/errors/appErrors'
 
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {

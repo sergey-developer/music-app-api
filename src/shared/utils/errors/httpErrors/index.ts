@@ -6,5 +6,4 @@ export * from './BadRequestError'
 export * from './ForbiddenError'
 export * from './ServerError'
 
-export { default as isHttpError } from './isHttpError'
-export { default as ensureHttpError } from './ensureHttpError'
+export { getHttpErrorByAppError } from './getHttpError'

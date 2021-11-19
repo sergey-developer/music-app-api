@@ -3,10 +3,9 @@ import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
 import { IAlbumController } from 'modules/album/controller'
-import { IAlbumDocumentArray } from 'modules/album/interface'
-import { AlbumService } from 'modules/album/service'
+import { AlbumService, IGetAllAlbumsFilter } from 'modules/album/service'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { ensureHttpError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
 
 @singleton()
 class AlbumController implements IAlbumController {
@@ -15,23 +14,17 @@ class AlbumController implements IAlbumController {
   public getAll: IAlbumController['getAll'] = async (req, res) => {
     const { query, user } = req
     const userIsAuthorized = !!user
-    const filter = query
+
+    const filter: IGetAllAlbumsFilter = userIsAuthorized
+      ? { status: query.status, artist: query.artist, userId: query.userId }
+      : { status: RequestStatusEnum.Approved }
 
     try {
-      let albums: IAlbumDocumentArray
-
-      if (userIsAuthorized) {
-        albums = await this.albumService.getAll(filter)
-      } else {
-        albums = await this.albumService.getAll({
-          status: RequestStatusEnum.Approved,
-        })
-      }
-
+      const albums = await this.albumService.getAll(filter)
       res.status(StatusCodes.OK).send({ data: albums })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -41,9 +34,9 @@ class AlbumController implements IAlbumController {
     try {
       const album = await this.albumService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: album })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -65,9 +58,9 @@ class AlbumController implements IAlbumController {
       res
         .status(StatusCodes.CREATED)
         .send({ data: result, message: 'Album successfully created' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -85,9 +78,9 @@ class AlbumController implements IAlbumController {
       })
 
       res.status(StatusCodes.OK).send({ message: 'Album successfully updated' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -96,11 +89,10 @@ class AlbumController implements IAlbumController {
 
     try {
       await this.albumService.deleteOneById(id)
-
       res.status(StatusCodes.OK).send({ message: 'Album successfully deleted' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 }

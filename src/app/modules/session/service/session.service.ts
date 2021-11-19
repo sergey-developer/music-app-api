@@ -5,7 +5,7 @@ import logger from 'lib/logger'
 import { SessionRepository } from 'modules/session/repository'
 import { ISessionService } from 'modules/session/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import AppError from 'shared/utils/errors/appErrors'
+import { AppError } from 'shared/utils/errors/appErrors'
 
 @singleton()
 class SessionService implements ISessionService {

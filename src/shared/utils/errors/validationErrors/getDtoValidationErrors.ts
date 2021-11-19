@@ -12,10 +12,7 @@ const getDtoValidationErrors = (
     (acc: IValidationErrors, err) => {
       const errorMessages = values(err.constraints)
 
-      acc[err.property] = {
-        value: err.value,
-        messages: errorMessages,
-      }
+      acc[err.property] = errorMessages
 
       return acc
     },

@@ -7,7 +7,7 @@ import { SessionService } from 'modules/session/service'
 import { IUserDocument } from 'modules/user/model'
 import { UserService } from 'modules/user/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import AppError from 'shared/utils/errors/appErrors'
+import { AppError } from 'shared/utils/errors/appErrors'
 
 @singleton()
 class AuthService implements IAuthService {

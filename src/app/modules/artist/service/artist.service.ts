@@ -12,7 +12,7 @@ import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
 import { RequestService } from 'modules/request/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import AppError from 'shared/utils/errors/appErrors'
+import { AppError } from 'shared/utils/errors/appErrors'
 import { deleteImageFromFs } from 'shared/utils/file'
 
 @singleton()

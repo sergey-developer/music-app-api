@@ -5,7 +5,7 @@ import { singleton } from 'tsyringe'
 import { IAuthController } from 'modules/auth/controller'
 import { AuthService } from 'modules/auth/service'
 import {
-  ensureHttpError,
+  getHttpErrorByAppError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
 
@@ -19,9 +19,9 @@ class AuthController implements IAuthController {
       const result = await this.authService.signin(payload)
 
       res.status(StatusCodes.OK).send({ data: result })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -31,9 +31,9 @@ class AuthController implements IAuthController {
       const result = await this.authService.signup(payload)
 
       res.status(StatusCodes.OK).send({ data: result })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -49,14 +49,15 @@ class AuthController implements IAuthController {
       await this.authService.logout(token)
 
       res.sendStatus(StatusCodes.OK)
-    } catch (exception: any) {
-      if (isNotFoundError(exception)) {
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+
+      if (isNotFoundError(httpError)) {
         res.sendStatus(StatusCodes.OK)
         return
       }
 
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 }

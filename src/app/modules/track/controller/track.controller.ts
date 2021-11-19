@@ -6,7 +6,7 @@ import { RequestStatusEnum } from 'modules/request/constants'
 import { ITrackController } from 'modules/track/controller'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { TrackService } from 'modules/track/service'
-import { ensureHttpError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
 
 @singleton()
 class TrackController implements ITrackController {
@@ -31,9 +31,9 @@ class TrackController implements ITrackController {
       }
 
       res.status(StatusCodes.OK).send({ data: tracks })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -43,9 +43,9 @@ class TrackController implements ITrackController {
     try {
       const track = await this.trackService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: track })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -67,9 +67,9 @@ class TrackController implements ITrackController {
       res
         .status(StatusCodes.CREATED)
         .send({ data: result, message: 'Track successfully created' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -81,9 +81,9 @@ class TrackController implements ITrackController {
       await this.trackService.updateOneById(id, payload)
 
       res.status(StatusCodes.OK).send({ message: 'Track successfully updated' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -94,9 +94,9 @@ class TrackController implements ITrackController {
       await this.trackService.deleteOneById(id)
 
       res.status(StatusCodes.OK).send({ message: 'Track successfully deleted' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 }

@@ -3,10 +3,9 @@ import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
 import { IArtistController } from 'modules/artist/controller'
-import { IArtistDocumentArray } from 'modules/artist/interface'
-import { ArtistService } from 'modules/artist/service'
+import { ArtistService, IGetAllArtistsFilter } from 'modules/artist/service'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { ensureHttpError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
 
 @singleton()
 class ArtistController implements IArtistController {
@@ -15,23 +14,17 @@ class ArtistController implements IArtistController {
   public getAll: IArtistController['getAll'] = async (req, res) => {
     const { user, query } = req
     const userIsAuthorized = !!user
-    const filter = query
+
+    const filter: IGetAllArtistsFilter = userIsAuthorized
+      ? { status: query.status, userId: query.userId }
+      : { status: RequestStatusEnum.Approved }
 
     try {
-      let artists: IArtistDocumentArray
-
-      if (userIsAuthorized) {
-        artists = await this.artistService.getAll(filter)
-      } else {
-        artists = await this.artistService.getAll({
-          status: RequestStatusEnum.Approved,
-        })
-      }
-
+      const artists = await this.artistService.getAll(filter)
       res.status(StatusCodes.OK).send({ data: artists })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -41,9 +34,9 @@ class ArtistController implements IArtistController {
     try {
       const artist = await this.artistService.getOneById(id)
       res.status(StatusCodes.OK).send({ data: artist })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -64,9 +57,9 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.CREATED)
         .send({ data: result, message: 'Artist successfully created' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -85,9 +78,9 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Artist successfully updated' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -100,9 +93,9 @@ class ArtistController implements IArtistController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Artist successfully deleted' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 }

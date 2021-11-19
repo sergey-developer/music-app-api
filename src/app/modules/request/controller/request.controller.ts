@@ -4,7 +4,7 @@ import { singleton } from 'tsyringe'
 
 import { IRequestController } from 'modules/request/controller'
 import { RequestService } from 'modules/request/service'
-import { ensureHttpError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
 
 @singleton()
 class RequestController implements IRequestController {
@@ -16,9 +16,9 @@ class RequestController implements IRequestController {
     try {
       const requests = await this.requestService.getAll(filter)
       res.status(StatusCodes.OK).send({ data: requests })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -32,9 +32,9 @@ class RequestController implements IRequestController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Request successfully updated' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 
@@ -47,9 +47,9 @@ class RequestController implements IRequestController {
       res
         .status(StatusCodes.OK)
         .send({ message: 'Request successfully deleted' })
-    } catch (exception: any) {
-      const error = ensureHttpError(exception)
-      res.status(error.status).send(error)
+    } catch (error) {
+      const httpError = getHttpErrorByAppError(error)
+      res.status(httpError.status).send(httpError)
     }
   }
 }

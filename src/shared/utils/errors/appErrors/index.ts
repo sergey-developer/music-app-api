@@ -1,11 +1,4 @@
-import NotFoundError from './NotFoundError'
-import UnknownError from './UnknownError'
-import ValidationError from './ValidationError'
-
-const AppError = {
-  UnknownError,
-  NotFoundError,
-  ValidationError,
-}
-
-export default AppError
+export { default as NotFoundError } from './NotFoundError'
+export { default as ValidationError } from './ValidationError'
+export { default as UnknownError } from './UnknownError'
+export { default as AppError } from './appError'
