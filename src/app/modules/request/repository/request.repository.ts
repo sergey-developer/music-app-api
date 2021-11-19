@@ -7,6 +7,7 @@ import DatabaseError from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { IRequestDocument, IRequestModel } from 'modules/request/model'
 import { IRequestRepository } from 'modules/request/repository'
+import { ITrackDocument } from 'modules/track/model'
 import { omitUndefined } from 'shared/utils/common'
 import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
@@ -53,9 +54,14 @@ class RequestRepository implements IRequestRepository {
     }
   }
 
-  public findOne: IRequestRepository['findOne'] = async (id) => {
+  public findOne: IRequestRepository['findOne'] = async (filter) => {
     try {
-      return this.request.findById(id).orFail().exec()
+      const { id } = omitUndefined(filter)
+
+      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+
+      return this.request.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseError.NotFoundError(error.message)

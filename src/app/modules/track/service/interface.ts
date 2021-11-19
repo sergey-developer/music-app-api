@@ -6,7 +6,6 @@ import {
 } from 'modules/track/dto'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { ITrackDocument } from 'modules/track/model'
-import { ITrackRepository } from 'modules/track/repository'
 
 export interface IGetAllTracksFilter
   extends Omit<GetAllTracksQuery, 'album'>,
@@ -35,7 +34,7 @@ export interface ITrackService {
   updateOneById: (
     id: ITrackDocument['id'],
     payload: IUpdateTrackPayload,
-  ) => Promise<void>
+  ) => Promise<ITrackDocument>
 
   deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 

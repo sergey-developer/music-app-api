@@ -6,7 +6,6 @@ import {
 } from 'modules/artist/dto'
 import { IArtistDocumentArray } from 'modules/artist/interface'
 import { IArtistDocument } from 'modules/artist/model'
-import { IArtistRepository } from 'modules/artist/repository'
 
 export interface IGetAllArtistsFilter extends GetAllArtistsQuery {}
 
@@ -31,5 +30,5 @@ export interface IArtistService {
     payload: IUpdateArtistPayload,
   ) => Promise<IArtistDocument>
 
-  deleteOneById: IArtistRepository['deleteOneById']
+  deleteOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 }

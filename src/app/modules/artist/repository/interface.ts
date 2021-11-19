@@ -8,6 +8,11 @@ export interface IFindAllArtistsFilter
     ids: DocumentIdArray
   }> {}
 
+export interface IFindOneArtistFilter
+  extends Partial<{
+    id: IArtistDocument['id']
+  }> {}
+
 export interface ICreateArtistPayload extends CreateArtistDto {
   photo?: IArtistDocument['photo']
 }
@@ -21,10 +26,15 @@ export interface IUpdateArtistFilter
     id: IArtistDocument['id']
   }> {}
 
+export interface IDeleteOneArtistFilter
+  extends Partial<{
+    id: IArtistDocument['id']
+  }> {}
+
 export interface IArtistRepository {
   findAllWhere: (filter: IFindAllArtistsFilter) => Promise<IArtistDocumentArray>
 
-  findOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
+  findOne: (filter: IFindOneArtistFilter) => Promise<IArtistDocument>
 
   createOne: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
 
@@ -33,5 +43,5 @@ export interface IArtistRepository {
     payload: IUpdateArtistPayload,
   ) => Promise<IArtistDocument>
 
-  deleteOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
+  deleteOne: (filter: IDeleteOneArtistFilter) => Promise<IArtistDocument>
 }

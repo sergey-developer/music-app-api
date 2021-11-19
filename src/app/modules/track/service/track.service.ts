@@ -116,7 +116,8 @@ class TrackService implements ITrackService {
     payload,
   ) => {
     try {
-      await this.trackRepository.updateOne({ id }, payload)
+      const updatedTrack = await this.trackRepository.updateOne({ id }, payload)
+      return updatedTrack
     } catch (error: any) {
       if (error instanceof DatabaseError.NotFoundError) {
         throw new AppError.NotFoundError('Track was not found')

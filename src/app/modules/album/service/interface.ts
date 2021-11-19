@@ -34,7 +34,7 @@ export interface IAlbumService {
   updateOneById: (
     id: IAlbumDocument['id'],
     payload: IUpdateAlbumPayload,
-  ) => Promise<void>
+  ) => Promise<IAlbumDocument>
 
   deleteOneById: IAlbumRepository['deleteOneById']
 
