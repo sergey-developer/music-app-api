@@ -64,7 +64,7 @@ class TrackHistoryService implements ITrackHistoryService {
     const deleteManyFilter = omitUndefined(filter)
 
     if (isEmpty(deleteManyFilter)) {
-      throw new AppError.EmptyFilterError(EMPTY_FILTER_ERR_MSG)
+      throw new AppError.ValidationError(EMPTY_FILTER_ERR_MSG)
     }
 
     try {

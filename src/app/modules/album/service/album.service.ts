@@ -2,7 +2,7 @@ import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import DatabaseError from 'database/custom-errors'
+import DatabaseError from 'database/errors'
 import { DocumentIdArray } from 'database/interface/document'
 import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
@@ -11,15 +11,12 @@ import { IAlbumService } from 'modules/album/service'
 import { RequestService } from 'modules/request/service'
 import { ITrackDocumentArray } from 'modules/track/interface'
 import { TrackService } from 'modules/track/service'
-import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
-import { isValidationError } from 'shared/utils/errors/checkErrorKind'
 import {
-  BadRequestError,
-  NotFoundError,
-  ServerError,
-} from 'shared/utils/errors/httpErrors'
-import { ValidationError } from 'shared/utils/errors/validationErrors'
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'shared/constants/errorMessages'
+import { omitUndefined } from 'shared/utils/common'
+import AppError from 'shared/utils/errors/appErrors'
 
 @singleton()
 class AlbumService implements IAlbumService {
@@ -32,6 +29,7 @@ class AlbumService implements IAlbumService {
   public constructor(
     @inject(delay(() => AlbumRepository))
     private readonly albumRepository: AlbumRepository,
+
     private readonly requestService: RequestService,
     private readonly trackService: TrackService,
   ) {}
@@ -59,24 +57,24 @@ class AlbumService implements IAlbumService {
         args: { filter },
       })
 
-      throw ServerError('Error while getting albums')
+      throw new AppError.UnknownError('Error while getting albums')
     }
   }
 
   public getOneById: IAlbumService['getOneById'] = async (id) => {
     try {
-      const album = await this.albumRepository.findOneById(id)
+      const album = await this.albumRepository.findOne({ id })
       return album
     } catch (error: any) {
       if (error instanceof DatabaseError.NotFoundError) {
-        throw NotFoundError('Album was not found')
+        throw new AppError.NotFoundError('Album was not found')
       }
 
       logger.error(error.stack, {
         message: `Error while getting album by id "${id}"`,
       })
 
-      throw ServerError('Error while getting album')
+      throw new AppError.UnknownError('Error while getting album')
     }
   }
 
@@ -92,15 +90,15 @@ class AlbumService implements IAlbumService {
         artist: payload.artist,
       })
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
         args: { payload },
       })
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -117,14 +115,14 @@ class AlbumService implements IAlbumService {
       })
 
       try {
-        await this.albumRepository.deleteOneById(album.id)
+        await this.albumRepository.deleteOne({ id: album.id })
       } catch (error: any) {
         logger.warn(error.stack, {
           message: `Album by id "${album.id}" probably was not deleted`,
         })
       }
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 
@@ -133,14 +131,15 @@ class AlbumService implements IAlbumService {
     payload,
   ) => {
     try {
-      await this.albumRepository.updateOne({ id }, payload)
+      const updatedAlbum = await this.albumRepository.updateOne({ id }, payload)
+      return updatedAlbum
     } catch (error: any) {
-      if (isValidationError(error.name)) {
-        throw ValidationError(null, error)
+      if (error instanceof DatabaseError.NotFoundError) {
+        throw new AppError.NotFoundError('Album was not found')
       }
 
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw NotFoundError('Album was not found')
+      if (error instanceof DatabaseError.ValidationError) {
+        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
@@ -148,7 +147,7 @@ class AlbumService implements IAlbumService {
         args: { id, payload },
       })
 
-      throw ServerError('Error while updating album')
+      throw new AppError.UnknownError('Error while updating album')
     }
   }
 
@@ -157,17 +156,17 @@ class AlbumService implements IAlbumService {
     const serverErrorMsg = 'Error while deleting album'
 
     try {
-      album = await this.albumRepository.deleteOneById(id)
+      album = await this.albumRepository.deleteOne({ id })
     } catch (error: any) {
       if (error instanceof DatabaseError.NotFoundError) {
-        throw NotFoundError('Album was not found')
+        throw new AppError.NotFoundError('Album was not found')
       }
 
       logger.error(error.stack, {
         message: `Error while deleting album by id "${id}"`,
       })
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -186,7 +185,7 @@ class AlbumService implements IAlbumService {
         message: `Error while deleting related objects of album with id "${id}"`,
       })
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 
@@ -194,20 +193,19 @@ class AlbumService implements IAlbumService {
     const deleteManyFilter = omitUndefined(filter)
 
     if (isEmpty(deleteManyFilter)) {
-      throw BadRequestError(EMPTY_FILTER_ERR_MSG)
+      throw new AppError.ValidationError(EMPTY_FILTER_ERR_MSG)
     }
 
     const serverErrorMsg = 'Error while deleting albums'
 
     const { albums = [] } = deleteManyFilter
-
     const albumIds: DocumentIdArray = albums.map((album) => album.id)
 
     try {
       await this.albumRepository.deleteMany({ ids: albumIds })
     } catch (error: any) {
       logger.error(error.stack)
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
 
     try {
@@ -224,7 +222,7 @@ class AlbumService implements IAlbumService {
         message: 'Error while deleting related objects of albums',
       })
 
-      throw ServerError(serverErrorMsg)
+      throw new AppError.UnknownError(serverErrorMsg)
     }
   }
 }

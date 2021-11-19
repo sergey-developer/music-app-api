@@ -6,7 +6,6 @@ import {
 } from 'modules/album/dto'
 import { IAlbumDocumentArray } from 'modules/album/interface'
 import { IAlbumDocument } from 'modules/album/model'
-import { IAlbumRepository } from 'modules/album/repository'
 
 export interface IGetAllAlbumsFilter extends GetAllAlbumsQuery {}
 
@@ -27,7 +26,7 @@ export interface IDeleteManyAlbumsFilter
 export interface IAlbumService {
   getAll: (filter: IGetAllAlbumsFilter) => Promise<IAlbumDocumentArray>
 
-  getOneById: IAlbumRepository['findOneById']
+  getOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
   createOne: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
 
@@ -36,7 +35,7 @@ export interface IAlbumService {
     payload: IUpdateAlbumPayload,
   ) => Promise<IAlbumDocument>
 
-  deleteOneById: IAlbumRepository['deleteOneById']
+  deleteOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
   deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<void>
 }

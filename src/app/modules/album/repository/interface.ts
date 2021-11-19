@@ -11,15 +11,20 @@ export interface IFindAllAlbumsFilter
     artist: DocumentId
   }> {}
 
-export interface ICreateAlbumPayload extends CreateAlbumDto {
+export interface IFindOneAlbumFilter
+  extends Partial<{
+    id: IAlbumDocument['id']
+  }> {}
+
+export interface ICreateOneAlbumPayload extends CreateAlbumDto {
   image?: IAlbumDocument['image']
 }
 
-export interface IUpdateAlbumPayload extends UpdateAlbumDto {
+export interface IUpdateOneAlbumPayload extends UpdateAlbumDto {
   image: IAlbumDocument['image']
 }
 
-export interface IUpdateAlbumFilter
+export interface IUpdateOneAlbumFilter
   extends Partial<{
     id: IAlbumDocument['id']
   }> {}
@@ -29,19 +34,24 @@ export interface IDeleteManyAlbumsFilter
     ids: DocumentIdArray
   }> {}
 
+export interface IDeleteOneAlbumFilter
+  extends Partial<{
+    id: IAlbumDocument['id']
+  }> {}
+
 export interface IAlbumRepository {
   findAllWhere: (filter: IFindAllAlbumsFilter) => Promise<IAlbumDocumentArray>
 
-  findOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
+  findOne: (filter: IFindOneAlbumFilter) => Promise<IAlbumDocument>
 
-  createOne: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
+  createOne: (payload: ICreateOneAlbumPayload) => Promise<IAlbumDocument>
 
   updateOne: (
-    filter: IUpdateAlbumFilter,
-    payload: IUpdateAlbumPayload,
+    filter: IUpdateOneAlbumFilter,
+    payload: IUpdateOneAlbumPayload,
   ) => Promise<IAlbumDocument>
 
-  deleteOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
+  deleteOne: (filter: IDeleteOneAlbumFilter) => Promise<IAlbumDocument>
 
   deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<DeleteResult>
 }

@@ -8,7 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: осталось поправить artist, album, все контроллеры
+// TODO: осталось поправить: все контроллеры
 
 // TODO: Написать тесты
 // TODO: Написать тесты что выбрасывается server error
