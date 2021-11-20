@@ -8,14 +8,8 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: осталось поправить: все контроллеры
-
 // TODO: Написать тесты
-// TODO: Написать тесты что выбрасывается server error
-// TODO: Поправить в репозиториях названия на findOne, DeleteOne и т.д.
-
-// TODO: Поправить AppError.UnknownError(serverErrorMsg) для serverErrorMsg
-//  придумать другое название
+// TODO: Написать тесты что выбрасывается server error и др.
 
 // TODO: Настроить jest-extended и исп-ть его
 // TODO: отрефакторить сообщения для логирования

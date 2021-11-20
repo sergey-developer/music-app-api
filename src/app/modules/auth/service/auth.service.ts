@@ -7,7 +7,12 @@ import { SessionService } from 'modules/session/service'
 import { IUserDocument } from 'modules/user/model'
 import { UserService } from 'modules/user/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import { AppError } from 'shared/utils/errors/appErrors'
+import {
+  UnknownError as AppUnknownError,
+  ValidationError as AppValidationError,
+  isNotFoundError as isAppNotFoundError,
+  isValidationError as isAppValidationError,
+} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class AuthService implements IAuthService {
@@ -19,7 +24,7 @@ class AuthService implements IAuthService {
   public signin: IAuthService['signin'] = async (payload) => {
     let user: IUserDocument
     const { email, password } = payload
-    const serverErrorMsg = 'Sign in error'
+    const unknownErrorMsg = 'Sign in error'
 
     try {
       user = await this.userService.getOneByEmail(email)
@@ -27,20 +32,17 @@ class AuthService implements IAuthService {
       const isCorrectPassword = await user.checkPassword(password)
 
       if (!isCorrectPassword) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, {
+        throw new AppValidationError(VALIDATION_ERR_MSG, {
           password: ['Wrong password'],
         })
       }
     } catch (error: any) {
-      if (
-        error instanceof AppError.NotFoundError ||
-        error instanceof AppError.ValidationError
-      ) {
+      if (isAppNotFoundError(error) || isAppValidationError(error)) {
         throw error
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -58,23 +60,23 @@ class AuthService implements IAuthService {
       return signinResult
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 
   public signup: IAuthService['signup'] = async (payload) => {
     let user: IUserDocument
-    const serverErrorMsg = 'Sign up error'
+    const unknownErrorMsg = 'Sign up error'
 
     try {
       user = await this.userService.createOne(payload)
     } catch (error: any) {
-      if (error instanceof AppError.ValidationError) {
+      if (isAppValidationError(error)) {
         throw error
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -101,7 +103,7 @@ class AuthService implements IAuthService {
         })
       }
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 
@@ -109,12 +111,12 @@ class AuthService implements IAuthService {
     try {
       await this.sessionService.deleteOneByToken(token)
     } catch (error: any) {
-      if (error instanceof AppError.NotFoundError) {
+      if (isAppNotFoundError(error)) {
         throw error
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while logging out')
+      throw new AppUnknownError('Error while logging out')
     }
   }
 }

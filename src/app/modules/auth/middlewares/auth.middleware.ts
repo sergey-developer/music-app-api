@@ -4,7 +4,7 @@ import { container as DiContainer } from 'tsyringe'
 
 import { SessionService } from 'modules/session/service'
 import { isJwtError, verifyToken } from 'modules/session/utils'
-import { AppError } from 'shared/utils/errors/appErrors'
+import { isNotFoundError as isAppNotFoundError } from 'shared/utils/errors/appErrors'
 import { ServerError, UnauthorizedError } from 'shared/utils/errors/httpErrors'
 
 const sessionService = DiContainer.resolve(SessionService)
@@ -43,15 +43,16 @@ const auth = async <Req extends Request, Res extends Response>(
   try {
     const session = await sessionService.getOneByToken(token)
 
-    if (session) {
-      req.user = jwtPayload
-      next()
+    if (!session) {
+      const httpError = UnauthorizedError()
+      res.status(httpError.status).send(httpError)
+      return
     }
 
-    const httpError = UnauthorizedError()
-    res.status(httpError.status).send(httpError)
+    req.user = jwtPayload
+    next()
   } catch (error) {
-    if (error instanceof AppError.NotFoundError) {
+    if (isAppNotFoundError(error)) {
       const httpError = UnauthorizedError()
       res.status(httpError.status).send(httpError)
       return

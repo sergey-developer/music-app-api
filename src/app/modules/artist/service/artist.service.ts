@@ -2,7 +2,10 @@ import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import DatabaseError from 'database/errors'
+import {
+  isNotFoundError as isDatabaseNotFoundError,
+  isValidationError as isDatabaseValidationError,
+} from 'database/errors'
 import { DocumentId } from 'database/interface/document'
 import logger from 'lib/logger'
 import { IAlbumDocumentArray } from 'modules/album/interface'
@@ -12,7 +15,11 @@ import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
 import { RequestService } from 'modules/request/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import { AppError } from 'shared/utils/errors/appErrors'
+import {
+  NotFoundError as AppNotFoundError,
+  UnknownError as AppUnknownError,
+  ValidationError as AppValidationError,
+} from 'shared/utils/errors/appErrors'
 import { deleteImageFromFs } from 'shared/utils/file'
 
 @singleton()
@@ -54,7 +61,7 @@ class ArtistService implements IArtistService {
       return this.artistRepository.findAllWhere(repoFilter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while getting artists')
+      throw new AppUnknownError('Error while getting artists')
     }
   }
 
@@ -63,18 +70,18 @@ class ArtistService implements IArtistService {
       const artist = await this.artistRepository.findOne({ id })
       return artist
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Artist was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Artist was not found')
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while getting artist')
+      throw new AppUnknownError('Error while getting artist')
     }
   }
 
   public createOne: IArtistService['createOne'] = async (payload) => {
     let artist: IArtistDocument
-    const serverErrorMsg = 'Error while creating new artist'
+    const unknownErrorMsg = 'Error while creating new artist'
 
     try {
       artist = await this.artistRepository.createOne({
@@ -85,12 +92,12 @@ class ArtistService implements IArtistService {
     } catch (error: any) {
       if (payload.photo) deleteImageFromFs(payload.photo)
 
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -118,7 +125,7 @@ class ArtistService implements IArtistService {
         if (artist.photo) deleteImageFromFs(artist.photo)
       }
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 
@@ -136,12 +143,12 @@ class ArtistService implements IArtistService {
     } catch (error: any) {
       if (payload.photo) deleteImageFromFs(payload.photo)
 
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Artist was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Artist was not found')
       }
 
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
@@ -149,25 +156,25 @@ class ArtistService implements IArtistService {
         args: { id, payload },
       })
 
-      throw new AppError.UnknownError('Error while updating artist')
+      throw new AppUnknownError('Error while updating artist')
     }
   }
 
   public deleteOneById: IArtistService['deleteOneById'] = async (id) => {
     let artist: IArtistDocument
-    const serverErrorMsg = 'Error while deleting artist'
+    const unknownErrorMsg = 'Error while deleting artist'
 
     try {
       artist = await this.artistRepository.deleteOne({ id })
 
       if (artist.photo) deleteImageFromFs(artist.photo)
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Artist was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Artist was not found')
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -186,7 +193,7 @@ class ArtistService implements IArtistService {
         message: 'Error while deleting related objects of artist',
       })
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 }

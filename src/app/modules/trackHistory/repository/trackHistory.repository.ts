@@ -3,7 +3,7 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import DatabaseError from 'database/errors'
+import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import {
   ITrackHistoryDocument,
@@ -26,7 +26,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     try {
       return this.trackHistory.find(filter).exec()
     } catch (error: any) {
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -36,7 +36,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
       return trackHistory.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new DatabaseError.ValidationError(
+        throw new ValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -44,7 +44,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
         )
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -63,10 +63,10 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
       return this.trackHistory.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new DatabaseError.NotFoundError(error.message)
+        throw new NotFoundError(error.message)
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -86,7 +86,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
 
       return this.trackHistory.deleteMany(filterToApply).exec()
     } catch (error: any) {
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 }

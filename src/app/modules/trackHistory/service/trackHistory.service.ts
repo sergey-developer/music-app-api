@@ -1,7 +1,10 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import DatabaseError from 'database/errors'
+import {
+  isNotFoundError as isDatabaseNotFoundError,
+  isValidationError as isDatabaseValidationError,
+} from 'database/errors'
 import logger from 'lib/logger'
 import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 import { ITrackHistoryService } from 'modules/trackHistory/service'
@@ -10,7 +13,11 @@ import {
   VALIDATION_ERR_MSG,
 } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
-import { AppError } from 'shared/utils/errors/appErrors'
+import {
+  NotFoundError as AppNotFoundError,
+  UnknownError as AppUnknownError,
+  ValidationError as AppValidationError,
+} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {
@@ -24,7 +31,7 @@ class TrackHistoryService implements ITrackHistoryService {
       return this.trackHistoryRepository.findAllWhere(filter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while getting tracks`s histories')
+      throw new AppUnknownError('Error while getting tracks`s histories')
     }
   }
 
@@ -37,12 +44,12 @@ class TrackHistoryService implements ITrackHistoryService {
 
       return trackHistory
     } catch (error: any) {
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while creating new track history')
+      throw new AppUnknownError('Error while creating new track history')
     }
   }
 
@@ -51,12 +58,12 @@ class TrackHistoryService implements ITrackHistoryService {
       const trackHistory = await this.trackHistoryRepository.deleteOne({ id })
       return trackHistory
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Track history was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Track history was not found')
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while deleting track history')
+      throw new AppUnknownError('Error while deleting track history')
     }
   }
 
@@ -64,14 +71,14 @@ class TrackHistoryService implements ITrackHistoryService {
     const deleteManyFilter = omitUndefined(filter)
 
     if (isEmpty(deleteManyFilter)) {
-      throw new AppError.ValidationError(EMPTY_FILTER_ERR_MSG)
+      throw new AppValidationError(EMPTY_FILTER_ERR_MSG)
     }
 
     try {
       await this.trackHistoryRepository.deleteMany(deleteManyFilter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while deleting tracks`s histories')
+      throw new AppUnknownError('Error while deleting tracks`s histories')
     }
   }
 }

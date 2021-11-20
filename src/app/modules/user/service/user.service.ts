@@ -1,11 +1,18 @@
 import { delay, inject, singleton } from 'tsyringe'
 
-import DatabaseError from 'database/errors'
+import {
+  isNotFoundError as isDatabaseNotFoundError,
+  isValidationError as isDatabaseValidationError,
+} from 'database/errors'
 import logger from 'lib/logger'
 import { UserRepository } from 'modules/user/repository'
 import { IUserService } from 'modules/user/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import { AppError } from 'shared/utils/errors/appErrors'
+import {
+  NotFoundError as AppNotFoundError,
+  UnknownError as AppUnknownError,
+  ValidationError as AppValidationError,
+} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class UserService implements IUserService {
@@ -19,14 +26,12 @@ class UserService implements IUserService {
       const user = await this.userRepository.findOne({ email })
       return user
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError(
-          `User with email "${email}" was not found`,
-        )
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError(`User with email "${email}" was not found`)
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while getting user')
+      throw new AppUnknownError('Error while getting user')
     }
   }
 
@@ -35,12 +40,12 @@ class UserService implements IUserService {
       const user = await this.userRepository.createOne(payload)
       return user
     } catch (error: any) {
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while creating new user')
+      throw new AppUnknownError('Error while creating new user')
     }
   }
 
@@ -49,12 +54,12 @@ class UserService implements IUserService {
       const user = await this.userRepository.deleteOne({ id })
       return user
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('User was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('User was not found')
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while deleting user')
+      throw new AppUnknownError('Error while deleting user')
     }
   }
 }

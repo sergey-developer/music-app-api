@@ -3,7 +3,7 @@ import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import DatabaseError from 'database/errors'
+import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { IArtistDocument, IArtistModel } from 'modules/artist/model'
 import { IArtistRepository } from 'modules/artist/repository'
@@ -30,7 +30,7 @@ class ArtistRepository implements IArtistRepository {
 
       return this.artist.find(filterToApply).exec()
     } catch (error: any) {
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -44,10 +44,10 @@ class ArtistRepository implements IArtistRepository {
       return this.artist.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new DatabaseError.NotFoundError(error.message)
+        throw new NotFoundError(error.message)
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -57,7 +57,7 @@ class ArtistRepository implements IArtistRepository {
       return artist.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new DatabaseError.ValidationError(
+        throw new ValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -65,7 +65,7 @@ class ArtistRepository implements IArtistRepository {
         )
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -93,11 +93,11 @@ class ArtistRepository implements IArtistRepository {
         .exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new DatabaseError.NotFoundError(error.message)
+        throw new NotFoundError(error.message)
       }
 
       if (error instanceof MongooseError.ValidationError) {
-        throw new DatabaseError.ValidationError(
+        throw new ValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -105,7 +105,7 @@ class ArtistRepository implements IArtistRepository {
         )
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -123,10 +123,10 @@ class ArtistRepository implements IArtistRepository {
         .exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new DatabaseError.NotFoundError(error.message)
+        throw new NotFoundError(error.message)
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 }

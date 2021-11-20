@@ -1,11 +1,7 @@
-import NotFoundError from 'database/errors/NotFoundError'
-import UnknownError from 'database/errors/UnknownError'
-import ValidationError from 'database/errors/ValidationError'
+export { default as NotFoundError } from './NotFoundError'
+export { default as UnknownError } from './UnknownError'
+export { default as ValidationError } from './ValidationError'
 
-const DatabaseError = {
-  UnknownError,
-  NotFoundError,
-  ValidationError,
-}
-
-export default DatabaseError
+export { default as isNotFoundError } from './isNotFoundError'
+export { default as isValidationError } from './isValidationError'
+export { default as isUnknownError } from './isUnknownError'

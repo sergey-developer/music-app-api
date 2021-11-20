@@ -2,7 +2,7 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import DatabaseError from 'database/errors'
+import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { IUserDocument, IUserModel } from 'modules/user/model'
 import { IUserRepository } from 'modules/user/repository'
@@ -26,10 +26,10 @@ class UserRepository implements IUserRepository {
       return this.user.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new DatabaseError.NotFoundError(error.message)
+        throw new NotFoundError(error.message)
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -40,7 +40,7 @@ class UserRepository implements IUserRepository {
       return user.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new DatabaseError.ValidationError(
+        throw new ValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -48,7 +48,7 @@ class UserRepository implements IUserRepository {
         )
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 
@@ -62,10 +62,10 @@ class UserRepository implements IUserRepository {
       return this.user.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new DatabaseError.NotFoundError(error.message)
+        throw new NotFoundError(error.message)
       }
 
-      throw new DatabaseError.UnknownError(error.message)
+      throw new UnknownError(error.message)
     }
   }
 }

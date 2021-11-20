@@ -1,7 +1,10 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
-import DatabaseError from 'database/errors'
+import {
+  isNotFoundError as isDatabaseNotFoundError,
+  isValidationError as isDatabaseValidationError,
+} from 'database/errors'
 import {
   isAlbumModelName,
   isArtistModelName,
@@ -23,7 +26,12 @@ import {
   VALIDATION_ERR_MSG,
 } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
-import { AppError } from 'shared/utils/errors/appErrors'
+import {
+  NotFoundError as AppNotFoundError,
+  UnknownError as AppUnknownError,
+  ValidationError as AppValidationError,
+  isNotFoundError as isAppNotFoundError,
+} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class RequestService implements IRequestService {
@@ -52,7 +60,7 @@ class RequestService implements IRequestService {
       }
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while deleting request')
+      throw new AppUnknownError('Error while deleting request')
     }
   }
 
@@ -74,7 +82,7 @@ class RequestService implements IRequestService {
         : this.requestRepository.findAllWhere(filter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while getting requests')
+      throw new AppUnknownError('Error while getting requests')
     }
   }
 
@@ -88,12 +96,12 @@ class RequestService implements IRequestService {
 
       return request
     } catch (error: any) {
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while creating new request')
+      throw new AppUnknownError('Error while creating new request')
     }
   }
 
@@ -109,12 +117,12 @@ class RequestService implements IRequestService {
 
       return updatedRequest
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Request was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Request was not found')
       }
 
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
@@ -122,7 +130,7 @@ class RequestService implements IRequestService {
         args: { id, payload },
       })
 
-      throw new AppError.UnknownError('Error while updating request')
+      throw new AppUnknownError('Error while updating request')
     }
   }
 
@@ -130,17 +138,17 @@ class RequestService implements IRequestService {
     requestId,
   ) => {
     let request: IRequestDocument
-    const serverErrorMsg = 'Error while deleting request'
+    const unknownErrorMsg = 'Error while deleting request'
 
     try {
       request = await this.requestRepository.findOne({ id: requestId })
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Request was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Request was not found')
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -152,12 +160,12 @@ class RequestService implements IRequestService {
 
       return request
     } catch (error: any) {
-      if (error instanceof AppError.NotFoundError) {
+      if (isAppNotFoundError(error)) {
         throw error
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 
@@ -166,12 +174,12 @@ class RequestService implements IRequestService {
       const request = await this.requestRepository.deleteOne(filter)
       return request
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Request was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Request was not found')
       }
 
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while deleting request')
+      throw new AppUnknownError('Error while deleting request')
     }
   }
 
@@ -179,14 +187,14 @@ class RequestService implements IRequestService {
     const deleteManyFilter = omitUndefined(filter)
 
     if (isEmpty(deleteManyFilter)) {
-      throw new AppError.ValidationError(EMPTY_FILTER_ERR_MSG)
+      throw new AppValidationError(EMPTY_FILTER_ERR_MSG)
     }
 
     try {
       await this.requestRepository.deleteMany(deleteManyFilter)
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError('Error while deleting requests')
+      throw new AppUnknownError('Error while deleting requests')
     }
   }
 }

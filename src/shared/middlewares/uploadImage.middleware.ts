@@ -4,7 +4,9 @@ import multer from 'multer'
 
 import logger from 'lib/logger'
 import { createStorage, isMulterError } from 'lib/multer'
+import AppErrorKindsEnum from 'shared/constants/appErrorKindsEnum'
 import { TWO_MEGABYTES } from 'shared/constants/bytesSize'
+import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import { IMAGE_MIME_TYPE_ERROR_MSG } from 'shared/constants/mimetype'
 import {
   BadRequestError,
@@ -36,7 +38,11 @@ const uploadImage =
   (req, res, next) => {
     upload.single(fieldName)(req, res, (err: any) => {
       if (isMulterError(err) || isBadRequestError(err)) {
-        const error = BadRequestError(err.message)
+        const error = BadRequestError(VALIDATION_ERR_MSG, {
+          kind: AppErrorKindsEnum.ValidationError,
+          errors: { [fieldName]: [err.message] },
+        })
+
         res.status(error.status).send(error)
         return
       }

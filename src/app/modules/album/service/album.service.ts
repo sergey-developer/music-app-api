@@ -2,7 +2,10 @@ import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import DatabaseError from 'database/errors'
+import {
+  isNotFoundError as isDatabaseNotFoundError,
+  isValidationError as isDatabaseValidationError,
+} from 'database/errors'
 import { DocumentIdArray } from 'database/interface/document'
 import logger from 'lib/logger'
 import { IAlbumDocument } from 'modules/album/model'
@@ -16,7 +19,11 @@ import {
   VALIDATION_ERR_MSG,
 } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
-import { AppError } from 'shared/utils/errors/appErrors'
+import {
+  NotFoundError as AppNotFoundError,
+  UnknownError as AppUnknownError,
+  ValidationError as AppValidationError,
+} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class AlbumService implements IAlbumService {
@@ -57,7 +64,7 @@ class AlbumService implements IAlbumService {
         args: { filter },
       })
 
-      throw new AppError.UnknownError('Error while getting albums')
+      throw new AppUnknownError('Error while getting albums')
     }
   }
 
@@ -66,21 +73,21 @@ class AlbumService implements IAlbumService {
       const album = await this.albumRepository.findOne({ id })
       return album
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Album was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Album was not found')
       }
 
       logger.error(error.stack, {
         message: `Error while getting album by id "${id}"`,
       })
 
-      throw new AppError.UnknownError('Error while getting album')
+      throw new AppUnknownError('Error while getting album')
     }
   }
 
   public createOne: IAlbumService['createOne'] = async (payload) => {
     let album: IAlbumDocument
-    const serverErrorMsg = 'Error while creating new album'
+    const unknownErrorMsg = 'Error while creating new album'
 
     try {
       album = await this.albumRepository.createOne({
@@ -90,15 +97,15 @@ class AlbumService implements IAlbumService {
         artist: payload.artist,
       })
     } catch (error: any) {
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
         args: { payload },
       })
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -122,7 +129,7 @@ class AlbumService implements IAlbumService {
         })
       }
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 
@@ -134,12 +141,12 @@ class AlbumService implements IAlbumService {
       const updatedAlbum = await this.albumRepository.updateOne({ id }, payload)
       return updatedAlbum
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Album was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Album was not found')
       }
 
-      if (error instanceof DatabaseError.ValidationError) {
-        throw new AppError.ValidationError(VALIDATION_ERR_MSG, error.errors)
+      if (isDatabaseValidationError(error)) {
+        throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
 
       logger.error(error.stack, {
@@ -147,26 +154,26 @@ class AlbumService implements IAlbumService {
         args: { id, payload },
       })
 
-      throw new AppError.UnknownError('Error while updating album')
+      throw new AppUnknownError('Error while updating album')
     }
   }
 
   public deleteOneById: IAlbumService['deleteOneById'] = async (id) => {
     let album: IAlbumDocument
-    const serverErrorMsg = 'Error while deleting album'
+    const unknownErrorMsg = 'Error while deleting album'
 
     try {
       album = await this.albumRepository.deleteOne({ id })
     } catch (error: any) {
-      if (error instanceof DatabaseError.NotFoundError) {
-        throw new AppError.NotFoundError('Album was not found')
+      if (isDatabaseNotFoundError(error)) {
+        throw new AppNotFoundError('Album was not found')
       }
 
       logger.error(error.stack, {
         message: `Error while deleting album by id "${id}"`,
       })
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -185,7 +192,7 @@ class AlbumService implements IAlbumService {
         message: `Error while deleting related objects of album with id "${id}"`,
       })
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 
@@ -193,10 +200,10 @@ class AlbumService implements IAlbumService {
     const deleteManyFilter = omitUndefined(filter)
 
     if (isEmpty(deleteManyFilter)) {
-      throw new AppError.ValidationError(EMPTY_FILTER_ERR_MSG)
+      throw new AppValidationError(EMPTY_FILTER_ERR_MSG)
     }
 
-    const serverErrorMsg = 'Error while deleting albums'
+    const unknownErrorMsg = 'Error while deleting albums'
 
     const { albums = [] } = deleteManyFilter
     const albumIds: DocumentIdArray = albums.map((album) => album.id)
@@ -205,7 +212,7 @@ class AlbumService implements IAlbumService {
       await this.albumRepository.deleteMany({ ids: albumIds })
     } catch (error: any) {
       logger.error(error.stack)
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
 
     try {
@@ -222,7 +229,7 @@ class AlbumService implements IAlbumService {
         message: 'Error while deleting related objects of albums',
       })
 
-      throw new AppError.UnknownError(serverErrorMsg)
+      throw new AppUnknownError(unknownErrorMsg)
     }
   }
 }
