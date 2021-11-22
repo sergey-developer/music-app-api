@@ -1,7 +1,7 @@
-export { default as NotFoundError } from './NotFoundError'
-export { default as ValidationError } from './ValidationError'
-export { default as UnknownError } from './UnknownError'
+export { default as AppNotFoundError } from './NotFoundError'
+export { default as AppValidationError } from './ValidationError'
+export { default as AppUnknownError } from './UnknownError'
 
-export { default as isNotFoundError } from './isNotFoundError'
-export { default as isValidationError } from './isValidationError'
-export { default as isUnknownError } from './isUnknownError'
+export { default as isAppNotFoundError } from './isNotFoundError'
+export { default as isAppValidationError } from './isValidationError'
+export { default as isAppUnknownError } from './isUnknownError'

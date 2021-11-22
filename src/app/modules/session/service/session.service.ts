@@ -1,17 +1,17 @@
 import { delay, inject, singleton } from 'tsyringe'
 
 import {
-  isNotFoundError as isDatabaseNotFoundError,
-  isValidationError as isDatabaseValidationError,
+  isDatabaseNotFoundError,
+  isDatabaseValidationError,
 } from 'database/errors'
 import logger from 'lib/logger'
 import { SessionRepository } from 'modules/session/repository'
 import { ISessionService } from 'modules/session/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import {
-  NotFoundError as AppNotFoundError,
-  UnknownError as AppUnknownError,
-  ValidationError as AppValidationError,
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
 } from 'shared/utils/errors/appErrors'
 
 @singleton()

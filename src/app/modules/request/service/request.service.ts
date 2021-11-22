@@ -2,8 +2,8 @@ import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
 import {
-  isNotFoundError as isDatabaseNotFoundError,
-  isValidationError as isDatabaseValidationError,
+  isDatabaseNotFoundError,
+  isDatabaseValidationError,
 } from 'database/errors'
 import {
   isAlbumModelName,
@@ -27,10 +27,10 @@ import {
 } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
 import {
-  NotFoundError as AppNotFoundError,
-  UnknownError as AppUnknownError,
-  ValidationError as AppValidationError,
-  isNotFoundError as isAppNotFoundError,
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
+  isAppNotFoundError,
 } from 'shared/utils/errors/appErrors'
 
 @singleton()

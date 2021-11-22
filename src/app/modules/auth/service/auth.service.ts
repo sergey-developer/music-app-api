@@ -8,10 +8,10 @@ import { IUserDocument } from 'modules/user/model'
 import { UserService } from 'modules/user/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import {
-  UnknownError as AppUnknownError,
-  ValidationError as AppValidationError,
-  isNotFoundError as isAppNotFoundError,
-  isValidationError as isAppValidationError,
+  AppUnknownError,
+  AppValidationError,
+  isAppNotFoundError,
+  isAppValidationError,
 } from 'shared/utils/errors/appErrors'
 
 @singleton()

@@ -4,7 +4,7 @@ import { container as DiContainer } from 'tsyringe'
 
 import { SessionService } from 'modules/session/service'
 import { isJwtError, verifyToken } from 'modules/session/utils'
-import { isNotFoundError as isAppNotFoundError } from 'shared/utils/errors/appErrors'
+import { isAppNotFoundError } from 'shared/utils/errors/appErrors'
 import { ServerError, UnauthorizedError } from 'shared/utils/errors/httpErrors'
 
 const sessionService = DiContainer.resolve(SessionService)

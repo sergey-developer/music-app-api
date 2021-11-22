@@ -1,6 +1,6 @@
-import { UnknownError } from 'shared/utils/errors/appErrors'
+import { AppUnknownError } from 'shared/utils/errors/appErrors'
 
 const isUnknownError = (error: unknown): boolean =>
-  error instanceof UnknownError
+  error instanceof AppUnknownError
 
 export default isUnknownError

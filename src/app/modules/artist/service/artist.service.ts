@@ -3,8 +3,8 @@ import { delay, inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
-  isNotFoundError as isDatabaseNotFoundError,
-  isValidationError as isDatabaseValidationError,
+  isDatabaseNotFoundError,
+  isDatabaseValidationError,
 } from 'database/errors'
 import { DocumentId } from 'database/interface/document'
 import logger from 'lib/logger'
@@ -16,9 +16,9 @@ import { IArtistService } from 'modules/artist/service'
 import { RequestService } from 'modules/request/service'
 import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import {
-  NotFoundError as AppNotFoundError,
-  UnknownError as AppUnknownError,
-  ValidationError as AppValidationError,
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
 } from 'shared/utils/errors/appErrors'
 import { deleteImageFromFs } from 'shared/utils/file'
 

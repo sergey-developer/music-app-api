@@ -3,8 +3,8 @@ import { delay, inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
-  isNotFoundError as isDatabaseNotFoundError,
-  isValidationError as isDatabaseValidationError,
+  isDatabaseNotFoundError,
+  isDatabaseValidationError,
 } from 'database/errors'
 import { DocumentIdArray } from 'database/interface/document'
 import logger from 'lib/logger'
@@ -20,9 +20,9 @@ import {
 } from 'shared/constants/errorMessages'
 import { omitUndefined } from 'shared/utils/common'
 import {
-  NotFoundError as AppNotFoundError,
-  UnknownError as AppUnknownError,
-  ValidationError as AppValidationError,
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
 } from 'shared/utils/errors/appErrors'
 
 @singleton()

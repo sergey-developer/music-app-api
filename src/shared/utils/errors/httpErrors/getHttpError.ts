@@ -1,9 +1,9 @@
 import { HttpError } from 'http-errors'
 
 import {
-  NotFoundError as AppNotFoundError,
-  UnknownError as AppUnknownError,
-  ValidationError as AppValidationError,
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
 } from 'shared/utils/errors/appErrors'
 import {
   BadRequestError as HttpBadRequestError,
