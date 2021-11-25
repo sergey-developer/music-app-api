@@ -3,11 +3,11 @@ import { container as DiContainer } from 'tsyringe'
 import { fakeCreateTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
 import { TrackModel } from 'modules/track/model'
 import { TrackHistoryModel } from 'modules/trackHistory/model'
 import { TrackHistoryService } from 'modules/trackHistory/service'
+import { AppValidationError } from 'shared/utils/errors/appErrors'
 import { isBadRequestError } from 'shared/utils/errors/httpErrors'
 
 let trackHistoryService: TrackHistoryService
@@ -52,7 +52,7 @@ describe('Track history service', () => {
       expect(newTrackHistory.listenDate).toBe(trackHistoryPayload.listenDate)
     })
 
-    it('with incorrect data throws error', async () => {
+    it('with incorrect data throws validation error', async () => {
       const trackHistoryPayload = fakeCreateTrackHistoryPayload({
         isIncorrect: true,
       })
@@ -66,7 +66,7 @@ describe('Track history service', () => {
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
-        expect(isBadRequestError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppValidationError)
       }
     })
   })
@@ -144,7 +144,7 @@ describe('Track history service', () => {
   //     expect(deletedTrackHistory.user).toEqual(newTrackHistory.user)
   //   })
   //
-  //   it('has id which not exist and throws error', async () => {
+  //   it('has id which not exist and throw error', async () => {
   //     const filter = { id: generateMongoId() }
   //
   //     try {

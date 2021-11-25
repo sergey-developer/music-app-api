@@ -144,7 +144,7 @@ describe('Track history repository', () => {
       expect(deletedTrackHistory.user).toEqual(newTrackHistory.user)
     })
 
-    it('has id which not exist and throws not found error', async () => {
+    it('has id which not exist and throw not found error', async () => {
       const filter = { id: generateMongoId() }
 
       try {

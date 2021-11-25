@@ -96,7 +96,7 @@ describe('User repository', () => {
       expect(user.email).toBe(findOneUserFilter.email)
     })
 
-    it('has email which not exist and throws not found error', async () => {
+    it('has email which not exist and throw not found error', async () => {
       const findOneUserFilter = { email: getFakeEmail() }
 
       try {
@@ -133,7 +133,7 @@ describe('User repository', () => {
       expect(deletedUser.role).toBe(newUser.role)
     })
 
-    it('has id which not exist and throws not found error', async () => {
+    it('has id which not exist and throw not found error', async () => {
       const deleteOneUserFilter = { id: generateMongoId() }
 
       try {

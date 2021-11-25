@@ -8,6 +8,10 @@ import getModelName from 'database/utils/getModelName'
 import { SessionModel } from 'modules/session/model'
 import { SessionService } from 'modules/session/service'
 import {
+  AppNotFoundError,
+  AppValidationError,
+} from 'shared/utils/errors/appErrors'
+import {
   isBadRequestError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
@@ -46,7 +50,7 @@ describe('Session service', () => {
       expect(newSession.user.toString()).toBe(sessionPayload.userId)
     })
 
-    it('with incorrect data throws bad request error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const sessionPayload = {
         ...fakeCreateSessionPayload(),
         userId: getRandomString(),
@@ -58,7 +62,7 @@ describe('Session service', () => {
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(sessionPayload)
-        expect(isBadRequestError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppValidationError)
       }
     })
   })
@@ -91,7 +95,7 @@ describe('Session service', () => {
       } catch (error) {
         expect(getOneByTokenSpy).toBeCalledTimes(1)
         expect(getOneByTokenSpy).toBeCalledWith(incorrectToken)
-        expect(isNotFoundError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppNotFoundError)
       }
     })
   })
@@ -129,7 +133,7 @@ describe('Session service', () => {
       } catch (error) {
         expect(deleteOneByTokenSpy).toBeCalledTimes(1)
         expect(deleteOneByTokenSpy).toBeCalledWith(tokenWhichNotExists)
-        expect(isNotFoundError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppNotFoundError)
       }
     })
   })

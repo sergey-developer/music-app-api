@@ -10,6 +10,10 @@ import { UserRoleEnum } from 'modules/user/constants'
 import { UserModel } from 'modules/user/model'
 import { UserService } from 'modules/user/service'
 import {
+  AppNotFoundError,
+  AppValidationError,
+} from 'shared/utils/errors/appErrors'
+import {
   isBadRequestError,
   isNotFoundError,
 } from 'shared/utils/errors/httpErrors'
@@ -54,7 +58,7 @@ describe('User service', () => {
       } catch (error) {
         expect(getOneByEmailSpy).toBeCalledTimes(1)
         expect(getOneByEmailSpy).toBeCalledWith(fakeEmail)
-        expect(isNotFoundError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppNotFoundError)
       }
     })
   })
@@ -80,7 +84,7 @@ describe('User service', () => {
       expect(newUser.role).toBe(UserRoleEnum.User)
     })
 
-    it('with incorrect data throws bad request error', async () => {
+    it('with incorrect data throws validation error', async () => {
       const userPayload = fakeCreateUserPayload(null, { isIncorrect: true })
 
       try {
@@ -89,7 +93,7 @@ describe('User service', () => {
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(userPayload)
-        expect(isBadRequestError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppValidationError)
       }
     })
   })
@@ -124,7 +128,7 @@ describe('User service', () => {
       } catch (error) {
         expect(deleteOneByIdSpy).toBeCalledTimes(1)
         expect(deleteOneByIdSpy).toBeCalledWith(fakeMongoId)
-        expect(isNotFoundError(error)).toBe(true)
+        expect(error).toBeInstanceOf(AppNotFoundError)
       }
     })
   })

@@ -81,7 +81,7 @@ describe('Session repository', () => {
       expect(session.user).toEqual(newSession.user)
     })
 
-    it('has token which not exist and throws not found error', async () => {
+    it('has token which not exist and throw not found error', async () => {
       const findOneSessionFilter = { token: getRandomString() }
 
       try {
@@ -118,7 +118,7 @@ describe('Session repository', () => {
       expect(deletedSession.user).toEqual(newSession.user)
     })
 
-    it('has token which not exist and throws not found error', async () => {
+    it('has token which not exist and throw not found error', async () => {
       const deleteOneSessionFilter = { token: getRandomString() }
 
       try {
