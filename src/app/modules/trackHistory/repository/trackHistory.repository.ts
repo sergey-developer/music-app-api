@@ -3,7 +3,11 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
+import {
+  DatabaseNotFoundError,
+  DatabaseUnknownError,
+  DatabaseValidationError,
+} from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import {
   ITrackHistoryDocument,
@@ -26,7 +30,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     try {
       return this.trackHistory.find(filter).exec()
     } catch (error: any) {
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -36,7 +40,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
       return trackHistory.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -44,7 +48,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -63,10 +67,10 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
       return this.trackHistory.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -86,7 +90,7 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
 
       return this.trackHistory.deleteMany(filterToApply).exec()
     } catch (error: any) {
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 }

@@ -2,7 +2,11 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
+import {
+  DatabaseNotFoundError,
+  DatabaseUnknownError,
+  DatabaseValidationError,
+} from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { ISessionModel } from 'modules/session/model'
 import { ISessionRepository } from 'modules/session/repository'
@@ -27,10 +31,10 @@ class SessionRepository implements ISessionRepository {
       return this.session.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -45,7 +49,7 @@ class SessionRepository implements ISessionRepository {
       return session.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -53,7 +57,7 @@ class SessionRepository implements ISessionRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -67,10 +71,10 @@ class SessionRepository implements ISessionRepository {
       return this.session.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 }

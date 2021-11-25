@@ -3,6 +3,7 @@ import { container as DiContainer } from 'tsyringe'
 import { fakeCreateTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
 import { TrackModel } from 'modules/track/model'
@@ -51,7 +52,7 @@ describe('Track history repository', () => {
       expect(newTrackHistory.listenDate).toBe(trackHistoryPayload.listenDate)
     })
 
-    it('with incorrect data throws error', async () => {
+    it('with incorrect data throws validation error', async () => {
       const trackHistoryPayload = fakeCreateTrackHistoryPayload({
         isIncorrect: true,
       })
@@ -65,7 +66,7 @@ describe('Track history repository', () => {
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })
   })
@@ -143,7 +144,7 @@ describe('Track history repository', () => {
       expect(deletedTrackHistory.user).toEqual(newTrackHistory.user)
     })
 
-    it('has id which not exist and throws error', async () => {
+    it('has id which not exist and throws not found error', async () => {
       const filter = { id: generateMongoId() }
 
       try {
@@ -155,7 +156,7 @@ describe('Track history repository', () => {
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(filter)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
   })

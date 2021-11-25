@@ -3,7 +3,11 @@ import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
+import {
+  DatabaseNotFoundError,
+  DatabaseUnknownError,
+  DatabaseValidationError,
+} from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { IAlbumDocument, IAlbumModel } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
@@ -36,7 +40,7 @@ class AlbumRepository implements IAlbumRepository {
 
       return this.album.find(filterToApply).exec()
     } catch (error: any) {
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -50,10 +54,10 @@ class AlbumRepository implements IAlbumRepository {
       return this.album.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -63,7 +67,7 @@ class AlbumRepository implements IAlbumRepository {
       return album.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -71,7 +75,7 @@ class AlbumRepository implements IAlbumRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -96,11 +100,11 @@ class AlbumRepository implements IAlbumRepository {
         .exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -108,7 +112,7 @@ class AlbumRepository implements IAlbumRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -122,10 +126,10 @@ class AlbumRepository implements IAlbumRepository {
       return this.album.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -141,7 +145,7 @@ class AlbumRepository implements IAlbumRepository {
 
       return this.album.deleteMany(filterToApply).exec()
     } catch (error: any) {
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 }

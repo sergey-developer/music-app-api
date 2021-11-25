@@ -1,6 +1,6 @@
-import { NotFoundError } from 'database/errors'
+import { DatabaseNotFoundError } from 'database/errors'
 
 const isNotFoundError = (error: unknown): boolean =>
-  error instanceof NotFoundError
+  error instanceof DatabaseNotFoundError
 
 export default isNotFoundError

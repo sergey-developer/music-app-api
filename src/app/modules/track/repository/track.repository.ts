@@ -3,7 +3,11 @@ import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
+import {
+  DatabaseNotFoundError,
+  DatabaseUnknownError,
+  DatabaseValidationError,
+} from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { ITrackDocument, ITrackModel } from 'modules/track/model'
 import { ITrackRepository } from 'modules/track/repository'
@@ -40,7 +44,7 @@ class TrackRepository implements ITrackRepository {
 
       return this.track.find(filterToApply).exec()
     } catch (error: any) {
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -54,10 +58,10 @@ class TrackRepository implements ITrackRepository {
       return this.track.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -67,7 +71,7 @@ class TrackRepository implements ITrackRepository {
       return track.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -75,7 +79,7 @@ class TrackRepository implements ITrackRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -100,11 +104,11 @@ class TrackRepository implements ITrackRepository {
         .exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -112,7 +116,7 @@ class TrackRepository implements ITrackRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -126,10 +130,10 @@ class TrackRepository implements ITrackRepository {
       return this.track.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -145,7 +149,7 @@ class TrackRepository implements ITrackRepository {
 
       return this.track.deleteMany(filterToApply).exec()
     } catch (error: any) {
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 }

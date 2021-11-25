@@ -4,6 +4,7 @@ import { getRandomString } from '__tests__/fakeData/common'
 import { fakeCreateSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { SessionModel } from 'modules/session/model'
 import { SessionRepository } from 'modules/session/repository'
@@ -42,7 +43,7 @@ describe('Session repository', () => {
       expect(newSession.user.toString()).toBe(sessionPayload.userId)
     })
 
-    it('with incorrect data throws error', async () => {
+    it('with incorrect data throws validation error', async () => {
       const sessionPayload = {
         ...fakeCreateSessionPayload(),
         userId: getRandomString(),
@@ -54,19 +55,19 @@ describe('Session repository', () => {
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(sessionPayload)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })
   })
 
-  describe('Find one session', () => {
+  describe('Find one session where filter', () => {
     let findOneSpy: jest.SpyInstance
 
     beforeEach(() => {
       findOneSpy = jest.spyOn(sessionRepository, 'findOne')
     })
 
-    it('by token which exists', async () => {
+    it('has token which exists', async () => {
       const sessionPayload = fakeCreateSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
@@ -80,7 +81,7 @@ describe('Session repository', () => {
       expect(session.user).toEqual(newSession.user)
     })
 
-    it('by token which not exist and throws error', async () => {
+    it('has token which not exist and throws not found error', async () => {
       const findOneSessionFilter = { token: getRandomString() }
 
       try {
@@ -89,7 +90,7 @@ describe('Session repository', () => {
       } catch (error) {
         expect(findOneSpy).toBeCalledTimes(1)
         expect(findOneSpy).toBeCalledWith(findOneSessionFilter)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
   })
@@ -117,7 +118,7 @@ describe('Session repository', () => {
       expect(deletedSession.user).toEqual(newSession.user)
     })
 
-    it('has token which not exist and throws error', async () => {
+    it('has token which not exist and throws not found error', async () => {
       const deleteOneSessionFilter = { token: getRandomString() }
 
       try {
@@ -129,7 +130,7 @@ describe('Session repository', () => {
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(deleteOneSessionFilter)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
   })

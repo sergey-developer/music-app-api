@@ -2,7 +2,11 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { NotFoundError, UnknownError, ValidationError } from 'database/errors'
+import {
+  DatabaseNotFoundError,
+  DatabaseUnknownError,
+  DatabaseValidationError,
+} from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { IUserDocument, IUserModel } from 'modules/user/model'
 import { IUserRepository } from 'modules/user/repository'
@@ -26,10 +30,10 @@ class UserRepository implements IUserRepository {
       return this.user.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -40,7 +44,7 @@ class UserRepository implements IUserRepository {
       return user.save()
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
-        throw new ValidationError(
+        throw new DatabaseValidationError(
           error.message,
           getValidationErrors(
             error.errors as Record<string, MongooseError.ValidatorError>,
@@ -48,7 +52,7 @@ class UserRepository implements IUserRepository {
         )
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 
@@ -62,10 +66,10 @@ class UserRepository implements IUserRepository {
       return this.user.findOneAndDelete(filterToApply).orFail().exec()
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
-        throw new NotFoundError(error.message)
+        throw new DatabaseNotFoundError(error.message)
       }
 
-      throw new UnknownError(error.message)
+      throw new DatabaseUnknownError(error.message)
     }
   }
 }

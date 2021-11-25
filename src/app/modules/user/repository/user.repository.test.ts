@@ -4,6 +4,7 @@ import { getFakeEmail } from '__tests__/fakeData/common'
 import { fakeCreateUserPayload } from '__tests__/fakeData/user'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import generateMongoId from 'database/utils/generateMongoId'
 import getModelName from 'database/utils/getModelName'
 import { UserRoleEnum } from 'modules/user/constants'
@@ -60,7 +61,7 @@ describe('User repository', () => {
       expect(newUser.role).toBe(UserRoleEnum.Moderator)
     })
 
-    it('with incorrect data throws error', async () => {
+    it('with incorrect data throws validation error', async () => {
       const userPayload = fakeCreateUserPayload(null, {
         isIncorrect: true,
       })
@@ -71,19 +72,19 @@ describe('User repository', () => {
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(userPayload)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })
   })
 
-  describe('Find one user', () => {
+  describe('Find one user where filter', () => {
     let findOneSpy: jest.SpyInstance
 
     beforeEach(async () => {
       findOneSpy = jest.spyOn(userRepository, 'findOne')
     })
 
-    it('by email which exists', async () => {
+    it('has email which exists', async () => {
       const userPayload = fakeCreateUserPayload()
       const newUser = await userRepository.createOne(userPayload)
 
@@ -95,7 +96,7 @@ describe('User repository', () => {
       expect(user.email).toBe(findOneUserFilter.email)
     })
 
-    it('by email which not exist and throws error', async () => {
+    it('has email which not exist and throws not found error', async () => {
       const findOneUserFilter = { email: getFakeEmail() }
 
       try {
@@ -104,7 +105,7 @@ describe('User repository', () => {
       } catch (error) {
         expect(findOneSpy).toBeCalledTimes(1)
         expect(findOneSpy).toBeCalledWith(findOneUserFilter)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
   })
@@ -132,7 +133,7 @@ describe('User repository', () => {
       expect(deletedUser.role).toBe(newUser.role)
     })
 
-    it('has id which not exist and throws error', async () => {
+    it('has id which not exist and throws not found error', async () => {
       const deleteOneUserFilter = { id: generateMongoId() }
 
       try {
@@ -141,7 +142,7 @@ describe('User repository', () => {
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(deleteOneUserFilter)
-        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
   })
