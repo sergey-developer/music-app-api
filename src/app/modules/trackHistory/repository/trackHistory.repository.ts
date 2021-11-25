@@ -28,7 +28,19 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     filter,
   ) => {
     try {
-      return this.trackHistory.find(filter).exec()
+      const { user } = omitUndefined(filter)
+
+      const filterByUser: FilterQuery<ITrackHistoryDocument> = user
+        ? { user }
+        : {}
+
+      const filterToApply: FilterQuery<ITrackHistoryDocument> = {
+        ...filterByUser,
+      }
+
+      const trackHistories = await this.trackHistory.find(filterToApply).exec()
+
+      return trackHistories
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
@@ -36,8 +48,10 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
 
   public createOne: ITrackHistoryRepository['createOne'] = async (payload) => {
     try {
-      const trackHistory = new this.trackHistory(payload)
-      return trackHistory.save()
+      const newTrackHistory = new this.trackHistory(payload)
+      const trackHistory = await newTrackHistory.save()
+
+      return trackHistory
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(
@@ -64,7 +78,12 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
         ...filterById,
       }
 
-      return this.trackHistory.findOneAndDelete(filterToApply).orFail().exec()
+      const trackHistory = await this.trackHistory
+        .findOneAndDelete(filterToApply)
+        .orFail()
+        .exec()
+
+      return trackHistory
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -88,7 +107,11 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
         ...filterByTrack,
       }
 
-      return this.trackHistory.deleteMany(filterToApply).exec()
+      const deletionResult = await this.trackHistory
+        .deleteMany(filterToApply)
+        .exec()
+
+      return deletionResult
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }

@@ -3,9 +3,10 @@ import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
 import { ITrackHistoryDocumentArray } from 'modules/trackHistory/interface'
 import { ITrackHistoryDocument } from 'modules/trackHistory/model'
 
-export interface IGetAllTrackHistoryFilter {
-  user: DocumentId
-}
+export interface IGetAllTrackHistoryFilter
+  extends Partial<{
+    user: DocumentId
+  }> {}
 
 export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
   user: DocumentId

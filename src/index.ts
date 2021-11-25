@@ -8,7 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: Написать тесты
+// TODO: Написать тесты кроме контроллеров (написал для: user, session, trackHistory)
 // TODO: Написать тесты что выбрасывается server error и др.
 
 // TODO: Настроить jest-extended и исп-ть его

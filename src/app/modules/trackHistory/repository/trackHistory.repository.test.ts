@@ -52,7 +52,7 @@ describe('Track history repository', () => {
       expect(newTrackHistory.listenDate).toBe(trackHistoryPayload.listenDate)
     })
 
-    it('with incorrect data throws validation error', async () => {
+    it('with incorrect data and throw validation error', async () => {
       const trackHistoryPayload = fakeCreateTrackHistoryPayload({
         isIncorrect: true,
       })
@@ -71,7 +71,7 @@ describe('Track history repository', () => {
     })
   })
 
-  describe('Find track histories where filter', () => {
+  describe('Find all track histories where filter', () => {
     let findAllWhereSpy: jest.SpyInstance
 
     beforeEach(() => {

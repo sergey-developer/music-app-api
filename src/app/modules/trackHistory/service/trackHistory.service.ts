@@ -28,7 +28,11 @@ class TrackHistoryService implements ITrackHistoryService {
 
   public getAll: ITrackHistoryService['getAll'] = async (filter) => {
     try {
-      return this.trackHistoryRepository.findAllWhere(filter)
+      const trackHistories = await this.trackHistoryRepository.findAllWhere(
+        filter,
+      )
+
+      return trackHistories
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError('Error while getting tracks`s histories')

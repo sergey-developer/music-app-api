@@ -43,7 +43,7 @@ describe('Session repository', () => {
       expect(newSession.user.toString()).toBe(sessionPayload.userId)
     })
 
-    it('with incorrect data throws validation error', async () => {
+    it('with incorrect data and throw validation error', async () => {
       const sessionPayload = {
         ...fakeCreateSessionPayload(),
         userId: getRandomString(),

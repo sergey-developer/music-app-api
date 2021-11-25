@@ -61,7 +61,7 @@ describe('User repository', () => {
       expect(newUser.role).toBe(UserRoleEnum.Moderator)
     })
 
-    it('with incorrect data throws validation error', async () => {
+    it('with incorrect data and throw validation error', async () => {
       const userPayload = fakeCreateUserPayload(null, {
         isIncorrect: true,
       })

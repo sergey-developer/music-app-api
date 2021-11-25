@@ -27,7 +27,8 @@ class UserRepository implements IUserRepository {
       const filterByEmail: FilterQuery<IUserDocument> = email ? { email } : {}
       const filterToApply: FilterQuery<IUserDocument> = { ...filterByEmail }
 
-      return this.user.findOne(filterToApply).orFail().exec()
+      const user = await this.user.findOne(filterToApply).orFail().exec()
+      return user
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -40,8 +41,10 @@ class UserRepository implements IUserRepository {
   public createOne: IUserRepository['createOne'] = async (payload) => {
     try {
       const payloadToApply = omitUndefined(payload)
-      const user = new this.user(payloadToApply)
-      return user.save()
+      const newUser = new this.user(payloadToApply)
+
+      const user = await newUser.save()
+      return user
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(
@@ -63,7 +66,12 @@ class UserRepository implements IUserRepository {
       const filterById: FilterQuery<IUserDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IUserDocument> = { ...filterById }
 
-      return this.user.findOneAndDelete(filterToApply).orFail().exec()
+      const deletionResult = await this.user
+        .findOneAndDelete(filterToApply)
+        .orFail()
+        .exec()
+
+      return deletionResult
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)

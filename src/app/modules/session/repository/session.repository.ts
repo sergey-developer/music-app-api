@@ -28,7 +28,8 @@ class SessionRepository implements ISessionRepository {
       const filterByToken: FilterQuery<IUserDocument> = token ? { token } : {}
       const filterToApply: FilterQuery<IUserDocument> = { ...filterByToken }
 
-      return this.session.findOne(filterToApply).orFail().exec()
+      const session = await this.session.findOne(filterToApply).orFail().exec()
+      return session
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -41,12 +42,13 @@ class SessionRepository implements ISessionRepository {
   public createOne: ISessionRepository['createOne'] = async (payload) => {
     try {
       const token = this.session.generateToken(payload)
-      const session = new this.session({
+      const newSession = new this.session({
         token,
         user: payload.userId,
       })
 
-      return session.save()
+      const session = await newSession.save()
+      return session
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(
@@ -68,7 +70,12 @@ class SessionRepository implements ISessionRepository {
       const filterByToken: FilterQuery<IUserDocument> = token ? { token } : {}
       const filterToApply: FilterQuery<IUserDocument> = { ...filterByToken }
 
-      return this.session.findOneAndDelete(filterToApply).orFail().exec()
+      const session = await this.session
+        .findOneAndDelete(filterToApply)
+        .orFail()
+        .exec()
+
+      return session
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)

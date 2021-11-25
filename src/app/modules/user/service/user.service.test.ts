@@ -84,7 +84,7 @@ describe('User service', () => {
       expect(newUser.role).toBe(UserRoleEnum.User)
     })
 
-    it('with incorrect data throws validation error', async () => {
+    it('with incorrect data and throw validation error', async () => {
       const userPayload = fakeCreateUserPayload(null, { isIncorrect: true })
 
       try {
