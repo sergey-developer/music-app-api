@@ -5,7 +5,7 @@ import generateEntityId from 'database/utils/generateEntityId'
 import { ICreateOneSessionPayload } from 'modules/session/repository'
 import { UserRoleEnum } from 'modules/user/constants'
 
-const fakeSessionPayload = (
+const fakeRepoSessionPayload = (
   config: IFakePayloadConfig = {},
 ): Required<ICreateOneSessionPayload> => {
   const { isIncorrect } = config
@@ -17,4 +17,4 @@ const fakeSessionPayload = (
   }
 }
 
-export default fakeSessionPayload
+export default fakeRepoSessionPayload

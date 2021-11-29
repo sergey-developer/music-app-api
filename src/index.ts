@@ -9,10 +9,14 @@ const runServer = async () => {
 runServer()
 
 // TODO: Написать тесты кроме контроллеров. Написал для:
-//  trackHistory (service, repo)
+//  session (model, repo, service)
 //  user (model, repo, service)
+//  trackHistory (service, repo)
 //  track (repo)
 
+// TODO: создать свои функции для вызовов faker
+// TODO: поправить id: any в типах моделей из-за "extends Document"
+// TODO: исп-ть unique validator где он не используется
 // TODO: Написать тесты что выбрасывается server error и др.
 // TODO: исп-ть lean
 

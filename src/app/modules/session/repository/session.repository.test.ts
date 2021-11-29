@@ -1,7 +1,7 @@
 import { datatype } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
-import { fakeSessionPayload } from '__tests__/fakeData/session'
+import { fakeRepoSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
@@ -36,20 +36,17 @@ describe('Session repository', () => {
     })
 
     it('with correct data', async () => {
-      const sessionPayload = fakeSessionPayload()
+      const sessionPayload = fakeRepoSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(sessionPayload)
-      expect(typeof newSession.id).toBe('string')
-      expect(newSession.id).toBeTruthy()
-      expect(typeof newSession.token).toBe('string')
       expect(newSession.token).toBeTruthy()
       expect(newSession.user.toString()).toBe(sessionPayload.userId)
     })
 
     it('with incorrect data and throw validation error', async () => {
-      const sessionPayload = fakeSessionPayload({ isIncorrect: true })
+      const sessionPayload = fakeRepoSessionPayload({ isIncorrect: true })
 
       try {
         const newSession = await sessionRepository.createOne(sessionPayload)
@@ -70,8 +67,9 @@ describe('Session repository', () => {
     })
 
     it('by token which exists', async () => {
-      const sessionPayload = fakeSessionPayload()
-      const newSession = await sessionRepository.createOne(sessionPayload)
+      const newSession = await sessionRepository.createOne(
+        fakeRepoSessionPayload(),
+      )
 
       const filter: IFindOneSessionFilter = { token: newSession.token }
       const session = await sessionRepository.findOne(filter)
@@ -80,7 +78,7 @@ describe('Session repository', () => {
       expect(findOneSpy).toBeCalledWith(filter)
       expect(session.id).toBe(newSession.id)
       expect(session.token).toBe(newSession.token)
-      expect(session.user).toEqual(newSession.user)
+      expect(session.user.toString()).toBe(newSession.user.toString())
     })
 
     it('by token which not exist and throw not found error', async () => {
@@ -105,8 +103,9 @@ describe('Session repository', () => {
     })
 
     it('by token which exists', async () => {
-      const sessionPayload = fakeSessionPayload()
-      const newSession = await sessionRepository.createOne(sessionPayload)
+      const newSession = await sessionRepository.createOne(
+        fakeRepoSessionPayload(),
+      )
 
       const filter: IDeleteOneSessionFilter = { token: newSession.token }
       const deletedSession = await sessionRepository.deleteOne(filter)
@@ -115,7 +114,7 @@ describe('Session repository', () => {
       expect(deleteOneSpy).toBeCalledWith(filter)
       expect(deletedSession.id).toBe(newSession.id)
       expect(deletedSession.token).toBe(newSession.token)
-      expect(deletedSession.user).toEqual(newSession.user)
+      expect(deletedSession.user.toString()).toBe(newSession.user.toString())
     })
 
     it('by token which not exist and throw not found error', async () => {

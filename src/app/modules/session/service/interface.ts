@@ -1,10 +1,7 @@
+import { JwtPayload } from 'modules/session/interface'
 import { ISessionDocument } from 'modules/session/model'
-import { IUserDocument } from 'modules/user/model'
 
-export interface ICreateOneSessionPayload
-  extends Pick<IUserDocument, 'email' | 'role'> {
-  userId: IUserDocument['id']
-}
+export interface ICreateOneSessionPayload extends JwtPayload {}
 
 export interface ISessionService {
   getOneByToken: (token: ISessionDocument['token']) => Promise<ISessionDocument>

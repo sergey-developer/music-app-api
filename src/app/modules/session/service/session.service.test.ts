@@ -1,7 +1,7 @@
 import { datatype } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
-import { fakeSessionPayload } from '__tests__/fakeData/session'
+import { fakeServiceSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import getModelName from 'database/utils/getModelName'
@@ -35,20 +35,16 @@ describe('Session service', () => {
     })
 
     it('with correct data', async () => {
-      const sessionPayload = fakeSessionPayload()
+      const sessionPayload = fakeServiceSessionPayload()
       const newSession = await sessionService.createOne(sessionPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(sessionPayload)
-      expect(typeof newSession.id).toBe('string')
-      expect(newSession.id).toBeTruthy()
-      expect(typeof newSession.token).toBe('string')
-      expect(newSession.token).toBeTruthy()
-      expect(newSession.user.toString()).toBe(sessionPayload.userId)
+      expect(newSession).toBeDefined()
     })
 
     it('with incorrect data throw validation error', async () => {
-      const sessionPayload = fakeSessionPayload({ isIncorrect: true })
+      const sessionPayload = fakeServiceSessionPayload({ isIncorrect: true })
 
       try {
         const newSession = await sessionService.createOne(sessionPayload)
@@ -69,26 +65,25 @@ describe('Session service', () => {
     })
 
     it('which exists', async () => {
-      const sessionPayload = fakeSessionPayload()
-      const newSession = await sessionService.createOne(sessionPayload)
+      const newSession = await sessionService.createOne(
+        fakeServiceSessionPayload(),
+      )
       const session = await sessionService.getOneByToken(newSession.token)
 
       expect(getOneByTokenSpy).toBeCalledTimes(1)
       expect(getOneByTokenSpy).toBeCalledWith(newSession.token)
-      expect(session.id).toBe(newSession.id)
-      expect(session.token).toBe(newSession.token)
-      expect(session.user).toEqual(newSession.user)
+      expect(session).toBeDefined()
     })
 
     it('which not exist and throw not found error', async () => {
-      const incorrectToken = datatype.string()
+      const token = datatype.string()
 
       try {
-        const session = await sessionService.getOneByToken(incorrectToken)
+        const session = await sessionService.getOneByToken(token)
         expect(session).not.toBeDefined()
       } catch (error) {
         expect(getOneByTokenSpy).toBeCalledTimes(1)
-        expect(getOneByTokenSpy).toBeCalledWith(incorrectToken)
+        expect(getOneByTokenSpy).toBeCalledWith(token)
         expect(error).toBeInstanceOf(AppNotFoundError)
       }
     })
@@ -102,31 +97,27 @@ describe('Session service', () => {
     })
 
     it('which exists', async () => {
-      const sessionPayload = fakeSessionPayload()
-      const newSession = await sessionService.createOne(sessionPayload)
+      const newSession = await sessionService.createOne(
+        fakeServiceSessionPayload(),
+      )
       const deletedSession = await sessionService.deleteOneByToken(
         newSession.token,
       )
 
       expect(deleteOneByTokenSpy).toBeCalledTimes(1)
       expect(deleteOneByTokenSpy).toBeCalledWith(newSession.token)
-      expect(deletedSession.id).toBe(newSession.id)
-      expect(deletedSession.token).toBe(newSession.token)
-      expect(deletedSession.user).toEqual(newSession.user)
+      expect(deletedSession).toBeDefined()
     })
 
     it('which not exist and throw not found error', async () => {
-      const tokenWhichNotExists = datatype.string()
+      const token = datatype.string()
 
       try {
-        const deletedSession = await sessionService.deleteOneByToken(
-          tokenWhichNotExists,
-        )
-
+        const deletedSession = await sessionService.deleteOneByToken(token)
         expect(deletedSession).not.toBeDefined()
       } catch (error) {
         expect(deleteOneByTokenSpy).toBeCalledTimes(1)
-        expect(deleteOneByTokenSpy).toBeCalledWith(tokenWhichNotExists)
+        expect(deleteOneByTokenSpy).toBeCalledWith(token)
         expect(error).toBeInstanceOf(AppNotFoundError)
       }
     })

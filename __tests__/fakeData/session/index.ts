@@ -1,1 +1,2 @@
-export { default as fakeSessionPayload } from './fakeSessionPayload'
+export { default as fakeRepoSessionPayload } from './fakeRepoSessionPayload'
+export { default as fakeServiceSessionPayload } from './fakeServiceSessionPayload'
