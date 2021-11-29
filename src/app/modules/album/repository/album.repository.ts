@@ -123,7 +123,12 @@ class AlbumRepository implements IAlbumRepository {
       const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      return this.album.findOneAndDelete(filterToApply).orFail().exec()
+      const album = await this.album
+        .findOneAndDelete(filterToApply)
+        .orFail()
+        .exec()
+
+      return album
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)

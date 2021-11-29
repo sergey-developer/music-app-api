@@ -8,10 +8,14 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: Написать тесты кроме контроллеров (написал для: user, session, trackHistory)
-// TODO: Написать тесты что выбрасывается server error и др.
+// TODO: Написать тесты кроме контроллеров. Написал для:
+//  trackHistory (service, repo)
+//  user (model, repo, service)
+//  track (repo)
 
-// TODO: Настроить jest-extended и исп-ть его
+// TODO: Написать тесты что выбрасывается server error и др.
+// TODO: исп-ть lean
+
 // TODO: отрефакторить сообщения для логирования
 // TODO: Сделать пагинацию
 // TODO: add validation content-type for route level

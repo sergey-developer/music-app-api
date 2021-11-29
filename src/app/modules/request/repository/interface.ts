@@ -10,14 +10,18 @@ export interface IFindAllRequestsFilter extends GetAllRequestsQuery {}
 export interface IFindOneRequestFilter
   extends Partial<{
     id: IRequestDocument['id']
+    entity: DocumentId
   }> {}
 
-export interface ICreateRequestPayload
-  extends Pick<IRequestDocument, 'entityName' | 'entity' | 'creator'> {}
+export interface ICreateOneRequestPayload
+  extends Pick<IRequestDocument, 'entityName'> {
+  entity: string
+  creator: string
+}
 
-export interface IUpdateRequestPayload extends UpdateRequestDto {}
+export interface IUpdateOneRequestPayload extends UpdateRequestDto {}
 
-export interface IUpdateRequestFilter
+export interface IUpdateOneRequestFilter
   extends Partial<Pick<IRequestDocument, 'id'>> {}
 
 export interface IDeleteOneRequestFilter
@@ -40,11 +44,11 @@ export interface IRequestRepository {
 
   findOne: (filter: IFindOneRequestFilter) => Promise<IRequestDocument>
 
-  createOne: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
+  createOne: (payload: ICreateOneRequestPayload) => Promise<IRequestDocument>
 
   updateOne: (
-    filter: IUpdateRequestFilter,
-    payload: IUpdateRequestPayload,
+    filter: IUpdateOneRequestFilter,
+    payload: IUpdateOneRequestPayload,
   ) => Promise<IRequestDocument>
 
   deleteOne: (filter: IDeleteOneRequestFilter) => Promise<IRequestDocument>

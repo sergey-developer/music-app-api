@@ -24,7 +24,8 @@ class RequestRepository implements IRequestRepository {
 
   public findAll: IRequestRepository['findAll'] = async () => {
     try {
-      return this.request.find().exec()
+      const requests = await this.request.find().exec()
+      return requests
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
@@ -52,7 +53,8 @@ class RequestRepository implements IRequestRepository {
         ...filterByCreator,
       }
 
-      return this.request.find(filterToApply).exec()
+      const requests = await this.request.find(filterToApply).exec()
+      return requests
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
@@ -60,12 +62,20 @@ class RequestRepository implements IRequestRepository {
 
   public findOne: IRequestRepository['findOne'] = async (filter) => {
     try {
-      const { id } = omitUndefined(filter)
+      const { id, entity } = omitUndefined(filter)
 
-      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
-      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+      const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
+      const filterByEntity: FilterQuery<IRequestDocument> = entity
+        ? { entity }
+        : {}
 
-      return this.request.findOne(filterToApply).orFail().exec()
+      const filterToApply: FilterQuery<IRequestDocument> = {
+        ...filterById,
+        ...filterByEntity,
+      }
+
+      const request = await this.request.findOne(filterToApply).orFail().exec()
+      return request
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -77,8 +87,9 @@ class RequestRepository implements IRequestRepository {
 
   public createOne: IRequestRepository['createOne'] = async (payload) => {
     try {
-      const request = new this.request(payload)
-      return request.save()
+      const newRequest = new this.request(payload)
+      const request = await newRequest.save()
+      return request
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(
@@ -111,10 +122,12 @@ class RequestRepository implements IRequestRepository {
       const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IRequestDocument> = { ...filterById }
 
-      return this.request
+      const request = await this.request
         .findOneAndUpdate(filterToApply, updates, optionsToApply)
         .orFail()
         .exec()
+
+      return request
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -148,11 +161,13 @@ class RequestRepository implements IRequestRepository {
         ...filterByEntity,
       }
 
-      return this.request
+      const request = await this.request
         .findOneAndDelete(filterToApply)
         .orFail()
         .populate('entity')
         .exec()
+
+      return request
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -172,7 +187,8 @@ class RequestRepository implements IRequestRepository {
 
       const filterToApply: FilterQuery<IRequestDocument> = { ...filterByEntity }
 
-      return this.request.deleteMany(filterToApply).exec()
+      const deletionResult = await this.request.deleteMany(filterToApply).exec()
+      return deletionResult
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }

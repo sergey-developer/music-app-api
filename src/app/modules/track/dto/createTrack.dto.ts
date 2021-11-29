@@ -1,4 +1,15 @@
-import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
+import { Type } from 'class-transformer'
+import {
+  IsInt,
+  IsMongoId,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUrl,
+  Length,
+  Max,
+  Min,
+} from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
 import messages from 'lib/class-validator/messages'
@@ -7,6 +18,19 @@ import {
   MIN_LENGTH_TRACK_NAME,
 } from 'modules/track/constants'
 import { ITrackDocument } from 'modules/track/model'
+
+class TrackDurationDto {
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  @Max(59)
+  minutes?: number
+
+  @IsInt()
+  @IsPositive()
+  @Max(59)
+  seconds!: number
+}
 
 class CreateTrackDto {
   @IsString({
@@ -17,11 +41,8 @@ class CreateTrackDto {
   })
   name!: ITrackDocument['name']
 
-  // TODO: валидировать по регулярке
-  @IsString({
-    message: messages.string,
-  })
-  duration!: ITrackDocument['duration']
+  @Type(() => TrackDurationDto)
+  duration!: TrackDurationDto
 
   @IsOptional()
   @IsUrl()

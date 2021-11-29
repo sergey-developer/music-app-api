@@ -1,7 +1,7 @@
+import { datatype } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
-import { getRandomString } from '__tests__/fakeData/common'
-import { fakeCreateSessionPayload } from '__tests__/fakeData/session'
+import { fakeSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import getModelName from 'database/utils/getModelName'
@@ -11,10 +11,6 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'shared/utils/errors/appErrors'
-import {
-  isBadRequestError,
-  isNotFoundError,
-} from 'shared/utils/errors/httpErrors'
 
 let sessionService: SessionService
 
@@ -22,6 +18,7 @@ setupDB()
 
 beforeEach(() => {
   DiContainer.clearInstances()
+
   DiContainer.register(getModelName(EntityNamesEnum.Session), {
     useValue: SessionModel,
   })
@@ -38,7 +35,7 @@ describe('Session service', () => {
     })
 
     it('with correct data', async () => {
-      const sessionPayload = fakeCreateSessionPayload()
+      const sessionPayload = fakeSessionPayload()
       const newSession = await sessionService.createOne(sessionPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
@@ -51,10 +48,7 @@ describe('Session service', () => {
     })
 
     it('with incorrect data throw validation error', async () => {
-      const sessionPayload = {
-        ...fakeCreateSessionPayload(),
-        userId: getRandomString(),
-      }
+      const sessionPayload = fakeSessionPayload({ isIncorrect: true })
 
       try {
         const newSession = await sessionService.createOne(sessionPayload)
@@ -75,7 +69,7 @@ describe('Session service', () => {
     })
 
     it('which exists', async () => {
-      const sessionPayload = fakeCreateSessionPayload()
+      const sessionPayload = fakeSessionPayload()
       const newSession = await sessionService.createOne(sessionPayload)
       const session = await sessionService.getOneByToken(newSession.token)
 
@@ -87,7 +81,7 @@ describe('Session service', () => {
     })
 
     it('which not exist and throw not found error', async () => {
-      const incorrectToken = getRandomString()
+      const incorrectToken = datatype.string()
 
       try {
         const session = await sessionService.getOneByToken(incorrectToken)
@@ -108,7 +102,7 @@ describe('Session service', () => {
     })
 
     it('which exists', async () => {
-      const sessionPayload = fakeCreateSessionPayload()
+      const sessionPayload = fakeSessionPayload()
       const newSession = await sessionService.createOne(sessionPayload)
       const deletedSession = await sessionService.deleteOneByToken(
         newSession.token,
@@ -122,7 +116,7 @@ describe('Session service', () => {
     })
 
     it('which not exist and throw not found error', async () => {
-      const tokenWhichNotExists = getRandomString()
+      const tokenWhichNotExists = datatype.string()
 
       try {
         const deletedSession = await sessionService.deleteOneByToken(

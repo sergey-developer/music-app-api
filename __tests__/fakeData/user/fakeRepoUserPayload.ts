@@ -1,14 +1,14 @@
 import { internet, name } from 'faker'
 
-import { IFakeCreateConfig } from '__tests__/fakeData/interface/fakeCreate'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
 import { MIN_LENGTH_PASSWORD, UserRoleEnum } from 'modules/user/constants'
-import { ICreateUserPayload } from 'modules/user/repository'
+import { ICreateOneUserPayload } from 'modules/user/repository'
 import { MaybeNull } from 'shared/interface/utils'
 
-const fakeCreateUserPayload = (
-  role?: MaybeNull<ICreateUserPayload['role']>,
-  config: IFakeCreateConfig = {},
-): Required<ICreateUserPayload> => {
+const fakeRepoUserPayload = (
+  payload?: MaybeNull<Partial<Pick<ICreateOneUserPayload, 'role'>>>,
+  config: IFakePayloadConfig = {},
+): Required<ICreateOneUserPayload> => {
   const { isIncorrect } = config
 
   const passwordLength = isIncorrect
@@ -19,8 +19,8 @@ const fakeCreateUserPayload = (
     username: name.findName(),
     email: internet.email(),
     password: internet.password(passwordLength),
-    role: role || UserRoleEnum.User,
+    role: payload?.role || UserRoleEnum.User,
   }
 }
 
-export default fakeCreateUserPayload
+export default fakeRepoUserPayload

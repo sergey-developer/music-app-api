@@ -1,4 +1,4 @@
-import { fakeCreateUserPayload, getFakePassword } from '__tests__/fakeData/user'
+import { fakeRepoUserPayload, getFakePassword } from '__tests__/fakeData/user'
 import setupDB from '__tests__/utils/setupDB'
 import { IUserDocument, UserModel } from 'modules/user/model'
 import { preSaveHook } from 'modules/user/model/hooks'
@@ -37,7 +37,7 @@ describe('User model', () => {
   })
 
   describe('Check password', () => {
-    const userPayload = fakeCreateUserPayload()
+    const userPayload = fakeRepoUserPayload()
 
     let user: IUserDocument
     let checkPasswordSpy: jest.SpyInstance

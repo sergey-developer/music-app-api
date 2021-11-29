@@ -8,7 +8,7 @@ export interface IGetAllTrackHistoryFilter
     user: DocumentId
   }> {}
 
-export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
+export interface ICreateOneTrackHistoryPayload extends CreateTrackHistoryDto {
   user: DocumentId
 }
 
@@ -23,7 +23,7 @@ export interface ITrackHistoryService {
   ) => Promise<ITrackHistoryDocumentArray>
 
   createOne: (
-    payload: ICreateTrackHistoryPayload,
+    payload: ICreateOneTrackHistoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
   deleteOneById: (

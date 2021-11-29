@@ -1,13 +1,12 @@
-import { Model } from 'mongoose'
+import { Document, Model, PopulatedDoc } from 'mongoose'
 
-import { DocumentId, PopulatedDoc } from 'database/interface/document'
+import { DocumentId } from 'database/interface/document'
 import { ITrackDocument } from 'modules/track/model'
 import { IUserDocument } from 'modules/user/model'
-import { MaybeNull } from 'shared/interface/utils'
 
-export interface ITrackHistoryDocument {
+export interface ITrackHistoryDocument extends Document {
   id: DocumentId
-  track: PopulatedDoc<MaybeNull<ITrackDocument>>
+  track: PopulatedDoc<ITrackDocument>
   user: PopulatedDoc<IUserDocument>
   listenDate: string
 }

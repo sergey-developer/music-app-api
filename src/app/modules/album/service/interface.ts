@@ -9,12 +9,12 @@ import { IAlbumDocument } from 'modules/album/model'
 
 export interface IGetAllAlbumsFilter extends GetAllAlbumsQuery {}
 
-export interface ICreateAlbumPayload extends CreateAlbumDto {
-  userId: DocumentId
+export interface ICreateOneAlbumPayload extends CreateAlbumDto {
+  user: DocumentId
   image?: IAlbumDocument['image']
 }
 
-export interface IUpdateAlbumPayload extends UpdateAlbumDto {
+export interface IUpdateOneAlbumPayload extends UpdateAlbumDto {
   image: IAlbumDocument['image']
 }
 
@@ -28,11 +28,11 @@ export interface IAlbumService {
 
   getOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
-  createOne: (payload: ICreateAlbumPayload) => Promise<IAlbumDocument>
+  createOne: (payload: ICreateOneAlbumPayload) => Promise<IAlbumDocument>
 
   updateOneById: (
     id: IAlbumDocument['id'],
-    payload: IUpdateAlbumPayload,
+    payload: IUpdateOneAlbumPayload,
   ) => Promise<IAlbumDocument>
 
   deleteOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>

@@ -1,6 +1,6 @@
-import { Model } from 'mongoose'
+import { Model, PopulatedDoc } from 'mongoose'
 
-import { DocumentId, PopulatedDoc } from 'database/interface/document'
+import { DocumentId } from 'database/interface/document'
 import { IArtistDocument } from 'modules/artist/model'
 import { MaybeNull } from 'shared/interface/utils'
 
@@ -8,7 +8,7 @@ export interface IAlbumDocument {
   id: DocumentId
   name: string
   releaseDate: string
-  artist: PopulatedDoc<MaybeNull<IArtistDocument>>
+  artist: PopulatedDoc<IArtistDocument>
   image: MaybeNull<string>
 }
 

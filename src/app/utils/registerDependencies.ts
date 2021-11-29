@@ -1,5 +1,5 @@
 import { modelList } from 'database/constants/modelList'
-import registerModels from 'database/utils/registerModels'
+import { registerModels } from 'database/utils/registerModels'
 
 const registerDependencies = (): void => {
   registerModels(modelList)

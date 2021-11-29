@@ -66,12 +66,12 @@ class UserRepository implements IUserRepository {
       const filterById: FilterQuery<IUserDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IUserDocument> = { ...filterById }
 
-      const deletionResult = await this.user
+      const user = await this.user
         .findOneAndDelete(filterToApply)
         .orFail()
         .exec()
 
-      return deletionResult
+      return user
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)

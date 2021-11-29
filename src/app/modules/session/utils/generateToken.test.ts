@@ -1,11 +1,11 @@
-import { fakeCreateSessionPayload } from '__tests__/fakeData/session'
+import { fakeSessionPayload } from '__tests__/fakeData/session'
 import * as sessionUtils from 'modules/session/utils'
 
 describe('generateToken', () => {
   it('successful with correct arguments', () => {
     const generateTokenSpy = jest.spyOn(sessionUtils, 'generateToken')
 
-    const jwtPayload = fakeCreateSessionPayload()
+    const jwtPayload = fakeSessionPayload()
     const fakeSecret = 'fakeSecret'
 
     const token = sessionUtils.generateToken(jwtPayload, fakeSecret)

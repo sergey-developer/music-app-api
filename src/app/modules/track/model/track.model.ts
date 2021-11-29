@@ -23,7 +23,7 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
     maxlength: MAX_LENGTH_TRACK_NAME,
   },
   duration: {
-    type: String,
+    type: Number,
     required: true,
   },
   youtube: {
@@ -45,9 +45,16 @@ TrackSchema.static(
     const tracks: ITrackDocumentArray = await this.find(filter).exec()
 
     return tracks.filter((track) => {
-      const album = track.album as IAlbumDocument
-      const artist = album.artist as IArtistDocument
-      return artist.id === artistId
+      if (track.album) {
+        const album = track.album as IAlbumDocument
+
+        if (album.artist) {
+          const artist = album.artist as unknown as IArtistDocument
+          return artist.id === artistId
+        }
+      }
+
+      return false
     })
   },
 )

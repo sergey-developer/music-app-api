@@ -22,6 +22,7 @@ import {
   AppUnknownError,
   AppValidationError,
 } from 'shared/utils/errors/appErrors'
+import { toMilliseconds } from 'shared/utils/milliseconds'
 
 @singleton()
 class TrackService implements ITrackService {
@@ -80,7 +81,7 @@ class TrackService implements ITrackService {
     try {
       track = await this.trackRepository.createOne({
         name: payload.name,
-        duration: payload.duration,
+        duration: toMilliseconds(payload.duration),
         youtube: payload.youtube,
         album: payload.album,
       })
@@ -97,7 +98,7 @@ class TrackService implements ITrackService {
       await this.requestService.createOne({
         entityName: EntityNamesEnum.Track,
         entity: track.id,
-        creator: payload.userId,
+        creator: payload.user,
       })
 
       return track

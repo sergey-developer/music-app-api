@@ -1,13 +1,17 @@
+import { datatype } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
-import { getRandomString } from '__tests__/fakeData/common'
-import { fakeCreateSessionPayload } from '__tests__/fakeData/session'
+import { fakeSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import getModelName from 'database/utils/getModelName'
 import { SessionModel } from 'modules/session/model'
-import { SessionRepository } from 'modules/session/repository'
+import {
+  IDeleteOneSessionFilter,
+  IFindOneSessionFilter,
+  SessionRepository,
+} from 'modules/session/repository'
 
 let sessionRepository: SessionRepository
 
@@ -15,6 +19,7 @@ setupDB()
 
 beforeEach(() => {
   DiContainer.clearInstances()
+
   DiContainer.register(getModelName(EntityNamesEnum.Session), {
     useValue: SessionModel,
   })
@@ -31,7 +36,7 @@ describe('Session repository', () => {
     })
 
     it('with correct data', async () => {
-      const sessionPayload = fakeCreateSessionPayload()
+      const sessionPayload = fakeSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
@@ -44,10 +49,7 @@ describe('Session repository', () => {
     })
 
     it('with incorrect data and throw validation error', async () => {
-      const sessionPayload = {
-        ...fakeCreateSessionPayload(),
-        userId: getRandomString(),
-      }
+      const sessionPayload = fakeSessionPayload({ isIncorrect: true })
 
       try {
         const newSession = await sessionRepository.createOne(sessionPayload)
@@ -60,76 +62,71 @@ describe('Session repository', () => {
     })
   })
 
-  describe('Find one session where filter', () => {
+  describe('Find one session', () => {
     let findOneSpy: jest.SpyInstance
 
     beforeEach(() => {
       findOneSpy = jest.spyOn(sessionRepository, 'findOne')
     })
 
-    it('has token which exists', async () => {
-      const sessionPayload = fakeCreateSessionPayload()
+    it('by token which exists', async () => {
+      const sessionPayload = fakeSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
-      const findOneSessionFilter = { token: newSession.token }
-      const session = await sessionRepository.findOne(findOneSessionFilter)
+      const filter: IFindOneSessionFilter = { token: newSession.token }
+      const session = await sessionRepository.findOne(filter)
 
       expect(findOneSpy).toBeCalledTimes(1)
-      expect(findOneSpy).toBeCalledWith(findOneSessionFilter)
+      expect(findOneSpy).toBeCalledWith(filter)
       expect(session.id).toBe(newSession.id)
       expect(session.token).toBe(newSession.token)
       expect(session.user).toEqual(newSession.user)
     })
 
-    it('has token which not exist and throw not found error', async () => {
-      const findOneSessionFilter = { token: getRandomString() }
+    it('by token which not exist and throw not found error', async () => {
+      const filter: IFindOneSessionFilter = { token: datatype.string() }
 
       try {
-        const session = await sessionRepository.findOne(findOneSessionFilter)
+        const session = await sessionRepository.findOne(filter)
         expect(session).not.toBeDefined()
       } catch (error) {
         expect(findOneSpy).toBeCalledTimes(1)
-        expect(findOneSpy).toBeCalledWith(findOneSessionFilter)
+        expect(findOneSpy).toBeCalledWith(filter)
         expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
   })
 
-  describe('Delete one session where filter', () => {
+  describe('Delete one session', () => {
     let deleteOneSpy: jest.SpyInstance
 
     beforeEach(() => {
       deleteOneSpy = jest.spyOn(sessionRepository, 'deleteOne')
     })
 
-    it('has token which exists', async () => {
-      const sessionPayload = fakeCreateSessionPayload()
+    it('by token which exists', async () => {
+      const sessionPayload = fakeSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
-      const deleteOneSessionFilter = { token: newSession.token }
-      const deletedSession = await sessionRepository.deleteOne(
-        deleteOneSessionFilter,
-      )
+      const filter: IDeleteOneSessionFilter = { token: newSession.token }
+      const deletedSession = await sessionRepository.deleteOne(filter)
 
       expect(deleteOneSpy).toBeCalledTimes(1)
-      expect(deleteOneSpy).toBeCalledWith(deleteOneSessionFilter)
+      expect(deleteOneSpy).toBeCalledWith(filter)
       expect(deletedSession.id).toBe(newSession.id)
       expect(deletedSession.token).toBe(newSession.token)
       expect(deletedSession.user).toEqual(newSession.user)
     })
 
-    it('has token which not exist and throw not found error', async () => {
-      const deleteOneSessionFilter = { token: getRandomString() }
+    it('by token which not exist and throw not found error', async () => {
+      const filter: IDeleteOneSessionFilter = { token: datatype.string() }
 
       try {
-        const deletedSession = await sessionRepository.deleteOne(
-          deleteOneSessionFilter,
-        )
-
+        const deletedSession = await sessionRepository.deleteOne(filter)
         expect(deletedSession).not.toBeDefined()
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
-        expect(deleteOneSpy).toBeCalledWith(deleteOneSessionFilter)
+        expect(deleteOneSpy).toBeCalledWith(filter)
         expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })

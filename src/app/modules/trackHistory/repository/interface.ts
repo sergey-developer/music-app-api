@@ -20,7 +20,7 @@ export interface IDeleteManyTrackHistoryFilter
     trackIds: DocumentIdArray
   }> {}
 
-export interface ICreateTrackHistoryPayload extends CreateTrackHistoryDto {
+export interface ICreateOneTrackHistoryPayload extends CreateTrackHistoryDto {
   user: DocumentId
   listenDate: ITrackHistoryDocument['listenDate']
 }
@@ -31,7 +31,7 @@ export interface ITrackHistoryRepository {
   ) => Promise<ITrackHistoryDocumentArray>
 
   createOne: (
-    payload: ICreateTrackHistoryPayload,
+    payload: ICreateOneTrackHistoryPayload,
   ) => Promise<ITrackHistoryDocument>
 
   deleteOne: (

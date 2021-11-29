@@ -13,15 +13,15 @@ export interface IFindOneArtistFilter
     id: IArtistDocument['id']
   }> {}
 
-export interface ICreateArtistPayload extends CreateArtistDto {
+export interface ICreateOneArtistPayload extends CreateArtistDto {
   photo?: IArtistDocument['photo']
 }
 
-export interface IUpdateArtistPayload extends UpdateArtistDto {
+export interface IUpdateOneArtistPayload extends UpdateArtistDto {
   photo: IArtistDocument['photo']
 }
 
-export interface IUpdateArtistFilter
+export interface IUpdateOneArtistFilter
   extends Partial<{
     id: IArtistDocument['id']
   }> {}
@@ -36,11 +36,11 @@ export interface IArtistRepository {
 
   findOne: (filter: IFindOneArtistFilter) => Promise<IArtistDocument>
 
-  createOne: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
+  createOne: (payload: ICreateOneArtistPayload) => Promise<IArtistDocument>
 
   updateOne: (
-    filter: IUpdateArtistFilter,
-    payload: IUpdateArtistPayload,
+    filter: IUpdateOneArtistFilter,
+    payload: IUpdateOneArtistPayload,
   ) => Promise<IArtistDocument>
 
   deleteOne: (filter: IDeleteOneArtistFilter) => Promise<IArtistDocument>

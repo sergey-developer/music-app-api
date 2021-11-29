@@ -104,7 +104,7 @@ class ArtistService implements IArtistService {
       await this.requestService.createOne({
         entityName: EntityNamesEnum.Artist,
         entity: artist.id,
-        creator: payload.userId,
+        creator: payload.user,
       })
 
       return artist

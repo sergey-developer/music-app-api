@@ -1,4 +1,4 @@
-const generateMongoId = (): string => {
+const generateEntityId = (): string => {
   const timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
 
   return (
@@ -11,4 +11,4 @@ const generateMongoId = (): string => {
   )
 }
 
-export default generateMongoId
+export default generateEntityId

@@ -1,11 +1,11 @@
 import { container as DiContainer } from 'tsyringe'
 
-import { IModelList } from 'database/constants/modelList'
+import { IModelList, IModelListItem } from 'database/constants/modelList'
 
-const registerModels = (modelList: IModelList): void => {
-  modelList.forEach((model) => {
-    DiContainer.register(model.name, { useValue: model.value })
-  })
+export const registerModel = (model: IModelListItem) => {
+  DiContainer.register(model.name, { useValue: model.value })
 }
 
-export default registerModels
+export const registerModels = (modelList: IModelList): void => {
+  modelList.forEach(registerModel)
+}

@@ -13,15 +13,15 @@ export interface IGetAllTracksFilter
       albumIds: DocumentIdArray
     }> {}
 
-export interface IUpdateTrackPayload extends UpdateTrackDto {}
+export interface IUpdateOneTrackPayload extends UpdateTrackDto {}
 
 export interface IDeleteManyTracksFilter
   extends Partial<{
     tracks: ITrackDocumentArray
   }> {}
 
-export interface ICreateTrackPayload extends CreateTrackDto {
-  userId: DocumentId
+export interface ICreateOneTrackPayload extends CreateTrackDto {
+  user: DocumentId
 }
 
 export interface ITrackService {
@@ -29,11 +29,11 @@ export interface ITrackService {
 
   getOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
-  createOne: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
+  createOne: (payload: ICreateOneTrackPayload) => Promise<ITrackDocument>
 
   updateOneById: (
     id: ITrackDocument['id'],
-    payload: IUpdateTrackPayload,
+    payload: IUpdateOneTrackPayload,
   ) => Promise<ITrackDocument>
 
   deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>

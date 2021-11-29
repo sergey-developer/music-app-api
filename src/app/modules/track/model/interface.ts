@@ -1,15 +1,14 @@
-import { FilterQuery, Model } from 'mongoose'
+import { Document, FilterQuery, Model, PopulatedDoc } from 'mongoose'
 
-import { DocumentId, PopulatedDoc } from 'database/interface/document'
+import { DocumentId } from 'database/interface/document'
 import { IAlbumDocument } from 'modules/album/model'
 import { ITrackDocumentArray } from 'modules/track/interface'
-import { MaybeNull } from 'shared/interface/utils'
 
-export interface ITrackDocument {
+export interface ITrackDocument extends Document {
   id: DocumentId
   name: string
-  duration: string
-  album: PopulatedDoc<MaybeNull<IAlbumDocument>>
+  duration: number
+  album: PopulatedDoc<IAlbumDocument>
   youtube?: string
 }
 

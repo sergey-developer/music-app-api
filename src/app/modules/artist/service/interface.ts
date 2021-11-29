@@ -9,12 +9,12 @@ import { IArtistDocument } from 'modules/artist/model'
 
 export interface IGetAllArtistsFilter extends GetAllArtistsQuery {}
 
-export interface ICreateArtistPayload extends CreateArtistDto {
-  userId: DocumentId
+export interface ICreateOneArtistPayload extends CreateArtistDto {
+  user: DocumentId
   photo?: IArtistDocument['photo']
 }
 
-export interface IUpdateArtistPayload extends UpdateArtistDto {
+export interface IUpdateOneArtistPayload extends UpdateArtistDto {
   photo: IArtistDocument['photo']
 }
 
@@ -23,11 +23,11 @@ export interface IArtistService {
 
   getOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>
 
-  createOne: (payload: ICreateArtistPayload) => Promise<IArtistDocument>
+  createOne: (payload: ICreateOneArtistPayload) => Promise<IArtistDocument>
 
   updateOneById: (
     id: IArtistDocument['id'],
-    payload: IUpdateArtistPayload,
+    payload: IUpdateOneArtistPayload,
   ) => Promise<IArtistDocument>
 
   deleteOneById: (id: IArtistDocument['id']) => Promise<IArtistDocument>

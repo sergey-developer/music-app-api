@@ -21,9 +21,9 @@ export interface IFindOneTrackFilter
     id: ITrackDocument['id']
   }> {}
 
-export interface IUpdateTrackPayload extends UpdateTrackDto {}
+export interface IUpdateOneTrackPayload extends UpdateTrackDto {}
 
-export interface IUpdateTrackFilter
+export interface IUpdateOneTrackFilter
   extends Partial<{
     id: ITrackDocument['id']
   }> {}
@@ -38,18 +38,21 @@ export interface IDeleteManyTracksFilter
     ids: DocumentIdArray
   }> {}
 
-export interface ICreateTrackPayload extends CreateTrackDto {}
+export interface ICreateOneTrackPayload
+  extends Omit<CreateTrackDto, 'duration'> {
+  duration: number
+}
 
 export interface ITrackRepository {
   findAllWhere: (filter: IFindAllTracksFilter) => Promise<ITrackDocumentArray>
 
   findOne: (filter: IFindOneTrackFilter) => Promise<ITrackDocument>
 
-  createOne: (payload: ICreateTrackPayload) => Promise<ITrackDocument>
+  createOne: (payload: ICreateOneTrackPayload) => Promise<ITrackDocument>
 
   updateOne: (
-    filter: IUpdateTrackFilter,
-    payload: IUpdateTrackPayload,
+    filter: IUpdateOneTrackFilter,
+    payload: IUpdateOneTrackPayload,
   ) => Promise<ITrackDocument>
 
   deleteOne: (filter: IDeleteOneTrackFilter) => Promise<ITrackDocument>

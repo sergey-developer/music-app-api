@@ -112,7 +112,7 @@ class AlbumService implements IAlbumService {
       await this.requestService.createOne({
         entityName: EntityNamesEnum.Album,
         entity: album.id,
-        creator: payload.userId,
+        creator: payload.user,
       })
 
       return album

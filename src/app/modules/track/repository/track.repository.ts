@@ -38,11 +38,15 @@ class TrackRepository implements ITrackRepository {
         ...filterByAlbum,
       }
 
+      let tracks
+
       if (artist) {
-        return this.track.findByArtistId(artist, filterToApply)
+        const tracks = await this.track.findByArtistId(artist, filterToApply)
+        return tracks
       }
 
-      return this.track.find(filterToApply).exec()
+      tracks = await this.track.find(filterToApply).exec()
+      return tracks
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
@@ -55,7 +59,8 @@ class TrackRepository implements ITrackRepository {
       const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      return this.track.findOne(filterToApply).orFail().exec()
+      const track = await this.track.findOne(filterToApply).orFail().exec()
+      return track
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -67,8 +72,9 @@ class TrackRepository implements ITrackRepository {
 
   public createOne: ITrackRepository['createOne'] = async (payload) => {
     try {
-      const track = new this.track(payload)
-      return track.save()
+      const newTrack = new this.track(payload)
+      const track = await newTrack.save()
+      return track
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(
@@ -98,10 +104,12 @@ class TrackRepository implements ITrackRepository {
       const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      return this.track
+      const track = await this.track
         .findOneAndUpdate(filterToApply, updates, optionsToApply)
         .orFail()
         .exec()
+
+      return track
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -127,7 +135,12 @@ class TrackRepository implements ITrackRepository {
       const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      return this.track.findOneAndDelete(filterToApply).orFail().exec()
+      const track = await this.track
+        .findOneAndDelete(filterToApply)
+        .orFail()
+        .exec()
+
+      return track
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -147,7 +160,8 @@ class TrackRepository implements ITrackRepository {
 
       const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      return this.track.deleteMany(filterToApply).exec()
+      const deletionResult = await this.track.deleteMany(filterToApply).exec()
+      return deletionResult
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }

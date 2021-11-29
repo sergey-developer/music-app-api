@@ -8,10 +8,13 @@ import UpdateRequestDto from '../dto/updateRequest.dto'
 
 export interface IGetAllRequestsFilter extends GetAllRequestsQuery {}
 
-export interface ICreateRequestPayload
-  extends Pick<IRequestDocument, 'entityName' | 'entity' | 'creator'> {}
+export interface ICreateOneRequestPayload
+  extends Pick<IRequestDocument, 'entityName'> {
+  entity: string
+  creator: string
+}
 
-export interface IUpdateRequestPayload extends UpdateRequestDto {}
+export interface IUpdateOneRequestPayload extends UpdateRequestDto {}
 
 export interface IDeleteManyRequestFilter
   extends Partial<{
@@ -21,11 +24,11 @@ export interface IDeleteManyRequestFilter
 export interface IRequestService {
   getAll: (filter: IGetAllRequestsFilter) => Promise<IRequestDocumentArray>
 
-  createOne: (payload: ICreateRequestPayload) => Promise<IRequestDocument>
+  createOne: (payload: ICreateOneRequestPayload) => Promise<IRequestDocument>
 
   updateOneById: (
     id: IRequestDocument['id'],
-    payload: IUpdateRequestPayload,
+    payload: IUpdateOneRequestPayload,
   ) => Promise<IRequestDocument>
 
   deleteOne: IRequestRepository['deleteOne']

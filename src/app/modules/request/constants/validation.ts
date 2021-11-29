@@ -1,2 +1,2 @@
-export const MIN_LENGTH_REASON = 10
-export const MAX_LENGTH_REASON = 1000
+export const MIN_LENGTH_REASON: number = 10
+export const MAX_LENGTH_REASON: number = 1000

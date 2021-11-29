@@ -120,11 +120,13 @@ class ArtistRepository implements IArtistRepository {
       const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
 
-      return this.artist
+      const artist = await this.artist
         .findOneAndDelete(filterToApply)
         .orFail()
         .populate('photo')
         .exec()
+
+      return artist
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
