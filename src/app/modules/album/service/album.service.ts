@@ -1,29 +1,29 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
+import {
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'app/constants/messages/errors'
+import { omitUndefined } from 'app/utils/common'
+import {
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
+} from 'app/utils/errors/appErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
 import { DocumentIdArray } from 'database/interface/document'
+import { IAlbumDocument } from 'database/models/album'
+import { ITrackDocumentArray } from 'database/models/track'
 import logger from 'lib/logger'
-import { IAlbumDocument } from 'modules/album/model'
 import { AlbumRepository } from 'modules/album/repository'
 import { IAlbumService } from 'modules/album/service'
 import { RequestService } from 'modules/request/service'
-import { ITrackDocumentArray } from 'modules/track/interface'
 import { TrackService } from 'modules/track/service'
-import {
-  EMPTY_FILTER_ERR_MSG,
-  VALIDATION_ERR_MSG,
-} from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
-import {
-  AppNotFoundError,
-  AppUnknownError,
-  AppValidationError,
-} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class AlbumService implements IAlbumService {

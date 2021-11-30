@@ -4,7 +4,7 @@ import { singleton } from 'tsyringe'
 
 import { IRequestController } from 'modules/request/controller'
 import { RequestService } from 'modules/request/service'
-import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class RequestController implements IRequestController {

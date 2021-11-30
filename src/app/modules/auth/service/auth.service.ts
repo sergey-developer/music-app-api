@@ -1,18 +1,18 @@
 import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
-import logger from 'lib/logger'
-import { IAuthService } from 'modules/auth/service'
-import { SessionService } from 'modules/session/service'
-import { IUserDocument } from 'modules/user/model'
-import { UserService } from 'modules/user/service'
-import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
+import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import {
   AppUnknownError,
   AppValidationError,
   isAppNotFoundError,
   isAppValidationError,
-} from 'shared/utils/errors/appErrors'
+} from 'app/utils/errors/appErrors'
+import { IUserDocument } from 'database/models/user'
+import logger from 'lib/logger'
+import { IAuthService } from 'modules/auth/service'
+import { SessionService } from 'modules/session/service'
+import { UserService } from 'modules/user/service'
 
 @singleton()
 class AuthService implements IAuthService {

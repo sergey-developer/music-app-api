@@ -1,5 +1,6 @@
 import { delay, inject, singleton } from 'tsyringe'
 
+import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
@@ -7,12 +8,11 @@ import {
 import logger from 'lib/logger'
 import { SessionRepository } from 'modules/session/repository'
 import { ISessionService } from 'modules/session/service'
-import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import {
   AppNotFoundError,
   AppUnknownError,
   AppValidationError,
-} from 'shared/utils/errors/appErrors'
+} from 'app/utils/errors/appErrors'
 
 @singleton()
 class SessionService implements ISessionService {

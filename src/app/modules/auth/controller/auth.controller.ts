@@ -7,7 +7,7 @@ import { AuthService } from 'modules/auth/service'
 import {
   getHttpErrorByAppError,
   isNotFoundError,
-} from 'shared/utils/errors/httpErrors'
+} from 'app/utils/errors/httpErrors'
 
 @singleton()
 class AuthController implements IAuthController {

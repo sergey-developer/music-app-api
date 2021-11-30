@@ -2,21 +2,21 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
+import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
+import {
+  AppNotFoundError,
+  AppValidationError,
+} from 'app/utils/errors/appErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { TrackModel } from 'database/models/track'
+import { TrackHistoryModel } from 'database/models/trackHistory'
 import generateEntityId from 'database/utils/generateEntityId'
 import getModelName from 'database/utils/getModelName'
-import { TrackModel } from 'modules/track/model'
-import { TrackHistoryModel } from 'modules/trackHistory/model'
 import {
   IDeleteManyTrackHistoryFilter,
   IGetAllTrackHistoryFilter,
   TrackHistoryService,
 } from 'modules/trackHistory/service'
-import { EMPTY_FILTER_ERR_MSG } from 'shared/constants/errorMessages'
-import {
-  AppNotFoundError,
-  AppValidationError,
-} from 'shared/utils/errors/appErrors'
 
 let trackHistoryService: TrackHistoryService
 

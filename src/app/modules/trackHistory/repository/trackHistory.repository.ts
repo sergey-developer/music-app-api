@@ -2,20 +2,20 @@ import isEmpty from 'lodash/isEmpty'
 import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
+import { omitUndefined } from 'app/utils/common'
+import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
   DatabaseValidationError,
 } from 'database/errors'
-import getModelName from 'database/utils/getModelName'
 import {
   ITrackHistoryDocument,
   ITrackHistoryModel,
-} from 'modules/trackHistory/model'
+} from 'database/models/trackHistory'
+import getModelName from 'database/utils/getModelName'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
-import { omitUndefined } from 'shared/utils/common'
-import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class TrackHistoryRepository implements ITrackHistoryRepository {

@@ -12,7 +12,6 @@
        "app/*": ["src/app/*"],
        "api/*": ["src/app/api/*"],
        "modules/*": ["src/app/modules/*"],
-       "shared/*": ["src/shared/*"],
        "lib/*": ["src/lib/*"],
        "database/*": ["src/database/*"],
        "__tests__/*": ["__tests__/*"]

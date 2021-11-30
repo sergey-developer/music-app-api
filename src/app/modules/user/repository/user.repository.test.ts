@@ -5,10 +5,10 @@ import { fakeRepoUserPayload } from '__tests__/fakeData/user'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
+import { UserModel } from 'database/models/user'
 import generateEntityId from 'database/utils/generateEntityId'
 import getModelName from 'database/utils/getModelName'
 import { UserRoleEnum } from 'modules/user/constants'
-import { UserModel } from 'modules/user/model'
 import {
   IDeleteOneUserFilter,
   IFindOneUserFilter,

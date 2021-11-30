@@ -3,7 +3,7 @@ import { singleton } from 'tsyringe'
 
 import { ITrackHistoryController } from 'modules/trackHistory/controller'
 import { TrackHistoryService } from 'modules/trackHistory/service'
-import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class TrackHistoryController implements ITrackHistoryController {

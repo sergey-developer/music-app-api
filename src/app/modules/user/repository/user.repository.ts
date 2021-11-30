@@ -1,17 +1,17 @@
 import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
+import { omitUndefined } from 'app/utils/common'
+import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
   DatabaseValidationError,
 } from 'database/errors'
+import { IUserDocument, IUserModel } from 'database/models/user'
 import getModelName from 'database/utils/getModelName'
-import { IUserDocument, IUserModel } from 'modules/user/model'
 import { IUserRepository } from 'modules/user/repository'
-import { omitUndefined } from 'shared/utils/common'
-import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class UserRepository implements IUserRepository {

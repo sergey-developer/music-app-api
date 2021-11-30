@@ -5,7 +5,7 @@ import { singleton } from 'tsyringe'
 import { IArtistController } from 'modules/artist/controller'
 import { ArtistService, IGetAllArtistsFilter } from 'modules/artist/service'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class ArtistController implements IArtistController {

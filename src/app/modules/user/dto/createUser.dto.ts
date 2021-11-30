@@ -1,13 +1,13 @@
 import { IsEmail, IsString, Length } from 'class-validator'
 
-import messages from 'lib/class-validator/messages'
 import {
+  IUserDocument,
   MAX_LENGTH_PASSWORD,
   MAX_LENGTH_USERNAME,
   MIN_LENGTH_PASSWORD,
   MIN_LENGTH_USERNAME,
-} from 'modules/user/constants'
-import { IUserDocument } from 'modules/user/model'
+} from 'database/models/user'
+import messages from 'lib/class-validator/messages'
 
 class CreateUserDto {
   @IsString({

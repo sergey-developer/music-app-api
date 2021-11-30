@@ -1,12 +1,12 @@
 import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
-import messages from 'lib/class-validator/messages'
 import {
+  ITrackDocument,
   MAX_LENGTH_TRACK_NAME,
   MIN_LENGTH_TRACK_NAME,
-} from 'modules/track/constants'
-import { ITrackDocument } from 'modules/track/model'
+} from 'database/models/track'
+import messages from 'lib/class-validator/messages'
 
 class UpdateTrackDto {
   @IsOptional()

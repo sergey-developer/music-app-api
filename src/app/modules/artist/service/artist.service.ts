@@ -1,26 +1,26 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
+import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
+import {
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
+} from 'app/utils/errors/appErrors'
+import { deleteImageFromFs } from 'app/utils/file'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
 import { DocumentId } from 'database/interface/document'
+import { IArtistDocument } from 'database/models/artist'
 import logger from 'lib/logger'
 import { IAlbumDocumentArray } from 'modules/album/interface'
 import { AlbumService } from 'modules/album/service'
-import { IArtistDocument } from 'modules/artist/model'
 import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
 import { RequestService } from 'modules/request/service'
-import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
-import {
-  AppNotFoundError,
-  AppUnknownError,
-  AppValidationError,
-} from 'shared/utils/errors/appErrors'
-import { deleteImageFromFs } from 'shared/utils/file'
 
 @singleton()
 class ArtistService implements IArtistService {

@@ -1,9 +1,9 @@
 import { DeleteResult } from 'mongodb'
 
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { IAlbumDocument } from 'database/models/album'
 import { CreateAlbumDto, UpdateAlbumDto } from 'modules/album/dto'
 import { IAlbumDocumentArray } from 'modules/album/interface'
-import { IAlbumDocument } from 'modules/album/model'
 
 export interface IFindAllAlbumsFilter
   extends Partial<{

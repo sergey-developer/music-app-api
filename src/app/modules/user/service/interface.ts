@@ -1,5 +1,5 @@
+import { IUserDocument } from 'database/models/user'
 import { CreateUserDto } from 'modules/user/dto'
-import { IUserDocument } from 'modules/user/model'
 
 export interface ICreateOneUserPayload extends CreateUserDto {}
 

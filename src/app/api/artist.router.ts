@@ -1,6 +1,9 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { CreateRouter } from 'api/interface'
+import { IdParam } from 'app/dto'
+import uploadImage from 'app/middlewares/uploadImage.middleware'
+import { body, params, query } from 'app/middlewares/validation'
 import { ArtistController } from 'modules/artist/controller'
 import {
   CreateArtistDto,
@@ -8,9 +11,6 @@ import {
   UpdateArtistDto,
 } from 'modules/artist/dto'
 import { auth } from 'modules/auth/middlewares'
-import { IdParam } from 'shared/dto'
-import uploadImage from 'shared/middlewares/uploadImage.middleware'
-import { body, params, query } from 'shared/middlewares/validation'
 
 const artistController = DiContainer.resolve(ArtistController)
 

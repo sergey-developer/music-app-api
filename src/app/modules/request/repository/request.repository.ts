@@ -2,18 +2,17 @@ import isEmpty from 'lodash/isEmpty'
 import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
+import { omitUndefined } from 'app/utils/common'
+import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
   DatabaseValidationError,
 } from 'database/errors'
+import { IRequestDocument, IRequestModel } from 'database/models/request'
 import getModelName from 'database/utils/getModelName'
-import { IRequestDocument, IRequestModel } from 'modules/request/model'
 import { IRequestRepository } from 'modules/request/repository'
-import { ITrackDocument } from 'modules/track/model'
-import { omitUndefined } from 'shared/utils/common'
-import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class RequestRepository implements IRequestRepository {

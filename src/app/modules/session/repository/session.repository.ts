@@ -1,18 +1,18 @@
 import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
+import { omitUndefined } from 'app/utils/common'
+import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
   DatabaseValidationError,
 } from 'database/errors'
+import { IUserDocument } from 'database/models/user'
 import getModelName from 'database/utils/getModelName'
-import { ISessionModel } from 'modules/session/model'
+import { ISessionModel } from 'modules/../../../../database/models/session/model'
 import { ISessionRepository } from 'modules/session/repository'
-import { IUserDocument } from 'modules/user/model'
-import { omitUndefined } from 'shared/utils/common'
-import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class SessionRepository implements ISessionRepository {

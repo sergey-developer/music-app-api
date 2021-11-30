@@ -1,10 +1,10 @@
 import { datatype, internet, lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
+import { MaybeNull } from 'app/interface/utils'
+import { MIN_LENGTH_TRACK_NAME } from 'database/models/track'
 import generateEntityId from 'database/utils/generateEntityId'
-import { MIN_LENGTH_TRACK_NAME } from 'modules/track/constants'
 import { ICreateOneTrackPayload } from 'modules/track/repository'
-import { MaybeNull } from 'shared/interface/utils'
 
 const fakeRepoTrackPayload = (
   payload?: MaybeNull<Partial<Pick<ICreateOneTrackPayload, 'album'>>>,

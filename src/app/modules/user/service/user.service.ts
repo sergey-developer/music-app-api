@@ -1,5 +1,6 @@
 import { delay, inject, singleton } from 'tsyringe'
 
+import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
@@ -7,12 +8,11 @@ import {
 import logger from 'lib/logger'
 import { UserRepository } from 'modules/user/repository'
 import { IUserService } from 'modules/user/service'
-import { VALIDATION_ERR_MSG } from 'shared/constants/errorMessages'
 import {
   AppNotFoundError,
   AppUnknownError,
   AppValidationError,
-} from 'shared/utils/errors/appErrors'
+} from 'app/utils/errors/appErrors'
 
 @singleton()
 class UserService implements IUserService {

@@ -1,12 +1,12 @@
 import { Request, Response } from 'express'
 
+import { IdParam } from 'app/dto'
+import { ControllerResult } from 'app/interface/response'
 import {
   CreateAlbumDto,
   GetAllAlbumsQuery,
   UpdateAlbumDto,
 } from 'modules/album/dto'
-import { IdParam } from 'shared/dto'
-import { ControllerResult } from 'shared/interface/response'
 
 export interface IAlbumController {
   getAll: (

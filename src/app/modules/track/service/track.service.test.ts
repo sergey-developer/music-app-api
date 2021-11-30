@@ -11,7 +11,7 @@
 // import { TrackService } from 'modules/track/service'
 // import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 // import { TrackHistoryService } from 'modules/trackHistory/service'
-// import { AppValidationError } from 'shared/utils/errors/appErrors'
+// import { AppValidationError } from 'app/utils/errors/appErrors'
 //
 // let trackService: TrackService
 // let trackRepository: TrackRepository

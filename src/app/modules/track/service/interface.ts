@@ -1,11 +1,10 @@
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import { ITrackDocument, ITrackDocumentArray } from 'database/models/track'
 import {
   CreateTrackDto,
   GetAllTracksQuery,
   UpdateTrackDto,
 } from 'modules/track/dto'
-import { ITrackDocumentArray } from 'modules/track/interface'
-import { ITrackDocument } from 'modules/track/model'
 
 export interface IGetAllTracksFilter
   extends Omit<GetAllTracksQuery, 'album'>,

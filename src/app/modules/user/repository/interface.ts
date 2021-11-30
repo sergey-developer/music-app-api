@@ -1,6 +1,6 @@
+import { IUserDocument } from 'database/models/user'
 import { UserRoleEnum } from 'modules/user/constants'
 import { CreateUserDto } from 'modules/user/dto'
-import { IUserDocument } from 'modules/user/model'
 
 export interface ICreateOneUserPayload extends CreateUserDto {
   role?: UserRoleEnum

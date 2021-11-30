@@ -2,18 +2,17 @@ import isEmpty from 'lodash/isEmpty'
 import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
+import { omitUndefined } from 'app/utils/common'
+import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
   DatabaseValidationError,
 } from 'database/errors'
+import { IAlbumDocument, IAlbumModel } from 'database/models/album'
 import getModelName from 'database/utils/getModelName'
-import { IAlbumDocument, IAlbumModel } from 'modules/album/model'
 import { IAlbumRepository } from 'modules/album/repository'
-import { ITrackDocument } from 'modules/track/model'
-import { omitUndefined } from 'shared/utils/common'
-import { getValidationErrors } from 'shared/utils/errors/validationErrors'
 
 @singleton()
 class AlbumRepository implements IAlbumRepository {
@@ -48,8 +47,8 @@ class AlbumRepository implements IAlbumRepository {
     try {
       const { id } = omitUndefined(filter)
 
-      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
-      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+      const filterById: FilterQuery<IAlbumDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
       return this.album.findOne(filterToApply).orFail().exec()
     } catch (error: any) {
@@ -120,8 +119,8 @@ class AlbumRepository implements IAlbumRepository {
     try {
       const { id } = omitUndefined(filter)
 
-      const filterById: FilterQuery<ITrackDocument> = id ? { _id: id } : {}
-      const filterToApply: FilterQuery<ITrackDocument> = { ...filterById }
+      const filterById: FilterQuery<IAlbumDocument> = id ? { _id: id } : {}
+      const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
       const album = await this.album
         .findOneAndDelete(filterToApply)

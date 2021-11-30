@@ -5,7 +5,7 @@ import { singleton } from 'tsyringe'
 import { IAlbumController } from 'modules/album/controller'
 import { AlbumService, IGetAllAlbumsFilter } from 'modules/album/service'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class AlbumController implements IAlbumController {

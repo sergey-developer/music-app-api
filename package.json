@@ -67,7 +67,6 @@
           "app",
           "api",
           "modules",
-          "shared",
           "lib",
           "__tests__"
         ]

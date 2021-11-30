@@ -3,15 +3,15 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceUserPayload } from '__tests__/fakeData/user'
 import { setupDB } from '__tests__/utils'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import generateEntityId from 'database/utils/generateEntityId'
-import getModelName from 'database/utils/getModelName'
-import { UserModel } from 'modules/user/model'
-import { UserService } from 'modules/user/service'
 import {
   AppNotFoundError,
   AppValidationError,
-} from 'shared/utils/errors/appErrors'
+} from 'app/utils/errors/appErrors'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { UserModel } from 'database/models/user'
+import generateEntityId from 'database/utils/generateEntityId'
+import getModelName from 'database/utils/getModelName'
+import { UserService } from 'modules/user/service'
 
 let userService: UserService
 

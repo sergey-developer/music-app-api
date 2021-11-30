@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 
+import { ControllerResult } from 'app/interface/response'
 import { SigninUserDto, SignupUserDto } from 'modules/auth/dto'
-import { ControllerResult } from 'shared/interface/response'
 
 export interface IAuthController {
   signin: (

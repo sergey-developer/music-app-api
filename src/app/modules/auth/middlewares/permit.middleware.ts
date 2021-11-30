@@ -4,7 +4,7 @@ import { UserRoleEnum } from 'modules/user/constants'
 import {
   ForbiddenError,
   UnauthorizedError,
-} from 'shared/utils/errors/httpErrors'
+} from 'app/utils/errors/httpErrors'
 
 const permit =
   (...roles: UserRoleEnum[]): RequestHandler =>

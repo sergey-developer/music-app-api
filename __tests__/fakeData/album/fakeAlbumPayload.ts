@@ -1,10 +1,10 @@
 import { lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
+import { MaybeNull } from 'app/interface/utils'
 import generateEntityId from 'database/utils/generateEntityId'
 import { MIN_LENGTH_ALBUM_NAME } from 'modules/album/constants'
 import { ICreateOneAlbumPayload } from 'modules/album/repository'
-import { MaybeNull } from 'shared/interface/utils'
 
 const fakeAlbumPayload = (
   payload?: MaybeNull<Partial<Pick<ICreateOneAlbumPayload, 'artist'>>>,

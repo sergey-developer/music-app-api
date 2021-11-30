@@ -2,22 +2,22 @@ import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
 import {
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'app/constants/messages/errors'
+import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
 import logger from 'lib/logger'
 import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 import { ITrackHistoryService } from 'modules/trackHistory/service'
-import {
-  EMPTY_FILTER_ERR_MSG,
-  VALIDATION_ERR_MSG,
-} from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
+import { omitUndefined } from 'app/utils/common'
 import {
   AppNotFoundError,
   AppUnknownError,
   AppValidationError,
-} from 'shared/utils/errors/appErrors'
+} from 'app/utils/errors/appErrors'
 
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {

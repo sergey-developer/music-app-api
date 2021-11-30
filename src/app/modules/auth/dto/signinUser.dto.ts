@@ -1,7 +1,7 @@
 import { IsEmail, IsString } from 'class-validator'
 
+import { IUserDocument } from 'database/models/user'
 import messages from 'lib/class-validator/messages'
-import { IUserDocument } from 'modules/user/model'
 
 class SigninUserDto {
   @IsEmail()

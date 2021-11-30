@@ -3,14 +3,14 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import getModelName from 'database/utils/getModelName'
-import { SessionModel } from 'modules/session/model'
-import { SessionService } from 'modules/session/service'
 import {
   AppNotFoundError,
   AppValidationError,
-} from 'shared/utils/errors/appErrors'
+} from 'app/utils/errors/appErrors'
+import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import getModelName from 'database/utils/getModelName'
+import { SessionModel } from 'modules/../../../../database/models/session/model'
+import { SessionService } from 'modules/session/service'
 
 let sessionService: SessionService
 

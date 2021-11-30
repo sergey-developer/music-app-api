@@ -1,9 +1,9 @@
 import { internet, name } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
+import { MaybeNull } from 'app/interface/utils'
 import { MIN_LENGTH_PASSWORD, UserRoleEnum } from 'modules/user/constants'
 import { ICreateOneUserPayload } from 'modules/user/repository'
-import { MaybeNull } from 'shared/interface/utils'
 
 const fakeRepoUserPayload = (
   payload?: MaybeNull<Partial<Pick<ICreateOneUserPayload, 'role'>>>,

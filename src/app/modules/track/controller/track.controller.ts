@@ -2,11 +2,11 @@ import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
+import { ITrackDocumentArray } from 'database/models/track'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { ITrackController } from 'modules/track/controller'
-import { ITrackDocumentArray } from 'modules/track/interface'
 import { TrackService } from 'modules/track/service'
-import { getHttpErrorByAppError } from 'shared/utils/errors/httpErrors'
 
 @singleton()
 class TrackController implements ITrackController {
@@ -59,7 +59,7 @@ class TrackController implements ITrackController {
         duration,
         youtube,
         album,
-        userId: user.userId,
+        user: user.userId,
       })
 
       const result = pick(track, 'id')

@@ -6,13 +6,13 @@ import { fakeRepoTrackPayload } from '__tests__/fakeData/track'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
+import { AlbumModel } from 'database/models/album'
+import { ArtistModel } from 'database/models/artist'
+import { ITrackDocument, TrackModel } from 'database/models/track'
 import generateEntityId from 'database/utils/generateEntityId'
 import getModelName from 'database/utils/getModelName'
-import { AlbumModel } from 'modules/album/model'
 import { AlbumRepository } from 'modules/album/repository'
-import { ArtistModel } from 'modules/artist/model'
 import { ArtistRepository } from 'modules/artist/repository'
-import { ITrackDocument, TrackModel } from 'modules/track/model'
 import {
   IDeleteManyTracksFilter,
   IDeleteOneTrackFilter,

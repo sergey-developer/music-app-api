@@ -6,7 +6,7 @@ import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import getModelName from 'database/utils/getModelName'
-import { SessionModel } from 'modules/session/model'
+import { SessionModel } from 'modules/../../../../database/models/session/model'
 import {
   IDeleteOneSessionFilter,
   IFindOneSessionFilter,

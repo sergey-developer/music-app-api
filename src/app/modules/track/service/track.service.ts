@@ -1,28 +1,28 @@
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
+import {
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'app/constants/messages/errors'
+import { omitUndefined } from 'app/utils/common'
+import {
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
+} from 'app/utils/errors/appErrors'
+import { toMilliseconds } from 'app/utils/milliseconds'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
+import { ITrackDocument } from 'database/models/track'
 import logger from 'lib/logger'
 import { RequestService } from 'modules/request/service'
-import { ITrackDocument } from 'modules/track/model'
 import { TrackRepository } from 'modules/track/repository'
 import { ITrackService } from 'modules/track/service'
 import { TrackHistoryService } from 'modules/trackHistory/service'
-import {
-  EMPTY_FILTER_ERR_MSG,
-  VALIDATION_ERR_MSG,
-} from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
-import {
-  AppNotFoundError,
-  AppUnknownError,
-  AppValidationError,
-} from 'shared/utils/errors/appErrors'
-import { toMilliseconds } from 'shared/utils/milliseconds'
 
 @singleton()
 class TrackService implements ITrackService {

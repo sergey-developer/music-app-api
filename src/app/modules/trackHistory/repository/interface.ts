@@ -1,9 +1,11 @@
 import { DeleteResult } from 'mongodb'
 
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
+import {
+  ITrackHistoryDocument,
+  ITrackHistoryDocumentArray,
+} from 'database/models/trackHistory'
 import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
-import { ITrackHistoryDocumentArray } from 'modules/trackHistory/interface'
-import { ITrackHistoryDocument } from 'modules/trackHistory/model'
 
 export interface IFindAllTrackHistoryFilter
   extends Partial<{

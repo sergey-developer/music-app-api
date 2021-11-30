@@ -1,11 +1,11 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { CreateRouter } from 'api/interface'
+import { IdParam } from 'app/dto'
+import { body, params } from 'app/middlewares/validation'
 import { auth } from 'modules/auth/middlewares'
 import { TrackHistoryController } from 'modules/trackHistory/controller'
 import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
-import { IdParam } from 'shared/dto'
-import { body, params } from 'shared/middlewares/validation'
 
 const trackHistoryController = DiContainer.resolve(TrackHistoryController)
 

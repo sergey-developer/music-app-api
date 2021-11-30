@@ -1,9 +1,9 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { CreateRouter } from 'api/interface'
+import { body } from 'app/middlewares/validation'
 import { AuthController } from 'modules/auth/controller'
 import { SigninUserDto, SignupUserDto } from 'modules/auth/dto'
-import { body } from 'shared/middlewares/validation'
 
 const authController = DiContainer.resolve(AuthController)
 

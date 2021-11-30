@@ -1,6 +1,6 @@
 import multer, { StorageEngine } from 'multer'
 
-import { uniqFileName } from 'shared/utils/file'
+import { uniqFileName } from 'app/utils/file'
 
 const createStorage = (uploadPath: string): StorageEngine => {
   return multer.diskStorage({

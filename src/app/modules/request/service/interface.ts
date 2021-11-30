@@ -1,7 +1,7 @@
 import { DocumentIdArray } from 'database/interface/document'
+import { IRequestDocument } from 'modules/../../../../database/models/request/model'
 import { GetAllRequestsQuery } from 'modules/request/dto'
 import { IRequestDocumentArray } from 'modules/request/interface'
-import { IRequestDocument } from 'modules/request/model'
 import { IRequestRepository } from 'modules/request/repository'
 
 import UpdateRequestDto from '../dto/updateRequest.dto'

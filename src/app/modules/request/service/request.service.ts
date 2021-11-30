@@ -2,36 +2,36 @@ import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
 import {
+  EMPTY_FILTER_ERR_MSG,
+  VALIDATION_ERR_MSG,
+} from 'app/constants/messages/errors'
+import { omitUndefined } from 'app/utils/common'
+import {
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
+  isAppNotFoundError,
+} from 'app/utils/errors/appErrors'
+import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
+import { IAlbumDocument } from 'database/models/album'
+import { IArtistDocument } from 'database/models/artist'
+import { ITrackDocument } from 'database/models/track'
 import {
   isAlbumModelName,
   isArtistModelName,
   isTrackModelName,
 } from 'database/utils/checkEntityName'
 import logger from 'lib/logger'
-import { IAlbumDocument } from 'modules/album/model'
+import { IRequestDocument } from 'modules/../../../../database/models/request/model'
 import { AlbumService } from 'modules/album/service'
-import { IArtistDocument } from 'modules/artist/model'
 import { ArtistService } from 'modules/artist/service'
-import { IRequestDocument } from 'modules/request/model'
 import { RequestRepository } from 'modules/request/repository'
 import { IRequestService } from 'modules/request/service'
 import { isApprovedRequest } from 'modules/request/utils'
-import { ITrackDocument } from 'modules/track/model'
 import { TrackService } from 'modules/track/service'
-import {
-  EMPTY_FILTER_ERR_MSG,
-  VALIDATION_ERR_MSG,
-} from 'shared/constants/errorMessages'
-import { omitUndefined } from 'shared/utils/common'
-import {
-  AppNotFoundError,
-  AppUnknownError,
-  AppValidationError,
-  isAppNotFoundError,
-} from 'shared/utils/errors/appErrors'
 
 @singleton()
 class RequestService implements IRequestService {

@@ -8,12 +8,15 @@ const runServer = async () => {
 
 runServer()
 
+// TODO: правил структуру проекта. Поправил: track, trackHistory, user
+
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
 //  user (model, repo, service)
 //  trackHistory (service, repo)
 //  track (repo)
 
+// TODO: положить jest.config/setup в папку __tests__
 // TODO: создать свои функции для вызовов faker
 // TODO: поправить id: any в типах моделей из-за "extends Document"
 // TODO: исп-ть unique validator где он не используется

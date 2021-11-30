@@ -1,5 +1,5 @@
 import { RequestStatusEnum } from 'modules/request/constants'
-import { checkString } from 'shared/utils/common'
+import { checkString } from 'app/utils/common'
 
 const isApprovedRequest = checkString(RequestStatusEnum.Approved)
 

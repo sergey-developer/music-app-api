@@ -4,10 +4,10 @@ import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
 import EntityNamesEnum from 'database/constants/entityNamesEnum'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
+import { TrackModel } from 'database/models/track'
+import { TrackHistoryModel } from 'database/models/trackHistory'
 import generateEntityId from 'database/utils/generateEntityId'
 import getModelName from 'database/utils/getModelName'
-import { TrackModel } from 'modules/track/model'
-import { TrackHistoryModel } from 'modules/trackHistory/model'
 import {
   IDeleteManyTrackHistoryFilter,
   IDeleteOneTrackHistoryFilter,
