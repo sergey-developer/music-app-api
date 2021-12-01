@@ -7,9 +7,9 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
+import { SessionModel } from 'database/models/session'
 import getModelName from 'database/utils/getModelName'
-import { SessionModel } from 'modules/../../../../database/models/session/model'
 import { SessionService } from 'modules/session/service'
 
 let sessionService: SessionService

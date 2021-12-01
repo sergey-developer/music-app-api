@@ -12,7 +12,7 @@ import {
   AppValidationError,
 } from 'app/utils/errors/appErrors'
 import { toMilliseconds } from 'app/utils/milliseconds'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,

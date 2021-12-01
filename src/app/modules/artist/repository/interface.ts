@@ -1,7 +1,6 @@
 import { DocumentIdArray } from 'database/interface/document'
-import { IArtistDocument } from 'database/models/artist'
+import { IArtistDocument, IArtistDocumentArray } from 'database/models/artist'
 import { CreateArtistDto, UpdateArtistDto } from 'modules/artist/dto'
-import { IArtistDocumentArray } from 'modules/artist/interface'
 
 export interface IFindAllArtistsFilter
   extends Partial<{

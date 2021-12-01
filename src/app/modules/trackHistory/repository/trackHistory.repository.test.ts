@@ -2,7 +2,7 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'

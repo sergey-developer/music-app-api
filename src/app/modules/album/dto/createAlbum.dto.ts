@@ -1,12 +1,12 @@
 import { IsDateString, IsMongoId, IsString, Length } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
-import { IAlbumDocument } from 'database/models/album'
-import messages from 'lib/class-validator/messages'
 import {
+  IAlbumDocument,
   MAX_LENGTH_ALBUM_NAME,
   MIN_LENGTH_ALBUM_NAME,
-} from 'modules/album/constants'
+} from 'database/models/album'
+import messages from 'lib/class-validator/messages'
 
 class CreateAlbumDto {
   @IsString({

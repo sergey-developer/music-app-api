@@ -3,10 +3,10 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoSessionPayload } from '__tests__/fakeData/session'
 import { setupDB } from '__tests__/utils'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
+import { SessionModel } from 'database/models/session'
 import getModelName from 'database/utils/getModelName'
-import { SessionModel } from 'modules/../../../../database/models/session/model'
 import {
   IDeleteOneSessionFilter,
   IFindOneSessionFilter,

@@ -1,7 +1,7 @@
 import { lorem, name } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
-import { MIN_LENGTH_ARTIST_INFO } from 'modules/artist/constants'
+import { MIN_LENGTH_ARTIST_INFO } from 'database/models/artist'
 import { ICreateOneArtistPayload } from 'modules/artist/repository'
 
 const fakeArtistPayload = (

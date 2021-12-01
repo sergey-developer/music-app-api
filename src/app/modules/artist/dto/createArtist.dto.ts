@@ -1,13 +1,13 @@
 import { IsOptional, IsString, Length } from 'class-validator'
 
-import { IArtistDocument } from 'database/models/artist'
-import messages from 'lib/class-validator/messages'
 import {
+  IArtistDocument,
   MAX_LENGTH_ARTIST_INFO,
   MAX_LENGTH_ARTIST_NAME,
   MIN_LENGTH_ARTIST_INFO,
   MIN_LENGTH_ARTIST_NAME,
-} from 'modules/artist/constants'
+} from 'database/models/artist'
+import messages from 'lib/class-validator/messages'
 
 class CreateArtistDto {
   @IsString({

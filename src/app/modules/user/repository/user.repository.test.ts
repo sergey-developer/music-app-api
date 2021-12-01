@@ -3,7 +3,7 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoUserPayload } from '__tests__/fakeData/user'
 import { setupDB } from '__tests__/utils'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { UserModel } from 'database/models/user'
 import generateEntityId from 'database/utils/generateEntityId'

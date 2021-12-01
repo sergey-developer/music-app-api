@@ -7,7 +7,7 @@ import { RequestHandler } from 'express'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
 
-import AppErrorKindsEnum from 'app/constants/appErrorKindsEnum'
+import AppErrorKindsEnum from 'app/constants/appErrorKinds'
 import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import { BadRequestError } from 'app/utils/errors/httpErrors'
 import { getDtoValidationErrors } from 'app/utils/errors/validationErrors'

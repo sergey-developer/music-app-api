@@ -7,7 +7,7 @@ import express, { Application } from 'express'
 
 import { createRouters } from 'api/utils'
 import routers from 'app/api'
-import { registerDependencies } from 'app/utils'
+import registerDependencies from 'lib/dependency-injection/registerDependencies'
 
 const setupApp = (app: Application): Application => {
   app.use(express.static(config.get('app.uploads.imagesDir')))

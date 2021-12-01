@@ -1,9 +1,11 @@
 import { DeleteResult } from 'mongodb'
 
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
-import { IRequestDocument } from 'modules/../../../../database/models/request/model'
+import {
+  IRequestDocument,
+  IRequestDocumentArray,
+} from 'database/models/request'
 import { GetAllRequestsQuery, UpdateRequestDto } from 'modules/request/dto'
-import { IRequestDocumentArray } from 'modules/request/interface'
 
 export interface IFindAllRequestsFilter extends GetAllRequestsQuery {}
 

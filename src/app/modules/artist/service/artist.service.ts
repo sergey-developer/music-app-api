@@ -8,15 +8,15 @@ import {
   AppValidationError,
 } from 'app/utils/errors/appErrors'
 import { deleteImageFromFs } from 'app/utils/file'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
 import { DocumentId } from 'database/interface/document'
+import { IAlbumDocumentArray } from 'database/models/album'
 import { IArtistDocument } from 'database/models/artist'
 import logger from 'lib/logger'
-import { IAlbumDocumentArray } from 'modules/album/interface'
 import { AlbumService } from 'modules/album/service'
 import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'

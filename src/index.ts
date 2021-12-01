@@ -1,4 +1,4 @@
-import { runApp } from 'app/utils'
+import runApp from 'app/utils/runApp'
 import { connect as connectDatabase } from 'database/utils/db'
 
 const runServer = async () => {
@@ -8,7 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: правил структуру проекта. Поправил: track, trackHistory, user
+// TODO: правил структуру проекта. Поправил: track, trackHistory, user, session, request, artist, album
 
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)

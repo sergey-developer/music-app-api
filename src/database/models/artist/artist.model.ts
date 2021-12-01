@@ -1,13 +1,14 @@
 import { Schema, model } from 'mongoose'
 
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { IArtistDocument, IArtistModel } from 'database/models/artist'
+import { EntityNamesEnum } from 'database/constants'
 import {
+  IArtistDocument,
+  IArtistModel,
   MAX_LENGTH_ARTIST_INFO,
   MAX_LENGTH_ARTIST_NAME,
   MIN_LENGTH_ARTIST_INFO,
   MIN_LENGTH_ARTIST_NAME,
-} from 'modules/artist/constants'
+} from 'database/models/artist'
 
 const toJson = require('@meanie/mongoose-to-json')
 const uniqueValidation = require('mongoose-unique-validator')

@@ -1,7 +1,7 @@
 import { fakeRepoUserPayload, getFakePassword } from '__tests__/fakeData/user'
 import setupDB from '__tests__/utils/setupDB'
+import { IUserDocument, UserModel } from 'database/models/user'
 import { preSaveHook } from 'database/models/user/hooks'
-import { IUserDocument, UserModel } from 'database/models/user/index'
 
 describe('User model', () => {
   describe('Pre save hook', () => {

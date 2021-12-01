@@ -1,12 +1,13 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { IAlbumDocument, IAlbumModel } from 'database/models/album'
+import { EntityNamesEnum } from 'database/constants'
 import {
+  IAlbumDocument,
+  IAlbumModel,
   MAX_LENGTH_ALBUM_NAME,
   MIN_LENGTH_ALBUM_NAME,
-} from 'modules/album/constants'
+} from 'database/models/album'
 
 const toJson = require('@meanie/mongoose-to-json')
 

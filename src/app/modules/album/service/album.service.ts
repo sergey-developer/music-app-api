@@ -11,7 +11,7 @@ import {
   AppUnknownError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,

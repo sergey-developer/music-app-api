@@ -1,14 +1,14 @@
 import { Schema, model } from 'mongoose'
 
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import {
   MAX_LENGTH_PASSWORD,
   MAX_LENGTH_USERNAME,
   MIN_LENGTH_PASSWORD,
   MIN_LENGTH_USERNAME,
 } from 'database/models/user'
+import { IUserDocument, IUserModel } from 'database/models/user'
 import { preSaveHook } from 'database/models/user/hooks'
-import { IUserDocument, IUserModel } from 'database/models/user/index'
 import { UserRoleEnum } from 'modules/user/constants'
 import { checkPassword } from 'modules/user/utils'
 

@@ -2,18 +2,18 @@ import config from 'config'
 import { RequestHandler } from 'express'
 import multer from 'multer'
 
-import AppErrorKindsEnum from 'app/constants/appErrorKindsEnum'
+import AppErrorKindsEnum from 'app/constants/appErrorKinds'
 import { TWO_MEGABYTES } from 'app/constants/bytesSize'
 import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import { IMAGE_MIME_TYPE_ERROR_MSG } from 'app/constants/mimetype'
-import logger from 'lib/logger'
-import { createStorage, isMulterError } from 'lib/multer'
 import {
   BadRequestError,
   ServerError,
   isBadRequestError,
 } from 'app/utils/errors/httpErrors'
 import { isAllowedImageMimetype } from 'app/utils/file'
+import logger from 'lib/logger'
+import { createStorage, isMulterError } from 'lib/multer'
 
 const storage = createStorage(config.get('app.uploads.imagesDir'))
 

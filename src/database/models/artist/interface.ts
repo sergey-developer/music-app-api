@@ -10,4 +10,6 @@ export interface IArtistDocument {
   photo: MaybeNull<string>
 }
 
+export interface IArtistDocumentArray extends Array<IArtistDocument> {}
+
 export interface IArtistModel extends Model<IArtistDocument> {}

@@ -1,13 +1,13 @@
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { IModelList } from 'database/constants/modelList'
+import { EntityNamesEnum } from 'database/constants'
+import { AlbumModel } from 'database/models/album'
+import { ArtistModel } from 'database/models/artist'
+import { RequestModel } from 'database/models/request'
+import { SessionModel } from 'database/models/session'
+import { TrackModel } from 'database/models/track'
+import { TrackHistoryModel } from 'database/models/trackHistory'
+import { UserModel } from 'database/models/user'
 import getModelName from 'database/utils/getModelName'
-import { AlbumModel } from 'modules/../../models/model'
-import { ArtistModel } from 'modules/../../models/model'
-import { TrackModel } from 'modules/../../models/model'
-import { TrackHistoryModel } from 'modules/../../models/model'
-import { RequestModel } from 'modules/../../models/request/model'
-import { SessionModel } from 'modules/../../models/session/model'
-import { UserModel } from 'modules/../../models/model'
+import { IModelList } from 'database/utils/modelList'
 
 const modelList: IModelList = [
   {

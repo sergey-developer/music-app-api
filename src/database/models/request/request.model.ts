@@ -1,13 +1,14 @@
 import { Schema, model } from 'mongoose'
 import autopopulate from 'mongoose-autopopulate'
 
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
-import { IRequestDocument, IRequestModel } from 'database/models/request'
+import { EntityNamesEnum } from 'database/constants'
 import {
+  IRequestDocument,
+  IRequestModel,
   MAX_LENGTH_REASON,
   MIN_LENGTH_REASON,
-  RequestStatusEnum,
-} from 'modules/request/constants'
+} from 'database/models/request'
+import { RequestStatusEnum } from 'modules/request/constants'
 
 const toJson = require('@meanie/mongoose-to-json')
 

@@ -18,6 +18,7 @@ import {
 } from 'database/errors'
 import { IAlbumDocument } from 'database/models/album'
 import { IArtistDocument } from 'database/models/artist'
+import { IRequestDocument } from 'database/models/request'
 import { ITrackDocument } from 'database/models/track'
 import {
   isAlbumModelName,
@@ -25,7 +26,6 @@ import {
   isTrackModelName,
 } from 'database/utils/checkEntityName'
 import logger from 'lib/logger'
-import { IRequestDocument } from 'modules/../../../../database/models/request/model'
 import { AlbumService } from 'modules/album/service'
 import { ArtistService } from 'modules/artist/service'
 import { RequestRepository } from 'modules/request/repository'

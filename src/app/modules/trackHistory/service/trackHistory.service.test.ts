@@ -7,7 +7,7 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
 import generateEntityId from 'database/utils/generateEntityId'

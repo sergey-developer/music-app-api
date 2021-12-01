@@ -2,7 +2,7 @@
 //
 // import { fakeServiceTrackPayload } from '__tests__/fakeData/track'
 // import { setupDB } from '__tests__/utils'
-// import EntityNamesEnum from 'database/constants/entityNamesEnum'
+// import {EntityNamesEnum} from 'database/constants'
 // import getModelName from 'database/utils/getModelName'
 // import { RequestRepository } from 'modules/request/repository'
 // import { RequestService } from 'modules/request/service'

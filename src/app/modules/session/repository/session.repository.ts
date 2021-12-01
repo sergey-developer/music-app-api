@@ -3,15 +3,15 @@ import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
 import { getValidationErrors } from 'app/utils/errors/validationErrors'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
   DatabaseValidationError,
 } from 'database/errors'
+import { ISessionModel } from 'database/models/session'
 import { IUserDocument } from 'database/models/user'
 import getModelName from 'database/utils/getModelName'
-import { ISessionModel } from 'modules/../../../../database/models/session/model'
 import { ISessionRepository } from 'modules/session/repository'
 
 @singleton()

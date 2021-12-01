@@ -1,4 +1,4 @@
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 
 type ModelName = `${EntityNamesEnum}Model`
 

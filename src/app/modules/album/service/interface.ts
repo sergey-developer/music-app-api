@@ -1,11 +1,10 @@
 import { DocumentId } from 'database/interface/document'
-import { IAlbumDocument } from 'database/models/album'
+import { IAlbumDocument, IAlbumDocumentArray } from 'database/models/album'
 import {
   CreateAlbumDto,
   GetAllAlbumsQuery,
   UpdateAlbumDto,
 } from 'modules/album/dto'
-import { IAlbumDocumentArray } from 'modules/album/interface'
 
 export interface IGetAllAlbumsFilter extends GetAllAlbumsQuery {}
 

@@ -4,7 +4,7 @@ import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
 import { getValidationErrors } from 'app/utils/errors/validationErrors'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,

@@ -1,12 +1,12 @@
 import { IsEnum, IsOptional, IsString, Length } from 'class-validator'
 
-import messages from 'lib/class-validator/messages'
-import { IRequestDocument } from 'modules/../../../../database/models/request/model'
 import {
+  IRequestDocument,
   MAX_LENGTH_REASON,
   MIN_LENGTH_REASON,
-  RequestStatusEnum,
-} from 'modules/request/constants'
+} from 'database/models/request'
+import messages from 'lib/class-validator/messages'
+import { RequestStatusEnum } from 'modules/request/constants'
 
 class UpdateRequestDto {
   @IsEnum(RequestStatusEnum)

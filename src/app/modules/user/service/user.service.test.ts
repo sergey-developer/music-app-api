@@ -7,7 +7,7 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import { UserModel } from 'database/models/user'
 import generateEntityId from 'database/utils/generateEntityId'
 import getModelName from 'database/utils/getModelName'

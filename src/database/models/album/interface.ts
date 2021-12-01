@@ -12,4 +12,6 @@ export interface IAlbumDocument {
   image: MaybeNull<string>
 }
 
+export interface IAlbumDocumentArray extends Array<IAlbumDocument> {}
+
 export interface IAlbumModel extends Model<IAlbumDocument> {}

@@ -1,7 +1,7 @@
 import { Model, PopulatedDoc } from 'mongoose'
 
 import { MaybeNull } from 'app/interface/utils'
-import EntityNamesEnum from 'database/constants/entityNamesEnum'
+import { EntityNamesEnum } from 'database/constants'
 import { DocumentId } from 'database/interface/document'
 import { IAlbumDocument } from 'database/models/album'
 import { IArtistDocument } from 'database/models/artist'
@@ -17,5 +17,7 @@ export interface IRequestDocument {
   status: RequestStatusEnum
   reason: MaybeNull<string>
 }
+
+export interface IRequestDocumentArray extends Array<IRequestDocument> {}
 
 export interface IRequestModel extends Model<IRequestDocument> {}
