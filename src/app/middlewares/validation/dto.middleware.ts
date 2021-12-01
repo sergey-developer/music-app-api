@@ -10,8 +10,8 @@ import set from 'lodash/set'
 import AppErrorKindsEnum from 'app/constants/appErrorKinds'
 import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import { BadRequestError } from 'app/utils/errors/httpErrors'
-import { getDtoValidationErrors } from 'app/utils/errors/validationErrors'
 import { deleteImageFromFs } from 'app/utils/file'
+import getErrors from 'lib/class-validator/getErrors'
 
 const defaultOptions: TransformValidationOptions = {
   validator: {
@@ -44,7 +44,7 @@ const dto =
 
       const error = BadRequestError(VALIDATION_ERR_MSG, {
         kind: AppErrorKindsEnum.ValidationError,
-        errors: getDtoValidationErrors(exception),
+        errors: getErrors(exception),
       })
 
       res.status(error.status).send(error)

@@ -2,7 +2,6 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
@@ -10,6 +9,7 @@ import {
   DatabaseValidationError,
 } from 'database/errors'
 import { IUserDocument, IUserModel } from 'database/models/user'
+import { getValidationErrors } from 'database/utils/errors'
 import getModelName from 'database/utils/getModelName'
 import { IUserRepository } from 'modules/user/repository'
 

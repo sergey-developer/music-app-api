@@ -3,7 +3,6 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { getValidationErrors } from 'app/utils/errors/validationErrors'
 import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
@@ -14,6 +13,7 @@ import {
   ITrackHistoryDocument,
   ITrackHistoryModel,
 } from 'database/models/trackHistory'
+import { getValidationErrors } from 'database/utils/errors'
 import getModelName from 'database/utils/getModelName'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 

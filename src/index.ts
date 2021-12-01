@@ -8,7 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: правил структуру проекта. Поправил: track, trackHistory, user, session, request, artist, album
+// TODO: создать сервис для file (FileManager)
 
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
