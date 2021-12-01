@@ -2,10 +2,10 @@ import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 import { IAlbumController } from 'modules/album/controller'
 import { AlbumService, IGetAllAlbumsFilter } from 'modules/album/service'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class AlbumController implements IAlbumController {
@@ -50,7 +50,7 @@ class AlbumController implements IAlbumController {
         image: file?.filename,
         releaseDate,
         artist,
-        userId: user?.userId!,
+        user: user?.userId!,
       })
 
       const result = pick(album, 'id')

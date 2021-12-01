@@ -1,3 +1,4 @@
+import toMilliseconds from '@sindresorhus/to-milliseconds'
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
@@ -11,7 +12,6 @@ import {
   AppUnknownError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { toMilliseconds } from 'app/utils/milliseconds'
 import { EntityNamesEnum } from 'database/constants'
 import {
   isDatabaseNotFoundError,
