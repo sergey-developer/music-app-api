@@ -8,6 +8,8 @@ import setupApp from './setupApp'
 const runApp = (): void => {
   logger.info('Setting up application...')
   const app = setupApp(express())
+  logger.info('Setting up was successful')
+
   const port: number = config.get('app.port')
 
   app.listen(port, () => {

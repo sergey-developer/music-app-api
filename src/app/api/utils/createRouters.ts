@@ -8,7 +8,9 @@ const createRouters = (app: Application, routers: ApiRouter[]): void => {
     .map(({ name, creator }) => ({ name, router: creator(express.Router()) }))
     .forEach(({ name, router }) => {
       const path = `/api/${name}`
-      logger.info(`Route created at path "${path}"`)
+
+      logger.info(`Route created: "${path}"`)
+
       app.use(path, router)
     })
 }
