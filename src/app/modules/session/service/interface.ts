@@ -1,4 +1,4 @@
-import { ISessionDocument } from 'modules/../../../../database/models/session/model'
+import { ISessionDocument } from 'database/models/session'
 import { JwtPayload } from 'modules/session/interface'
 
 export interface ICreateOneSessionPayload extends JwtPayload {}

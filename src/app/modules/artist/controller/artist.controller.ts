@@ -2,10 +2,10 @@ import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 import { IArtistController } from 'modules/artist/controller'
 import { ArtistService, IGetAllArtistsFilter } from 'modules/artist/service'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class ArtistController implements IArtistController {
@@ -49,7 +49,7 @@ class ArtistController implements IArtistController {
         name,
         info,
         photo: file?.filename,
-        userId: user?.userId!,
+        user: user?.userId!,
       })
 
       const result = pick(artist, 'id')

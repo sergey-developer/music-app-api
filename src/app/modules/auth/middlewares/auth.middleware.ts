@@ -2,10 +2,10 @@ import config from 'config'
 import { NextFunction, Request, Response } from 'express'
 import { container as DiContainer } from 'tsyringe'
 
-import { SessionService } from 'modules/session/service'
-import { isJwtError, verifyToken } from 'modules/session/utils'
 import { isAppNotFoundError } from 'app/utils/errors/appErrors'
 import { ServerError, UnauthorizedError } from 'app/utils/errors/httpErrors'
+import { SessionService } from 'modules/session/service'
+import { isJwtError, verifyToken } from 'modules/session/utils'
 
 const sessionService = DiContainer.resolve(SessionService)
 
@@ -23,7 +23,7 @@ const auth = async <Req extends Request, Res extends Response>(
     return
   }
 
-  let jwtPayload
+  let jwtPayload: ReturnType<typeof verifyToken>
 
   try {
     const tokenSecret: string = config.get('app.secrets.tokenSecret')

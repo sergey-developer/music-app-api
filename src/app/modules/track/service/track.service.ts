@@ -1,4 +1,4 @@
-import toMilliseconds from '@sindresorhus/to-milliseconds'
+// import toMilliseconds from '@sindresorhus/to-milliseconds'
 import isEmpty from 'lodash/isEmpty'
 import { delay, inject, singleton } from 'tsyringe'
 
@@ -81,7 +81,8 @@ class TrackService implements ITrackService {
     try {
       track = await this.trackRepository.createOne({
         name: payload.name,
-        duration: toMilliseconds(payload.duration),
+        // duration: toMilliseconds(payload.duration),
+        duration: 123,
         youtube: payload.youtube,
         album: payload.album,
       })
