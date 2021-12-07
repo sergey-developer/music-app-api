@@ -3,7 +3,6 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
@@ -14,13 +13,13 @@ import {
   ITrackHistoryModel,
 } from 'database/models/trackHistory'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { ITrackHistoryRepository } from 'modules/trackHistory/repository'
 
 @singleton()
 class TrackHistoryRepository implements ITrackHistoryRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.TrackHistory))
+    @inject(DiTokenEnum.TrackHistory)
     private readonly trackHistory: ITrackHistoryModel,
   ) {}
 

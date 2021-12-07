@@ -2,7 +2,6 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
@@ -10,13 +9,13 @@ import {
 } from 'database/errors'
 import { IUserDocument, IUserModel } from 'database/models/user'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { IUserRepository } from 'modules/user/repository'
 
 @singleton()
 class UserRepository implements IUserRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.User))
+    @inject(DiTokenEnum.User)
     private readonly user: IUserModel,
   ) {}
 
@@ -40,10 +39,9 @@ class UserRepository implements IUserRepository {
 
   public createOne: IUserRepository['createOne'] = async (payload) => {
     try {
-      const payloadToApply = omitUndefined(payload)
-      const newUser = new this.user(payloadToApply)
-
+      const newUser = new this.user(payload)
       const user = await newUser.save()
+
       return user
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {

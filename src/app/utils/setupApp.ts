@@ -7,16 +7,15 @@ import express, { Application } from 'express'
 
 import { createRouters } from 'api/utils'
 import routers from 'app/api'
-import registerDependencies from 'lib/dependency-injection/registerDependencies'
+import { registerDiDependencies } from 'lib/dependency-injection'
 
 const setupApp = (app: Application): Application => {
   app.use(express.static(config.get('app.uploads.imagesDir')))
   app.use(express.json())
   app.use(cors())
   app.use(cookieParser())
-  // app.use(cookieParser(envConfig.app.cookieSecret))
 
-  registerDependencies()
+  registerDiDependencies()
   createRouters(app, routers)
 
   return app

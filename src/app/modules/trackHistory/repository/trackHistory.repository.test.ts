@@ -2,12 +2,11 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { setupDB } from '__tests__/utils'
-import { EntityNamesEnum } from 'database/constants'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
 import generateEntityId from 'database/utils/generateEntityId'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteManyTrackHistoryFilter,
   IDeleteOneTrackHistoryFilter,
@@ -22,11 +21,11 @@ setupDB()
 beforeEach(() => {
   DiContainer.clearInstances()
 
-  DiContainer.register(getModelName(EntityNamesEnum.TrackHistory), {
+  DiContainer.register(DiTokenEnum.TrackHistory, {
     useValue: TrackHistoryModel,
   })
 
-  DiContainer.register(getModelName(EntityNamesEnum.Track), {
+  DiContainer.register(DiTokenEnum.Track, {
     useValue: TrackModel,
   })
 

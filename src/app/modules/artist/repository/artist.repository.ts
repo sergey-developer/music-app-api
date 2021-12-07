@@ -11,13 +11,13 @@ import {
 } from 'database/errors'
 import { IArtistDocument, IArtistModel } from 'database/models/artist'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { IArtistRepository } from 'modules/artist/repository'
 
 @singleton()
 class ArtistRepository implements IArtistRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.Artist))
+    @inject(DiTokenEnum.Artist)
     private readonly artist: IArtistModel,
   ) {}
 
@@ -56,8 +56,10 @@ class ArtistRepository implements IArtistRepository {
 
   public createOne: IArtistRepository['createOne'] = async (payload) => {
     try {
-      const artist = new this.artist(payload)
-      return artist.save()
+      const newArtist = new this.artist(payload)
+      const artist = await newArtist.save()
+
+      return artist
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(

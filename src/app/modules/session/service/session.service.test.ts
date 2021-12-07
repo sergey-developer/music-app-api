@@ -7,9 +7,8 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { EntityNamesEnum } from 'database/constants'
 import { SessionModel } from 'database/models/session'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { SessionService } from 'modules/session/service'
 
 let sessionService: SessionService
@@ -19,7 +18,7 @@ setupDB()
 beforeEach(() => {
   DiContainer.clearInstances()
 
-  DiContainer.register(getModelName(EntityNamesEnum.Session), {
+  DiContainer.register(DiTokenEnum.Session, {
     useValue: SessionModel,
   })
 

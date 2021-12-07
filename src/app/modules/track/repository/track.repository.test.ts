@@ -4,13 +4,12 @@ import { fakeAlbumPayload } from '__tests__/fakeData/album'
 import { fakeArtistPayload } from '__tests__/fakeData/artist'
 import { fakeRepoTrackPayload } from '__tests__/fakeData/track'
 import { setupDB } from '__tests__/utils'
-import { EntityNamesEnum } from 'database/constants'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { AlbumModel } from 'database/models/album'
 import { ArtistModel } from 'database/models/artist'
 import { ITrackDocument, TrackModel } from 'database/models/track'
 import generateEntityId from 'database/utils/generateEntityId'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { AlbumRepository } from 'modules/album/repository'
 import { ArtistRepository } from 'modules/artist/repository'
 import {
@@ -31,15 +30,15 @@ setupDB()
 beforeEach(() => {
   DiContainer.clearInstances()
 
-  DiContainer.register(getModelName(EntityNamesEnum.Track), {
+  DiContainer.register(DiTokenEnum.Track, {
     useValue: TrackModel,
   })
 
-  DiContainer.register(getModelName(EntityNamesEnum.Album), {
+  DiContainer.register(DiTokenEnum.Album, {
     useValue: AlbumModel,
   })
 
-  DiContainer.register(getModelName(EntityNamesEnum.Artist), {
+  DiContainer.register(DiTokenEnum.Artist, {
     useValue: ArtistModel,
   })
 

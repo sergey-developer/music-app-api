@@ -8,8 +8,8 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: исп-ть omitUndefined в репозиториях при создании
-// TODO: создать сервис для file (FileManager)
+// TODO: исп-ть FileService
+// TODO: добавить logger в deps в сервисах
 
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)

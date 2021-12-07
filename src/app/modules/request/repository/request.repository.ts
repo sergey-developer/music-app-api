@@ -11,13 +11,13 @@ import {
 } from 'database/errors'
 import { IRequestDocument, IRequestModel } from 'database/models/request'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { IRequestRepository } from 'modules/request/repository'
 
 @singleton()
 class RequestRepository implements IRequestRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.Request))
+    @inject(DiTokenEnum.Request)
     private readonly request: IRequestModel,
   ) {}
 
@@ -88,6 +88,7 @@ class RequestRepository implements IRequestRepository {
     try {
       const newRequest = new this.request(payload)
       const request = await newRequest.save()
+
       return request
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {

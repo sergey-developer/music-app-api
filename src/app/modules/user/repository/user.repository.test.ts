@@ -3,11 +3,10 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoUserPayload } from '__tests__/fakeData/user'
 import { setupDB } from '__tests__/utils'
-import { EntityNamesEnum } from 'database/constants'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { UserModel } from 'database/models/user'
 import generateEntityId from 'database/utils/generateEntityId'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { UserRoleEnum } from 'modules/user/constants'
 import {
   IDeleteOneUserFilter,
@@ -22,7 +21,7 @@ setupDB()
 beforeEach(() => {
   DiContainer.clearInstances()
 
-  DiContainer.register(getModelName(EntityNamesEnum.User), {
+  DiContainer.register(DiTokenEnum.User, {
     useValue: UserModel,
   })
 

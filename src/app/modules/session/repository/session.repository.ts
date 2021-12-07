@@ -2,7 +2,6 @@ import { FilterQuery, Error as MongooseError } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
@@ -11,13 +10,13 @@ import {
 import { ISessionModel } from 'database/models/session'
 import { IUserDocument } from 'database/models/user'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { ISessionRepository } from 'modules/session/repository'
 
 @singleton()
 class SessionRepository implements ISessionRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.Session))
+    @inject(DiTokenEnum.Session)
     private readonly session: ISessionModel,
   ) {}
 

@@ -11,13 +11,13 @@ import {
 } from 'database/errors'
 import { IAlbumDocument, IAlbumModel } from 'database/models/album'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { IAlbumRepository } from 'modules/album/repository'
 
 @singleton()
 class AlbumRepository implements IAlbumRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.Album))
+    @inject(DiTokenEnum.Album)
     private readonly album: IAlbumModel,
   ) {}
 
@@ -62,8 +62,10 @@ class AlbumRepository implements IAlbumRepository {
 
   public createOne: IAlbumRepository['createOne'] = async (payload) => {
     try {
-      const album = new this.album(payload)
-      return album.save()
+      const newAlbum = new this.album(payload)
+      const album = await newAlbum.save()
+
+      return album
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
         throw new DatabaseValidationError(

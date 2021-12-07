@@ -7,10 +7,9 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { EntityNamesEnum } from 'database/constants'
 import { UserModel } from 'database/models/user'
 import generateEntityId from 'database/utils/generateEntityId'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { UserService } from 'modules/user/service'
 
 let userService: UserService
@@ -19,7 +18,8 @@ setupDB()
 
 beforeEach(() => {
   DiContainer.clearInstances()
-  DiContainer.register(getModelName(EntityNamesEnum.User), {
+
+  DiContainer.register(DiTokenEnum.User, {
     useValue: UserModel,
   })
 

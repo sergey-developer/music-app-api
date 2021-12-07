@@ -7,11 +7,10 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { EntityNamesEnum } from 'database/constants'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
 import generateEntityId from 'database/utils/generateEntityId'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteManyTrackHistoryFilter,
   IGetAllTrackHistoryFilter,
@@ -25,11 +24,11 @@ setupDB()
 beforeEach(() => {
   DiContainer.clearInstances()
 
-  DiContainer.register(getModelName(EntityNamesEnum.TrackHistory), {
+  DiContainer.register(DiTokenEnum.TrackHistory, {
     useValue: TrackHistoryModel,
   })
 
-  DiContainer.register(getModelName(EntityNamesEnum.Track), {
+  DiContainer.register(DiTokenEnum.Track, {
     useValue: TrackModel,
   })
 

@@ -3,7 +3,6 @@ import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
@@ -11,13 +10,13 @@ import {
 } from 'database/errors'
 import { ITrackDocument, ITrackModel } from 'database/models/track'
 import { getValidationErrors } from 'database/utils/errors'
-import getModelName from 'database/utils/getModelName'
+import { DiTokenEnum } from 'lib/dependency-injection'
 import { ITrackRepository } from 'modules/track/repository'
 
 @singleton()
 class TrackRepository implements ITrackRepository {
   public constructor(
-    @inject(getModelName(EntityNamesEnum.Track))
+    @inject(DiTokenEnum.Track)
     private readonly track: ITrackModel,
   ) {}
 
@@ -74,6 +73,7 @@ class TrackRepository implements ITrackRepository {
     try {
       const newTrack = new this.track(payload)
       const track = await newTrack.save()
+
       return track
     } catch (error: any) {
       if (error instanceof MongooseError.ValidationError) {
