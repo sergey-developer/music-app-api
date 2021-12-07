@@ -38,10 +38,7 @@ export interface IDeleteManyTracksFilter
     ids: DocumentIdArray
   }> {}
 
-export interface ICreateOneTrackPayload
-  extends Omit<CreateTrackDto, 'duration'> {
-  duration: number
-}
+export interface ICreateOneTrackPayload extends CreateTrackDto {}
 
 export interface ITrackRepository {
   findAllWhere: (filter: IFindAllTracksFilter) => Promise<ITrackDocumentArray>

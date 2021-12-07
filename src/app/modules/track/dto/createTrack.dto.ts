@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer'
 import {
   IsInt,
   IsMongoId,
@@ -7,7 +6,6 @@ import {
   IsString,
   IsUrl,
   Length,
-  Max,
 } from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
@@ -18,19 +16,6 @@ import {
 } from 'database/models/track'
 import messages from 'lib/class-validator/messages'
 
-class TrackDurationDto {
-  @IsOptional()
-  @IsInt()
-  @IsPositive()
-  @Max(59)
-  minutes?: number
-
-  @IsInt()
-  @IsPositive()
-  @Max(59)
-  seconds!: number
-}
-
 class CreateTrackDto {
   @IsString({
     message: messages.string,
@@ -40,8 +25,9 @@ class CreateTrackDto {
   })
   name!: ITrackDocument['name']
 
-  @Type(() => TrackDurationDto)
-  duration!: TrackDurationDto
+  @IsPositive()
+  @IsInt()
+  duration!: ITrackDocument['duration']
 
   @IsOptional()
   @IsUrl()

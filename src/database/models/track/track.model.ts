@@ -10,6 +10,7 @@ import {
   ITrackDocumentArray,
   ITrackModel,
   MAX_LENGTH_TRACK_NAME,
+  MIN_LENGTH_TRACK_DURATION,
   MIN_LENGTH_TRACK_NAME,
 } from 'database/models/track'
 
@@ -26,6 +27,7 @@ const TrackSchema = new Schema<ITrackDocument, ITrackModel, ITrackDocument>({
   duration: {
     type: Number,
     required: true,
+    minlength: MIN_LENGTH_TRACK_DURATION,
   },
   youtube: {
     type: String,

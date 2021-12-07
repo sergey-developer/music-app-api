@@ -1,4 +1,12 @@
-import { IsMongoId, IsOptional, IsString, IsUrl, Length } from 'class-validator'
+import {
+  IsInt,
+  IsMongoId,
+  IsOptional,
+  IsPositive,
+  IsString,
+  IsUrl,
+  Length,
+} from 'class-validator'
 
 import { DocumentId } from 'database/interface/document'
 import {
@@ -18,11 +26,9 @@ class UpdateTrackDto {
   })
   name?: ITrackDocument['name']
 
-  // TODO: валидировать по регулярке
   @IsOptional()
-  @IsString({
-    message: messages.string,
-  })
+  @IsPositive()
+  @IsInt()
   duration?: ITrackDocument['duration']
 
   @IsOptional()

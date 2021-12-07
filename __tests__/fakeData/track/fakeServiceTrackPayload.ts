@@ -18,16 +18,10 @@ const fakeServiceTrackPayload = (
 
   return {
     youtube: internet.url(),
-    duration: {
-      minutes: datatype.number({
-        min: 0,
-        max: 10,
-      }),
-      seconds: datatype.number({
-        min: 0,
-        max: 59,
-      }),
-    },
+    duration: datatype.number({
+      min: 150000,
+      max: 200000,
+    }),
     name: lorem.word(nameLength),
     album: payload?.album || generateEntityId(),
     user: payload?.user || generateEntityId(),
