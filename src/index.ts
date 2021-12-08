@@ -8,9 +8,6 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: исп-ть FileService
-// TODO: добавить logger в deps в сервисах
-
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
 //  user (model, repo, service)

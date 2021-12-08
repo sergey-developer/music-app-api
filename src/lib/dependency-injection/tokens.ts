@@ -1,6 +1,4 @@
 enum DiTokenEnum {
-  Config = 'Config',
-  Logger = 'Logger',
   Artist = 'ArtistModel',
   Album = 'AlbumModel',
   Track = 'TrackModel',
