@@ -22,6 +22,7 @@ import { ITrackDocumentArray } from 'database/models/track'
 import logger from 'lib/logger'
 import { AlbumRepository } from 'modules/album/repository'
 import { IAlbumService } from 'modules/album/service'
+import { ImageService } from 'modules/image/service'
 import { RequestService } from 'modules/request/service'
 import { TrackService } from 'modules/track/service'
 
@@ -39,6 +40,7 @@ class AlbumService implements IAlbumService {
 
     private readonly requestService: RequestService,
     private readonly trackService: TrackService,
+    private readonly imageService: ImageService,
   ) {}
 
   public getAll: IAlbumService['getAll'] = async (filter) => {
@@ -97,6 +99,10 @@ class AlbumService implements IAlbumService {
         artist: payload.artist,
       })
     } catch (error: any) {
+      if (payload.image) {
+        this.imageService.deleteOneByName(payload.image)
+      }
+
       if (isDatabaseValidationError(error)) {
         throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
       }
@@ -123,10 +129,18 @@ class AlbumService implements IAlbumService {
 
       try {
         await this.albumRepository.deleteOne({ id: album.id })
+
+        if (album.image) {
+          this.imageService.deleteOneByName(album.image)
+        }
       } catch (error: any) {
         logger.warn(error.stack, {
           message: `Album by id "${album.id}" probably was not deleted`,
         })
+
+        if (album.image) {
+          this.imageService.deleteOneByName(album.image)
+        }
       }
 
       throw new AppUnknownError(unknownErrorMsg)
@@ -141,6 +155,10 @@ class AlbumService implements IAlbumService {
       const updatedAlbum = await this.albumRepository.updateOne({ id }, payload)
       return updatedAlbum
     } catch (error: any) {
+      if (payload.image) {
+        this.imageService.deleteOneByName(payload.image)
+      }
+
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Album was not found')
       }
@@ -164,6 +182,10 @@ class AlbumService implements IAlbumService {
 
     try {
       album = await this.albumRepository.deleteOne({ id })
+
+      if (album.image) {
+        this.imageService.deleteOneByName(album.image)
+      }
     } catch (error: any) {
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Album was not found')
@@ -206,10 +228,20 @@ class AlbumService implements IAlbumService {
     const unknownErrorMsg = 'Error while deleting albums'
 
     const { albums = [] } = deleteManyFilter
-    const albumIds: DocumentIdArray = albums.map((album) => album.id)
+    const albumIds: DocumentIdArray = []
+    const albumImageNames: string[] = []
+
+    albums.forEach((album) => {
+      albumIds.push(album.id)
+
+      if (album.image) {
+        albumImageNames.push(album.image)
+      }
+    })
 
     try {
       await this.albumRepository.deleteMany({ ids: albumIds })
+      this.imageService.deleteManyByNames(albumImageNames)
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError(unknownErrorMsg)

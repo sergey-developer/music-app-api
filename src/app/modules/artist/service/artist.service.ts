@@ -7,7 +7,6 @@ import {
   AppUnknownError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { deleteImageFromFs } from 'app/utils/file'
 import { EntityNamesEnum } from 'database/constants'
 import {
   isDatabaseNotFoundError,
@@ -20,6 +19,7 @@ import logger from 'lib/logger'
 import { AlbumService } from 'modules/album/service'
 import { ArtistRepository } from 'modules/artist/repository'
 import { IArtistService } from 'modules/artist/service'
+import { ImageService } from 'modules/image/service'
 import { RequestService } from 'modules/request/service'
 
 @singleton()
@@ -41,6 +41,8 @@ class ArtistService implements IArtistService {
 
     @inject(delay(() => RequestService))
     private readonly requestService: RequestService,
+
+    private readonly imageService: ImageService,
   ) {}
 
   public getAll: IArtistService['getAll'] = async (filter) => {
@@ -90,7 +92,9 @@ class ArtistService implements IArtistService {
         photo: payload.photo,
       })
     } catch (error: any) {
-      if (payload.photo) deleteImageFromFs(payload.photo)
+      if (payload.photo) {
+        this.imageService.deleteOneByName(payload.photo)
+      }
 
       if (isDatabaseValidationError(error)) {
         throw new AppValidationError(VALIDATION_ERR_MSG, error.errors)
@@ -116,13 +120,17 @@ class ArtistService implements IArtistService {
       try {
         await this.artistRepository.deleteOne({ id: artist.id })
 
-        if (artist.photo) deleteImageFromFs(artist.photo)
+        if (artist.photo) {
+          this.imageService.deleteOneByName(artist.photo)
+        }
       } catch (error: any) {
         logger.warn(error.stack, {
           message: `Artist by id "${artist.id}" probably was not deleted`,
         })
 
-        if (artist.photo) deleteImageFromFs(artist.photo)
+        if (artist.photo) {
+          this.imageService.deleteOneByName(artist.photo)
+        }
       }
 
       throw new AppUnknownError(unknownErrorMsg)
@@ -141,7 +149,9 @@ class ArtistService implements IArtistService {
 
       return updatedArtist
     } catch (error: any) {
-      if (payload.photo) deleteImageFromFs(payload.photo)
+      if (payload.photo) {
+        this.imageService.deleteOneByName(payload.photo)
+      }
 
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Artist was not found')
@@ -167,7 +177,9 @@ class ArtistService implements IArtistService {
     try {
       artist = await this.artistRepository.deleteOne({ id })
 
-      if (artist.photo) deleteImageFromFs(artist.photo)
+      if (artist.photo) {
+        this.imageService.deleteOneByName(artist.photo)
+      }
     } catch (error: any) {
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Artist was not found')

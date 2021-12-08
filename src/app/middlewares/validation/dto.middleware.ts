@@ -6,12 +6,13 @@ import {
 import { RequestHandler } from 'express'
 import merge from 'lodash/merge'
 import set from 'lodash/set'
+import { container as DiContainer } from 'tsyringe'
 
 import AppErrorKindsEnum from 'app/constants/appErrorKinds'
 import { VALIDATION_ERR_MSG } from 'app/constants/messages/errors'
 import { BadRequestError } from 'app/utils/errors/httpErrors'
-import { deleteImageFromFs } from 'app/utils/file'
 import getErrors from 'lib/class-validator/getErrors'
+import { ImageService } from 'modules/image/service'
 
 const defaultOptions: TransformValidationOptions = {
   validator: {
@@ -20,6 +21,8 @@ const defaultOptions: TransformValidationOptions = {
     validationError: { target: false },
   },
 }
+
+const imageService = DiContainer.resolve(ImageService)
 
 const dto =
   <D extends object>(
@@ -39,7 +42,7 @@ const dto =
       next()
     } catch (exception: any) {
       if (req.file) {
-        deleteImageFromFs(req.file.filename)
+        imageService.deleteOneByName(req.file.filename)
       }
 
       const error = BadRequestError(VALIDATION_ERR_MSG, {
