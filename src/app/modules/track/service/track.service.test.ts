@@ -1,26 +1,20 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceTrackPayload } from '__tests__/fakeData/track'
-import { AppValidationError } from 'app/utils/errors/appErrors'
+import {
+  AppNotFoundError,
+  AppValidationError,
+} from 'app/utils/errors/appErrors'
 import { RequestModel } from 'database/models/request'
 import { TrackModel } from 'database/models/track'
 import * as db from 'database/utils/db'
+import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { RequestRepository } from 'modules/request/repository'
-import { RequestService } from 'modules/request/service'
-import { TrackRepository } from 'modules/track/repository'
 import { TrackService } from 'modules/track/service'
-import { TrackHistoryRepository } from 'modules/trackHistory/repository'
-import { TrackHistoryService } from 'modules/trackHistory/service'
 
 let trackService: TrackService
-let trackRepository: TrackRepository
-
-// let requestService: RequestService
 let requestRepository: RequestRepository
-
-// let trackHistoryService: TrackHistoryService
-// let trackHistoryRepository: TrackHistoryRepository
 
 beforeAll(async () => {
   await db.connect()
@@ -36,7 +30,6 @@ beforeEach(() => {
   })
 
   trackService = DiContainer.resolve(TrackService)
-  trackRepository = DiContainer.resolve(TrackRepository)
 
   // requestService = DiContainer.resolve(RequestService)
   requestRepository = DiContainer.resolve(RequestRepository)
@@ -72,6 +65,17 @@ describe('Track service', () => {
       expect(newTrack).toBeTruthy()
     })
 
+    it('with correct data request successfully created for new track', async () => {
+      const trackPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(trackPayload)
+
+      const trackRequest = await requestRepository.findOne({
+        entity: newTrack.id,
+      })
+
+      expect(trackRequest.entity.id).toBe(newTrack.id)
+    })
+
     it('with incorrect data throw validation error', async () => {
       const trackPayload = fakeServiceTrackPayload(null, {
         isIncorrect: true,
@@ -86,105 +90,85 @@ describe('Track service', () => {
         expect(error).toBeInstanceOf(AppValidationError)
       }
     })
+  })
 
-    it('request successfully created for new track', async () => {
+  describe('Update one track by id', () => {
+    let updateOneByIdSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      updateOneByIdSpy = jest.spyOn(trackService, 'updateOneById')
+    })
+
+    it('with correct data updated successfully', async () => {
       const trackPayload = fakeServiceTrackPayload()
       const newTrack = await trackService.createOne(trackPayload)
 
-      const trackRequest = await requestRepository.findOne({
-        entity: newTrack.id,
-      })
+      const trackUpdates = fakeServiceTrackPayload()
+      const updatedTrack = await trackService.updateOneById(
+        newTrack.id,
+        trackUpdates,
+      )
 
-      expect(trackRequest.entity.id).toBe(newTrack.id)
+      expect(updateOneByIdSpy).toBeCalledTimes(1)
+      expect(updateOneByIdSpy).toBeCalledWith(newTrack.id, trackUpdates)
+      expect(updatedTrack).toBeTruthy()
+    })
+
+    it('with incorrect data throw validation error', async () => {
+      const trackPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(trackPayload)
+
+      const trackUpdates = fakeServiceTrackPayload(null, { isIncorrect: true })
+
+      try {
+        const updatedTrack = await trackService.updateOneById(
+          newTrack.id,
+          trackUpdates,
+        )
+
+        expect(updatedTrack).not.toBeDefined()
+      } catch (error) {
+        expect(updateOneByIdSpy).toBeCalledTimes(1)
+        expect(updateOneByIdSpy).toBeCalledWith(newTrack.id, trackUpdates)
+        expect(error).toBeInstanceOf(AppValidationError)
+      }
+    })
+
+    it('which not exist and throw not found error', async () => {
+      const trackId = generateEntityId()
+      const trackUpdates = fakeServiceTrackPayload()
+
+      try {
+        const updatedTrack = await trackService.updateOneById(
+          trackId,
+          trackUpdates,
+        )
+
+        expect(updatedTrack).not.toBeDefined()
+      } catch (error) {
+        expect(updateOneByIdSpy).toBeCalledTimes(1)
+        expect(updateOneByIdSpy).toBeCalledWith(trackId, trackUpdates)
+        expect(error).toBeInstanceOf(AppNotFoundError)
+      }
     })
   })
-
-  // describe('Update one track', () => {
-  //   let updateOneSpy: jest.SpyInstance
-  //
-  //   beforeEach(() => {
-  //     updateOneSpy = jest.spyOn(trackRepository, 'updateOne')
-  //   })
-  //
-  //   it('by id with correct data updated successfully', async () => {
-  //     const albumPayload1 = fakeAlbumPayload()
-  //     const albumPayload2 = fakeAlbumPayload()
-  //
-  //     const newAlbum1 = await albumRepository.createOne(albumPayload1)
-  //     const newAlbum2 = await albumRepository.createOne(albumPayload2)
-  //
-  //     const trackPayload = fakeRepoTrackPayload({ album: newAlbum1.id })
-  //     const newTrack = await trackRepository.createOne(trackPayload)
-  //
-  //     const filter: IUpdateOneTrackFilter = { id: newTrack.id }
-  //     const trackUpdates = fakeRepoTrackPayload({ album: newAlbum2.id })
-  //     const updatedTrack = await trackRepository.updateOne(filter, trackUpdates)
-  //
-  //     expect(updateOneSpy).toBeCalledTimes(1)
-  //     expect(updateOneSpy).toBeCalledWith(filter, trackUpdates)
-  //     expect(updatedTrack.id).toBe(newTrack.id)
-  //     expect(updatedTrack.name).not.toBe(newTrack.name)
-  //     expect(updatedTrack.youtube).not.toBe(newTrack.youtube)
-  //     expect(updatedTrack.duration).not.toBe(newTrack.duration)
-  //     expect(updatedTrack.album!.id).not.toBe(newTrack.album!.id)
-  //   })
-  //
-  //   it('by id with incorrect data throw validation error', async () => {
-  //     const trackPayload = fakeRepoTrackPayload()
-  //     const newTrack = await trackRepository.createOne(trackPayload)
-  //
-  //     const filter: IUpdateOneTrackFilter = { id: newTrack.id }
-  //     const trackUpdates = fakeRepoTrackPayload(null, { isIncorrect: true })
-  //
-  //     try {
-  //       const updatedTrack = await trackRepository.updateOne(
-  //         filter,
-  //         trackUpdates,
-  //       )
-  //
-  //       expect(updatedTrack).not.toBeDefined()
-  //     } catch (error) {
-  //       expect(updateOneSpy).toBeCalledTimes(1)
-  //       expect(updateOneSpy).toBeCalledWith(filter, trackUpdates)
-  //       expect(error).toBeInstanceOf(DatabaseValidationError)
-  //     }
-  //   })
-  //
-  //   it('by id which not exist and throw not found error', async () => {
-  //     const filter: IUpdateOneTrackFilter = { id: generateEntityId() }
-  //     const trackUpdates = fakeRepoTrackPayload()
-  //
-  //     try {
-  //       const updatedTrack = await trackRepository.updateOne(
-  //         filter,
-  //         trackUpdates,
-  //       )
-  //
-  //       expect(updatedTrack).not.toBeDefined()
-  //     } catch (error) {
-  //       expect(updateOneSpy).toBeCalledTimes(1)
-  //       expect(updateOneSpy).toBeCalledWith(filter, trackUpdates)
-  //       expect(error).toBeInstanceOf(DatabaseNotFoundError)
-  //     }
-  //   })
-  // })
   //
   // describe('Find all tracks', () => {
   //   let findAllWhereSpy: jest.SpyInstance
   //
   //   beforeEach(() => {
-  //     findAllWhereSpy = jest.spyOn(trackRepository, 'findAllWhere')
+  //     findAllWhereSpy = jest.spyOn(trackService, 'findAllWhere')
   //   })
   //
   //   it('with empty filter', async () => {
   //     const trackPayload1 = fakeRepoTrackPayload()
   //     const trackPayload2 = fakeRepoTrackPayload()
   //
-  //     await trackRepository.createOne(trackPayload1)
-  //     await trackRepository.createOne(trackPayload2)
+  //     await trackService.createOne(trackPayload1)
+  //     await trackService.createOne(trackPayload2)
   //
   //     const filter = {}
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -196,11 +180,11 @@ describe('Track service', () => {
   //     const trackPayload1 = fakeRepoTrackPayload()
   //     const trackPayload2 = fakeRepoTrackPayload()
   //
-  //     const newTrack1 = await trackRepository.createOne(trackPayload1)
-  //     await trackRepository.createOne(trackPayload2)
+  //     const newTrack1 = await trackService.createOne(trackPayload1)
+  //     await trackService.createOne(trackPayload2)
   //
   //     const filter: IFindAllTracksFilter = { ids: [newTrack1.id] }
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -213,7 +197,7 @@ describe('Track service', () => {
   //       ids: [generateEntityId()],
   //     }
   //
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -231,14 +215,14 @@ describe('Track service', () => {
   //     const trackPayload1 = fakeRepoTrackPayload({ album: newAlbum1.id })
   //     const trackPayload2 = fakeRepoTrackPayload({ album: newAlbum2.id })
   //
-  //     await trackRepository.createOne(trackPayload1)
-  //     await trackRepository.createOne(trackPayload2)
+  //     await trackService.createOne(trackPayload1)
+  //     await trackService.createOne(trackPayload2)
   //
   //     const filter: IFindAllTracksFilter = {
   //       albumIds: [newAlbum1.id],
   //     }
   //
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -251,7 +235,7 @@ describe('Track service', () => {
   //       albumIds: [generateEntityId()],
   //     }
   //
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -277,15 +261,15 @@ describe('Track service', () => {
   //     const trackPayload2 = fakeRepoTrackPayload({ album: newAlbum2.id })
   //     const trackPayload3 = fakeRepoTrackPayload({ album: newAlbum3.id })
   //
-  //     await trackRepository.createOne(trackPayload1)
-  //     await trackRepository.createOne(trackPayload2)
-  //     await trackRepository.createOne(trackPayload3)
+  //     await trackService.createOne(trackPayload1)
+  //     await trackService.createOne(trackPayload2)
+  //     await trackService.createOne(trackPayload3)
   //
   //     const filter: IFindAllTracksFilter = {
   //       artist: newArtist1.id,
   //     }
   //
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -298,7 +282,7 @@ describe('Track service', () => {
   //       artist: generateEntityId(),
   //     }
   //
-  //     const tracks = await trackRepository.findAllWhere(filter)
+  //     const tracks = await trackService.findAllWhere(filter)
   //
   //     expect(findAllWhereSpy).toBeCalledTimes(1)
   //     expect(findAllWhereSpy).toBeCalledWith(filter)
@@ -311,15 +295,15 @@ describe('Track service', () => {
   //   let findOneSpy: jest.SpyInstance
   //
   //   beforeEach(() => {
-  //     findOneSpy = jest.spyOn(trackRepository, 'findOne')
+  //     findOneSpy = jest.spyOn(trackService, 'findOne')
   //   })
   //
   //   it('by id which exists', async () => {
   //     const trackPayload = fakeRepoTrackPayload()
-  //     const newTrack = await trackRepository.createOne(trackPayload)
+  //     const newTrack = await trackService.createOne(trackPayload)
   //
   //     const filter: IFindOneTrackFilter = { id: newTrack.id }
-  //     const track = await trackRepository.findOne(filter)
+  //     const track = await trackService.findOne(filter)
   //
   //     expect(findOneSpy).toBeCalledTimes(1)
   //     expect(findOneSpy).toBeCalledWith(filter)
@@ -330,7 +314,7 @@ describe('Track service', () => {
   //     const filter: IFindOneTrackFilter = { id: generateEntityId() }
   //
   //     try {
-  //       const track = await trackRepository.findOne(filter)
+  //       const track = await trackService.findOne(filter)
   //       expect(track).not.toBeDefined()
   //     } catch (error) {
   //       expect(findOneSpy).toBeCalledTimes(1)
@@ -344,15 +328,15 @@ describe('Track service', () => {
   //   let deleteOneSpy: jest.SpyInstance
   //
   //   beforeEach(() => {
-  //     deleteOneSpy = jest.spyOn(trackRepository, 'deleteOne')
+  //     deleteOneSpy = jest.spyOn(trackService, 'deleteOne')
   //   })
   //
   //   it('by id which exists', async () => {
   //     const trackPayload = fakeRepoTrackPayload()
-  //     const newTrack = await trackRepository.createOne(trackPayload)
+  //     const newTrack = await trackService.createOne(trackPayload)
   //
   //     const filter: IDeleteOneTrackFilter = { id: newTrack.id }
-  //     const deletedTrack = await trackRepository.deleteOne(filter)
+  //     const deletedTrack = await trackService.deleteOne(filter)
   //
   //     expect(deleteOneSpy).toBeCalledTimes(1)
   //     expect(deleteOneSpy).toBeCalledWith(filter)
@@ -363,7 +347,7 @@ describe('Track service', () => {
   //     const filter: IDeleteOneTrackFilter = { id: generateEntityId() }
   //
   //     try {
-  //       const deletedTrack = await trackRepository.deleteOne(filter)
+  //       const deletedTrack = await trackService.deleteOne(filter)
   //       expect(deletedTrack).not.toBeDefined()
   //     } catch (error) {
   //       expect(deleteOneSpy).toBeCalledTimes(1)
@@ -380,16 +364,16 @@ describe('Track service', () => {
   //   let newTrack3: ITrackDocument
   //
   //   beforeEach(async () => {
-  //     deleteManySpy = jest.spyOn(trackRepository, 'deleteMany')
+  //     deleteManySpy = jest.spyOn(trackService, 'deleteMany')
   //
-  //     newTrack1 = await trackRepository.createOne(fakeRepoTrackPayload())
-  //     newTrack2 = await trackRepository.createOne(fakeRepoTrackPayload())
-  //     newTrack3 = await trackRepository.createOne(fakeRepoTrackPayload())
+  //     newTrack1 = await trackService.createOne(fakeRepoTrackPayload())
+  //     newTrack2 = await trackService.createOne(fakeRepoTrackPayload())
+  //     newTrack3 = await trackService.createOne(fakeRepoTrackPayload())
   //   })
   //
   //   it('with empty filter', async () => {
   //     const filter = {}
-  //     const deletionResult = await trackRepository.deleteMany(filter)
+  //     const deletionResult = await trackService.deleteMany(filter)
   //
   //     expect(deleteManySpy).toBeCalledTimes(1)
   //     expect(deleteManySpy).toBeCalledWith(filter)
@@ -401,7 +385,7 @@ describe('Track service', () => {
   //       ids: [newTrack1.id, newTrack2.id],
   //     }
   //
-  //     const deletionResult = await trackRepository.deleteMany(filter)
+  //     const deletionResult = await trackService.deleteMany(filter)
   //
   //     expect(deleteManySpy).toBeCalledTimes(1)
   //     expect(deleteManySpy).toBeCalledWith(filter)

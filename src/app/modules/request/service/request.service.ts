@@ -74,14 +74,17 @@ class RequestService implements IRequestService {
     @inject(delay(() => ArtistService))
     private readonly artistService: ArtistService,
 
+    @inject(delay(() => TrackService))
     private readonly trackService: TrackService,
   ) {}
 
   public getAll: IRequestService['getAll'] = async (filter) => {
     try {
-      return isEmpty(filter)
-        ? this.requestRepository.findAll()
-        : this.requestRepository.findAllWhere(filter)
+      const requests = isEmpty(filter)
+        ? await this.requestRepository.findAll()
+        : await this.requestRepository.findAllWhere(filter)
+
+      return requests
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError('Error while getting requests')
