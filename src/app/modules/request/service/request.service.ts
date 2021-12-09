@@ -110,13 +110,10 @@ class RequestService implements IRequestService {
     }
   }
 
-  public updateOneById: IRequestService['updateOneById'] = async (
-    id,
-    payload,
-  ) => {
+  public updateOne: IRequestService['updateOne'] = async (filter, payload) => {
     try {
       const updatedRequest = await this.requestRepository.updateOne(
-        { id },
+        filter,
         payload,
       )
 
@@ -132,7 +129,7 @@ class RequestService implements IRequestService {
 
       logger.error(error.stack, {
         message: 'Update request error',
-        args: { id, payload },
+        args: { filter, payload },
       })
 
       throw new AppUnknownError('Error while updating request')

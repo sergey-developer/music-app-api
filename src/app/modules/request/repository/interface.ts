@@ -24,12 +24,15 @@ export interface ICreateOneRequestPayload
 export interface IUpdateOneRequestPayload extends UpdateRequestDto {}
 
 export interface IUpdateOneRequestFilter
-  extends Partial<Pick<IRequestDocument, 'id'>> {}
+  extends Partial<{
+    id: IRequestDocument['id']
+    entity: DocumentId
+  }> {}
 
 export interface IDeleteOneRequestFilter
   extends Partial<{
     id: IRequestDocument['id']
-    entityId: DocumentId
+    entity: DocumentId
   }> {}
 
 export interface IDeleteManyRequestFilter

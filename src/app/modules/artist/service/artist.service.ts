@@ -197,7 +197,7 @@ class ArtistService implements IArtistService {
         await this.albumService.deleteMany({ albums: albumsByArtistId })
       }
 
-      await this.requestService.deleteOne({ entityId: artist.id })
+      await this.requestService.deleteOne({ entity: artist.id })
 
       return artist
     } catch (error: any) {

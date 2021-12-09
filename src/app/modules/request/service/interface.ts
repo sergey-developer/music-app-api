@@ -1,14 +1,11 @@
 import { DeleteResult } from 'mongodb'
 
-import { DocumentIdArray } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import {
   IRequestDocument,
   IRequestDocumentArray,
 } from 'database/models/request'
-import { GetAllRequestsQuery } from 'modules/request/dto'
-import { IRequestRepository } from 'modules/request/repository'
-
-import UpdateRequestDto from '../dto/updateRequest.dto'
+import { GetAllRequestsQuery, UpdateRequestDto } from 'modules/request/dto'
 
 export interface IGetAllRequestsFilter extends GetAllRequestsQuery {}
 
@@ -20,6 +17,18 @@ export interface ICreateOneRequestPayload
 
 export interface IUpdateOneRequestPayload extends UpdateRequestDto {}
 
+export interface IUpdateOneRequestFilter
+  extends Partial<{
+    id: IRequestDocument['id']
+    entity: DocumentId
+  }> {}
+
+export interface IDeleteOneRequestFilter
+  extends Partial<{
+    id: IRequestDocument['id']
+    entity: DocumentId
+  }> {}
+
 export interface IDeleteManyRequestFilter
   extends Partial<{
     entityIds: DocumentIdArray
@@ -30,12 +39,12 @@ export interface IRequestService {
 
   createOne: (payload: ICreateOneRequestPayload) => Promise<IRequestDocument>
 
-  updateOneById: (
-    id: IRequestDocument['id'],
+  updateOne: (
+    filter: IUpdateOneRequestFilter,
     payload: IUpdateOneRequestPayload,
   ) => Promise<IRequestDocument>
 
-  deleteOne: IRequestRepository['deleteOne']
+  deleteOne: (filter: IDeleteOneRequestFilter) => Promise<IRequestDocument>
 
   deleteOneWithEntity: (
     requestId: IRequestDocument['id'],

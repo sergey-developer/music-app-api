@@ -109,7 +109,7 @@ class RequestRepository implements IRequestRepository {
     payload,
   ) => {
     try {
-      const { id } = omitUndefined(filter)
+      const { id, entity } = omitUndefined(filter)
       const updates = omitUndefined(payload)
 
       const defaultOptions: QueryOptions = {
@@ -120,7 +120,14 @@ class RequestRepository implements IRequestRepository {
       const optionsToApply: QueryOptions = defaultOptions
 
       const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
-      const filterToApply: FilterQuery<IRequestDocument> = { ...filterById }
+      const filterByEntity: FilterQuery<IRequestDocument> = entity
+        ? { entity }
+        : {}
+
+      const filterToApply: FilterQuery<IRequestDocument> = {
+        ...filterById,
+        ...filterByEntity,
+      }
 
       const request = await this.request
         .findOneAndUpdate(filterToApply, updates, optionsToApply)
@@ -148,12 +155,12 @@ class RequestRepository implements IRequestRepository {
 
   public deleteOne: IRequestRepository['deleteOne'] = async (filter) => {
     try {
-      const { id, entityId } = omitUndefined(filter)
+      const { id, entity } = omitUndefined(filter)
 
       const filterById: FilterQuery<IRequestDocument> = id ? { _id: id } : {}
 
-      const filterByEntity: FilterQuery<IRequestDocument> = entityId
-        ? { entity: entityId }
+      const filterByEntity: FilterQuery<IRequestDocument> = entity
+        ? { entity }
         : {}
 
       const filterToApply: FilterQuery<IRequestDocument> = {

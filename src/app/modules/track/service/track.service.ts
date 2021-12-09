@@ -45,14 +45,22 @@ class TrackService implements ITrackService {
         kind: EntityNamesEnum.Track,
       })
 
+      if (isEmpty(requests)) {
+        return []
+      }
+
       const trackIds = requests.map((request) => {
         const entity = request.entity as ITrackDocument
         return entity.id
       })
 
-      const findAllFilter = { artist, albumIds, ids: trackIds }
+      const tracks = await this.trackRepository.findAllWhere({
+        artist,
+        albumIds,
+        ids: trackIds,
+      })
 
-      return this.trackRepository.findAllWhere(findAllFilter)
+      return tracks
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError('Error while getting tracks')
@@ -160,7 +168,7 @@ class TrackService implements ITrackService {
 
     try {
       await this.trackHistoryService.deleteMany({ trackIds: [track.id] })
-      await this.requestService.deleteOne({ entityId: track.id })
+      await this.requestService.deleteOne({ entity: track.id })
 
       return track
     } catch (error: any) {

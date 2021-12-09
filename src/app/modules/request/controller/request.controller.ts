@@ -2,9 +2,9 @@ import { StatusCodes } from 'http-status-codes'
 import pick from 'lodash/pick'
 import { singleton } from 'tsyringe'
 
+import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 import { IRequestController } from 'modules/request/controller'
 import { RequestService } from 'modules/request/service'
-import { getHttpErrorByAppError } from 'app/utils/errors/httpErrors'
 
 @singleton()
 class RequestController implements IRequestController {
@@ -27,7 +27,7 @@ class RequestController implements IRequestController {
       const { id } = req.params
       const payload = pick(req.body, 'status', 'reason')
 
-      await this.requestService.updateOneById(id, payload)
+      await this.requestService.updateOne({ id }, payload)
 
       res
         .status(StatusCodes.OK)

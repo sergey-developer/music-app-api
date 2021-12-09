@@ -10,8 +10,9 @@ import { TrackModel } from 'database/models/track'
 import * as db from 'database/utils/db'
 import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
+import { RequestStatusEnum } from 'modules/request/constants'
 import { RequestRepository } from 'modules/request/repository'
-import { TrackService } from 'modules/track/service'
+import { IGetAllTracksFilter, TrackService } from 'modules/track/service'
 
 let trackService: TrackService
 let requestRepository: RequestRepository
@@ -152,144 +153,155 @@ describe('Track service', () => {
       }
     })
   })
-  //
-  // describe('Find all tracks', () => {
-  //   let findAllWhereSpy: jest.SpyInstance
-  //
-  //   beforeEach(() => {
-  //     findAllWhereSpy = jest.spyOn(trackService, 'findAllWhere')
-  //   })
-  //
-  //   it('with empty filter', async () => {
-  //     const trackPayload1 = fakeRepoTrackPayload()
-  //     const trackPayload2 = fakeRepoTrackPayload()
-  //
-  //     await trackService.createOne(trackPayload1)
-  //     await trackService.createOne(trackPayload2)
-  //
-  //     const filter = {}
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(2)
-  //   })
-  //
-  //   it('by ids which exists', async () => {
-  //     const trackPayload1 = fakeRepoTrackPayload()
-  //     const trackPayload2 = fakeRepoTrackPayload()
-  //
-  //     const newTrack1 = await trackService.createOne(trackPayload1)
-  //     await trackService.createOne(trackPayload2)
-  //
-  //     const filter: IFindAllTracksFilter = { ids: [newTrack1.id] }
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(1)
-  //   })
-  //
-  //   it('by ids which not exists', async () => {
-  //     const filter: IFindAllTracksFilter = {
-  //       ids: [generateEntityId()],
-  //     }
-  //
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(0)
-  //   })
-  //
-  //   it('by album ids which exists', async () => {
-  //     const albumPayload1 = fakeAlbumPayload()
-  //     const albumPayload2 = fakeAlbumPayload()
-  //
-  //     const newAlbum1 = await albumRepository.createOne(albumPayload1)
-  //     const newAlbum2 = await albumRepository.createOne(albumPayload2)
-  //
-  //     const trackPayload1 = fakeRepoTrackPayload({ album: newAlbum1.id })
-  //     const trackPayload2 = fakeRepoTrackPayload({ album: newAlbum2.id })
-  //
-  //     await trackService.createOne(trackPayload1)
-  //     await trackService.createOne(trackPayload2)
-  //
-  //     const filter: IFindAllTracksFilter = {
-  //       albumIds: [newAlbum1.id],
-  //     }
-  //
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(1)
-  //   })
-  //
-  //   it('by album ids which not exists', async () => {
-  //     const filter: IFindAllTracksFilter = {
-  //       albumIds: [generateEntityId()],
-  //     }
-  //
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(0)
-  //   })
-  //
-  //   it('by artist which exists', async () => {
-  //     const artistPayload1 = fakeArtistPayload()
-  //     const artistPayload2 = fakeArtistPayload()
-  //     const newArtist1 = await artistRepository.createOne(artistPayload1)
-  //     const newArtist2 = await artistRepository.createOne(artistPayload2)
-  //
-  //     const albumPayload1 = fakeAlbumPayload({ artist: newArtist1.id })
-  //     const albumPayload2 = fakeAlbumPayload({ artist: newArtist2.id })
-  //     const albumPayload3 = fakeAlbumPayload({ artist: newArtist1.id })
-  //
-  //     const newAlbum1 = await albumRepository.createOne(albumPayload1)
-  //     const newAlbum2 = await albumRepository.createOne(albumPayload2)
-  //     const newAlbum3 = await albumRepository.createOne(albumPayload3)
-  //
-  //     const trackPayload1 = fakeRepoTrackPayload({ album: newAlbum1.id })
-  //     const trackPayload2 = fakeRepoTrackPayload({ album: newAlbum2.id })
-  //     const trackPayload3 = fakeRepoTrackPayload({ album: newAlbum3.id })
-  //
-  //     await trackService.createOne(trackPayload1)
-  //     await trackService.createOne(trackPayload2)
-  //     await trackService.createOne(trackPayload3)
-  //
-  //     const filter: IFindAllTracksFilter = {
-  //       artist: newArtist1.id,
-  //     }
-  //
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(2)
-  //   })
-  //
-  //   it('by artist which not exists', async () => {
-  //     const filter: IFindAllTracksFilter = {
-  //       artist: generateEntityId(),
-  //     }
-  //
-  //     const tracks = await trackService.findAllWhere(filter)
-  //
-  //     expect(findAllWhereSpy).toBeCalledTimes(1)
-  //     expect(findAllWhereSpy).toBeCalledWith(filter)
-  //     expect(Array.isArray(tracks)).toBe(true)
-  //     expect(tracks).toHaveLength(0)
-  //   })
-  // })
+
+  describe('Find all tracks', () => {
+    let getAllSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      getAllSpy = jest.spyOn(trackService, 'getAll')
+    })
+
+    it('with empty filter', async () => {
+      await trackService.createOne(fakeServiceTrackPayload())
+      await trackService.createOne(fakeServiceTrackPayload())
+
+      const filter = {}
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(2)
+    })
+
+    it('by user', async () => {
+      const payload1 = fakeServiceTrackPayload()
+      const payload2 = fakeServiceTrackPayload()
+
+      await trackService.createOne(payload1)
+      await trackService.createOne(payload2)
+
+      const filter: IGetAllTracksFilter = { userId: payload1.user }
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(1)
+    })
+
+    it('in pending status', async () => {
+      await trackService.createOne(fakeServiceTrackPayload())
+      await trackService.createOne(fakeServiceTrackPayload())
+
+      const filter: IGetAllTracksFilter = { status: RequestStatusEnum.Pending }
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(2)
+    })
+
+    it('in approved status', async () => {
+      await trackService.createOne(fakeServiceTrackPayload())
+      const newTrack2 = await trackService.createOne(fakeServiceTrackPayload())
+
+      await requestRepository.updateOne(
+        { entity: newTrack2.id },
+        { status: RequestStatusEnum.Approved },
+      )
+
+      const filter: IGetAllTracksFilter = { status: RequestStatusEnum.Approved }
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(1)
+    })
+
+    //   it('by album ids which exists', async () => {
+    //     const albumPayload1 = fakeAlbumPayload()
+    //     const albumPayload2 = fakeAlbumPayload()
+    //
+    //     const newAlbum1 = await albumRepository.createOne(albumPayload1)
+    //     const newAlbum2 = await albumRepository.createOne(albumPayload2)
+    //
+    //     const trackPayload1 = fakeRepoTrackPayload({ album: newAlbum1.id })
+    //     const trackPayload2 = fakeRepoTrackPayload({ album: newAlbum2.id })
+    //
+    //     await trackService.createOne(trackPayload1)
+    //     await trackService.createOne(trackPayload2)
+    //
+    //     const filter: IFindAllTracksFilter = {
+    //       albumIds: [newAlbum1.id],
+    //     }
+    //
+    //     const tracks = await trackService.findAllWhere(filter)
+    //
+    //     expect(findAllWhereSpy).toBeCalledTimes(1)
+    //     expect(findAllWhereSpy).toBeCalledWith(filter)
+    //     expect(Array.isArray(tracks)).toBe(true)
+    //     expect(tracks).toHaveLength(1)
+    //   })
+    //
+    //   it('by album ids which not exists', async () => {
+    //     const filter: IFindAllTracksFilter = {
+    //       albumIds: [generateEntityId()],
+    //     }
+    //
+    //     const tracks = await trackService.findAllWhere(filter)
+    //
+    //     expect(findAllWhereSpy).toBeCalledTimes(1)
+    //     expect(findAllWhereSpy).toBeCalledWith(filter)
+    //     expect(Array.isArray(tracks)).toBe(true)
+    //     expect(tracks).toHaveLength(0)
+    //   })
+    //
+    //   it('by artist which exists', async () => {
+    //     const artistPayload1 = fakeArtistPayload()
+    //     const artistPayload2 = fakeArtistPayload()
+    //     const newArtist1 = await artistRepository.createOne(artistPayload1)
+    //     const newArtist2 = await artistRepository.createOne(artistPayload2)
+    //
+    //     const albumPayload1 = fakeAlbumPayload({ artist: newArtist1.id })
+    //     const albumPayload2 = fakeAlbumPayload({ artist: newArtist2.id })
+    //     const albumPayload3 = fakeAlbumPayload({ artist: newArtist1.id })
+    //
+    //     const newAlbum1 = await albumRepository.createOne(albumPayload1)
+    //     const newAlbum2 = await albumRepository.createOne(albumPayload2)
+    //     const newAlbum3 = await albumRepository.createOne(albumPayload3)
+    //
+    //     const trackPayload1 = fakeRepoTrackPayload({ album: newAlbum1.id })
+    //     const trackPayload2 = fakeRepoTrackPayload({ album: newAlbum2.id })
+    //     const trackPayload3 = fakeRepoTrackPayload({ album: newAlbum3.id })
+    //
+    //     await trackService.createOne(trackPayload1)
+    //     await trackService.createOne(trackPayload2)
+    //     await trackService.createOne(trackPayload3)
+    //
+    //     const filter: IFindAllTracksFilter = {
+    //       artist: newArtist1.id,
+    //     }
+    //
+    //     const tracks = await trackService.findAllWhere(filter)
+    //
+    //     expect(findAllWhereSpy).toBeCalledTimes(1)
+    //     expect(findAllWhereSpy).toBeCalledWith(filter)
+    //     expect(Array.isArray(tracks)).toBe(true)
+    //     expect(tracks).toHaveLength(2)
+    //   })
+    //
+    //   it('by artist which not exists', async () => {
+    //     const filter: IFindAllTracksFilter = {
+    //       artist: generateEntityId(),
+    //     }
+    //
+    //     const tracks = await trackService.findAllWhere(filter)
+    //
+    //     expect(findAllWhereSpy).toBeCalledTimes(1)
+    //     expect(findAllWhereSpy).toBeCalledWith(filter)
+    //     expect(Array.isArray(tracks)).toBe(true)
+    //     expect(tracks).toHaveLength(0)
+    //   })
+  })
   //
   // describe('Find one track', () => {
   //   let findOneSpy: jest.SpyInstance

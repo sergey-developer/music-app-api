@@ -206,7 +206,7 @@ class AlbumService implements IAlbumService {
         await this.trackService.deleteMany({ tracks: tracksByAlbumId })
       }
 
-      await this.requestService.deleteOne({ entityId: album.id })
+      await this.requestService.deleteOne({ entity: album.id })
 
       return album
     } catch (error: any) {
