@@ -2,28 +2,38 @@ import { internet } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceUserPayload } from '__tests__/fakeData/user'
-import { setupDB } from '__tests__/utils'
 import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
 import { UserModel } from 'database/models/user'
+import * as db from 'database/utils/db'
 import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { UserService } from 'modules/user/service'
 
 let userService: UserService
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.User, {
     useValue: UserModel,
   })
 
   userService = DiContainer.resolve(UserService)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('User service', () => {

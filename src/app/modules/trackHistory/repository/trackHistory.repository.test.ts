@@ -1,10 +1,10 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
-import { setupDB } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
+import * as db from 'database/utils/db'
 import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
@@ -16,11 +16,11 @@ import {
 
 let trackHistoryRepository: TrackHistoryRepository
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.TrackHistory, {
     useValue: TrackHistoryModel,
   })
@@ -30,6 +30,16 @@ beforeEach(() => {
   })
 
   trackHistoryRepository = DiContainer.resolve(TrackHistoryRepository)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('Track history repository', () => {
@@ -190,7 +200,7 @@ describe('Track history repository', () => {
       expect(deletionResult.deletedCount).toBe(3)
     })
 
-    it('by track ids', async () => {
+    it('by track ids which exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
         trackIds: [trackHistoryPayload1.track, trackHistoryPayload2.track],
       }
@@ -200,6 +210,18 @@ describe('Track history repository', () => {
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
       expect(deletionResult.deletedCount).toBe(2)
+    })
+
+    it('by track ids which not exists', async () => {
+      const filter: IDeleteManyTrackHistoryFilter = {
+        trackIds: [generateEntityId()],
+      }
+
+      const deletionResult = await trackHistoryRepository.deleteMany(filter)
+
+      expect(deleteManySpy).toBeCalledTimes(1)
+      expect(deleteManySpy).toBeCalledWith(filter)
+      expect(deletionResult.deletedCount).toBe(0)
     })
   })
 })

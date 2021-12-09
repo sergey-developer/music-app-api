@@ -1,7 +1,6 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
-import { setupDB } from '__tests__/utils'
 import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
 import {
   AppNotFoundError,
@@ -9,6 +8,7 @@ import {
 } from 'app/utils/errors/appErrors'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
+import * as db from 'database/utils/db'
 import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
@@ -19,11 +19,11 @@ import {
 
 let trackHistoryService: TrackHistoryService
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.TrackHistory, {
     useValue: TrackHistoryModel,
   })
@@ -33,6 +33,16 @@ beforeEach(() => {
   })
 
   trackHistoryService = DiContainer.resolve(TrackHistoryService)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('Track history service', () => {
@@ -185,9 +195,21 @@ describe('Track history service', () => {
       }
     })
 
-    it('by track ids', async () => {
+    it('by track ids which exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
         trackIds: [trackHistoryPayload1.track, trackHistoryPayload2.track],
+      }
+
+      const deletionResult = await trackHistoryService.deleteMany(filter)
+
+      expect(deleteManySpy).toBeCalledTimes(1)
+      expect(deleteManySpy).toBeCalledWith(filter)
+      expect(deletionResult).toBeUndefined()
+    })
+
+    it('by track ids which not exists', async () => {
+      const filter: IDeleteManyTrackHistoryFilter = {
+        trackIds: [generateEntityId()],
       }
 
       const deletionResult = await trackHistoryService.deleteMany(filter)

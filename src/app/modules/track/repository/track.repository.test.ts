@@ -3,11 +3,11 @@ import { container as DiContainer } from 'tsyringe'
 import { fakeAlbumPayload } from '__tests__/fakeData/album'
 import { fakeArtistPayload } from '__tests__/fakeData/artist'
 import { fakeRepoTrackPayload } from '__tests__/fakeData/track'
-import { setupDB } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { AlbumModel } from 'database/models/album'
 import { ArtistModel } from 'database/models/artist'
 import { ITrackDocument, TrackModel } from 'database/models/track'
+import * as db from 'database/utils/db'
 import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { AlbumRepository } from 'modules/album/repository'
@@ -25,11 +25,11 @@ let trackRepository: TrackRepository
 let albumRepository: AlbumRepository
 let artistRepository: ArtistRepository
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.Track, {
     useValue: TrackModel,
   })
@@ -45,6 +45,16 @@ beforeEach(() => {
   trackRepository = DiContainer.resolve(TrackRepository)
   albumRepository = DiContainer.resolve(AlbumRepository)
   artistRepository = DiContainer.resolve(ArtistRepository)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('Track repository', () => {
@@ -308,7 +318,7 @@ describe('Track repository', () => {
       )
     })
 
-    it('by id which not exists', async () => {
+    it('by id which not exists and throw not found error', async () => {
       const filter: IFindOneTrackFilter = { id: generateEntityId() }
 
       try {
@@ -383,7 +393,7 @@ describe('Track repository', () => {
       expect(deletionResult.deletedCount).toBe(3)
     })
 
-    it('has track ids', async () => {
+    it('by ids which exists', async () => {
       const filter: IDeleteManyTracksFilter = {
         ids: [newTrack1.id, newTrack2.id],
       }
@@ -393,6 +403,18 @@ describe('Track repository', () => {
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
       expect(deletionResult.deletedCount).toBe(2)
+    })
+
+    it('by ids which not exists', async () => {
+      const filter: IDeleteManyTracksFilter = {
+        ids: [generateEntityId()],
+      }
+
+      const deletionResult = await trackRepository.deleteMany(filter)
+
+      expect(deleteManySpy).toBeCalledTimes(1)
+      expect(deleteManySpy).toBeCalledWith(filter)
+      expect(deletionResult.deletedCount).toBe(0)
     })
   })
 })

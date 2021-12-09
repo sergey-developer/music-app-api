@@ -2,9 +2,9 @@ import { internet } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoUserPayload } from '__tests__/fakeData/user'
-import { setupDB } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { UserModel } from 'database/models/user'
+import * as db from 'database/utils/db'
 import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { UserRoleEnum } from 'modules/user/constants'
@@ -16,16 +16,26 @@ import {
 
 let userRepository: UserRepository
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.User, {
     useValue: UserModel,
   })
 
   userRepository = DiContainer.resolve(UserRepository)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('User repository', () => {

@@ -1,7 +1,7 @@
 import { fakeRepoUserPayload, getFakePassword } from '__tests__/fakeData/user'
-import setupDB from '__tests__/utils/setupDB'
 import { IUserDocument, UserModel } from 'database/models/user'
 import { preSaveHook } from 'database/models/user/hooks'
+import * as db from 'database/utils/db'
 
 describe('User model', () => {
   describe('Pre save hook', () => {
@@ -42,7 +42,18 @@ describe('User model', () => {
     let user: IUserDocument
     let checkPasswordSpy: jest.SpyInstance
 
-    setupDB()
+    beforeAll(async () => {
+      await db.connect()
+    })
+
+    afterEach(async () => {
+      await db.clear()
+    })
+
+    afterAll(async () => {
+      await db.drop()
+      await db.disconnect()
+    })
 
     beforeEach(async () => {
       const newUser = new UserModel(userPayload)

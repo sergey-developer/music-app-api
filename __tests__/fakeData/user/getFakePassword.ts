@@ -1,6 +1,6 @@
 import { internet } from 'faker'
 
-import { MIN_LENGTH_PASSWORD } from 'modules/user/constants'
+import { MIN_LENGTH_PASSWORD } from 'database/models/user'
 
 const getFakePassword = (): string => {
   return internet.password(MIN_LENGTH_PASSWORD)

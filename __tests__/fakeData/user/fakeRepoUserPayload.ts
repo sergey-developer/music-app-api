@@ -2,7 +2,8 @@ import { internet, name } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
 import { MaybeNull } from 'app/interface/utils'
-import { MIN_LENGTH_PASSWORD, UserRoleEnum } from 'modules/user/constants'
+import { MIN_LENGTH_PASSWORD } from 'database/models/user'
+import { UserRoleEnum } from 'modules/user/constants'
 import { ICreateOneUserPayload } from 'modules/user/repository'
 
 const fakeRepoUserPayload = (

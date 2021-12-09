@@ -2,27 +2,37 @@ import { datatype } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceSessionPayload } from '__tests__/fakeData/session'
-import { setupDB } from '__tests__/utils'
 import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
 import { SessionModel } from 'database/models/session'
+import * as db from 'database/utils/db'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { SessionService } from 'modules/session/service'
 
 let sessionService: SessionService
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.Session, {
     useValue: SessionModel,
   })
 
   sessionService = DiContainer.resolve(SessionService)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('Session service', () => {

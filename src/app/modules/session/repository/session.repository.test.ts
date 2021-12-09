@@ -2,9 +2,9 @@ import { datatype } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoSessionPayload } from '__tests__/fakeData/session'
-import { setupDB } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { SessionModel } from 'database/models/session'
+import * as db from 'database/utils/db'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteOneSessionFilter,
@@ -14,16 +14,26 @@ import {
 
 let sessionRepository: SessionRepository
 
-setupDB()
+beforeAll(async () => {
+  await db.connect()
+})
 
 beforeEach(() => {
-  DiContainer.clearInstances()
-
   DiContainer.register(DiTokenEnum.Session, {
     useValue: SessionModel,
   })
 
   sessionRepository = DiContainer.resolve(SessionRepository)
+})
+
+afterEach(async () => {
+  DiContainer.clearInstances()
+  await db.clear()
+})
+
+afterAll(async () => {
+  await db.drop()
+  await db.disconnect()
 })
 
 describe('Session repository', () => {
