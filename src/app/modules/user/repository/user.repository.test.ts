@@ -46,7 +46,7 @@ describe('User repository', () => {
       createOneSpy = jest.spyOn(userRepository, 'createOne')
     })
 
-    it('with correct data and role "user"', async () => {
+    it('with correct data and role "user" created successfully', async () => {
       const userPayload = fakeRepoUserPayload()
       const newUser = await userRepository.createOne(userPayload)
 
@@ -58,7 +58,7 @@ describe('User repository', () => {
       expect(newUser.role).toBe(userPayload.role)
     })
 
-    it('with correct data and role "moderator"', async () => {
+    it('with correct data and role "moderator" created successfully', async () => {
       const userPayload = fakeRepoUserPayload({
         role: UserRoleEnum.Moderator,
       })
@@ -73,7 +73,7 @@ describe('User repository', () => {
       expect(newUser.role).toBe(userPayload.role)
     })
 
-    it('with incorrect data and throw validation error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const userPayload = fakeRepoUserPayload(null, {
         isIncorrect: true,
       })

@@ -53,7 +53,7 @@ describe('Track history service', () => {
       createOneSpy = jest.spyOn(trackHistoryService, 'createOne')
     })
 
-    it('with correct data', async () => {
+    it('with correct data created successfully', async () => {
       const trackHistoryPayload = fakeServiceTrackHistoryPayload()
       const newTrackHistory = await trackHistoryService.createOne(
         trackHistoryPayload,
@@ -61,10 +61,10 @@ describe('Track history service', () => {
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
-      expect(newTrackHistory).toBeDefined()
+      expect(newTrackHistory).toBeTruthy()
     })
 
-    it('with incorrect data and throw validation error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const trackHistoryPayload = fakeServiceTrackHistoryPayload({
         isIncorrect: true,
       })
@@ -145,7 +145,7 @@ describe('Track history service', () => {
 
       expect(deleteOneByIdSpy).toBeCalledTimes(1)
       expect(deleteOneByIdSpy).toBeCalledWith(newTrackHistory.id)
-      expect(deletedTrackHistory).toBeDefined()
+      expect(deletedTrackHistory).toBeTruthy()
     })
 
     it('which not exist and throw not found error', async () => {
@@ -204,7 +204,7 @@ describe('Track history service', () => {
 
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
-      expect(deletionResult).toBeUndefined()
+      expect(deletionResult).toBeTruthy()
     })
 
     it('by track ids which not exists', async () => {
@@ -216,7 +216,7 @@ describe('Track history service', () => {
 
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
-      expect(deletionResult).toBeUndefined()
+      expect(deletionResult).toBeTruthy()
     })
   })
 })

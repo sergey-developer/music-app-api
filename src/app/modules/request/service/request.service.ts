@@ -71,7 +71,9 @@ class RequestService implements IRequestService {
     @inject(delay(() => AlbumService))
     private readonly albumService: AlbumService,
 
+    @inject(delay(() => ArtistService))
     private readonly artistService: ArtistService,
+
     private readonly trackService: TrackService,
   ) {}
 
@@ -191,7 +193,8 @@ class RequestService implements IRequestService {
     }
 
     try {
-      await this.requestRepository.deleteMany(deleteManyFilter)
+      const result = await this.requestRepository.deleteMany(deleteManyFilter)
+      return result
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError('Error while deleting requests')

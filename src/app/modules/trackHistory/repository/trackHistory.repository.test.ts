@@ -50,7 +50,7 @@ describe('Track history repository', () => {
       createOneSpy = jest.spyOn(trackHistoryRepository, 'createOne')
     })
 
-    it('with correct data', async () => {
+    it('with correct data created successfully', async () => {
       const trackHistoryPayload = fakeRepoTrackHistoryPayload()
       const newTrackHistory = await trackHistoryRepository.createOne(
         trackHistoryPayload,
@@ -65,7 +65,7 @@ describe('Track history repository', () => {
       expect(newTrackHistory.listenDate).toBe(trackHistoryPayload.listenDate)
     })
 
-    it('with incorrect data and throw validation error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const trackHistoryPayload = fakeRepoTrackHistoryPayload({
         isIncorrect: true,
       })

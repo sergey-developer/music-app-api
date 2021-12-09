@@ -5,6 +5,12 @@ import {
   EMPTY_FILTER_ERR_MSG,
   VALIDATION_ERR_MSG,
 } from 'app/constants/messages/errors'
+import { omitUndefined } from 'app/utils/common'
+import {
+  AppNotFoundError,
+  AppUnknownError,
+  AppValidationError,
+} from 'app/utils/errors/appErrors'
 import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
@@ -12,12 +18,6 @@ import {
 import logger from 'lib/logger'
 import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 import { ITrackHistoryService } from 'modules/trackHistory/service'
-import { omitUndefined } from 'app/utils/common'
-import {
-  AppNotFoundError,
-  AppUnknownError,
-  AppValidationError,
-} from 'app/utils/errors/appErrors'
 
 @singleton()
 class TrackHistoryService implements ITrackHistoryService {
@@ -79,7 +79,11 @@ class TrackHistoryService implements ITrackHistoryService {
     }
 
     try {
-      await this.trackHistoryRepository.deleteMany(deleteManyFilter)
+      const result = await this.trackHistoryRepository.deleteMany(
+        deleteManyFilter,
+      )
+
+      return result
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError('Error while deleting tracks`s histories')

@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongodb'
+
 import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import { ITrackDocument, ITrackDocumentArray } from 'database/models/track'
 import {
@@ -37,5 +39,5 @@ export interface ITrackService {
 
   deleteOneById: (id: ITrackDocument['id']) => Promise<ITrackDocument>
 
-  deleteMany: (filter: IDeleteManyTracksFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyTracksFilter) => Promise<DeleteResult>
 }

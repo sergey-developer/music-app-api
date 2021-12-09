@@ -43,13 +43,13 @@ describe('Session service', () => {
       createOneSpy = jest.spyOn(sessionService, 'createOne')
     })
 
-    it('with correct data', async () => {
+    it('with correct data  created successfully', async () => {
       const sessionPayload = fakeServiceSessionPayload()
       const newSession = await sessionService.createOne(sessionPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(sessionPayload)
-      expect(newSession).toBeDefined()
+      expect(newSession).toBeTruthy()
     })
 
     it('with incorrect data throw validation error', async () => {
@@ -81,7 +81,7 @@ describe('Session service', () => {
 
       expect(getOneByTokenSpy).toBeCalledTimes(1)
       expect(getOneByTokenSpy).toBeCalledWith(newSession.token)
-      expect(session).toBeDefined()
+      expect(session).toBeTruthy()
     })
 
     it('which not exist and throw not found error', async () => {
@@ -115,7 +115,7 @@ describe('Session service', () => {
 
       expect(deleteOneByTokenSpy).toBeCalledTimes(1)
       expect(deleteOneByTokenSpy).toBeCalledWith(newSession.token)
-      expect(deletedSession).toBeDefined()
+      expect(deletedSession).toBeTruthy()
     })
 
     it('which not exist and throw not found error', async () => {

@@ -65,7 +65,7 @@ describe('Track repository', () => {
       createOneSpy = jest.spyOn(trackRepository, 'createOne')
     })
 
-    it('with correct data', async () => {
+    it('with correct data created successfully', async () => {
       const trackPayload = fakeRepoTrackPayload()
       const newTrack = await trackRepository.createOne(trackPayload)
 
@@ -77,7 +77,7 @@ describe('Track repository', () => {
       expect(newTrack.duration).toBe(trackPayload.duration)
     })
 
-    it('with incorrect data and throw validation error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const trackPayload = fakeRepoTrackPayload(null, {
         isIncorrect: true,
       })
@@ -100,7 +100,7 @@ describe('Track repository', () => {
       updateOneSpy = jest.spyOn(trackRepository, 'updateOne')
     })
 
-    it('by id with correct data', async () => {
+    it('by id with correct data updated successfully', async () => {
       const trackPayload = fakeRepoTrackPayload()
       const newTrack = await trackRepository.createOne(trackPayload)
 
@@ -119,7 +119,7 @@ describe('Track repository', () => {
       )
     })
 
-    it('by id with incorrect data and throw validation error', async () => {
+    it('by id with incorrect data throw validation error', async () => {
       const trackPayload = fakeRepoTrackPayload()
       const newTrack = await trackRepository.createOne(trackPayload)
 

@@ -183,9 +183,10 @@ class TrackService implements ITrackService {
 
     const { tracks = [] } = deleteManyFilter
     const trackIds = tracks.map((track) => track.id)
+    let deletionResult
 
     try {
-      await this.trackRepository.deleteMany({ ids: trackIds })
+      deletionResult = await this.trackRepository.deleteMany({ ids: trackIds })
     } catch (error: any) {
       logger.error(error.stack)
       throw new AppUnknownError(unknownErrorMsg)
@@ -194,6 +195,8 @@ class TrackService implements ITrackService {
     try {
       await this.trackHistoryService.deleteMany({ trackIds })
       await this.requestService.deleteMany({ entityIds: trackIds })
+
+      return deletionResult
     } catch (error: any) {
       logger.error(error.stack, {
         message: 'Error while deleting related objects of tracks',

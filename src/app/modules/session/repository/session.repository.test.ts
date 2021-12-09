@@ -44,7 +44,7 @@ describe('Session repository', () => {
       createOneSpy = jest.spyOn(sessionRepository, 'createOne')
     })
 
-    it('with correct data', async () => {
+    it('with correct data  created successfully', async () => {
       const sessionPayload = fakeRepoSessionPayload()
       const newSession = await sessionRepository.createOne(sessionPayload)
 
@@ -54,7 +54,7 @@ describe('Session repository', () => {
       expect(newSession.user.toString()).toBe(sessionPayload.userId)
     })
 
-    it('with incorrect data and throw validation error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const sessionPayload = fakeRepoSessionPayload({ isIncorrect: true })
 
       try {

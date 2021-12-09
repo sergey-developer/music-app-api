@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongodb'
+
 import { DocumentId } from 'database/interface/document'
 import { IAlbumDocument, IAlbumDocumentArray } from 'database/models/album'
 import {
@@ -36,5 +38,5 @@ export interface IAlbumService {
 
   deleteOneById: (id: IAlbumDocument['id']) => Promise<IAlbumDocument>
 
-  deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyAlbumsFilter) => Promise<DeleteResult>
 }

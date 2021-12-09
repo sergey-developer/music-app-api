@@ -44,16 +44,16 @@ describe('User service', () => {
       createOneSpy = jest.spyOn(userService, 'createOne')
     })
 
-    it('with correct data', async () => {
+    it('with correct data created successfully', async () => {
       const userPayload = fakeServiceUserPayload()
       const newUser = await userService.createOne(userPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(userPayload)
-      expect(newUser).toBeDefined()
+      expect(newUser).toBeTruthy()
     })
 
-    it('with incorrect data and throw validation error', async () => {
+    it('with incorrect data throw validation error', async () => {
       const userPayload = fakeServiceUserPayload(null, { isIncorrect: true })
 
       try {
@@ -80,7 +80,7 @@ describe('User service', () => {
 
       expect(getOneByEmailSpy).toBeCalledTimes(1)
       expect(getOneByEmailSpy).toBeCalledWith(newUser.email)
-      expect(user).toBeDefined()
+      expect(user).toBeTruthy()
     })
 
     it('which not exist and throw not found error', async () => {
@@ -110,7 +110,7 @@ describe('User service', () => {
 
       expect(deleteOneByIdSpy).toBeCalledTimes(1)
       expect(deleteOneByIdSpy).toBeCalledWith(newUser.id)
-      expect(deletedUser).toBeDefined()
+      expect(deletedUser).toBeTruthy()
     })
 
     it('which not exist and throw not found error', async () => {

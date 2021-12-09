@@ -230,6 +230,7 @@ class AlbumService implements IAlbumService {
     const { albums = [] } = deleteManyFilter
     const albumIds: DocumentIdArray = []
     const albumImageNames: string[] = []
+    let deletionResult
 
     albums.forEach((album) => {
       albumIds.push(album.id)
@@ -240,7 +241,7 @@ class AlbumService implements IAlbumService {
     })
 
     try {
-      await this.albumRepository.deleteMany({ ids: albumIds })
+      deletionResult = await this.albumRepository.deleteMany({ ids: albumIds })
       this.imageService.deleteManyByNames(albumImageNames)
     } catch (error: any) {
       logger.error(error.stack)
@@ -256,6 +257,8 @@ class AlbumService implements IAlbumService {
       }
 
       await this.requestService.deleteMany({ entityIds: albumIds })
+
+      return deletionResult
     } catch (error: any) {
       logger.error(error.stack, {
         message: 'Error while deleting related objects of albums',

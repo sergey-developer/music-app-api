@@ -1,3 +1,5 @@
+import { DeleteResult } from 'mongodb'
+
 import { DocumentIdArray } from 'database/interface/document'
 import {
   IRequestDocument,
@@ -39,5 +41,5 @@ export interface IRequestService {
     requestId: IRequestDocument['id'],
   ) => Promise<IRequestDocument>
 
-  deleteMany: (filter: IDeleteManyRequestFilter) => Promise<void>
+  deleteMany: (filter: IDeleteManyRequestFilter) => Promise<DeleteResult>
 }
