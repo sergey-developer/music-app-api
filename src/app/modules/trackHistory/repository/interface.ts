@@ -10,6 +10,7 @@ import { CreateTrackHistoryDto } from 'modules/trackHistory/dto'
 export interface IFindAllTrackHistoryFilter
   extends Partial<{
     user: DocumentId
+    track: DocumentId
   }> {}
 
 export interface IDeleteOneTrackHistoryFilter

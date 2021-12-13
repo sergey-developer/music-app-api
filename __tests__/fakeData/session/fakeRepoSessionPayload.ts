@@ -1,7 +1,7 @@
 import { datatype, internet } from 'faker'
 
-import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
-import generateEntityId from 'database/utils/generateEntityId'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { ICreateOneSessionPayload } from 'modules/session/repository'
 import { UserRoleEnum } from 'modules/user/constants'
 
@@ -11,9 +11,9 @@ const fakeRepoSessionPayload = (
   const { isIncorrect } = config
 
   return {
-    email: internet.email(),
+    email: isIncorrect ? datatype.string() : internet.email(),
     role: UserRoleEnum.User,
-    userId: isIncorrect ? datatype.string() : generateEntityId(),
+    userId: isIncorrect ? datatype.string() : fakeEntityId(),
   }
 }
 

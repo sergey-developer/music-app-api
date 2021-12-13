@@ -1,9 +1,9 @@
 import { lorem } from 'faker'
 
-import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { MaybeNull } from 'app/interface/utils'
 import { MIN_LENGTH_ALBUM_NAME } from 'database/models/album'
-import generateEntityId from 'database/utils/generateEntityId'
 import { ICreateOneAlbumPayload } from 'modules/album/repository'
 
 const fakeAlbumPayload = (
@@ -12,13 +12,13 @@ const fakeAlbumPayload = (
 ): Required<ICreateOneAlbumPayload> => {
   const { isIncorrect } = config
 
-  const nameLength = isIncorrect
-    ? MIN_LENGTH_ALBUM_NAME - 1
-    : MIN_LENGTH_ALBUM_NAME
+  const name = isIncorrect
+    ? lorem.word(MIN_LENGTH_ALBUM_NAME - 1)
+    : lorem.words(2)
 
   return {
-    artist: payload?.artist || generateEntityId(),
-    name: lorem.word(nameLength),
+    name,
+    artist: payload?.artist || fakeEntityId(),
     releaseDate: new Date().toISOString(),
     image: null,
   }

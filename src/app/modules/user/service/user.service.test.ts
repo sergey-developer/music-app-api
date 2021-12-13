@@ -2,13 +2,13 @@ import { internet } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceUserPayload } from '__tests__/fakeData/user'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
 import { UserModel } from 'database/models/user'
 import * as db from 'database/utils/db'
-import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { UserService } from 'modules/user/service'
 
@@ -58,7 +58,7 @@ describe('User service', () => {
 
       try {
         const newUser = await userService.createOne(userPayload)
-        expect(newUser).not.toBeDefined()
+        expect(newUser).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(userPayload)
@@ -88,7 +88,7 @@ describe('User service', () => {
 
       try {
         const user = await userService.getOneByEmail(fakeEmail)
-        expect(user).not.toBeDefined()
+        expect(user).not.toBeTruthy()
       } catch (error) {
         expect(getOneByEmailSpy).toBeCalledTimes(1)
         expect(getOneByEmailSpy).toBeCalledWith(fakeEmail)
@@ -114,11 +114,11 @@ describe('User service', () => {
     })
 
     it('which not exist and throw not found error', async () => {
-      const fakeId = generateEntityId()
+      const fakeId = fakeEntityId()
 
       try {
         const deletedUser = await userService.deleteOneById(fakeId)
-        expect(deletedUser).not.toBeDefined()
+        expect(deletedUser).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneByIdSpy).toBeCalledTimes(1)
         expect(deleteOneByIdSpy).toBeCalledWith(fakeId)

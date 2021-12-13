@@ -57,7 +57,7 @@ describe('Session service', () => {
 
       try {
         const newSession = await sessionService.createOne(sessionPayload)
-        expect(newSession).not.toBeDefined()
+        expect(newSession).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(sessionPayload)
@@ -89,7 +89,7 @@ describe('Session service', () => {
 
       try {
         const session = await sessionService.getOneByToken(token)
-        expect(session).not.toBeDefined()
+        expect(session).not.toBeTruthy()
       } catch (error) {
         expect(getOneByTokenSpy).toBeCalledTimes(1)
         expect(getOneByTokenSpy).toBeCalledWith(token)
@@ -123,7 +123,7 @@ describe('Session service', () => {
 
       try {
         const deletedSession = await sessionService.deleteOneByToken(token)
-        expect(deletedSession).not.toBeDefined()
+        expect(deletedSession).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneByTokenSpy).toBeCalledTimes(1)
         expect(deleteOneByTokenSpy).toBeCalledWith(token)

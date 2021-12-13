@@ -1,9 +1,9 @@
 import { datatype, internet, lorem } from 'faker'
 
-import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { MaybeNull } from 'app/interface/utils'
 import { MIN_LENGTH_TRACK_NAME } from 'database/models/track'
-import generateEntityId from 'database/utils/generateEntityId'
 import { ICreateOneTrackPayload } from 'modules/track/service'
 
 const fakeServiceTrackPayload = (
@@ -12,19 +12,19 @@ const fakeServiceTrackPayload = (
 ): Required<ICreateOneTrackPayload> => {
   const { isIncorrect } = config
 
-  const nameLength = isIncorrect
-    ? MIN_LENGTH_TRACK_NAME - 1
-    : MIN_LENGTH_TRACK_NAME
+  const name = isIncorrect
+    ? lorem.word(MIN_LENGTH_TRACK_NAME - 1)
+    : lorem.words(2)
 
   return {
+    name,
     youtube: internet.url(),
     duration: datatype.number({
       min: 150000,
       max: 200000,
     }),
-    name: lorem.word(nameLength),
-    album: payload?.album || generateEntityId(),
-    user: payload?.user || generateEntityId(),
+    album: payload?.album || fakeEntityId(),
+    user: payload?.user || fakeEntityId(),
   }
 }
 

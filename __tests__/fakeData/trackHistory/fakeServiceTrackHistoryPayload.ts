@@ -1,7 +1,7 @@
 import { datatype } from 'faker'
 
-import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
-import generateEntityId from 'database/utils/generateEntityId'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { ICreateOneTrackHistoryPayload } from 'modules/trackHistory/service'
 
 const fakeRepoTrackHistoryPayload = (
@@ -10,8 +10,8 @@ const fakeRepoTrackHistoryPayload = (
   const { isIncorrect } = config
 
   return {
-    track: isIncorrect ? datatype.string() : generateEntityId(),
-    user: generateEntityId(),
+    track: isIncorrect ? datatype.string() : fakeEntityId(),
+    user: isIncorrect ? datatype.string() : fakeEntityId(),
   }
 }
 

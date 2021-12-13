@@ -1,6 +1,6 @@
 import { internet, name } from 'faker'
 
-import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface'
 import { MaybeNull } from 'app/interface/utils'
 import { MIN_LENGTH_PASSWORD } from 'database/models/user'
 import { UserRoleEnum } from 'modules/user/constants'

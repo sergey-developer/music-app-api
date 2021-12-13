@@ -3,12 +3,12 @@ import { container as DiContainer } from 'tsyringe'
 import { fakeAlbumPayload } from '__tests__/fakeData/album'
 import { fakeArtistPayload } from '__tests__/fakeData/artist'
 import { fakeRepoTrackPayload } from '__tests__/fakeData/track'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { AlbumModel } from 'database/models/album'
 import { ArtistModel } from 'database/models/artist'
 import { ITrackDocument, TrackModel } from 'database/models/track'
 import * as db from 'database/utils/db'
-import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { AlbumRepository } from 'modules/album/repository'
 import { ArtistRepository } from 'modules/artist/repository'
@@ -84,7 +84,7 @@ describe('Track repository', () => {
 
       try {
         const newTrack = await trackRepository.createOne(trackPayload)
-        expect(newTrack).not.toBeDefined()
+        expect(newTrack).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(trackPayload)
@@ -132,7 +132,7 @@ describe('Track repository', () => {
           trackUpdates,
         )
 
-        expect(updatedTrack).not.toBeDefined()
+        expect(updatedTrack).not.toBeTruthy()
       } catch (error) {
         expect(updateOneSpy).toBeCalledTimes(1)
         expect(updateOneSpy).toBeCalledWith(filter, trackUpdates)
@@ -141,7 +141,7 @@ describe('Track repository', () => {
     })
 
     it('by id which not exist and throw not found error', async () => {
-      const filter: IUpdateOneTrackFilter = { id: generateEntityId() }
+      const filter: IUpdateOneTrackFilter = { id: fakeEntityId() }
       const trackUpdates = fakeRepoTrackPayload()
 
       try {
@@ -150,7 +150,7 @@ describe('Track repository', () => {
           trackUpdates,
         )
 
-        expect(updatedTrack).not.toBeDefined()
+        expect(updatedTrack).not.toBeTruthy()
       } catch (error) {
         expect(updateOneSpy).toBeCalledTimes(1)
         expect(updateOneSpy).toBeCalledWith(filter, trackUpdates)
@@ -200,7 +200,7 @@ describe('Track repository', () => {
 
     it('by ids which not exists', async () => {
       const filter: IFindAllTracksFilter = {
-        ids: [generateEntityId()],
+        ids: [fakeEntityId()],
       }
 
       const tracks = await trackRepository.findAllWhere(filter)
@@ -232,7 +232,7 @@ describe('Track repository', () => {
 
     it('by album ids which not exists', async () => {
       const filter: IFindAllTracksFilter = {
-        albumIds: [generateEntityId()],
+        albumIds: [fakeEntityId()],
       }
 
       const tracks = await trackRepository.findAllWhere(filter)
@@ -281,7 +281,7 @@ describe('Track repository', () => {
 
     it('by artist which not exists', async () => {
       const filter: IFindAllTracksFilter = {
-        artist: generateEntityId(),
+        artist: fakeEntityId(),
       }
 
       const tracks = await trackRepository.findAllWhere(filter)
@@ -319,11 +319,11 @@ describe('Track repository', () => {
     })
 
     it('by id which not exists and throw not found error', async () => {
-      const filter: IFindOneTrackFilter = { id: generateEntityId() }
+      const filter: IFindOneTrackFilter = { id: fakeEntityId() }
 
       try {
         const track = await trackRepository.findOne(filter)
-        expect(track).not.toBeDefined()
+        expect(track).not.toBeTruthy()
       } catch (error) {
         expect(findOneSpy).toBeCalledTimes(1)
         expect(findOneSpy).toBeCalledWith(filter)
@@ -358,11 +358,11 @@ describe('Track repository', () => {
     })
 
     it('by id which not exist and throw not found error', async () => {
-      const filter: IDeleteOneTrackFilter = { id: generateEntityId() }
+      const filter: IDeleteOneTrackFilter = { id: fakeEntityId() }
 
       try {
         const deletedTrack = await trackRepository.deleteOne(filter)
-        expect(deletedTrack).not.toBeDefined()
+        expect(deletedTrack).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(filter)
@@ -407,7 +407,7 @@ describe('Track repository', () => {
 
     it('by ids which not exists', async () => {
       const filter: IDeleteManyTracksFilter = {
-        ids: [generateEntityId()],
+        ids: [fakeEntityId()],
       }
 
       const deletionResult = await trackRepository.deleteMany(filter)

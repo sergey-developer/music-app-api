@@ -1,6 +1,7 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
 import {
   AppNotFoundError,
@@ -9,7 +10,6 @@ import {
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
 import * as db from 'database/utils/db'
-import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteManyTrackHistoryFilter,
@@ -118,7 +118,7 @@ describe('Track history service', () => {
     })
 
     it('by user id which not exists', async () => {
-      const filter: IGetAllTrackHistoryFilter = { user: generateEntityId() }
+      const filter: IGetAllTrackHistoryFilter = { user: fakeEntityId() }
       const trackHistories = await trackHistoryService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
@@ -149,14 +149,14 @@ describe('Track history service', () => {
     })
 
     it('which not exist and throw not found error', async () => {
-      const trackHistoryId = generateEntityId()
+      const trackHistoryId = fakeEntityId()
 
       try {
         const deletedTrackHistory = await trackHistoryService.deleteOneById(
           trackHistoryId,
         )
 
-        expect(deletedTrackHistory).not.toBeDefined()
+        expect(deletedTrackHistory).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneByIdSpy).toBeCalledTimes(1)
         expect(deleteOneByIdSpy).toBeCalledWith(trackHistoryId)
@@ -186,7 +186,7 @@ describe('Track history service', () => {
 
       try {
         const deletionResult = await trackHistoryService.deleteMany(filter)
-        expect(deletionResult).not.toBeDefined()
+        expect(deletionResult).not.toBeTruthy()
       } catch (error: any) {
         expect(deleteManySpy).toBeCalledTimes(1)
         expect(deleteManySpy).toBeCalledWith(filter)
@@ -209,7 +209,7 @@ describe('Track history service', () => {
 
     it('by track ids which not exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
-        trackIds: [generateEntityId()],
+        trackIds: [fakeEntityId()],
       }
 
       const deletionResult = await trackHistoryService.deleteMany(filter)

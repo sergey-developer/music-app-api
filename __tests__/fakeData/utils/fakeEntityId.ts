@@ -1,4 +1,4 @@
-const generateEntityId = (): string => {
+const fakeEntityId = (): string => {
   const timestamp = ((new Date().getTime() / 1000) | 0).toString(16)
 
   return (
@@ -11,4 +11,4 @@ const generateEntityId = (): string => {
   )
 }
 
-export default generateEntityId
+export default fakeEntityId

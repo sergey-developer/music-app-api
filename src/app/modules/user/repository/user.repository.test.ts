@@ -2,10 +2,10 @@ import { internet } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoUserPayload } from '__tests__/fakeData/user'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { UserModel } from 'database/models/user'
 import * as db from 'database/utils/db'
-import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { UserRoleEnum } from 'modules/user/constants'
 import {
@@ -80,7 +80,7 @@ describe('User repository', () => {
 
       try {
         const newUser = await userRepository.createOne(userPayload)
-        expect(newUser).not.toBeDefined()
+        expect(newUser).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(userPayload)
@@ -116,7 +116,7 @@ describe('User repository', () => {
 
       try {
         const user = await userRepository.findOne(filter)
-        expect(user).not.toBeDefined()
+        expect(user).not.toBeTruthy()
       } catch (error) {
         expect(findOneSpy).toBeCalledTimes(1)
         expect(findOneSpy).toBeCalledWith(filter)
@@ -148,11 +148,11 @@ describe('User repository', () => {
     })
 
     it('by id which not exist and throw not found error', async () => {
-      const filter: IDeleteOneUserFilter = { id: generateEntityId() }
+      const filter: IDeleteOneUserFilter = { id: fakeEntityId() }
 
       try {
         const deletedUser = await userRepository.deleteOne(filter)
-        expect(deletedUser).not.toBeDefined()
+        expect(deletedUser).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(filter)

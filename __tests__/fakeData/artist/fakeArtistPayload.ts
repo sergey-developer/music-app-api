@@ -1,7 +1,10 @@
-import { lorem, name } from 'faker'
+import { lorem } from 'faker'
 
-import { IFakePayloadConfig } from '__tests__/fakeData/interface/fakePayload'
-import { MIN_LENGTH_ARTIST_INFO } from 'database/models/artist'
+import { IFakePayloadConfig } from '__tests__/fakeData/interface'
+import {
+  MIN_LENGTH_ARTIST_INFO,
+  MIN_LENGTH_ARTIST_NAME,
+} from 'database/models/artist'
 import { ICreateOneArtistPayload } from 'modules/artist/repository'
 
 const fakeArtistPayload = (
@@ -9,13 +12,17 @@ const fakeArtistPayload = (
 ): Required<ICreateOneArtistPayload> => {
   const { isIncorrect } = config
 
-  const infoLength = isIncorrect
-    ? MIN_LENGTH_ARTIST_INFO - 1
-    : MIN_LENGTH_ARTIST_INFO
+  const info = isIncorrect
+    ? lorem.word(MIN_LENGTH_ARTIST_INFO - 1)
+    : lorem.words(5)
+
+  const name = isIncorrect
+    ? lorem.word(MIN_LENGTH_ARTIST_NAME - 1)
+    : lorem.words(2)
 
   return {
-    name: name.findName(),
-    info: lorem.word(infoLength),
+    name,
+    info,
     photo: null,
   }
 }

@@ -1,11 +1,11 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
+import { fakeEntityId } from '__tests__/fakeData/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { TrackModel } from 'database/models/track'
 import { TrackHistoryModel } from 'database/models/trackHistory'
 import * as db from 'database/utils/db'
-import generateEntityId from 'database/utils/generateEntityId'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteManyTrackHistoryFilter,
@@ -66,7 +66,7 @@ describe('Track history repository', () => {
     })
 
     it('with incorrect data throw validation error', async () => {
-      const trackHistoryPayload = fakeRepoTrackHistoryPayload({
+      const trackHistoryPayload = fakeRepoTrackHistoryPayload(null, {
         isIncorrect: true,
       })
 
@@ -75,7 +75,7 @@ describe('Track history repository', () => {
           trackHistoryPayload,
         )
 
-        expect(newTrackHistory).not.toBeDefined()
+        expect(newTrackHistory).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
@@ -121,7 +121,7 @@ describe('Track history repository', () => {
     })
 
     it('by user id which not exists', async () => {
-      const filter: IFindAllTrackHistoryFilter = { user: generateEntityId() }
+      const filter: IFindAllTrackHistoryFilter = { user: fakeEntityId() }
       const trackHistories = await trackHistoryRepository.findAllWhere(filter)
 
       expect(findAllWhereSpy).toBeCalledTimes(1)
@@ -159,14 +159,14 @@ describe('Track history repository', () => {
     })
 
     it('by id which not exist and throw not found error', async () => {
-      const filter: IDeleteOneTrackHistoryFilter = { id: generateEntityId() }
+      const filter: IDeleteOneTrackHistoryFilter = { id: fakeEntityId() }
 
       try {
         const deletedTrackHistory = await trackHistoryRepository.deleteOne(
           filter,
         )
 
-        expect(deletedTrackHistory).not.toBeDefined()
+        expect(deletedTrackHistory).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(filter)
@@ -214,7 +214,7 @@ describe('Track history repository', () => {
 
     it('by track ids which not exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
-        trackIds: [generateEntityId()],
+        trackIds: [fakeEntityId()],
       }
 
       const deletionResult = await trackHistoryRepository.deleteMany(filter)

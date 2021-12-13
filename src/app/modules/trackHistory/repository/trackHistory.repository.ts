@@ -27,14 +27,19 @@ class TrackHistoryRepository implements ITrackHistoryRepository {
     filter,
   ) => {
     try {
-      const { user } = omitUndefined(filter)
+      const { user, track } = omitUndefined(filter)
 
       const filterByUser: FilterQuery<ITrackHistoryDocument> = user
         ? { user }
         : {}
 
+      const filterByTrack: FilterQuery<ITrackHistoryDocument> = track
+        ? { track }
+        : {}
+
       const filterToApply: FilterQuery<ITrackHistoryDocument> = {
         ...filterByUser,
+        ...filterByTrack,
       }
 
       const trackHistories = await this.trackHistory.find(filterToApply).exec()

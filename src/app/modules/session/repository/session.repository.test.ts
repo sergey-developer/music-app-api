@@ -59,7 +59,7 @@ describe('Session repository', () => {
 
       try {
         const newSession = await sessionRepository.createOne(sessionPayload)
-        expect(newSession).not.toBeDefined()
+        expect(newSession).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
         expect(createOneSpy).toBeCalledWith(sessionPayload)
@@ -95,7 +95,7 @@ describe('Session repository', () => {
 
       try {
         const session = await sessionRepository.findOne(filter)
-        expect(session).not.toBeDefined()
+        expect(session).not.toBeTruthy()
       } catch (error) {
         expect(findOneSpy).toBeCalledTimes(1)
         expect(findOneSpy).toBeCalledWith(filter)
@@ -131,7 +131,7 @@ describe('Session repository', () => {
 
       try {
         const deletedSession = await sessionRepository.deleteOne(filter)
-        expect(deletedSession).not.toBeDefined()
+        expect(deletedSession).not.toBeTruthy()
       } catch (error) {
         expect(deleteOneSpy).toBeCalledTimes(1)
         expect(deleteOneSpy).toBeCalledWith(filter)
