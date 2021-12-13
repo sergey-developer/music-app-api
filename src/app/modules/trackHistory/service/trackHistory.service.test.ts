@@ -102,13 +102,15 @@ describe('Track history service', () => {
       expect(trackHistories).toHaveLength(2)
     })
 
-    it('by user id which exists', async () => {
-      const newTrackHistory = await trackHistoryService.createOne(
-        fakeServiceTrackHistoryPayload(),
-      )
+    it('by user which has track histories', async () => {
+      const payload1 = fakeServiceTrackHistoryPayload()
+      const payload2 = fakeServiceTrackHistoryPayload()
+
+      await trackHistoryService.createOne(payload1)
+      await trackHistoryService.createOne(payload2)
 
       const filter: IGetAllTrackHistoryFilter = {
-        user: newTrackHistory.user.toString(),
+        user: payload1.user,
       }
       const trackHistories = await trackHistoryService.getAll(filter)
 
@@ -117,7 +119,10 @@ describe('Track history service', () => {
       expect(trackHistories).toHaveLength(1)
     })
 
-    it('by user id which not exists', async () => {
+    it('by user which do not have track histories', async () => {
+      const payload = fakeServiceTrackHistoryPayload()
+      await trackHistoryService.createOne(payload)
+
       const filter: IGetAllTrackHistoryFilter = { user: fakeEntityId() }
       const trackHistories = await trackHistoryService.getAll(filter)
 

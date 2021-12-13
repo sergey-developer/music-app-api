@@ -191,6 +191,7 @@ class TrackService implements ITrackService {
 
     const { tracks = [] } = deleteManyFilter
     const trackIds = tracks.map((track) => track.id)
+
     let deletionResult
 
     try {

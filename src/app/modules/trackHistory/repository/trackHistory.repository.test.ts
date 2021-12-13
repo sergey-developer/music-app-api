@@ -104,13 +104,15 @@ describe('Track history repository', () => {
       expect(trackHistories).toHaveLength(2)
     })
 
-    it('by user id which exists', async () => {
-      const newTrackHistory = await trackHistoryRepository.createOne(
-        fakeRepoTrackHistoryPayload(),
-      )
+    it('by user which has track histories', async () => {
+      const payload1 = fakeRepoTrackHistoryPayload()
+      const payload2 = fakeRepoTrackHistoryPayload()
+
+      await trackHistoryRepository.createOne(payload1)
+      await trackHistoryRepository.createOne(payload2)
 
       const filter: IFindAllTrackHistoryFilter = {
-        user: newTrackHistory.user.toString(),
+        user: payload1.user,
       }
       const trackHistories = await trackHistoryRepository.findAllWhere(filter)
 
@@ -120,8 +122,44 @@ describe('Track history repository', () => {
       expect(trackHistories).toHaveLength(1)
     })
 
-    it('by user id which not exists', async () => {
+    it('by user which do not have track histories', async () => {
+      const payload = fakeRepoTrackHistoryPayload()
+      await trackHistoryRepository.createOne(payload)
+
       const filter: IFindAllTrackHistoryFilter = { user: fakeEntityId() }
+      const trackHistories = await trackHistoryRepository.findAllWhere(filter)
+
+      expect(findAllWhereSpy).toBeCalledTimes(1)
+      expect(findAllWhereSpy).toBeCalledWith(filter)
+      expect(Array.isArray(trackHistories)).toBe(true)
+      expect(trackHistories).toHaveLength(0)
+    })
+
+    it('by track with track histories', async () => {
+      const payload1 = fakeRepoTrackHistoryPayload()
+      const payload2 = fakeRepoTrackHistoryPayload()
+
+      await trackHistoryRepository.createOne(payload1)
+      await trackHistoryRepository.createOne(payload2)
+
+      const filter: IFindAllTrackHistoryFilter = {
+        track: payload1.track,
+      }
+      const trackHistories = await trackHistoryRepository.findAllWhere(filter)
+
+      expect(findAllWhereSpy).toBeCalledTimes(1)
+      expect(findAllWhereSpy).toBeCalledWith(filter)
+      expect(Array.isArray(trackHistories)).toBe(true)
+      expect(trackHistories).toHaveLength(1)
+    })
+
+    it('by track without track histories', async () => {
+      const payload = fakeRepoTrackHistoryPayload()
+      await trackHistoryRepository.createOne(payload)
+
+      const filter: IFindAllTrackHistoryFilter = {
+        track: fakeEntityId(),
+      }
       const trackHistories = await trackHistoryRepository.findAllWhere(filter)
 
       expect(findAllWhereSpy).toBeCalledTimes(1)
@@ -188,7 +226,6 @@ describe('Track history repository', () => {
 
       await trackHistoryRepository.createOne(trackHistoryPayload1)
       await trackHistoryRepository.createOne(trackHistoryPayload2)
-      await trackHistoryRepository.createOne(fakeRepoTrackHistoryPayload())
     })
 
     it('with empty filter', async () => {
@@ -197,19 +234,19 @@ describe('Track history repository', () => {
 
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
-      expect(deletionResult.deletedCount).toBe(3)
+      expect(deletionResult.deletedCount).toBe(2)
     })
 
     it('by track ids which exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
-        trackIds: [trackHistoryPayload1.track, trackHistoryPayload2.track],
+        trackIds: [trackHistoryPayload1.track],
       }
 
       const deletionResult = await trackHistoryRepository.deleteMany(filter)
 
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
-      expect(deletionResult.deletedCount).toBe(2)
+      expect(deletionResult.deletedCount).toBe(1)
     })
 
     it('by track ids which not exists', async () => {

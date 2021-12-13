@@ -5,11 +5,12 @@ import { fakeArtistPayload } from '__tests__/fakeData/artist'
 import { fakeServiceTrackPayload } from '__tests__/fakeData/track'
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { fakeEntityId } from '__tests__/fakeData/utils'
+import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
 import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { DatabaseNotFoundError } from 'database/errors'
+import { ITrackDocument } from 'database/models/track'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
@@ -17,7 +18,11 @@ import { AlbumRepository } from 'modules/album/repository'
 import { ArtistRepository } from 'modules/artist/repository'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { RequestRepository } from 'modules/request/repository'
-import { IGetAllTracksFilter, TrackService } from 'modules/track/service'
+import {
+  IDeleteManyTracksFilter,
+  IGetAllTracksFilter,
+  TrackService,
+} from 'modules/track/service'
 import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 
 let artistRepository: ArtistRepository
@@ -271,20 +276,15 @@ describe('Track service', () => {
     })
 
     it('by artist which does not have tracks', async () => {
-      const artist1 = await artistRepository.createOne(fakeArtistPayload())
-      const artist2 = await artistRepository.createOne(fakeArtistPayload())
+      const artist = await artistRepository.createOne(fakeArtistPayload())
 
-      const album1 = await albumRepository.createOne(
-        fakeAlbumPayload({ artist: artist1.id }),
+      const album = await albumRepository.createOne(
+        fakeAlbumPayload({ artist: artist.id }),
       )
-      await albumRepository.createOne(fakeAlbumPayload({ artist: artist2.id }))
 
-      await trackService.createOne(
-        fakeServiceTrackPayload({ album: album1.id }),
-      )
-      await trackService.createOne(fakeServiceTrackPayload())
+      await trackService.createOne(fakeServiceTrackPayload({ album: album.id }))
 
-      const filter: IGetAllTracksFilter = { artist: artist2.id }
+      const filter: IGetAllTracksFilter = { artist: fakeEntityId() }
       const tracks = await trackService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
@@ -308,8 +308,8 @@ describe('Track service', () => {
     })
 
     it('by albums which do not have tracks', async () => {
-      await trackService.createOne(fakeServiceTrackPayload())
-      await trackService.createOne(fakeServiceTrackPayload())
+      const payload = fakeServiceTrackPayload()
+      await trackService.createOne(payload)
 
       const filter: IGetAllTracksFilter = { albumIds: [fakeEntityId()] }
       const tracks = await trackService.getAll(filter)
@@ -389,15 +389,11 @@ describe('Track service', () => {
 
       const deletedTrack = await trackService.deleteOneById(newTrack.id)
 
-      try {
-        const request = await requestRepository.findOne({
-          entity: deletedTrack.id,
-        })
+      const requests = await requestRepository.findAllWhere({
+        entityIds: [deletedTrack.id],
+      })
 
-        expect(request).not.toBeTruthy()
-      } catch (error) {
-        expect(error).toBeInstanceOf(DatabaseNotFoundError)
-      }
+      expect(requests).toHaveLength(0)
     })
 
     it('track histories of track were successfully deleted', async () => {
@@ -416,40 +412,69 @@ describe('Track service', () => {
       expect(trackHistories).toHaveLength(0)
     })
   })
-  //
-  // describe('Delete many tracks', () => {
-  //   let deleteManySpy: jest.SpyInstance
-  //   let newTrack1: ITrackDocument
-  //   let newTrack2: ITrackDocument
-  //   let newTrack3: ITrackDocument
-  //
-  //   beforeEach(async () => {
-  //     deleteManySpy = jest.spyOn(trackService, 'deleteMany')
-  //
-  //     newTrack1 = await trackService.createOne(fakeRepoTrackPayload())
-  //     newTrack2 = await trackService.createOne(fakeRepoTrackPayload())
-  //     newTrack3 = await trackService.createOne(fakeRepoTrackPayload())
-  //   })
-  //
-  //   it('with empty filter', async () => {
-  //     const filter = {}
-  //     const deletionResult = await trackService.deleteMany(filter)
-  //
-  //     expect(deleteManySpy).toBeCalledTimes(1)
-  //     expect(deleteManySpy).toBeCalledWith(filter)
-  //     expect(deletionResult.deletedCount).toBe(3)
-  //   })
-  //
-  //   it('has track ids', async () => {
-  //     const filter: IDeleteManyTracksFilter = {
-  //       ids: [newTrack1.id, newTrack2.id],
-  //     }
-  //
-  //     const deletionResult = await trackService.deleteMany(filter)
-  //
-  //     expect(deleteManySpy).toBeCalledTimes(1)
-  //     expect(deleteManySpy).toBeCalledWith(filter)
-  //     expect(deletionResult.deletedCount).toBe(2)
-  //   })
-  // })
+
+  describe('Delete many tracks', () => {
+    let deleteManySpy: jest.SpyInstance
+    let newTrack1: ITrackDocument
+    let newTrack2: ITrackDocument
+
+    beforeEach(async () => {
+      deleteManySpy = jest.spyOn(trackService, 'deleteMany')
+
+      newTrack1 = await trackService.createOne(fakeServiceTrackPayload())
+      newTrack2 = await trackService.createOne(fakeServiceTrackPayload())
+    })
+
+    it('with empty filter', async () => {
+      const filter = {}
+
+      try {
+        const deletionResult = await trackService.deleteMany(filter)
+        expect(deletionResult).not.toBeTruthy()
+      } catch (error: any) {
+        expect(deleteManySpy).toBeCalledTimes(1)
+        expect(deleteManySpy).toBeCalledWith(filter)
+        expect(error).toBeInstanceOf(AppValidationError)
+        expect(error.message).toBe(EMPTY_FILTER_ERR_MSG)
+      }
+    })
+
+    it('by tracks which exists', async () => {
+      const filter: IDeleteManyTracksFilter = {
+        tracks: [newTrack1],
+      }
+
+      const deletionResult = await trackService.deleteMany(filter)
+
+      expect(deleteManySpy).toBeCalledTimes(1)
+      expect(deleteManySpy).toBeCalledWith(filter)
+      expect(deletionResult.deletedCount).toBe(1)
+    })
+
+    it('requests of tracks were successfully deleted', async () => {
+      const filter: IDeleteManyTracksFilter = { tracks: [newTrack1] }
+      await trackService.deleteMany(filter)
+
+      const requests = await requestRepository.findAllWhere({
+        entityIds: [newTrack1.id],
+      })
+
+      expect(requests).toHaveLength(0)
+    })
+
+    it('track histories of track were successfully deleted', async () => {
+      await trackHistoryRepository.createOne(
+        fakeRepoTrackHistoryPayload({ track: newTrack1.id }),
+      )
+
+      const filter: IDeleteManyTracksFilter = { tracks: [newTrack1] }
+      await trackService.deleteMany(filter)
+
+      const trackHistories = await trackHistoryRepository.findAllWhere({
+        track: newTrack1.id,
+      })
+
+      expect(trackHistories).toHaveLength(0)
+    })
+  })
 })
