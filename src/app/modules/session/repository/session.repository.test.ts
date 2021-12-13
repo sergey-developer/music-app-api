@@ -3,8 +3,8 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoSessionPayload } from '__tests__/fakeData/session'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
-import { SessionModel } from 'database/models/session'
 import * as db from 'database/utils/db'
+import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteOneSessionFilter,
@@ -19,10 +19,7 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  DiContainer.register(DiTokenEnum.Session, {
-    useValue: SessionModel,
-  })
-
+  registerModel(DiTokenEnum.Session)
   sessionRepository = DiContainer.resolve(SessionRepository)
 })
 

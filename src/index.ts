@@ -12,8 +12,11 @@ runServer()
 //  session (model, repo, service)
 //  user (model, repo, service)
 //  trackHistory (service, repo)
-//  track (repo)
+//  track (repo, service)
+//
 
+// TODO: скопировать PopulatedDoc, только вместо ObjectId | undefined, просто ObjectId
+// TODO: протестить удаление фото
 // TODO: положить jest.config/setup в папку __tests__
 // TODO: создать свои функции для вызовов faker
 // TODO: поправить id: any в типах моделей из-за "extends Document"

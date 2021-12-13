@@ -6,8 +6,8 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { SessionModel } from 'database/models/session'
 import * as db from 'database/utils/db'
+import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { SessionService } from 'modules/session/service'
 
@@ -18,10 +18,7 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  DiContainer.register(DiTokenEnum.Session, {
-    useValue: SessionModel,
-  })
-
+  registerModel(DiTokenEnum.Session)
   sessionService = DiContainer.resolve(SessionService)
 })
 

@@ -1,1 +1,1 @@
-export { default as fakeAlbumPayload } from './fakeAlbumPayload'
+export { default as fakeRepoAlbumPayload } from './fakeRepoAlbumPayload'

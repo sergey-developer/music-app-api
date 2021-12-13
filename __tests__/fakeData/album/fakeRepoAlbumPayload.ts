@@ -6,7 +6,7 @@ import { MaybeNull } from 'app/interface/utils'
 import { MIN_LENGTH_ALBUM_NAME } from 'database/models/album'
 import { ICreateOneAlbumPayload } from 'modules/album/repository'
 
-const fakeAlbumPayload = (
+const fakeRepoAlbumPayload = (
   payload?: MaybeNull<Partial<Pick<ICreateOneAlbumPayload, 'artist'>>>,
   config: IFakePayloadConfig = {},
 ): Required<ICreateOneAlbumPayload> => {
@@ -24,4 +24,4 @@ const fakeAlbumPayload = (
   }
 }
 
-export default fakeAlbumPayload
+export default fakeRepoAlbumPayload

@@ -3,7 +3,6 @@ import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,
@@ -37,7 +36,8 @@ class AlbumRepository implements IAlbumRepository {
         ...filterById,
       }
 
-      return this.album.find(filterToApply).exec()
+      const albums = await this.album.find(filterToApply).exec()
+      return albums
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
@@ -50,7 +50,8 @@ class AlbumRepository implements IAlbumRepository {
       const filterById: FilterQuery<IAlbumDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
-      return this.album.findOne(filterToApply).orFail().exec()
+      const album = await this.album.findOne(filterToApply).orFail().exec()
+      return album
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -95,10 +96,12 @@ class AlbumRepository implements IAlbumRepository {
       const filterById: FilterQuery<IAlbumDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
-      return this.album
+      const album = await this.album
         .findOneAndUpdate(filterToApply, updates, optionsToApply)
         .orFail()
         .exec()
+
+      return album
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -149,7 +152,8 @@ class AlbumRepository implements IAlbumRepository {
 
       const filterToApply: FilterQuery<IAlbumDocument> = { ...filterById }
 
-      return this.album.deleteMany(filterToApply).exec()
+      const deletionResult = await this.album.deleteMany(filterToApply).exec()
+      return deletionResult
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
