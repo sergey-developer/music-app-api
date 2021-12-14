@@ -9,14 +9,23 @@ import { TrackHistoryModel } from 'database/models/trackHistory'
 import { UserModel } from 'database/models/user'
 import { DiTokenEnum } from 'lib/dependency-injection'
 
-const DiTokenToModel = {
-  [DiTokenEnum.Artist]: ArtistModel,
-  [DiTokenEnum.Album]: AlbumModel,
-  [DiTokenEnum.Track]: TrackModel,
-  [DiTokenEnum.TrackHistory]: TrackHistoryModel,
-  [DiTokenEnum.Request]: RequestModel,
-  [DiTokenEnum.User]: UserModel,
-  [DiTokenEnum.Session]: SessionModel,
+const DiTokenToModel: Record<
+  DiTokenEnum,
+  | typeof ArtistModel
+  | typeof AlbumModel
+  | typeof TrackModel
+  | typeof TrackHistoryModel
+  | typeof RequestModel
+  | typeof UserModel
+  | typeof SessionModel
+> = {
+  ArtistModel: ArtistModel,
+  AlbumModel: AlbumModel,
+  TrackModel: TrackModel,
+  TrackHistoryModel: TrackHistoryModel,
+  RequestModel: RequestModel,
+  UserModel: UserModel,
+  SessionModel: SessionModel,
 }
 
 const registerModel = (token: DiTokenEnum) => {

@@ -2,7 +2,10 @@ import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoAlbumPayload } from '__tests__/fakeData/album'
 import { fakeArtistPayload } from '__tests__/fakeData/artist'
-import { fakeServiceTrackPayload } from '__tests__/fakeData/track'
+import {
+  fakeRepoTrackPayload,
+  fakeServiceTrackPayload,
+} from '__tests__/fakeData/track'
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { fakeEntityId } from '__tests__/fakeData/utils'
 import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
@@ -18,6 +21,7 @@ import { AlbumRepository } from 'modules/album/repository'
 import { ArtistRepository } from 'modules/artist/repository'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { RequestRepository } from 'modules/request/repository'
+import { TrackRepository } from 'modules/track/repository'
 import {
   IDeleteManyTracksFilter,
   IGetAllTracksFilter,
@@ -28,6 +32,7 @@ import { TrackHistoryRepository } from 'modules/trackHistory/repository'
 let artistRepository: ArtistRepository
 let albumRepository: AlbumRepository
 let trackService: TrackService
+let trackRepository: TrackRepository
 let trackHistoryRepository: TrackHistoryRepository
 let requestRepository: RequestRepository
 
@@ -45,6 +50,7 @@ beforeEach(() => {
   artistRepository = DiContainer.resolve(ArtistRepository)
   albumRepository = DiContainer.resolve(AlbumRepository)
   trackService = DiContainer.resolve(TrackService)
+  trackRepository = DiContainer.resolve(TrackRepository)
   trackHistoryRepository = DiContainer.resolve(TrackHistoryRepository)
   requestRepository = DiContainer.resolve(RequestRepository)
 })
@@ -80,11 +86,11 @@ describe('Track service', () => {
       const trackPayload = fakeServiceTrackPayload()
       const newTrack = await trackService.createOne(trackPayload)
 
-      const trackRequest = await requestRepository.findOne({
+      const request = await requestRepository.findOne({
         entity: newTrack.id,
       })
 
-      expect(trackRequest.entity.id).toBe(newTrack.id)
+      expect(request.entity.id).toBe(newTrack.id)
     })
 
     it('with incorrect data throw validation error', async () => {
@@ -183,19 +189,31 @@ describe('Track service', () => {
       expect(tracks).toHaveLength(2)
     })
 
-    it('by user', async () => {
-      const payload1 = fakeServiceTrackPayload()
-      const payload2 = fakeServiceTrackPayload()
+    it('by user which has tracks', async () => {
+      const creationPayload1 = fakeServiceTrackPayload()
+      const creationPayload2 = fakeServiceTrackPayload()
 
-      await trackService.createOne(payload1)
-      await trackService.createOne(payload2)
+      await trackService.createOne(creationPayload1)
+      await trackService.createOne(creationPayload2)
 
-      const filter: IGetAllTracksFilter = { userId: payload1.user }
+      const filter: IGetAllTracksFilter = { userId: creationPayload1.user }
       const tracks = await trackService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
       expect(getAllSpy).toBeCalledWith(filter)
       expect(tracks).toHaveLength(1)
+    })
+
+    it('by user which does not have tracks', async () => {
+      const creationPayload = fakeServiceTrackPayload()
+      await trackService.createOne(creationPayload)
+
+      const filter: IGetAllTracksFilter = { userId: fakeEntityId() }
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(0)
     })
 
     it('by pending status', async () => {
@@ -318,6 +336,48 @@ describe('Track service', () => {
       expect(getAllSpy).toBeCalledWith(filter)
       expect(tracks).toHaveLength(0)
     })
+
+    it('by album which has tracks', async () => {
+      const trackPayload1 = fakeServiceTrackPayload()
+      const trackPayload2 = fakeServiceTrackPayload()
+
+      await trackService.createOne(trackPayload1)
+      await trackService.createOne(trackPayload2)
+
+      const filter: IGetAllTracksFilter = { albumId: trackPayload1.album }
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(1)
+    })
+
+    it('by album which does not have tracks', async () => {
+      const payload = fakeServiceTrackPayload()
+      await trackService.createOne(payload)
+
+      const filter: IGetAllTracksFilter = { albumId: fakeEntityId() }
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(0)
+    })
+
+    it('if tracks do not have requests', async () => {
+      const creationPayload1 = fakeRepoTrackPayload()
+      const creationPayload2 = fakeRepoTrackPayload()
+
+      await trackRepository.createOne(creationPayload1)
+      await trackRepository.createOne(creationPayload2)
+
+      const filter = {}
+      const tracks = await trackService.getAll(filter)
+
+      expect(getAllSpy).toBeCalledTimes(1)
+      expect(getAllSpy).toBeCalledWith(filter)
+      expect(tracks).toHaveLength(0)
+    })
   })
 
   describe('Get one track by id', () => {
@@ -390,7 +450,7 @@ describe('Track service', () => {
       const deletedTrack = await trackService.deleteOneById(newTrack.id)
 
       const requests = await requestRepository.findAllWhere({
-        entityIds: [deletedTrack.id],
+        entity: deletedTrack.id,
       })
 
       expect(requests).toHaveLength(0)
@@ -456,7 +516,7 @@ describe('Track service', () => {
       await trackService.deleteMany(filter)
 
       const requests = await requestRepository.findAllWhere({
-        entityIds: [newTrack1.id],
+        entity: newTrack1.id,
       })
 
       expect(requests).toHaveLength(0)

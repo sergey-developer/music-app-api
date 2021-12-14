@@ -32,7 +32,7 @@ class RequestRepository implements IRequestRepository {
 
   public findAllWhere: IRequestRepository['findAllWhere'] = async (filter) => {
     try {
-      const { status, creator, kind, entityIds } = omitUndefined(filter)
+      const { status, creator, kind, entity } = omitUndefined(filter)
 
       const filterByEntityName: FilterQuery<IRequestDocument> = kind
         ? { entityName: kind }
@@ -46,9 +46,9 @@ class RequestRepository implements IRequestRepository {
         ? { creator }
         : {}
 
-      const filterByEntity: FilterQuery<IRequestDocument> = isEmpty(entityIds)
-        ? {}
-        : { entity: { $in: entityIds } }
+      const filterByEntity: FilterQuery<IRequestDocument> = entity
+        ? { entity }
+        : {}
 
       const filterToApply: FilterQuery<IRequestDocument> = {
         ...filterByEntityName,

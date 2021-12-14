@@ -18,7 +18,6 @@ import {
 } from 'database/errors'
 import { DocumentIdArray } from 'database/interface/document'
 import { IAlbumDocument } from 'database/models/album'
-import { ITrackDocumentArray } from 'database/models/track'
 import logger from 'lib/logger'
 import { AlbumRepository } from 'modules/album/repository'
 import { IAlbumService } from 'modules/album/service'
@@ -28,12 +27,6 @@ import { TrackService } from 'modules/track/service'
 
 @singleton()
 class AlbumService implements IAlbumService {
-  private getTracksByAlbumsIds = async (
-    albumIds: DocumentIdArray,
-  ): Promise<ITrackDocumentArray> => {
-    return this.trackService.getAll({ albumIds })
-  }
-
   public constructor(
     @inject(delay(() => AlbumRepository))
     private readonly albumRepository: AlbumRepository,
@@ -53,14 +46,21 @@ class AlbumService implements IAlbumService {
         kind: EntityNamesEnum.Album,
       })
 
+      if (isEmpty(requests)) {
+        return []
+      }
+
       const albumIds = requests.map((request) => {
         const entity = request.entity as IAlbumDocument
         return entity.id
       })
 
-      const repoFilter = { artist, ids: albumIds }
+      const albums = await this.albumRepository.findAllWhere({
+        artist,
+        ids: albumIds,
+      })
 
-      return this.albumRepository.findAllWhere(repoFilter)
+      return albums
     } catch (error: any) {
       logger.error(error.stack, {
         args: { filter },
@@ -199,7 +199,10 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      const tracksByAlbumId = await this.getTracksByAlbumsIds([album.id])
+      const tracksByAlbumId = await this.trackService.getAll({
+        albumId: album.id,
+      })
+
       const albumHasTracks = !isEmpty(tracksByAlbumId)
 
       if (albumHasTracks) {
@@ -249,7 +252,10 @@ class AlbumService implements IAlbumService {
     }
 
     try {
-      const tracksByAlbumsIds = await this.getTracksByAlbumsIds(albumIds)
+      const tracksByAlbumsIds = await this.trackService.getAll({
+        albumIds,
+      })
+
       const albumsHaveTracks = !isEmpty(tracksByAlbumsIds)
 
       if (albumsHaveTracks) {

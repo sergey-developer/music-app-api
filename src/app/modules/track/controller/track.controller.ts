@@ -22,7 +22,7 @@ class TrackController implements ITrackController {
       if (userIsAuthorized) {
         tracks = await this.trackService.getAll({
           ...filter,
-          albumIds: album ? [album] : undefined,
+          albumId: album,
         })
       } else {
         tracks = await this.trackService.getAll({

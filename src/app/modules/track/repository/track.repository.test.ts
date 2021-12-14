@@ -240,6 +240,41 @@ describe('Track repository', () => {
       expect(tracks).toHaveLength(0)
     })
 
+    it('by album which has tracks', async () => {
+      const payload1 = fakeRepoTrackPayload()
+      const payload2 = fakeRepoTrackPayload()
+
+      await trackRepository.createOne(payload1)
+      await trackRepository.createOne(payload2)
+
+      const filter: IFindAllTracksFilter = {
+        albumId: payload1.album,
+      }
+
+      const tracks = await trackRepository.findAllWhere(filter)
+
+      expect(findAllWhereSpy).toBeCalledTimes(1)
+      expect(findAllWhereSpy).toBeCalledWith(filter)
+      expect(Array.isArray(tracks)).toBe(true)
+      expect(tracks).toHaveLength(1)
+    })
+
+    it('by album which does not have tracks', async () => {
+      const payload = fakeRepoTrackPayload()
+      await trackRepository.createOne(payload)
+
+      const filter: IFindAllTracksFilter = {
+        albumId: fakeEntityId(),
+      }
+
+      const tracks = await trackRepository.findAllWhere(filter)
+
+      expect(findAllWhereSpy).toBeCalledTimes(1)
+      expect(findAllWhereSpy).toBeCalledWith(filter)
+      expect(Array.isArray(tracks)).toBe(true)
+      expect(tracks).toHaveLength(0)
+    })
+
     it('by artist which has tracks', async () => {
       const newArtist1 = await artistRepository.createOne(fakeArtistPayload())
       const newArtist2 = await artistRepository.createOne(fakeArtistPayload())

@@ -1,6 +1,6 @@
 import { DeleteResult } from 'mongodb'
 
-import { DocumentIdArray } from 'database/interface/document'
+import { DocumentId, DocumentIdArray } from 'database/interface/document'
 import { ITrackDocument } from 'database/models/track'
 import { ITrackDocumentArray } from 'database/models/track'
 import {
@@ -13,6 +13,7 @@ export interface IFindAllTracksFilter
   extends Pick<GetAllTracksQuery, 'artist'>,
     Partial<{
       ids: DocumentIdArray
+      albumId: DocumentId
       albumIds: DocumentIdArray
     }> {}
 

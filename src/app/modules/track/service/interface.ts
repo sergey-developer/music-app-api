@@ -11,6 +11,7 @@ import {
 export interface IGetAllTracksFilter
   extends Omit<GetAllTracksQuery, 'album'>,
     Partial<{
+      albumId: DocumentId
       albumIds: DocumentIdArray
     }> {}
 

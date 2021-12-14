@@ -37,7 +37,7 @@ class TrackService implements ITrackService {
 
   public getAll: ITrackService['getAll'] = async (filter) => {
     try {
-      const { status, userId, artist, albumIds } = filter
+      const { status, userId, artist, albumId, albumIds } = filter
 
       const requests = await this.requestService.getAll({
         status,
@@ -56,6 +56,7 @@ class TrackService implements ITrackService {
 
       const tracks = await this.trackRepository.findAllWhere({
         artist,
+        albumId,
         albumIds,
         ids: trackIds,
       })

@@ -9,8 +9,10 @@ import { IImageService } from 'modules/image/service'
 
 @singleton()
 class ImageService implements IImageService {
-  public constructor(private readonly dir: string) {
-    this.dir = config.get<string>('app.uploads.imagesDir')
+  private readonly dir: string
+
+  public constructor() {
+    this.dir = config.get('app.uploads.imagesDir')
   }
 
   public deleteOneByName: IImageService['deleteOneByName'] = async (name) => {

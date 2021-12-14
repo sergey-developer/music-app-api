@@ -11,17 +11,20 @@ runServer()
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
 //  user (model, repo, service)
-//  trackHistory (service, repo)
-//  track (repo, service)
-//
+//  trackHistory (service, repo) - проверить и отрефакторить
+//  track (repo, service) - проверить и отрефакторить
+//  album (repo, service)
 
 // TODO: скопировать PopulatedDoc, только вместо ObjectId | undefined, просто ObjectId
+//  и поправить код в тестах где это затрагивает
+// TODO: переименовать в creationPayload
 // TODO: протестить удаление фото
+// TODO: Написать тесты что выбрасывается unknown error и др.
+
 // TODO: положить jest.config/setup в папку __tests__
 // TODO: создать свои функции для вызовов faker
 // TODO: поправить id: any в типах моделей из-за "extends Document"
 // TODO: исп-ть unique validator где он не используется
-// TODO: Написать тесты что выбрасывается server error и др.
 // TODO: исп-ть lean
 
 // TODO: отрефакторить сообщения для логирования

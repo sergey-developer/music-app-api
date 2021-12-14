@@ -10,7 +10,7 @@ import { GetAllRequestsQuery, UpdateRequestDto } from 'modules/request/dto'
 export interface IFindAllRequestsFilter
   extends GetAllRequestsQuery,
     Partial<{
-      entityIds: DocumentIdArray
+      entity: DocumentId
     }> {}
 
 export interface IFindOneRequestFilter

@@ -22,14 +22,16 @@ class TrackRepository implements ITrackRepository {
 
   public findAllWhere: ITrackRepository['findAllWhere'] = async (filter) => {
     try {
-      const { artist, albumIds, ids } = omitUndefined(filter)
+      const { artist, albumIds, albumId, ids } = omitUndefined(filter)
 
       const filterById: FilterQuery<ITrackDocument> = isEmpty(ids)
         ? {}
         : { _id: { $in: ids } }
 
       const filterByAlbum: FilterQuery<ITrackDocument> = isEmpty(albumIds)
-        ? {}
+        ? albumId
+          ? { album: albumId }
+          : {}
         : { album: { $in: albumIds } }
 
       const filterToApply: FilterQuery<ITrackDocument> = {
