@@ -1,7 +1,7 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoAlbumPayload } from '__tests__/fakeData/album'
-import { fakeArtistPayload } from '__tests__/fakeData/artist'
+import { fakeRepoArtistPayload } from '__tests__/fakeData/artist'
 import {
   fakeRepoTrackPayload,
   fakeServiceTrackPayload,
@@ -268,8 +268,8 @@ describe('Track service', () => {
     })
 
     it('by artist which has tracks', async () => {
-      const artist1 = await artistRepository.createOne(fakeArtistPayload())
-      const artist2 = await artistRepository.createOne(fakeArtistPayload())
+      const artist1 = await artistRepository.createOne(fakeRepoArtistPayload())
+      const artist2 = await artistRepository.createOne(fakeRepoArtistPayload())
 
       const albumOfArtist1 = await albumRepository.createOne(
         fakeRepoAlbumPayload({ artist: artist1.id }),
@@ -294,7 +294,7 @@ describe('Track service', () => {
     })
 
     it('by artist which does not have tracks', async () => {
-      const artist = await artistRepository.createOne(fakeArtistPayload())
+      const artist = await artistRepository.createOne(fakeRepoArtistPayload())
 
       const album = await albumRepository.createOne(
         fakeRepoAlbumPayload({ artist: artist.id }),

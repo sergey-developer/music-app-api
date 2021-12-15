@@ -12,8 +12,6 @@ import {
   isDatabaseNotFoundError,
   isDatabaseValidationError,
 } from 'database/errors'
-import { DocumentId } from 'database/interface/document'
-import { IAlbumDocumentArray } from 'database/models/album'
 import { IArtistDocument } from 'database/models/artist'
 import logger from 'lib/logger'
 import { AlbumService } from 'modules/album/service'
@@ -24,14 +22,6 @@ import { RequestService } from 'modules/request/service'
 
 @singleton()
 class ArtistService implements IArtistService {
-  private getArtistAlbums = async (
-    artistId: DocumentId,
-  ): Promise<IAlbumDocumentArray> => {
-    return this.albumService.getAll({
-      artist: artistId,
-    })
-  }
-
   constructor(
     @inject(delay(() => ArtistRepository))
     private readonly artistRepository: ArtistRepository,
@@ -47,11 +37,17 @@ class ArtistService implements IArtistService {
 
   public getAll: IArtistService['getAll'] = async (filter) => {
     try {
+      const { status, userId } = filter
+
       const requests = await this.requestService.getAll({
-        status: filter.status,
-        creator: filter.userId,
+        status,
+        creator: userId,
         kind: EntityNamesEnum.Artist,
       })
+
+      if (isEmpty(requests)) {
+        return []
+      }
 
       const artistIds = requests.map((request) => {
         const entity = request.entity as IArtistDocument
@@ -190,7 +186,9 @@ class ArtistService implements IArtistService {
     }
 
     try {
-      const albumsByArtistId = await this.getArtistAlbums(artist.id)
+      const albumsByArtistId = await this.albumService.getAll({
+        artist: artist.id,
+      })
       const artistHasAlbums = !isEmpty(albumsByArtistId)
 
       if (artistHasAlbums) {

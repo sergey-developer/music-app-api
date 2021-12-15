@@ -1,4 +1,4 @@
-import { lorem } from 'faker'
+import { datatype, lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
 import {
@@ -7,7 +7,7 @@ import {
 } from 'database/models/artist'
 import { ICreateOneArtistPayload } from 'modules/artist/repository'
 
-const fakeArtistPayload = (
+const fakeRepoArtistPayload = (
   config: IFakePayloadConfig = {},
 ): Required<ICreateOneArtistPayload> => {
   const { isIncorrect } = config
@@ -23,8 +23,8 @@ const fakeArtistPayload = (
   return {
     name,
     info,
-    photo: null,
+    photo: datatype.uuid(),
   }
 }
 
-export default fakeArtistPayload
+export default fakeRepoArtistPayload

@@ -4,10 +4,7 @@ import {
   fakeRepoAlbumPayload,
   fakeServiceAlbumPayload,
 } from '__tests__/fakeData/album'
-import {
-  fakeRepoTrackPayload,
-  fakeServiceTrackPayload,
-} from '__tests__/fakeData/track'
+import { fakeServiceTrackPayload } from '__tests__/fakeData/track'
 import { fakeEntityId } from '__tests__/fakeData/utils'
 import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
 import { TrackRepository } from 'app/modules/track/repository'
@@ -27,7 +24,7 @@ import {
 } from 'modules/album/service'
 import { RequestStatusEnum } from 'modules/request/constants'
 import { RequestRepository } from 'modules/request/repository'
-import { IGetAllTracksFilter, TrackService } from 'modules/track/service'
+import { TrackService } from 'modules/track/service'
 
 let albumService: AlbumService
 let albumRepository: AlbumRepository
@@ -267,7 +264,7 @@ describe('Album service', () => {
         { status: RequestStatusEnum.Approved },
       )
 
-      const filter: IGetAllTracksFilter = { status: RequestStatusEnum.Pending }
+      const filter: IGetAllAlbumsFilter = { status: RequestStatusEnum.Pending }
       const albums = await albumService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
@@ -287,7 +284,7 @@ describe('Album service', () => {
         { status: RequestStatusEnum.Approved },
       )
 
-      const filter: IGetAllTracksFilter = { status: RequestStatusEnum.Approved }
+      const filter: IGetAllAlbumsFilter = { status: RequestStatusEnum.Approved }
       const albums = await albumService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
@@ -307,7 +304,7 @@ describe('Album service', () => {
         { status: RequestStatusEnum.Rejected },
       )
 
-      const filter: IGetAllTracksFilter = { status: RequestStatusEnum.Rejected }
+      const filter: IGetAllAlbumsFilter = { status: RequestStatusEnum.Rejected }
       const albums = await albumService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)

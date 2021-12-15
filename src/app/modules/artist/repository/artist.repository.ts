@@ -30,7 +30,8 @@ class ArtistRepository implements IArtistRepository {
 
       const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
 
-      return this.artist.find(filterToApply).exec()
+      const artists = await this.artist.find(filterToApply).exec()
+      return artists
     } catch (error: any) {
       throw new DatabaseUnknownError(error.message)
     }
@@ -43,7 +44,8 @@ class ArtistRepository implements IArtistRepository {
       const filterById: FilterQuery<IArtistDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
 
-      return this.artist.findOne(filterToApply).orFail().exec()
+      const artist = await this.artist.findOne(filterToApply).orFail().exec()
+      return artist
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)
@@ -91,10 +93,12 @@ class ArtistRepository implements IArtistRepository {
       const filterById: FilterQuery<IArtistDocument> = id ? { _id: id } : {}
       const filterToApply: FilterQuery<IArtistDocument> = { ...filterById }
 
-      return this.artist
+      const artist = await this.artist
         .findOneAndUpdate(filterToApply, updates, optionsToApply)
         .orFail()
         .exec()
+
+      return artist
     } catch (error: any) {
       if (error instanceof MongooseError.DocumentNotFoundError) {
         throw new DatabaseNotFoundError(error.message)

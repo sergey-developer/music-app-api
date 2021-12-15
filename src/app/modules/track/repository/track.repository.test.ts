@@ -1,7 +1,7 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoAlbumPayload } from '__tests__/fakeData/album'
-import { fakeArtistPayload } from '__tests__/fakeData/artist'
+import { fakeRepoArtistPayload } from '__tests__/fakeData/artist'
 import { fakeRepoTrackPayload } from '__tests__/fakeData/track'
 import { fakeEntityId } from '__tests__/fakeData/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
@@ -276,8 +276,12 @@ describe('Track repository', () => {
     })
 
     it('by artist which has tracks', async () => {
-      const newArtist1 = await artistRepository.createOne(fakeArtistPayload())
-      const newArtist2 = await artistRepository.createOne(fakeArtistPayload())
+      const newArtist1 = await artistRepository.createOne(
+        fakeRepoArtistPayload(),
+      )
+      const newArtist2 = await artistRepository.createOne(
+        fakeRepoArtistPayload(),
+      )
 
       const newAlbum1 = await albumRepository.createOne(
         fakeRepoAlbumPayload({ artist: newArtist1.id }),
@@ -306,7 +310,7 @@ describe('Track repository', () => {
     })
 
     it('by artist which does not have tracks', async () => {
-      const artist = await artistRepository.createOne(fakeArtistPayload())
+      const artist = await artistRepository.createOne(fakeRepoArtistPayload())
 
       const album = await albumRepository.createOne(
         fakeRepoAlbumPayload({ artist: artist.id }),
