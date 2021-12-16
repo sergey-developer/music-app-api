@@ -1,4 +1,4 @@
-import { lorem } from 'faker'
+import { datatype, lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
 import { fakeEntityId } from '__tests__/fakeData/utils'
@@ -20,7 +20,7 @@ const fakeServiceAlbumPayload = (
     name,
     artist: payload?.artist || fakeEntityId(),
     releaseDate: new Date().toISOString(),
-    image: null,
+    image: datatype.uuid(),
     user: payload?.user || fakeEntityId(),
   }
 }

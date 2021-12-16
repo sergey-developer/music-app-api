@@ -10,6 +10,7 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
+import { DatabaseNotFoundError } from 'database/errors'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
@@ -346,7 +347,7 @@ describe('Artist service', () => {
       expect(deletedArtist).toBeTruthy()
     })
 
-    it('which not exist and throw not found error', async () => {
+    it('which does not exist and throw not found error', async () => {
       const fakeId = fakeEntityId()
 
       try {
@@ -365,11 +366,15 @@ describe('Artist service', () => {
 
       const deletedArtist = await artistService.deleteOneById(newArtist.id)
 
-      const requests = await requestRepository.findAllWhere({
-        entity: deletedArtist.id,
-      })
+      try {
+        const request = await requestRepository.findOne({
+          entity: deletedArtist.id,
+        })
 
-      expect(requests).toHaveLength(0)
+        expect(request).not.toBeTruthy()
+      } catch (error) {
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
+      }
     })
 
     it('albums of artist were successfully deleted', async () => {

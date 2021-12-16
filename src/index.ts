@@ -11,9 +11,10 @@ runServer()
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
 //  user (model, repo, service)
-//  trackHistory (service, repo) - проверить и отрефакторить
-//  track (repo, service) - проверить и отрефакторить
+//  trackHistory (service, repo)
+//  track (repo, service)
 //  album (repo, service)
+//  artist (repo, service)
 
 // TODO: скопировать PopulatedDoc, только вместо ObjectId | undefined, просто ObjectId
 //  и поправить код в тестах где это затрагивает

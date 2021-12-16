@@ -13,6 +13,7 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
+import { DatabaseNotFoundError } from 'database/errors'
 import { ITrackDocument } from 'database/models/track'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'
@@ -74,17 +75,17 @@ describe('Track service', () => {
     })
 
     it('with correct data created successfully', async () => {
-      const trackPayload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(trackPayload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(trackPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newTrack).toBeTruthy()
     })
 
     it('with correct data request successfully created for new track', async () => {
-      const trackPayload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(trackPayload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       const request = await requestRepository.findOne({
         entity: newTrack.id,
@@ -94,16 +95,16 @@ describe('Track service', () => {
     })
 
     it('with incorrect data throw validation error', async () => {
-      const trackPayload = fakeServiceTrackPayload(null, {
+      const creationPayload = fakeServiceTrackPayload(null, {
         isIncorrect: true,
       })
 
       try {
-        const newTrack = await trackService.createOne(trackPayload)
+        const newTrack = await trackService.createOne(creationPayload)
         expect(newTrack).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(trackPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(AppValidationError)
       }
     })
@@ -117,8 +118,8 @@ describe('Track service', () => {
     })
 
     it('with correct data updated successfully', async () => {
-      const trackPayload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(trackPayload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       const trackUpdates = fakeServiceTrackPayload()
       const updatedTrack = await trackService.updateOneById(
@@ -132,8 +133,8 @@ describe('Track service', () => {
     })
 
     it('with incorrect data throw validation error', async () => {
-      const trackPayload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(trackPayload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       const trackUpdates = fakeServiceTrackPayload(null, { isIncorrect: true })
 
@@ -271,18 +272,18 @@ describe('Track service', () => {
       const artist1 = await artistRepository.createOne(fakeRepoArtistPayload())
       const artist2 = await artistRepository.createOne(fakeRepoArtistPayload())
 
-      const albumOfArtist1 = await albumRepository.createOne(
+      const album1 = await albumRepository.createOne(
         fakeRepoAlbumPayload({ artist: artist1.id }),
       )
-      const albumOfArtist2 = await albumRepository.createOne(
+      const album2 = await albumRepository.createOne(
         fakeRepoAlbumPayload({ artist: artist2.id }),
       )
 
       await trackService.createOne(
-        fakeServiceTrackPayload({ album: albumOfArtist1.id }),
+        fakeServiceTrackPayload({ album: album1.id }),
       )
       await trackService.createOne(
-        fakeServiceTrackPayload({ album: albumOfArtist2.id }),
+        fakeServiceTrackPayload({ album: album2.id }),
       )
 
       const filter: IGetAllTracksFilter = { artist: artist1.id }
@@ -311,13 +312,13 @@ describe('Track service', () => {
     })
 
     it('by albums which have tracks', async () => {
-      const trackPayload1 = fakeServiceTrackPayload()
-      const trackPayload2 = fakeServiceTrackPayload()
+      const creationPayload1 = fakeServiceTrackPayload()
+      const creationPayload2 = fakeServiceTrackPayload()
 
-      await trackService.createOne(trackPayload1)
-      await trackService.createOne(trackPayload2)
+      await trackService.createOne(creationPayload1)
+      await trackService.createOne(creationPayload2)
 
-      const filter: IGetAllTracksFilter = { albumIds: [trackPayload1.album] }
+      const filter: IGetAllTracksFilter = { albumIds: [creationPayload1.album] }
       const tracks = await trackService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
@@ -326,8 +327,8 @@ describe('Track service', () => {
     })
 
     it('by albums which do not have tracks', async () => {
-      const payload = fakeServiceTrackPayload()
-      await trackService.createOne(payload)
+      const creationPayload = fakeServiceTrackPayload()
+      await trackService.createOne(creationPayload)
 
       const filter: IGetAllTracksFilter = { albumIds: [fakeEntityId()] }
       const tracks = await trackService.getAll(filter)
@@ -338,13 +339,13 @@ describe('Track service', () => {
     })
 
     it('by album which has tracks', async () => {
-      const trackPayload1 = fakeServiceTrackPayload()
-      const trackPayload2 = fakeServiceTrackPayload()
+      const creationPayload1 = fakeServiceTrackPayload()
+      const creationPayload2 = fakeServiceTrackPayload()
 
-      await trackService.createOne(trackPayload1)
-      await trackService.createOne(trackPayload2)
+      await trackService.createOne(creationPayload1)
+      await trackService.createOne(creationPayload2)
 
-      const filter: IGetAllTracksFilter = { albumId: trackPayload1.album }
+      const filter: IGetAllTracksFilter = { albumId: creationPayload1.album }
       const tracks = await trackService.getAll(filter)
 
       expect(getAllSpy).toBeCalledTimes(1)
@@ -353,8 +354,8 @@ describe('Track service', () => {
     })
 
     it('by album which does not have tracks', async () => {
-      const payload = fakeServiceTrackPayload()
-      await trackService.createOne(payload)
+      const creationPayload = fakeServiceTrackPayload()
+      await trackService.createOne(creationPayload)
 
       const filter: IGetAllTracksFilter = { albumId: fakeEntityId() }
       const tracks = await trackService.getAll(filter)
@@ -388,8 +389,8 @@ describe('Track service', () => {
     })
 
     it('which exists', async () => {
-      const payload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(payload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       const track = await trackService.getOneById(newTrack.id)
 
@@ -398,7 +399,7 @@ describe('Track service', () => {
       expect(track).toBeTruthy()
     })
 
-    it('which not exists', async () => {
+    it('which does not exist throw not found error', async () => {
       const fakeId = fakeEntityId()
 
       try {
@@ -420,8 +421,8 @@ describe('Track service', () => {
     })
 
     it('which exists', async () => {
-      const payload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(payload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       const deletedTrack = await trackService.deleteOneById(newTrack.id)
 
@@ -430,7 +431,7 @@ describe('Track service', () => {
       expect(deletedTrack).toBeTruthy()
     })
 
-    it('which not exist and throw not found error', async () => {
+    it('which does not exist and throw not found error', async () => {
       const fakeId = fakeEntityId()
 
       try {
@@ -444,16 +445,20 @@ describe('Track service', () => {
     })
 
     it('request of track was successfully deleted', async () => {
-      const payload = fakeServiceTrackPayload()
-      const newTrack = await trackService.createOne(payload)
+      const creationPayload = fakeServiceTrackPayload()
+      const newTrack = await trackService.createOne(creationPayload)
 
       const deletedTrack = await trackService.deleteOneById(newTrack.id)
 
-      const requests = await requestRepository.findAllWhere({
-        entity: deletedTrack.id,
-      })
+      try {
+        const request = await requestRepository.findOne({
+          entity: deletedTrack.id,
+        })
 
-      expect(requests).toHaveLength(0)
+        expect(request).not.toBeTruthy()
+      } catch (error) {
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
+      }
     })
 
     it('track histories of track were successfully deleted', async () => {
@@ -512,11 +517,11 @@ describe('Track service', () => {
     })
 
     it('requests of tracks were successfully deleted', async () => {
-      const filter: IDeleteManyTracksFilter = { tracks: [newTrack1] }
+      const filter: IDeleteManyTracksFilter = { tracks: [newTrack1, newTrack2] }
       await trackService.deleteMany(filter)
 
       const requests = await requestRepository.findAllWhere({
-        entity: newTrack1.id,
+        entityIds: [newTrack1.id, newTrack2.id],
       })
 
       expect(requests).toHaveLength(0)

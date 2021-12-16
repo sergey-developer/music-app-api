@@ -47,6 +47,7 @@ describe('Session repository', () => {
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(sessionPayload)
+      expect(newSession.id).toBeTruthy()
       expect(newSession.token).toBeTruthy()
       expect(newSession.user.toString()).toBe(sessionPayload.userId)
     })

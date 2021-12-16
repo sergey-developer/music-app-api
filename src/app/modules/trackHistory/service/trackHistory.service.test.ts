@@ -7,9 +7,8 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
-import { TrackModel } from 'database/models/track'
-import { TrackHistoryModel } from 'database/models/trackHistory'
 import * as db from 'database/utils/db'
+import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteManyTrackHistoryFilter,
@@ -24,13 +23,8 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  DiContainer.register(DiTokenEnum.TrackHistory, {
-    useValue: TrackHistoryModel,
-  })
-
-  DiContainer.register(DiTokenEnum.Track, {
-    useValue: TrackModel,
-  })
+  registerModel(DiTokenEnum.TrackHistory)
+  registerModel(DiTokenEnum.Track)
 
   trackHistoryService = DiContainer.resolve(TrackHistoryService)
 })
@@ -54,30 +48,30 @@ describe('Track history service', () => {
     })
 
     it('with correct data created successfully', async () => {
-      const trackHistoryPayload = fakeServiceTrackHistoryPayload()
+      const creationPayload = fakeServiceTrackHistoryPayload()
       const newTrackHistory = await trackHistoryService.createOne(
-        trackHistoryPayload,
+        creationPayload,
       )
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newTrackHistory).toBeTruthy()
     })
 
     it('with incorrect data throw validation error', async () => {
-      const trackHistoryPayload = fakeServiceTrackHistoryPayload({
+      const creationPayload = fakeServiceTrackHistoryPayload({
         isIncorrect: true,
       })
 
       try {
         const newTrackHistory = await trackHistoryService.createOne(
-          trackHistoryPayload,
+          creationPayload,
         )
 
-        expect(newTrackHistory).not.toBeDefined()
+        expect(newTrackHistory).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(AppValidationError)
       }
     })
@@ -103,14 +97,14 @@ describe('Track history service', () => {
     })
 
     it('by user which has track histories', async () => {
-      const payload1 = fakeServiceTrackHistoryPayload()
-      const payload2 = fakeServiceTrackHistoryPayload()
+      const creationPayload1 = fakeServiceTrackHistoryPayload()
+      const creationPayload2 = fakeServiceTrackHistoryPayload()
 
-      await trackHistoryService.createOne(payload1)
-      await trackHistoryService.createOne(payload2)
+      await trackHistoryService.createOne(creationPayload1)
+      await trackHistoryService.createOne(creationPayload2)
 
       const filter: IGetAllTrackHistoryFilter = {
-        user: payload1.user,
+        user: creationPayload1.user,
       }
       const trackHistories = await trackHistoryService.getAll(filter)
 
@@ -119,9 +113,9 @@ describe('Track history service', () => {
       expect(trackHistories).toHaveLength(1)
     })
 
-    it('by user which do not have track histories', async () => {
-      const payload = fakeServiceTrackHistoryPayload()
-      await trackHistoryService.createOne(payload)
+    it('by user which does not have track histories', async () => {
+      const creationPayload = fakeServiceTrackHistoryPayload()
+      await trackHistoryService.createOne(creationPayload)
 
       const filter: IGetAllTrackHistoryFilter = { user: fakeEntityId() }
       const trackHistories = await trackHistoryService.getAll(filter)
@@ -153,7 +147,7 @@ describe('Track history service', () => {
       expect(deletedTrackHistory).toBeTruthy()
     })
 
-    it('which not exist and throw not found error', async () => {
+    it('which does not exist and throw not found error', async () => {
       const trackHistoryId = fakeEntityId()
 
       try {
@@ -172,18 +166,17 @@ describe('Track history service', () => {
 
   describe('Delete many track histories', () => {
     let deleteManySpy: jest.SpyInstance
-    let trackHistoryPayload1: ReturnType<typeof fakeServiceTrackHistoryPayload>
-    let trackHistoryPayload2: ReturnType<typeof fakeServiceTrackHistoryPayload>
+    let creationPayload1: ReturnType<typeof fakeServiceTrackHistoryPayload>
+    let creationPayload2: ReturnType<typeof fakeServiceTrackHistoryPayload>
 
     beforeEach(async () => {
       deleteManySpy = jest.spyOn(trackHistoryService, 'deleteMany')
 
-      trackHistoryPayload1 = fakeServiceTrackHistoryPayload()
-      trackHistoryPayload2 = fakeServiceTrackHistoryPayload()
+      creationPayload1 = fakeServiceTrackHistoryPayload()
+      creationPayload2 = fakeServiceTrackHistoryPayload()
 
-      await trackHistoryService.createOne(trackHistoryPayload1)
-      await trackHistoryService.createOne(trackHistoryPayload2)
-      await trackHistoryService.createOne(fakeServiceTrackHistoryPayload())
+      await trackHistoryService.createOne(creationPayload1)
+      await trackHistoryService.createOne(creationPayload2)
     })
 
     it('with empty filter', async () => {
@@ -200,19 +193,19 @@ describe('Track history service', () => {
       }
     })
 
-    it('by track ids which exists', async () => {
+    it('by tracks which exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
-        trackIds: [trackHistoryPayload1.track, trackHistoryPayload2.track],
+        trackIds: [creationPayload1.track],
       }
 
       const deletionResult = await trackHistoryService.deleteMany(filter)
 
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
-      expect(deletionResult).toBeTruthy()
+      expect(deletionResult.deletedCount).toBe(1)
     })
 
-    it('by track ids which not exists', async () => {
+    it('by tracks which do not exist', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
         trackIds: [fakeEntityId()],
       }
@@ -221,7 +214,7 @@ describe('Track history service', () => {
 
       expect(deleteManySpy).toBeCalledTimes(1)
       expect(deleteManySpy).toBeCalledWith(filter)
-      expect(deletionResult).toBeTruthy()
+      expect(deletionResult.deletedCount).toBe(0)
     })
   })
 })

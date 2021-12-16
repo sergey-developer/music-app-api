@@ -57,28 +57,29 @@ describe('Track repository', () => {
     })
 
     it('with correct data created successfully', async () => {
-      const trackPayload = fakeRepoTrackPayload()
-      const newTrack = await trackRepository.createOne(trackPayload)
+      const creationPayload = fakeRepoTrackPayload()
+      const newTrack = await trackRepository.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(trackPayload)
-      expect(newTrack.populated('album').toString()).toBe(trackPayload.album)
-      expect(newTrack.youtube).toBe(trackPayload.youtube)
-      expect(newTrack.name).toBe(trackPayload.name)
-      expect(newTrack.duration).toBe(trackPayload.duration)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
+      expect(newTrack.id).toBeTruthy()
+      expect(newTrack.name).toBe(creationPayload.name)
+      expect(newTrack.duration).toBe(creationPayload.duration)
+      expect(newTrack.youtube).toBe(creationPayload.youtube)
+      expect(newTrack.populated('album').toString()).toBe(creationPayload.album)
     })
 
     it('with incorrect data throw validation error', async () => {
-      const trackPayload = fakeRepoTrackPayload(null, {
+      const creationPayload = fakeRepoTrackPayload(null, {
         isIncorrect: true,
       })
 
       try {
-        const newTrack = await trackRepository.createOne(trackPayload)
+        const newTrack = await trackRepository.createOne(creationPayload)
         expect(newTrack).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(trackPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })
@@ -92,8 +93,8 @@ describe('Track repository', () => {
     })
 
     it('by id with correct data updated successfully', async () => {
-      const trackPayload = fakeRepoTrackPayload()
-      const newTrack = await trackRepository.createOne(trackPayload)
+      const creationPayload = fakeRepoTrackPayload()
+      const newTrack = await trackRepository.createOne(creationPayload)
 
       const filter: IUpdateOneTrackFilter = { id: newTrack.id }
       const trackUpdates = fakeRepoTrackPayload()
@@ -111,8 +112,8 @@ describe('Track repository', () => {
     })
 
     it('by id with incorrect data throw validation error', async () => {
-      const trackPayload = fakeRepoTrackPayload()
-      const newTrack = await trackRepository.createOne(trackPayload)
+      const creationPayload = fakeRepoTrackPayload()
+      const newTrack = await trackRepository.createOne(creationPayload)
 
       const filter: IUpdateOneTrackFilter = { id: newTrack.id }
       const trackUpdates = fakeRepoTrackPayload(null, { isIncorrect: true })
@@ -158,11 +159,11 @@ describe('Track repository', () => {
     })
 
     it('with empty filter', async () => {
-      const trackPayload1 = fakeRepoTrackPayload()
-      const trackPayload2 = fakeRepoTrackPayload()
+      const creationPayload1 = fakeRepoTrackPayload()
+      const creationPayload2 = fakeRepoTrackPayload()
 
-      await trackRepository.createOne(trackPayload1)
-      await trackRepository.createOne(trackPayload2)
+      await trackRepository.createOne(creationPayload1)
+      await trackRepository.createOne(creationPayload2)
 
       const filter = {}
       const tracks = await trackRepository.findAllWhere(filter)
@@ -174,11 +175,11 @@ describe('Track repository', () => {
     })
 
     it('by ids which exists', async () => {
-      const payload1 = fakeRepoTrackPayload()
-      const payload2 = fakeRepoTrackPayload()
+      const creationPayload1 = fakeRepoTrackPayload()
+      const creationPayload2 = fakeRepoTrackPayload()
 
-      const newTrack1 = await trackRepository.createOne(payload1)
-      await trackRepository.createOne(payload2)
+      const newTrack1 = await trackRepository.createOne(creationPayload1)
+      await trackRepository.createOne(creationPayload2)
 
       const filter: IFindAllTracksFilter = { ids: [newTrack1.id] }
       const tracks = await trackRepository.findAllWhere(filter)
@@ -190,8 +191,8 @@ describe('Track repository', () => {
     })
 
     it('by ids which not exists', async () => {
-      const payload = fakeRepoTrackPayload()
-      await trackRepository.createOne(payload)
+      const creationPayload = fakeRepoTrackPayload()
+      await trackRepository.createOne(creationPayload)
 
       const filter: IFindAllTracksFilter = {
         ids: [fakeEntityId()],
@@ -206,14 +207,14 @@ describe('Track repository', () => {
     })
 
     it('by albums which have tracks', async () => {
-      const payload1 = fakeRepoTrackPayload()
-      const payload2 = fakeRepoTrackPayload()
+      const creationPayload1 = fakeRepoTrackPayload()
+      const creationPayload2 = fakeRepoTrackPayload()
 
-      await trackRepository.createOne(payload1)
-      await trackRepository.createOne(payload2)
+      await trackRepository.createOne(creationPayload1)
+      await trackRepository.createOne(creationPayload2)
 
       const filter: IFindAllTracksFilter = {
-        albumIds: [payload1.album],
+        albumIds: [creationPayload1.album],
       }
 
       const tracks = await trackRepository.findAllWhere(filter)
@@ -225,8 +226,8 @@ describe('Track repository', () => {
     })
 
     it('by albums which do not have tracks', async () => {
-      const payload = fakeRepoTrackPayload()
-      await trackRepository.createOne(payload)
+      const creationPayload = fakeRepoTrackPayload()
+      await trackRepository.createOne(creationPayload)
 
       const filter: IFindAllTracksFilter = {
         albumIds: [fakeEntityId()],
@@ -241,14 +242,14 @@ describe('Track repository', () => {
     })
 
     it('by album which has tracks', async () => {
-      const payload1 = fakeRepoTrackPayload()
-      const payload2 = fakeRepoTrackPayload()
+      const creationPayload1 = fakeRepoTrackPayload()
+      const creationPayload2 = fakeRepoTrackPayload()
 
-      await trackRepository.createOne(payload1)
-      await trackRepository.createOne(payload2)
+      await trackRepository.createOne(creationPayload1)
+      await trackRepository.createOne(creationPayload2)
 
       const filter: IFindAllTracksFilter = {
-        albumId: payload1.album,
+        albumId: creationPayload1.album,
       }
 
       const tracks = await trackRepository.findAllWhere(filter)
@@ -260,8 +261,8 @@ describe('Track repository', () => {
     })
 
     it('by album which does not have tracks', async () => {
-      const payload = fakeRepoTrackPayload()
-      await trackRepository.createOne(payload)
+      const creationPayload = fakeRepoTrackPayload()
+      await trackRepository.createOne(creationPayload)
 
       const filter: IFindAllTracksFilter = {
         albumId: fakeEntityId(),
@@ -310,13 +311,17 @@ describe('Track repository', () => {
     })
 
     it('by artist which does not have tracks', async () => {
-      const artist = await artistRepository.createOne(fakeRepoArtistPayload())
-
-      const album = await albumRepository.createOne(
-        fakeRepoAlbumPayload({ artist: artist.id }),
+      const newArtist = await artistRepository.createOne(
+        fakeRepoArtistPayload(),
       )
 
-      await trackRepository.createOne(fakeRepoTrackPayload({ album: album.id }))
+      const newAlbum = await albumRepository.createOne(
+        fakeRepoAlbumPayload({ artist: newArtist.id }),
+      )
+
+      await trackRepository.createOne(
+        fakeRepoTrackPayload({ album: newAlbum.id }),
+      )
 
       const filter: IFindAllTracksFilter = {
         artist: fakeEntityId(),
@@ -339,8 +344,8 @@ describe('Track repository', () => {
     })
 
     it('by id which exists', async () => {
-      const trackPayload = fakeRepoTrackPayload()
-      const newTrack = await trackRepository.createOne(trackPayload)
+      const creationPayload = fakeRepoTrackPayload()
+      const newTrack = await trackRepository.createOne(creationPayload)
 
       const filter: IFindOneTrackFilter = { id: newTrack.id }
       const track = await trackRepository.findOne(filter)
@@ -378,8 +383,8 @@ describe('Track repository', () => {
     })
 
     it('by id which exists', async () => {
-      const trackPayload = fakeRepoTrackPayload()
-      const newTrack = await trackRepository.createOne(trackPayload)
+      const creationPayload = fakeRepoTrackPayload()
+      const newTrack = await trackRepository.createOne(creationPayload)
 
       const filter: IDeleteOneTrackFilter = { id: newTrack.id }
       const deletedTrack = await trackRepository.deleteOne(filter)
@@ -390,7 +395,7 @@ describe('Track repository', () => {
       expect(deletedTrack.name).toBe(newTrack.name)
       expect(deletedTrack.youtube).toBe(newTrack.youtube)
       expect(deletedTrack.duration).toBe(newTrack.duration)
-      expect(deletedTrack.album!.toString()).toBe(
+      expect(deletedTrack.album.toString()).toBe(
         newTrack.populated('album').toString(),
       )
     })

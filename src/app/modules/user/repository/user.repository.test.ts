@@ -49,6 +49,7 @@ describe('User repository', () => {
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(userPayload)
+      expect(newUser.id).toBeTruthy()
       expect(newUser.username).toBe(userPayload.username)
       expect(newUser.email).toBe(userPayload.email)
       expect(newUser.password).not.toBe(userPayload.password)
@@ -64,6 +65,7 @@ describe('User repository', () => {
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(userPayload)
+      expect(newUser.id).toBeTruthy()
       expect(newUser.username).toBe(userPayload.username)
       expect(newUser.email).toBe(userPayload.email)
       expect(newUser.password).not.toBe(userPayload.password)

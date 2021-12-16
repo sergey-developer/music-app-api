@@ -1,4 +1,4 @@
-import { lorem } from 'faker'
+import { datatype, lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
 import { fakeEntityId } from '__tests__/fakeData/utils'
@@ -24,7 +24,7 @@ const fakeServiceArtistPayload = (
   return {
     name,
     info,
-    photo: null,
+    photo: datatype.uuid(),
     user: fakeEntityId(),
   }
 }

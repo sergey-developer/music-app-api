@@ -3,9 +3,8 @@ import { container as DiContainer } from 'tsyringe'
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
 import { fakeEntityId } from '__tests__/fakeData/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
-import { TrackModel } from 'database/models/track'
-import { TrackHistoryModel } from 'database/models/trackHistory'
 import * as db from 'database/utils/db'
+import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import {
   IDeleteManyTrackHistoryFilter,
@@ -21,13 +20,8 @@ beforeAll(async () => {
 })
 
 beforeEach(() => {
-  DiContainer.register(DiTokenEnum.TrackHistory, {
-    useValue: TrackHistoryModel,
-  })
-
-  DiContainer.register(DiTokenEnum.Track, {
-    useValue: TrackModel,
-  })
+  registerModel(DiTokenEnum.TrackHistory)
+  registerModel(DiTokenEnum.Track)
 
   trackHistoryRepository = DiContainer.resolve(TrackHistoryRepository)
 })
@@ -51,34 +45,35 @@ describe('Track history repository', () => {
     })
 
     it('with correct data created successfully', async () => {
-      const trackHistoryPayload = fakeRepoTrackHistoryPayload()
+      const creationPayload = fakeRepoTrackHistoryPayload()
       const newTrackHistory = await trackHistoryRepository.createOne(
-        trackHistoryPayload,
+        creationPayload,
       )
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
+      expect(newTrackHistory.id).toBeTruthy()
+      expect(newTrackHistory.user.toString()).toBe(creationPayload.user)
+      expect(newTrackHistory.listenDate).toBe(creationPayload.listenDate)
       expect(newTrackHistory.populated('track').toString()).toBe(
-        trackHistoryPayload.track,
+        creationPayload.track,
       )
-      expect(newTrackHistory.user.toString()).toBe(trackHistoryPayload.user)
-      expect(newTrackHistory.listenDate).toBe(trackHistoryPayload.listenDate)
     })
 
     it('with incorrect data throw validation error', async () => {
-      const trackHistoryPayload = fakeRepoTrackHistoryPayload(null, {
+      const creationPayload = fakeRepoTrackHistoryPayload(null, {
         isIncorrect: true,
       })
 
       try {
         const newTrackHistory = await trackHistoryRepository.createOne(
-          trackHistoryPayload,
+          creationPayload,
         )
 
         expect(newTrackHistory).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(trackHistoryPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })
@@ -105,14 +100,14 @@ describe('Track history repository', () => {
     })
 
     it('by user which has track histories', async () => {
-      const payload1 = fakeRepoTrackHistoryPayload()
-      const payload2 = fakeRepoTrackHistoryPayload()
+      const creationPayload1 = fakeRepoTrackHistoryPayload()
+      const creationPayload2 = fakeRepoTrackHistoryPayload()
 
-      await trackHistoryRepository.createOne(payload1)
-      await trackHistoryRepository.createOne(payload2)
+      await trackHistoryRepository.createOne(creationPayload1)
+      await trackHistoryRepository.createOne(creationPayload2)
 
       const filter: IFindAllTrackHistoryFilter = {
-        user: payload1.user,
+        user: creationPayload1.user,
       }
       const trackHistories = await trackHistoryRepository.findAllWhere(filter)
 
@@ -123,8 +118,8 @@ describe('Track history repository', () => {
     })
 
     it('by user which do not have track histories', async () => {
-      const payload = fakeRepoTrackHistoryPayload()
-      await trackHistoryRepository.createOne(payload)
+      const creationPayload = fakeRepoTrackHistoryPayload()
+      await trackHistoryRepository.createOne(creationPayload)
 
       const filter: IFindAllTrackHistoryFilter = { user: fakeEntityId() }
       const trackHistories = await trackHistoryRepository.findAllWhere(filter)
@@ -135,15 +130,15 @@ describe('Track history repository', () => {
       expect(trackHistories).toHaveLength(0)
     })
 
-    it('by track with track histories', async () => {
-      const payload1 = fakeRepoTrackHistoryPayload()
-      const payload2 = fakeRepoTrackHistoryPayload()
+    it('by track which has track histories', async () => {
+      const creationPayload1 = fakeRepoTrackHistoryPayload()
+      const creationPayload2 = fakeRepoTrackHistoryPayload()
 
-      await trackHistoryRepository.createOne(payload1)
-      await trackHistoryRepository.createOne(payload2)
+      await trackHistoryRepository.createOne(creationPayload1)
+      await trackHistoryRepository.createOne(creationPayload2)
 
       const filter: IFindAllTrackHistoryFilter = {
-        track: payload1.track,
+        track: creationPayload1.track,
       }
       const trackHistories = await trackHistoryRepository.findAllWhere(filter)
 
@@ -153,9 +148,9 @@ describe('Track history repository', () => {
       expect(trackHistories).toHaveLength(1)
     })
 
-    it('by track without track histories', async () => {
-      const payload = fakeRepoTrackHistoryPayload()
-      await trackHistoryRepository.createOne(payload)
+    it('by track which does not have track histories', async () => {
+      const creationPayload = fakeRepoTrackHistoryPayload()
+      await trackHistoryRepository.createOne(creationPayload)
 
       const filter: IFindAllTrackHistoryFilter = {
         track: fakeEntityId(),
@@ -191,12 +186,12 @@ describe('Track history repository', () => {
         newTrackHistory.populated('track').toString(),
       )
       expect(deletedTrackHistory.listenDate).toBe(newTrackHistory.listenDate)
-      expect(deletedTrackHistory.user.toString()).toEqual(
+      expect(deletedTrackHistory.user.toString()).toBe(
         newTrackHistory.user.toString(),
       )
     })
 
-    it('by id which not exist and throw not found error', async () => {
+    it('by id which does not exist and throw not found error', async () => {
       const filter: IDeleteOneTrackHistoryFilter = { id: fakeEntityId() }
 
       try {
@@ -215,17 +210,17 @@ describe('Track history repository', () => {
 
   describe('Delete many track histories', () => {
     let deleteManySpy: jest.SpyInstance
-    let trackHistoryPayload1: ReturnType<typeof fakeRepoTrackHistoryPayload>
-    let trackHistoryPayload2: ReturnType<typeof fakeRepoTrackHistoryPayload>
+    let creationPayload1: ReturnType<typeof fakeRepoTrackHistoryPayload>
+    let creationPayload2: ReturnType<typeof fakeRepoTrackHistoryPayload>
 
     beforeEach(async () => {
       deleteManySpy = jest.spyOn(trackHistoryRepository, 'deleteMany')
 
-      trackHistoryPayload1 = fakeRepoTrackHistoryPayload()
-      trackHistoryPayload2 = fakeRepoTrackHistoryPayload()
+      creationPayload1 = fakeRepoTrackHistoryPayload()
+      creationPayload2 = fakeRepoTrackHistoryPayload()
 
-      await trackHistoryRepository.createOne(trackHistoryPayload1)
-      await trackHistoryRepository.createOne(trackHistoryPayload2)
+      await trackHistoryRepository.createOne(creationPayload1)
+      await trackHistoryRepository.createOne(creationPayload2)
     })
 
     it('with empty filter', async () => {
@@ -237,9 +232,9 @@ describe('Track history repository', () => {
       expect(deletionResult.deletedCount).toBe(2)
     })
 
-    it('by track ids which exists', async () => {
+    it('by tracks which exists', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
-        trackIds: [trackHistoryPayload1.track],
+        trackIds: [creationPayload1.track],
       }
 
       const deletionResult = await trackHistoryRepository.deleteMany(filter)
@@ -249,7 +244,7 @@ describe('Track history repository', () => {
       expect(deletionResult.deletedCount).toBe(1)
     })
 
-    it('by track ids which not exists', async () => {
+    it('by tracks which do not exist', async () => {
       const filter: IDeleteManyTrackHistoryFilter = {
         trackIds: [fakeEntityId()],
       }

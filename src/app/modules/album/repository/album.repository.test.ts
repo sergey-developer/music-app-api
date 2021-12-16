@@ -53,6 +53,7 @@ describe('Album repository', () => {
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(creationPayload)
+      expect(newAlbum.id).toBeTruthy()
       expect(newAlbum.name).toBe(creationPayload.name)
       expect(newAlbum.releaseDate).toBe(creationPayload.releaseDate)
       expect(newAlbum.image).toBe(creationPayload.image)
@@ -97,7 +98,7 @@ describe('Album repository', () => {
       expect(updatedAlbum.id).toBe(newAlbum.id)
       expect(updatedAlbum.name).not.toBe(newAlbum.name)
       expect(updatedAlbum.releaseDate).not.toBe(newAlbum.releaseDate)
-      expect(updatedAlbum.image).toBe(newAlbum.image)
+      expect(updatedAlbum.image).not.toBe(newAlbum.image)
       expect(updatedAlbum.populated('artist').toString()).not.toBe(
         newAlbum.populated('artist').toString(),
       )

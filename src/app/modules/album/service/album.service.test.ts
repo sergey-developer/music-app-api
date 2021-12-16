@@ -12,6 +12,7 @@ import {
   AppNotFoundError,
   AppValidationError,
 } from 'app/utils/errors/appErrors'
+import { DatabaseNotFoundError } from 'database/errors'
 import { IAlbumDocument } from 'database/models/album'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'
@@ -397,11 +398,15 @@ describe('Album service', () => {
 
       const deletedAlbum = await albumService.deleteOneById(newAlbum.id)
 
-      const requests = await requestRepository.findAllWhere({
-        entity: deletedAlbum.id,
-      })
+      try {
+        const request = await requestRepository.findOne({
+          entity: deletedAlbum.id,
+        })
 
-      expect(requests).toHaveLength(0)
+        expect(request).not.toBeTruthy()
+      } catch (error) {
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
+      }
     })
 
     it('tracks of album were successfully deleted', async () => {
@@ -461,11 +466,11 @@ describe('Album service', () => {
     })
 
     it('requests of albums were successfully deleted', async () => {
-      const filter: IDeleteManyAlbumsFilter = { albums: [newAlbum1] }
+      const filter: IDeleteManyAlbumsFilter = { albums: [newAlbum1, newAlbum2] }
       await albumService.deleteMany(filter)
 
       const requests = await requestRepository.findAllWhere({
-        entity: newAlbum1.id,
+        entityIds: [newAlbum1.id, newAlbum2.id],
       })
 
       expect(requests).toHaveLength(0)

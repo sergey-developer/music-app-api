@@ -49,6 +49,7 @@ describe('Artist repository', () => {
 
       expect(createOneSpy).toBeCalledTimes(1)
       expect(createOneSpy).toBeCalledWith(creationPayload)
+      expect(newArtist.id).toBeTruthy()
       expect(newArtist.name).toBe(creationPayload.name)
       expect(newArtist.info).toBe(creationPayload.info)
       expect(newArtist.photo).toBe(creationPayload.photo)
