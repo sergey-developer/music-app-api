@@ -37,7 +37,7 @@ describe('User model', () => {
   })
 
   describe('Check password', () => {
-    const userPayload = fakeRepoUserPayload()
+    const creationPayload = fakeRepoUserPayload()
 
     let user: IUserDocument
     let checkPasswordSpy: jest.SpyInstance
@@ -56,16 +56,18 @@ describe('User model', () => {
     })
 
     beforeEach(async () => {
-      const newUser = new UserModel(userPayload)
+      const newUser = new UserModel(creationPayload)
       user = await newUser.save()
       checkPasswordSpy = jest.spyOn(user, 'checkPassword')
     })
 
     it('successful with correct password', async () => {
-      const passwordIsMatched = await user.checkPassword(userPayload.password)
+      const passwordIsMatched = await user.checkPassword(
+        creationPayload.password,
+      )
 
       expect(checkPasswordSpy).toBeCalledTimes(1)
-      expect(checkPasswordSpy).toBeCalledWith(userPayload.password)
+      expect(checkPasswordSpy).toBeCalledWith(creationPayload.password)
       expect(passwordIsMatched).toBe(true)
     })
 

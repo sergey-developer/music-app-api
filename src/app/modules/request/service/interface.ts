@@ -29,6 +29,9 @@ export interface IDeleteOneRequestFilter
     entity: DocumentId
   }> {}
 
+export interface IDeleteOneRequestWithEntityFilter
+  extends Pick<IDeleteOneRequestFilter, 'id'> {}
+
 export interface IDeleteManyRequestFilter
   extends Partial<{
     entityIds: DocumentIdArray
@@ -47,7 +50,7 @@ export interface IRequestService {
   deleteOne: (filter: IDeleteOneRequestFilter) => Promise<IRequestDocument>
 
   deleteOneWithEntity: (
-    requestId: IRequestDocument['id'],
+    filter: IDeleteOneRequestWithEntityFilter,
   ) => Promise<IRequestDocument>
 
   deleteMany: (filter: IDeleteManyRequestFilter) => Promise<DeleteResult>

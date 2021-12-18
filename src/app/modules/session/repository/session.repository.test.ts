@@ -42,25 +42,25 @@ describe('Session repository', () => {
     })
 
     it('with correct data  created successfully', async () => {
-      const sessionPayload = fakeRepoSessionPayload()
-      const newSession = await sessionRepository.createOne(sessionPayload)
+      const creationPayload = fakeRepoSessionPayload()
+      const newSession = await sessionRepository.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(sessionPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newSession.id).toBeTruthy()
       expect(newSession.token).toBeTruthy()
-      expect(newSession.user.toString()).toBe(sessionPayload.userId)
+      expect(newSession.user.toString()).toBe(creationPayload.userId)
     })
 
     it('with incorrect data throw validation error', async () => {
-      const sessionPayload = fakeRepoSessionPayload({ isIncorrect: true })
+      const creationPayload = fakeRepoSessionPayload({ isIncorrect: true })
 
       try {
-        const newSession = await sessionRepository.createOne(sessionPayload)
+        const newSession = await sessionRepository.createOne(creationPayload)
         expect(newSession).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(sessionPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })

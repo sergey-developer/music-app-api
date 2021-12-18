@@ -1,4 +1,4 @@
-import { Model, PopulatedDoc } from 'mongoose'
+import { Document, Model, PopulatedDoc } from 'mongoose'
 
 import { MaybeNull } from 'app/interface/utils'
 import { EntityNamesEnum } from 'database/constants'
@@ -9,9 +9,12 @@ import { ITrackDocument } from 'database/models/track'
 import { IUserDocument } from 'database/models/user'
 import { RequestStatusEnum } from 'modules/request/constants'
 
-export interface IRequestDocument {
+export interface IRequestDocument extends Pick<Document, 'populated'> {
   id: DocumentId
-  entityName: EntityNamesEnum
+  entityName:
+    | EntityNamesEnum.Artist
+    | EntityNamesEnum.Album
+    | EntityNamesEnum.Track
   entity: PopulatedDoc<IArtistDocument | IAlbumDocument | ITrackDocument>
   creator: PopulatedDoc<IUserDocument>
   status: RequestStatusEnum

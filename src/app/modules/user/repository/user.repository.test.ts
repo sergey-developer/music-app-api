@@ -44,45 +44,45 @@ describe('User repository', () => {
     })
 
     it('with correct data and role "user" created successfully', async () => {
-      const userPayload = fakeRepoUserPayload()
-      const newUser = await userRepository.createOne(userPayload)
+      const creationPayload = fakeRepoUserPayload()
+      const newUser = await userRepository.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(userPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newUser.id).toBeTruthy()
-      expect(newUser.username).toBe(userPayload.username)
-      expect(newUser.email).toBe(userPayload.email)
-      expect(newUser.password).not.toBe(userPayload.password)
-      expect(newUser.role).toBe(userPayload.role)
+      expect(newUser.username).toBe(creationPayload.username)
+      expect(newUser.email).toBe(creationPayload.email)
+      expect(newUser.password).not.toBe(creationPayload.password)
+      expect(newUser.role).toBe(creationPayload.role)
     })
 
     it('with correct data and role "moderator" created successfully', async () => {
-      const userPayload = fakeRepoUserPayload({
+      const creationPayload = fakeRepoUserPayload({
         role: UserRoleEnum.Moderator,
       })
 
-      const newUser = await userRepository.createOne(userPayload)
+      const newUser = await userRepository.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(userPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newUser.id).toBeTruthy()
-      expect(newUser.username).toBe(userPayload.username)
-      expect(newUser.email).toBe(userPayload.email)
-      expect(newUser.password).not.toBe(userPayload.password)
-      expect(newUser.role).toBe(userPayload.role)
+      expect(newUser.username).toBe(creationPayload.username)
+      expect(newUser.email).toBe(creationPayload.email)
+      expect(newUser.password).not.toBe(creationPayload.password)
+      expect(newUser.role).toBe(creationPayload.role)
     })
 
     it('with incorrect data throw validation error', async () => {
-      const userPayload = fakeRepoUserPayload(null, {
+      const creationPayload = fakeRepoUserPayload(null, {
         isIncorrect: true,
       })
 
       try {
-        const newUser = await userRepository.createOne(userPayload)
+        const newUser = await userRepository.createOne(creationPayload)
         expect(newUser).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(userPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(DatabaseValidationError)
       }
     })

@@ -35,9 +35,7 @@ import { TrackService } from 'modules/track/service'
 
 @singleton()
 class RequestService implements IRequestService {
-  private deleteViaEntity = async (
-    request: IRequestDocument,
-  ): Promise<void> => {
+  private deleteByEntity = async (request: IRequestDocument): Promise<void> => {
     try {
       const entity = request.entity as
         | IArtistDocument
@@ -137,13 +135,14 @@ class RequestService implements IRequestService {
   }
 
   public deleteOneWithEntity: IRequestService['deleteOneWithEntity'] = async (
-    requestId,
+    filter,
   ) => {
+    const { id } = filter
     let request: IRequestDocument
     const unknownErrorMsg = 'Error while deleting request'
 
     try {
-      request = await this.requestRepository.findOne({ id: requestId })
+      request = await this.requestRepository.findOne({ id })
     } catch (error: any) {
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Request was not found')
@@ -155,9 +154,9 @@ class RequestService implements IRequestService {
 
     try {
       if (isApprovedRequest(request.status)) {
-        await this.deleteOne({ id: requestId })
+        await this.deleteOne({ id })
       } else {
-        await this.deleteViaEntity(request)
+        await this.deleteByEntity(request)
       }
 
       return request

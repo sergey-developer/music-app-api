@@ -253,7 +253,7 @@ describe('Album service', () => {
       expect(albums).toHaveLength(0)
     })
 
-    it('by pending status', async () => {
+    it(`by "${RequestStatusEnum.Pending}" status`, async () => {
       const creationPayload1 = fakeServiceAlbumPayload()
       const creationPayload2 = fakeServiceAlbumPayload()
 
@@ -273,7 +273,7 @@ describe('Album service', () => {
       expect(albums).toHaveLength(1)
     })
 
-    it('by approved status', async () => {
+    it(`by "${RequestStatusEnum.Approved}" status`, async () => {
       const creationPayload1 = fakeServiceAlbumPayload()
       const creationPayload2 = fakeServiceAlbumPayload()
 
@@ -293,7 +293,7 @@ describe('Album service', () => {
       expect(albums).toHaveLength(1)
     })
 
-    it('by rejected status', async () => {
+    it(`by "${RequestStatusEnum.Rejected}" status`, async () => {
       const creationPayload1 = fakeServiceAlbumPayload()
       const creationPayload2 = fakeServiceAlbumPayload()
 
@@ -347,7 +347,7 @@ describe('Album service', () => {
       expect(album).toBeTruthy()
     })
 
-    it('which not exists', async () => {
+    it('which does not exist', async () => {
       const fakeId = fakeEntityId()
 
       try {

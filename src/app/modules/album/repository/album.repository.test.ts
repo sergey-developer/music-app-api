@@ -167,7 +167,7 @@ describe('Album repository', () => {
       expect(albums).toHaveLength(2)
     })
 
-    it('by ids which exists', async () => {
+    it('by ids which exist', async () => {
       const creationPayload1 = fakeRepoAlbumPayload()
       const creationPayload2 = fakeRepoAlbumPayload()
 
@@ -183,7 +183,7 @@ describe('Album repository', () => {
       expect(albums).toHaveLength(1)
     })
 
-    it('by ids which not exists', async () => {
+    it('by ids which do not exist', async () => {
       const creationPayload = fakeRepoAlbumPayload()
       await albumRepository.createOne(creationPayload)
 

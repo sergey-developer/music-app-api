@@ -42,23 +42,25 @@ describe('User service', () => {
     })
 
     it('with correct data created successfully', async () => {
-      const userPayload = fakeServiceUserPayload()
-      const newUser = await userService.createOne(userPayload)
+      const creationPayload = fakeServiceUserPayload()
+      const newUser = await userService.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(userPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newUser).toBeTruthy()
     })
 
     it('with incorrect data throw validation error', async () => {
-      const userPayload = fakeServiceUserPayload(null, { isIncorrect: true })
+      const creationPayload = fakeServiceUserPayload(null, {
+        isIncorrect: true,
+      })
 
       try {
-        const newUser = await userService.createOne(userPayload)
+        const newUser = await userService.createOne(creationPayload)
         expect(newUser).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(userPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(AppValidationError)
       }
     })

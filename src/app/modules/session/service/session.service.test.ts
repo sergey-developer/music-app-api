@@ -41,23 +41,23 @@ describe('Session service', () => {
     })
 
     it('with correct data  created successfully', async () => {
-      const sessionPayload = fakeServiceSessionPayload()
-      const newSession = await sessionService.createOne(sessionPayload)
+      const creationPayload = fakeServiceSessionPayload()
+      const newSession = await sessionService.createOne(creationPayload)
 
       expect(createOneSpy).toBeCalledTimes(1)
-      expect(createOneSpy).toBeCalledWith(sessionPayload)
+      expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newSession).toBeTruthy()
     })
 
     it('with incorrect data throw validation error', async () => {
-      const sessionPayload = fakeServiceSessionPayload({ isIncorrect: true })
+      const creationPayload = fakeServiceSessionPayload({ isIncorrect: true })
 
       try {
-        const newSession = await sessionService.createOne(sessionPayload)
+        const newSession = await sessionService.createOne(creationPayload)
         expect(newSession).not.toBeTruthy()
       } catch (error) {
         expect(createOneSpy).toBeCalledTimes(1)
-        expect(createOneSpy).toBeCalledWith(sessionPayload)
+        expect(createOneSpy).toBeCalledWith(creationPayload)
         expect(error).toBeInstanceOf(AppValidationError)
       }
     })

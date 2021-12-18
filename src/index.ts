@@ -8,6 +8,7 @@ const runServer = async () => {
 
 runServer()
 
+// TODO: обновить зависимости, попробовать установить jest/extend
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
 //  user (model, repo, service)

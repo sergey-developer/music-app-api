@@ -42,7 +42,7 @@ class RequestController implements IRequestController {
     const { id } = req.params
 
     try {
-      await this.requestService.deleteOneWithEntity(id)
+      await this.requestService.deleteOneWithEntity({ id })
 
       res
         .status(StatusCodes.OK)
