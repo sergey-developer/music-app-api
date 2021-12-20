@@ -5,7 +5,7 @@ import {
   fakeServiceAlbumPayload,
 } from '__tests__/fakeData/album'
 import { fakeServiceTrackPayload } from '__tests__/fakeData/track'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
 import { TrackRepository } from 'app/modules/track/repository'
 import {

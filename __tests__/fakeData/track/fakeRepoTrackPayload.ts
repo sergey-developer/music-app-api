@@ -1,7 +1,7 @@
 import { datatype, internet, lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { MaybeNull } from 'app/interface/utils'
 import { MIN_LENGTH_TRACK_NAME } from 'database/models/track'
 import { ICreateOneTrackPayload } from 'modules/track/repository'

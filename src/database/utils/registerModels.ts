@@ -1,35 +1,12 @@
 import { container as DiContainer } from 'tsyringe'
 
-import { AlbumModel } from 'database/models/album'
-import { ArtistModel } from 'database/models/artist'
-import { RequestModel } from 'database/models/request'
-import { SessionModel } from 'database/models/session'
-import { TrackModel } from 'database/models/track'
-import { TrackHistoryModel } from 'database/models/trackHistory'
-import { UserModel } from 'database/models/user'
+import getModelByDiToken, {
+  DiTokenToModel,
+} from 'database/utils/getModelByDiToken'
 import { DiTokenEnum } from 'lib/dependency-injection'
 
-const DiTokenToModel: Record<
-  DiTokenEnum,
-  | typeof ArtistModel
-  | typeof AlbumModel
-  | typeof TrackModel
-  | typeof TrackHistoryModel
-  | typeof RequestModel
-  | typeof UserModel
-  | typeof SessionModel
-> = {
-  ArtistModel: ArtistModel,
-  AlbumModel: AlbumModel,
-  TrackModel: TrackModel,
-  TrackHistoryModel: TrackHistoryModel,
-  RequestModel: RequestModel,
-  UserModel: UserModel,
-  SessionModel: SessionModel,
-}
-
 const registerModel = (token: DiTokenEnum) => {
-  const model = DiTokenToModel[token]
+  const model = getModelByDiToken(token)
   DiContainer.register(token, { useValue: model })
 }
 
@@ -39,5 +16,6 @@ const registerModels = () => {
   })
 }
 
-export { DiTokenToModel, registerModel }
+export { registerModel }
+
 export default registerModels

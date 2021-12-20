@@ -2,7 +2,7 @@ import { internet } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoUserPayload } from '__tests__/fakeData/user'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'
@@ -91,7 +91,7 @@ describe('User repository', () => {
   describe('Find one user', () => {
     let findOneSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       findOneSpy = jest.spyOn(userRepository, 'findOne')
     })
 
@@ -127,7 +127,7 @@ describe('User repository', () => {
   describe('Delete one user', () => {
     let deleteOneSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       deleteOneSpy = jest.spyOn(userRepository, 'deleteOne')
     })
 

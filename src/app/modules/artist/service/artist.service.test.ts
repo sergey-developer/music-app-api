@@ -5,7 +5,7 @@ import {
   fakeRepoArtistPayload,
   fakeServiceArtistPayload,
 } from '__tests__/fakeData/artist'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import {
   AppNotFoundError,
   AppValidationError,

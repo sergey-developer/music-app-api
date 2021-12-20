@@ -3,7 +3,6 @@ import { FilterQuery, Error as MongooseError, QueryOptions } from 'mongoose'
 import { inject, singleton } from 'tsyringe'
 
 import { omitUndefined } from 'app/utils/common'
-import { EntityNamesEnum } from 'database/constants'
 import {
   DatabaseNotFoundError,
   DatabaseUnknownError,

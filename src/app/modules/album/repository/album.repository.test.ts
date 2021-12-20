@@ -1,7 +1,7 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoAlbumPayload } from '__tests__/fakeData/album'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import { IAlbumDocument } from 'database/models/album'
 import * as db from 'database/utils/db'

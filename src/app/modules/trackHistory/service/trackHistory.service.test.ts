@@ -1,7 +1,7 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { EMPTY_FILTER_ERR_MSG } from 'app/constants/messages/errors'
 import {
   AppNotFoundError,

@@ -1,7 +1,7 @@
 import { datatype, internet } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { ICreateOneSessionPayload } from 'modules/session/repository'
 import { UserRoleEnum } from 'modules/user/constants'
 

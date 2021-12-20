@@ -2,7 +2,7 @@ import { internet } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeServiceUserPayload } from '__tests__/fakeData/user'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import {
   AppNotFoundError,
   AppValidationError,
@@ -37,7 +37,7 @@ describe('User service', () => {
   describe('Create one user', () => {
     let createOneSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       createOneSpy = jest.spyOn(userService, 'createOne')
     })
 
@@ -69,7 +69,7 @@ describe('User service', () => {
   describe('Get one user by email', () => {
     let getOneByEmailSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       getOneByEmailSpy = jest.spyOn(userService, 'getOneByEmail')
     })
 
@@ -99,7 +99,7 @@ describe('User service', () => {
   describe('Delete one user by id', () => {
     let deleteOneByIdSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       deleteOneByIdSpy = jest.spyOn(userService, 'deleteOneById')
     })
 

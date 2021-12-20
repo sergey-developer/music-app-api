@@ -2,14 +2,22 @@ import { lorem } from 'faker'
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoRequestPayload } from '__tests__/fakeData/request'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
+import throwError from 'app/utils/errors/throwError'
 import { EntityNamesEnum } from 'database/constants'
-import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
+import {
+  DatabaseNotFoundError,
+  DatabaseUnknownError,
+  DatabaseValidationError,
+} from 'database/errors'
+import { RequestModel } from 'database/models/request'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'
 import { DiTokenEnum } from 'lib/dependency-injection'
 import { RequestStatusEnum } from 'modules/request/constants'
 import {
+  IDeleteManyRequestFilter,
+  IDeleteOneRequestFilter,
   IFindAllRequestsFilter,
   IFindOneRequestFilter,
   IUpdateOneRequestFilter,
@@ -111,6 +119,24 @@ describe('Request repository', () => {
       expect(createOneSpy).toBeCalledWith(creationPayload)
       expect(newRequest.entityName).toBe(EntityNamesEnum.Track)
     })
+
+    it('throw unknown error', async () => {
+      const modelSaveSpy = jest
+        .spyOn(RequestModel.prototype, 'save')
+        .mockImplementationOnce(() => throwError())
+
+      try {
+        const request = await requestRepository.createOne(
+          fakeRepoRequestPayload(),
+        )
+
+        expect(request).not.toBeTruthy()
+      } catch (error: any) {
+        expect(createOneSpy).toBeCalledTimes(1)
+        expect(modelSaveSpy).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
+    })
   })
 
   describe('Update one request', () => {
@@ -138,7 +164,9 @@ describe('Request repository', () => {
       expect(updatedRequest.reason).not.toBe(newRequest.reason)
       expect(updatedRequest.status).not.toBe(newRequest.status)
       expect(updatedRequest.entityName).toBe(newRequest.entityName)
-      expect(updatedRequest.entity).toBe(newRequest.entity)
+      expect(updatedRequest.populated('entity').toString()).toBe(
+        newRequest.populated('entity').toString(),
+      )
       expect(updatedRequest.creator).toBe(newRequest.creator)
     })
 
@@ -204,8 +232,12 @@ describe('Request repository', () => {
       expect(updatedRequest.reason).not.toBe(newRequest.reason)
       expect(updatedRequest.status).not.toBe(newRequest.status)
       expect(updatedRequest.entityName).toBe(newRequest.entityName)
-      expect(updatedRequest.entity).toBe(newRequest.entity)
-      expect(updatedRequest.creator).toBe(newRequest.creator)
+      expect(updatedRequest.populated('entity').toString()).toBe(
+        newRequest.populated('entity').toString(),
+      )
+      expect(updatedRequest.populated('creator').toString()).toBe(
+        newRequest.populated('creator').toString(),
+      )
     })
 
     it('by entity with incorrect data throw validation error', async () => {
@@ -292,13 +324,63 @@ describe('Request repository', () => {
 
       expect(updatedRequest.status).toBe(RequestStatusEnum.Pending)
     })
+
+    it('throw unknown error', async () => {
+      const modelFindOneAndUpdateSpy = jest
+        .spyOn(RequestModel, 'findOneAndUpdate')
+        .mockImplementationOnce(() => throwError())
+
+      try {
+        const request = await requestRepository.updateOne(
+          {},
+          { status: RequestStatusEnum.Approved },
+        )
+
+        expect(request).not.toBeTruthy()
+      } catch (error: any) {
+        expect(updateOneSpy).toBeCalledTimes(1)
+        expect(modelFindOneAndUpdateSpy).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
+    })
   })
 
   describe('Find all requests', () => {
     let findAllWhereSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       findAllWhereSpy = jest.spyOn(requestRepository, 'findAllWhere')
+    })
+
+    it('with empty filter', async () => {
+      const creationPayload1 = fakeRepoRequestPayload()
+      const creationPayload2 = fakeRepoRequestPayload()
+
+      await requestRepository.createOne(creationPayload1)
+      await requestRepository.createOne(creationPayload2)
+
+      const filter = {}
+      const requests = await requestRepository.findAllWhere(filter)
+
+      expect(findAllWhereSpy).toBeCalledTimes(1)
+      expect(findAllWhereSpy).toBeCalledWith(filter)
+      expect(Array.isArray(requests)).toBe(true)
+      expect(requests).toHaveLength(2)
+    })
+
+    it('with filter throw unknown error', async () => {
+      const modelFindSpy = jest
+        .spyOn(RequestModel, 'find')
+        .mockImplementationOnce(() => throwError())
+
+      try {
+        const request = await requestRepository.findAllWhere({})
+        expect(request).not.toBeTruthy()
+      } catch (error: any) {
+        expect(findAllWhereSpy).toBeCalledTimes(1)
+        expect(modelFindSpy).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
     })
 
     it('without filter', async () => {
@@ -317,20 +399,21 @@ describe('Request repository', () => {
       expect(requests).toHaveLength(2)
     })
 
-    it('with empty filter', async () => {
-      const creationPayload1 = fakeRepoRequestPayload()
-      const creationPayload2 = fakeRepoRequestPayload()
+    it('without filter throw unknown error', async () => {
+      const findAllSpy = jest.spyOn(requestRepository, 'findAll')
+      const modelFindSpy = jest
+        .spyOn(RequestModel, 'find')
+        .mockClear()
+        .mockImplementationOnce(() => throwError())
 
-      await requestRepository.createOne(creationPayload1)
-      await requestRepository.createOne(creationPayload2)
-
-      const filter = {}
-      const requests = await requestRepository.findAllWhere(filter)
-
-      expect(findAllWhereSpy).toBeCalledTimes(1)
-      expect(findAllWhereSpy).toBeCalledWith(filter)
-      expect(Array.isArray(requests)).toBe(true)
-      expect(requests).toHaveLength(2)
+      try {
+        const request = await requestRepository.findAll()
+        expect(request).not.toBeTruthy()
+      } catch (error: any) {
+        expect(findAllSpy).toBeCalledTimes(1)
+        expect(modelFindSpy).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
     })
 
     it('by entity ids which exist', async () => {
@@ -536,7 +619,7 @@ describe('Request repository', () => {
   describe('Find one request', () => {
     let findOneSpy: jest.SpyInstance
 
-    beforeEach(async () => {
+    beforeEach(() => {
       findOneSpy = jest.spyOn(requestRepository, 'findOne')
     })
 
@@ -552,8 +635,12 @@ describe('Request repository', () => {
       expect(request.id).toBe(newRequest.id)
       expect(request.reason).toBe(newRequest.reason)
       expect(request.status).toBe(newRequest.status)
-      expect(request.creator).toBe(newRequest.creator)
-      expect(request.entity).toBe(newRequest.entity)
+      expect(request.populated('creator').toString()).toBe(
+        newRequest.populated('creator').toString(),
+      )
+      expect(request.populated('entity').toString()).toBe(
+        newRequest.populated('entity').toString(),
+      )
       expect(request.entityName).toBe(newRequest.entityName)
     })
 
@@ -582,8 +669,12 @@ describe('Request repository', () => {
       expect(request.id).toBe(newRequest.id)
       expect(request.reason).toBe(newRequest.reason)
       expect(request.status).toBe(newRequest.status)
-      expect(request.creator).toBe(newRequest.creator)
-      expect(request.entity).toBe(newRequest.entity)
+      expect(request.populated('creator').toString()).toBe(
+        newRequest.populated('creator').toString(),
+      )
+      expect(request.populated('entity').toString()).toBe(
+        newRequest.populated('entity').toString(),
+      )
       expect(request.entityName).toBe(newRequest.entityName)
     })
 
@@ -599,41 +690,167 @@ describe('Request repository', () => {
         expect(error).toBeInstanceOf(DatabaseNotFoundError)
       }
     })
+
+    it('throw unknown error', async () => {
+      const modelFindOneSpy = jest
+        .spyOn(RequestModel, 'findOne')
+        .mockImplementationOnce(() => throwError())
+
+      try {
+        const request = await requestRepository.findOne({})
+        expect(request).not.toBeTruthy()
+      } catch (error: any) {
+        expect(findOneSpy).toBeCalledTimes(1)
+        expect(modelFindOneSpy).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
+    })
   })
 
-  // describe('Delete one user', () => {
-  //   let deleteOneSpy: jest.SpyInstance
-  //
-  //   beforeEach(async () => {
-  //     deleteOneSpy = jest.spyOn(userRepository, 'deleteOne')
-  //   })
-  //
-  //   it('by id which exists', async () => {
-  //     const newUser = await userRepository.createOne(fakeRepoUserPayload())
-  //
-  //     const filter: IDeleteOneUserFilter = { id: newUser.id }
-  //     const deletedUser = await userRepository.deleteOne(filter)
-  //
-  //     expect(deleteOneSpy).toBeCalledTimes(1)
-  //     expect(deleteOneSpy).toBeCalledWith(filter)
-  //     expect(deletedUser.id).toBe(newUser.id)
-  //     expect(deletedUser.username).toBe(newUser.username)
-  //     expect(deletedUser.email).toBe(newUser.email)
-  //     expect(deletedUser.password).toBe(newUser.password)
-  //     expect(deletedUser.role).toBe(newUser.role)
-  //   })
-  //
-  //   it('by id which not exist and throw not found error', async () => {
-  //     const filter: IDeleteOneUserFilter = { id: fakeEntityId() }
-  //
-  //     try {
-  //       const deletedUser = await userRepository.deleteOne(filter)
-  //       expect(deletedUser).not.toBeTruthy()
-  //     } catch (error) {
-  //       expect(deleteOneSpy).toBeCalledTimes(1)
-  //       expect(deleteOneSpy).toBeCalledWith(filter)
-  //       expect(error).toBeInstanceOf(DatabaseNotFoundError)
-  //     }
-  //   })
-  // })
+  describe('Delete one request', () => {
+    let deleteOneSpy: jest.SpyInstance
+
+    beforeEach(() => {
+      deleteOneSpy = jest.spyOn(requestRepository, 'deleteOne')
+    })
+
+    it('by id which exists', async () => {
+      const creationPayload = fakeRepoRequestPayload()
+      const newRequest = await requestRepository.createOne(creationPayload)
+
+      const filter: IDeleteOneRequestFilter = { id: newRequest.id }
+      const deletedRequest = await requestRepository.deleteOne(filter)
+
+      expect(deleteOneSpy).toBeCalledTimes(1)
+      expect(deleteOneSpy).toBeCalledWith(filter)
+      expect(deletedRequest.id).toBe(newRequest.id)
+      expect(deletedRequest.populated('entity').toString()).toBe(
+        newRequest.populated('entity').toString(),
+      )
+      expect(deletedRequest.entityName).toBe(newRequest.entityName)
+      expect(deletedRequest.creator.toString()).toBe(
+        newRequest.populated('creator').toString(),
+      )
+      expect(deletedRequest.reason).toBe(newRequest.reason)
+      expect(deletedRequest.status).toBe(newRequest.status)
+    })
+
+    it('by id which does not exist and throw not found error', async () => {
+      const filter: IDeleteOneRequestFilter = { id: fakeEntityId() }
+
+      try {
+        const deletedRequest = await requestRepository.deleteOne(filter)
+        expect(deletedRequest).not.toBeTruthy()
+      } catch (error) {
+        expect(deleteOneSpy).toBeCalledTimes(1)
+        expect(deleteOneSpy).toBeCalledWith(filter)
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
+      }
+    })
+
+    it('by entity which exists', async () => {
+      const creationPayload = fakeRepoRequestPayload()
+      const newRequest = await requestRepository.createOne(creationPayload)
+
+      const filter: IDeleteOneRequestFilter = { entity: creationPayload.entity }
+      const deletedRequest = await requestRepository.deleteOne(filter)
+
+      expect(deleteOneSpy).toBeCalledTimes(1)
+      expect(deleteOneSpy).toBeCalledWith(filter)
+      expect(deletedRequest.id).toBe(newRequest.id)
+      expect(deletedRequest.populated('entity').toString()).toBe(
+        newRequest.populated('entity').toString(),
+      )
+      expect(deletedRequest.entityName).toBe(newRequest.entityName)
+      expect(deletedRequest.creator.toString()).toBe(
+        newRequest.populated('creator').toString(),
+      )
+      expect(deletedRequest.reason).toBe(newRequest.reason)
+      expect(deletedRequest.status).toBe(newRequest.status)
+    })
+
+    it('by entity which does not exist and throw not found error', async () => {
+      const filter: IDeleteOneRequestFilter = { entity: fakeEntityId() }
+
+      try {
+        const deletedRequest = await requestRepository.deleteOne(filter)
+        expect(deletedRequest).not.toBeTruthy()
+      } catch (error) {
+        expect(deleteOneSpy).toBeCalledTimes(1)
+        expect(deleteOneSpy).toBeCalledWith(filter)
+        expect(error).toBeInstanceOf(DatabaseNotFoundError)
+      }
+    })
+
+    it('throw unknown error', async () => {
+      const modelFindOneAndDeleteSpy = jest
+        .spyOn(RequestModel, 'findOneAndDelete')
+        .mockImplementationOnce(() => throwError())
+
+      try {
+        const request = await requestRepository.deleteOne({})
+        expect(request).not.toBeTruthy()
+      } catch (error: any) {
+        expect(deleteOneSpy).toBeCalledTimes(1)
+        expect(modelFindOneAndDeleteSpy).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
+    })
+  })
+
+  describe('Delete many requests', () => {
+    let deleteManySpy: jest.SpyInstance
+
+    beforeEach(() => {
+      deleteManySpy = jest.spyOn(requestRepository, 'deleteMany')
+    })
+
+    it('by entity ids which exist', async () => {
+      const creationPayload1 = fakeRepoRequestPayload()
+      const creationPayload2 = fakeRepoRequestPayload()
+
+      await requestRepository.createOne(creationPayload1)
+      await requestRepository.createOne(creationPayload2)
+
+      const filter: IDeleteManyRequestFilter = {
+        entityIds: [creationPayload1.entity],
+      }
+
+      const deletionResult = await requestRepository.deleteMany(filter)
+
+      expect(deleteManySpy).toBeCalledTimes(1)
+      expect(deleteManySpy).toBeCalledWith(filter)
+      expect(deletionResult.deletedCount).toBe(1)
+    })
+
+    it('by entity ids which do not exist', async () => {
+      const creationPayload = fakeRepoRequestPayload()
+      await requestRepository.createOne(creationPayload)
+
+      const filter: IDeleteManyRequestFilter = {
+        entityIds: [fakeEntityId()],
+      }
+
+      const deletionResult = await requestRepository.deleteMany(filter)
+
+      expect(deleteManySpy).toBeCalledTimes(1)
+      expect(deleteManySpy).toBeCalledWith(filter)
+      expect(deletionResult.deletedCount).toBe(0)
+    })
+
+    it('throw unknown error', async () => {
+      const modelDeleteMany = jest
+        .spyOn(RequestModel, 'deleteMany')
+        .mockImplementationOnce(() => throwError())
+
+      try {
+        const deletionResult = await requestRepository.deleteMany({})
+        expect(deletionResult).not.toBeTruthy()
+      } catch (error: any) {
+        expect(deleteManySpy).toBeCalledTimes(1)
+        expect(modelDeleteMany).toBeCalledTimes(1)
+        expect(error).toBeInstanceOf(DatabaseUnknownError)
+      }
+    })
+  })
 })

@@ -1,7 +1,7 @@
 import { container as DiContainer } from 'tsyringe'
 
 import { fakeRepoTrackHistoryPayload } from '__tests__/fakeData/trackHistory'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { DatabaseNotFoundError, DatabaseValidationError } from 'database/errors'
 import * as db from 'database/utils/db'
 import { registerModel } from 'database/utils/registerModels'

@@ -1,7 +1,7 @@
 import { datatype } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import { MaybeNull } from 'app/interface/utils'
 import { EntityNamesEnum } from 'database/constants'
 import { ICreateOneRequestPayload } from 'modules/request/repository'

@@ -1,7 +1,7 @@
 import { datatype, lorem } from 'faker'
 
 import { IFakePayloadConfig } from '__tests__/fakeData/interface'
-import { fakeEntityId } from '__tests__/fakeData/utils'
+import { fakeEntityId } from '__tests__/utils'
 import {
   MIN_LENGTH_ARTIST_INFO,
   MIN_LENGTH_ARTIST_NAME,
