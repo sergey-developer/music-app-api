@@ -11,6 +11,7 @@ import {
   UpdateArtistDto,
 } from 'modules/artist/dto'
 import { auth } from 'modules/auth/middlewares'
+import { validateStatus } from 'modules/request/middleware'
 
 const artistController = DiContainer.resolve(ArtistController)
 
@@ -27,7 +28,13 @@ const createRouter: CreateRouter = (router) => {
 
   router.put(
     '/:id',
-    [auth, params(IdParam), uploadImage('photo'), body(UpdateArtistDto)],
+    [
+      auth,
+      params(IdParam),
+      uploadImage('photo'),
+      body(UpdateArtistDto),
+      validateStatus({ byEntity: true }),
+    ],
     artistController.updateOne,
   )
 

@@ -6,6 +6,7 @@ import { body, params, query } from 'app/middlewares/validation'
 import { auth } from 'modules/auth/middlewares'
 import { RequestController } from 'modules/request/controller'
 import { GetAllRequestsQuery, UpdateRequestDto } from 'modules/request/dto'
+import { validateStatus } from 'modules/request/middleware'
 
 const requestController = DiContainer.resolve(RequestController)
 
@@ -14,7 +15,7 @@ const createRouter: CreateRouter = (router) => {
 
   router.put(
     '/:id',
-    [auth, params(IdParam), body(UpdateRequestDto)],
+    [auth, params(IdParam), body(UpdateRequestDto), validateStatus()],
     requestController.updateOne,
   )
 
