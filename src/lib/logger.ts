@@ -2,8 +2,12 @@ import config from 'config'
 import isEmpty from 'lodash/isEmpty'
 import winston from 'winston'
 
+const env = config.util.getEnv('NODE_ENV')
+const logToFile: boolean = env === 'production'
+const disableLogs: boolean = env === 'test'
+
 const console = new winston.transports.Console({
-  level: 'info',
+  level: 'warn',
   format: winston.format.combine(
     winston.format.colorize(),
     winston.format.align(),
@@ -19,7 +23,7 @@ const logger = winston.createLogger({
   exitOnError: false,
 })
 
-if (config.util.getEnv('NODE_ENV') === 'production') {
+if (logToFile) {
   const fileMsgFormat = winston.format.printf(
     ({ level, message, timestamp, ...metadata }) => {
       let msg = `${timestamp}: [${level}]: ${message}.`
@@ -49,7 +53,7 @@ if (config.util.getEnv('NODE_ENV') === 'production') {
   logger.add(file)
 }
 
-if (config.util.getEnv('NODE_ENV') === 'test') {
+if (false) {
   logger.silent = true
 }
 

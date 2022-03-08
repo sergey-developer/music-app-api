@@ -57,6 +57,7 @@ class RequestService implements IRequestService {
         await this.trackService.deleteOneById(entityId)
       }
     } catch (error: any) {
+      console.log('deleteByEntity: ', error)
       logger.error(error.stack)
       throw new AppUnknownError('Error while deleting request')
     }
@@ -147,7 +148,7 @@ class RequestService implements IRequestService {
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Request was not found')
       }
-
+      console.log('1: ', { error })
       logger.error(error.stack)
       throw new AppUnknownError(unknownErrorMsg)
     }
@@ -161,6 +162,7 @@ class RequestService implements IRequestService {
 
       return request
     } catch (error: any) {
+      console.log('2: ', { error })
       if (isAppNotFoundError(error)) {
         throw error
       }
@@ -175,6 +177,7 @@ class RequestService implements IRequestService {
       const request = await this.requestRepository.deleteOne(filter)
       return request
     } catch (error: any) {
+      console.log('deleteOne: ', error)
       if (isDatabaseNotFoundError(error)) {
         throw new AppNotFoundError('Request was not found')
       }

@@ -1,6 +1,6 @@
+import { stringEqual } from 'app/utils/common'
 import { RequestStatusEnum } from 'modules/request/constants'
-import { checkString } from 'app/utils/common'
 
-const isApprovedRequest = checkString(RequestStatusEnum.Approved)
+const isApprovedRequest = stringEqual(RequestStatusEnum.Approved)
 
 export { isApprovedRequest }

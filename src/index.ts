@@ -8,7 +8,7 @@ const runServer = async () => {
 
 runServer()
 
-// TODO: обновить зависимости, попробовать установить jest/extend
+// TODO: Написать тесты что выбрасывается unknown error и др.
 // TODO: Написать тесты кроме контроллеров. Написал для:
 //  session (model, repo, service)
 //  user (model, repo, service)
@@ -16,12 +16,16 @@ runServer()
 //  track (repo, service)
 //  album (repo, service)
 //  artist (repo, service)
+//  request (repo, )
 
+// TODO: написать filterBuilder для репозиториев. filter.add(key, value).add(key, value).build()
+// TODO: обновить зависимости, попробовать установить jest/extend
 // TODO: скопировать PopulatedDoc, только вместо ObjectId | undefined, просто ObjectId
 //  и поправить код в тестах где это затрагивает
 // TODO: переименовать в creationPayload
 // TODO: протестить удаление фото
-// TODO: Написать тесты что выбрасывается unknown error и др.
+// TODO: в сервисах поправить такое: Delete one track by id
+//  передавая объект фильтра вместо только id
 
 // TODO: положить jest.config/setup в папку __tests__
 // TODO: создать свои функции для вызовов faker

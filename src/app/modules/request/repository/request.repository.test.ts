@@ -374,8 +374,8 @@ describe('Request repository', () => {
         .mockImplementationOnce(() => throwError())
 
       try {
-        const request = await requestRepository.findAllWhere({})
-        expect(request).not.toBeTruthy()
+        const requests = await requestRepository.findAllWhere({})
+        expect(requests).not.toBeTruthy()
       } catch (error: any) {
         expect(findAllWhereSpy).toBeCalledTimes(1)
         expect(modelFindSpy).toBeCalledTimes(1)
@@ -839,7 +839,7 @@ describe('Request repository', () => {
     })
 
     it('throw unknown error', async () => {
-      const modelDeleteMany = jest
+      const modelDeleteManySpy = jest
         .spyOn(RequestModel, 'deleteMany')
         .mockImplementationOnce(() => throwError())
 
@@ -848,7 +848,7 @@ describe('Request repository', () => {
         expect(deletionResult).not.toBeTruthy()
       } catch (error: any) {
         expect(deleteManySpy).toBeCalledTimes(1)
-        expect(modelDeleteMany).toBeCalledTimes(1)
+        expect(modelDeleteManySpy).toBeCalledTimes(1)
         expect(error).toBeInstanceOf(DatabaseUnknownError)
       }
     })
